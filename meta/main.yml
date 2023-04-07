@@ -6,6 +6,7 @@ galaxy_info:
   license: MIT
   min_ansible_version: "2.14"
   role_name: cis_ubuntu_2204
+  namespace: mvladislav
 
   platforms:
     - name: Ubuntu

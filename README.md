@@ -7,6 +7,7 @@
   - [Example Playbook](#example-playbook)
   - [CIS - List of Recommendations](#cis---list-of-recommendations)
   - [License](#license)
+  - [Resources](#resources)
 
 ---
 
@@ -19,6 +20,9 @@ Tested with:
 
 This role **will make changes to the system** that could break things. \
 This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
+
+This role was developed against a clean install of the Operating System. \
+If you are implimenting to an existing system please review this role for any site specific changes that are needed.
 
 Based on [CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisecurity.org/#/).
 
@@ -383,3 +387,10 @@ Developed and testes with Ansible 2.14.4
 ## License
 
 MIT
+
+---
+
+## Resources
+
+- <https://downloads.cisecurity.org/#/>
+- <https://github.com/florianutz/ubuntu2004_cis>

@@ -16,6 +16,65 @@
 
 - name: "CONDITION | check ansible version"
   ansible.builtin.fail:
-    msg: You must use ansible 2.3 or greater!
-  when: not ansible_version.full is version_compare('2.3', '>=')
+    msg: You must use ansible 2.14 or greater!
+  when: not ansible_version.full is version_compare('2.14', '>=')
+
 # ------------------------------------------------------------------------------
+
+- name: "IMPORT TASK | pre"
+  ansible.builtin.import_tasks: pre.yml
+  become: true
+  tags:
+    - cis_pre
+
+# ------------------------------------------------------------------------------
+
+- name: "IMPORT TASK | section1"
+  ansible.builtin.import_tasks: section1.yml
+  become: true
+  when: cis_ubuntu2023_section1 | bool
+  tags:
+    - section1
+
+- name: "IMPORT TASK | section2"
+  ansible.builtin.import_tasks: section2.yml
+  become: true
+  when: cis_ubuntu2023_section2 | bool
+  tags:
+    - section2
+
+- name: "IMPORT TASK | section3"
+  ansible.builtin.import_tasks: section3.yml
+  become: true
+  when: cis_ubuntu2023_section3 | bool
+  tags:
+    - section3
+
+- name: "IMPORT TASK | section4"
+  ansible.builtin.import_tasks: section4.yml
+  become: true
+  when: cis_ubuntu2023_section4 | bool
+  tags:
+    - section4
+
+- name: "IMPORT TASK | section5"
+  ansible.builtin.import_tasks: section5.yml
+  become: true
+  when: cis_ubuntu2023_section5 | bool
+  tags:
+    - section5
+
+- name: "IMPORT TASK | section6"
+  ansible.builtin.import_tasks: section6.yml
+  become: true
+  when: cis_ubuntu2023_section6 | bool
+  tags:
+    - section6
+
+# ------------------------------------------------------------------------------
+
+- name: "IMPORT TASK | post"
+  ansible.builtin.import_tasks: post.yml
+  become: true
+  tags:
+    - cis_post

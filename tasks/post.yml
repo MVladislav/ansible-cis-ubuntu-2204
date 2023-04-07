@@ -1,0 +1,26 @@
+---
+# tasks file for ansible-cis-ubuntu-2204
+
+# ------------------------------------------------------------------------------
+
+- name: "POST | find removed but configured apt packages"
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    dpkg --list | (grep ^rc || true) | tr -s ' ' | cut -d ' ' -f 2
+  args:
+    executable: /bin/bash
+  register: apt_removed_packages
+  changed_when: false
+
+- name: "POST | perform apt package cleanup"
+  ansible.builtin.apt:
+    name: "{{ apt_removed_packages.stdout_lines }}"
+    state: absent
+    purge: true
+  changed_when: false
+  # failed_when: false
+  when:
+    - apt_removed_packages is defined
+    - apt_removed_packages.stdout_lines is defined
+    - apt_removed_packages.stdout_lines | length > 0
+    - not ansible_check_mode

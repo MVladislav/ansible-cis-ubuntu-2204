@@ -5,7 +5,7 @@
   tasks:
     - name: "PREPARE | install openssh-server for testing under docker"
       apt:
-        name: "PREPARE | install openssh-server"
+        name: openssh-server
         state: present
         update_cache: yes
     - name: "PREPARE | install grub files for testing under docker"

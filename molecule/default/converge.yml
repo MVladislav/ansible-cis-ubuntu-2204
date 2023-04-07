@@ -1,7 +1,7 @@
 ---
 - name: Converge
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
     - name: "Include ansible-cis-ubuntu-2204"
       ansible.builtin.include_role:

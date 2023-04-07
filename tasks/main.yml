@@ -1,0 +1,21 @@
+---
+# tasks file for ansible-cis-ubuntu-2204
+
+# ------------------------------------------------------------------------------
+
+- name: "CONDITION | check OS version and family"
+  ansible.builtin.fail:
+    msg: >
+      This role is tested and can only be run against Ubuntu for versions 22.04, 23.04.
+      {{ ansible_distribution }} {{ ansible_distribution_version }} is not supported.
+  when:
+    - not ansible_distribution == "Ubuntu"
+    - >
+      not ansible_distribution_version == "22.04" or
+      not ansible_distribution_version == "23.04"
+
+- name: "CONDITION | check ansible version"
+  ansible.builtin.fail:
+    msg: You must use ansible 2.3 or greater!
+  when: not ansible_version.full is version_compare('2.3', '>=')
+# ------------------------------------------------------------------------------

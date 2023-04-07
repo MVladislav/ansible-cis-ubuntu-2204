@@ -1,0 +1,33 @@
+---
+name: Ansible Molecule Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Molecule Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install molecule[lint,docker] yamllint ansible-lint
+
+      - name: Test with molecule
+        run: molecule test
+        env:
+          PY_COLOR: "1"
+          ANSIBLE_FORCE_COLOR: "1"

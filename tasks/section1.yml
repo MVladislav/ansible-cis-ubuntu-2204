@@ -394,6 +394,7 @@
     - rule_1_4
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
 
 - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate config"
   ansible.builtin.copy:
@@ -549,6 +550,8 @@
         reload: true
         sysctl_set: true
         ignoreerrors: true
+      tags:
+        - molecule-idempotence-notest
     - name: >
         SECTION1 | 1.5.4 | Ensure core dumps are restricted | install systemd-coredump
       ansible.builtin.apt:

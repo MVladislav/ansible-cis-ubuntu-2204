@@ -32,42 +32,42 @@
 - name: "IMPORT TASK | section1"
   ansible.builtin.import_tasks: section1.yml
   become: true
-  when: cis_ubuntu2023_section1 | bool
+  when: cis_ubuntu2204_section1 | bool
   tags:
     - section1
 
 - name: "IMPORT TASK | section2"
   ansible.builtin.import_tasks: section2.yml
   become: true
-  when: cis_ubuntu2023_section2 | bool
+  when: cis_ubuntu2204_section2 | bool
   tags:
     - section2
 
 - name: "IMPORT TASK | section3"
   ansible.builtin.import_tasks: section3.yml
   become: true
-  when: cis_ubuntu2023_section3 | bool
+  when: cis_ubuntu2204_section3 | bool
   tags:
     - section3
 
 - name: "IMPORT TASK | section4"
   ansible.builtin.import_tasks: section4.yml
   become: true
-  when: cis_ubuntu2023_section4 | bool
+  when: cis_ubuntu2204_section4 | bool
   tags:
     - section4
 
 - name: "IMPORT TASK | section5"
   ansible.builtin.import_tasks: section5.yml
   become: true
-  when: cis_ubuntu2023_section5 | bool
+  when: cis_ubuntu2204_section5 | bool
   tags:
     - section5
 
 - name: "IMPORT TASK | section6"
   ansible.builtin.import_tasks: section6.yml
   become: true
-  when: cis_ubuntu2023_section6 | bool
+  when: cis_ubuntu2204_section6 | bool
   tags:
     - section6
 

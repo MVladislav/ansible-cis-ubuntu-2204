@@ -1,0 +1,18 @@
+{% set cis_ubuntu2204_rule_1_1_5_options = [] %}
+{% if cis_ubuntu2204_rule_1_1_5_2 %}{% set _ = cis_ubuntu2204_rule_1_1_5_options.append('nodev') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_5_3 %}{% set _ = cis_ubuntu2204_rule_1_1_5_options.append('noexec') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_5_4 %}{% set _ = cis_ubuntu2204_rule_1_1_5_options.append('nosuid') %}{% endif %}
+{% set cis_ubuntu2204_rule_1_1_5_options = cis_ubuntu2204_rule_1_1_5_options|join(',') %}
+[Unit]
+Description=Temporary Directory /var/log
+ConditionPathIsSymbolicLink=!/var/log
+DefaultDependencies=no
+Conflicts=umount.target
+Before=local-fs.target umount.target
+After=swap.target
+
+[Mount]
+What=ext4
+Where=/var/log
+Type=ext4
+Options={{ cis_ubuntu2204_rule_1_1_5_options }}

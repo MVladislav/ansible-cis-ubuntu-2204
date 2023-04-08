@@ -1,0 +1,18 @@
+{% set cis_ubuntu2204_rule_1_1_4_options = [] %}
+{% if cis_ubuntu2204_rule_1_1_4_2 %}{% set _ = cis_ubuntu2204_rule_1_1_4_options.append('noexec') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_4_3 %}{% set _ = cis_ubuntu2204_rule_1_1_4_options.append('nosuid') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_4_4 %}{% set _ = cis_ubuntu2204_rule_1_1_4_options.append('nodev') %}{% endif %}
+{% set cis_ubuntu2204_rule_1_1_4_options = cis_ubuntu2204_rule_1_1_4_options|join(',') %}
+[Unit]
+Description=Temporary Directory /var/tmp
+ConditionPathIsSymbolicLink=!/var/tmp
+DefaultDependencies=no
+Conflicts=umount.target
+Before=local-fs.target umount.target
+After=swap.target
+
+[Mount]
+What=ext4
+Where=/var/tmp
+Type=ext4
+Options={{ cis_ubuntu2204_rule_1_1_4_options }}

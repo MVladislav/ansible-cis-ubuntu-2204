@@ -1,5 +1,14 @@
 # CIS - Ubuntu 22.04
 
+---
+
+**==> IN WORK <==**
+
+---
+
+[![Ansible Lint](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ansible-lint.yml)
+[![Ansible Molecule Test](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml/badge.svg)](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml)
+
 - [CIS - Ubuntu 22.04](#cis---ubuntu-2204)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
@@ -10,10 +19,6 @@
   - [CIS - List of Recommendations](#cis---list-of-recommendations)
   - [License](#license)
   - [Resources](#resources)
-
----
-
-**==> IN WORK <==**
 
 ---
 
@@ -60,8 +65,12 @@ cis_ubuntu2204_rule_1_6_1_4: false
 special variable between server and client usage:
 
 ```yaml
-# is set default to 'false', if you need a gui, set it to 'true', else gui will removed
+# will remove gdm gui, if needed set to 'true'
+# if 'true', recommended configs will perform, check rules 1.8.2-1.8.10
 cis_ubuntu2204_allow_gdm_gui: false
+
+# will disable auto mount, if needed set to 'true'
+cis_ubuntu2204_allow_autofs: false
 
 # will disable USB storage, if needed set to 'false'
 cis_ubuntu2204_rule_1_1_10: true

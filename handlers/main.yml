@@ -97,6 +97,7 @@
   listen: generate new grub config
   changed_when: false
   notify: fix permissions after generate new grub config handler
+  when: ansible_virtualization_type != "docker"
 
 - name: "HANDLER | 1.4.1 | fix permissions after generate new grub config handler"
   become: true

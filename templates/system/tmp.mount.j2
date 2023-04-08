@@ -18,3 +18,7 @@ What=tmpfs
 Where=/tmp
 Type=tmpfs
 Options={{ cis_ubuntu2204_rule_1_1_2_options }}
+
+# Make 'systemctl enable tmp.mount' work:
+[Install]
+WantedBy=local-fs.target

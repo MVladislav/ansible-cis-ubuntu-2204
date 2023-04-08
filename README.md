@@ -13,6 +13,10 @@
 
 ---
 
+**==> IN WORK <==**
+
+---
+
 Configure Ubuntu 22.04 to be CIS compliant.
 
 Tested with:
@@ -34,7 +38,38 @@ Based on [CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisecur
 
 ## Role Variables
 
-...
+some variables which recommended by CIS, but disable in this role:
+
+> change 'false' below to 'true', to be CIS recommended if you need it
+
+```yaml
+# Ensure bootloader password is set
+cis_ubuntu2204_rule_1_4_1: false
+cis_ubuntu2204_set_boot_pass: false
+
+# Ensure authentication required for single user mode
+cis_ubuntu2204_rule_1_4_3: false
+
+# Ensure all AppArmor Profiles are in enforce or complain mode
+# (will be same as 'cis_ubuntu2204_rule_1_6_1_4')
+cis_ubuntu2204_rule_1_6_1_3: false
+# Ensure all AppArmor Profiles are enforcing
+cis_ubuntu2204_rule_1_6_1_4: false
+```
+
+special variable between server and client usage:
+
+```yaml
+# is set default to 'false', if you need a gui, set it to 'true', else gui will removed
+cis_ubuntu2204_allow_gdm_gui: false
+
+# will disable USB storage, if needed set to 'false'
+cis_ubuntu2204_rule_1_1_10: true
+
+# config and install AIDE, if not needed set as needed to 'false'
+cis_ubuntu2204_install_aide: true
+cis_ubuntu2204_config_aide: true
+```
 
 ## Dependencies
 
@@ -114,40 +149,40 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.3       | **Filesystem Integrity Checking**                                                               |  x  |     |     |
 | 1.3.1     | Ensure AIDE is installed (Automated)                                                            |  x  |     |     |
 | 1.3.2     | Ensure filesystem integrity is regularly checked (Automated)                                    |  x  |     |     |
-| 1.4       | **Secure Boot Settings**                                                                        |     |     |     |
-| 1.4.1     | Ensure bootloader password is set (Automated)                                                   |     |     |     |
-| 1.4.2     | Ensure permissions on bootloader config are configured (Automated)                              |     |     |     |
-| 1.4.3     | Ensure authentication required for single user mode (Automated)                                 |     |     |     |
-| 1.5       | **Additional Process Hardening**                                                                |     |     |     |
-| 1.5.1     | Ensure address space layout randomization (ASLR) is enabled (Automated)                         |     |     |     |
-| 1.5.2     | Ensure prelink is not installed (Automated)                                                     |     |     |     |
-| 1.5.3     | Ensure Automatic Error Reporting is not enabled (Automated)                                     |     |     |     |
-| 1.5.4     | Ensure core dumps are restricted (Automated)                                                    |     |     |     |
-| 1.6       | **Mandatory Access Control**                                                                    |     |     |     |
-| 1.6.1     | **Configure AppArmor**                                                                          |     |     |     |
-| 1.6.1.1   | Ensure AppArmor is installed (Automated)                                                        |     |     |     |
-| 1.6.1.2   | Ensure AppArmor is enabled in the bootloader configuration (Automated)                          |     |     |     |
-| 1.6.1.3   | Ensure all AppArmor Profiles are in enforce or complain mode (Automated)                        |     |     |     |
-| 1.6.1.4   | Ensure all AppArmor Profiles are enforcing (Automated)                                          |     |     |     |
-| 1.7       | **Command Line Warning Banners**                                                                |     |     |     |
-| 1.7.1     | Ensure message of the day is configured properly (Automated)                                    |     |     |     |
-| 1.7.2     | Ensure local login warning banner is configured properly (Automated)                            |     |     |     |
-| 1.7.3     | Ensure remote login warning banner is configured properly (Automated)                           |     |     |     |
-| 1.7.4     | Ensure permissions on /etc/motd are configured (Automated)                                      |     |     |     |
-| 1.7.5     | Ensure permissions on /etc/issue are configured (Automated)                                     |     |     |     |
-| 1.7.6     | Ensure permissions on /etc/issue.net are configured (Automated)                                 |     |     |     |
-| 1.8       | **GNOME Display Manager**                                                                       |     |     |     |
-| 1.8.1     | Ensure GNOME Display Manager is removed (Automated)                                             |     |     |     |
-| 1.8.2     | Ensure GDM login banner is configured (Automated)                                               |     |     |     |
-| 1.8.3     | Ensure GDM disable-user-list option is enabled (Automated)                                      |     |     |     |
-| 1.8.4     | Ensure GDM screen locks when the user is idle (Automated)                                       |     |     |     |
-| 1.8.5     | Ensure GDM screen locks cannot be overridden (Automated)                                        |     |     |     |
-| 1.8.6     | Ensure GDM automatic mounting of removable media is disabled (Automated)                        |     |     |     |
-| 1.8.7     | Ensure GDM disabling automatic mounting of removable media is not overridden (Automated)        |     |     |     |
-| 1.8.8     | Ensure GDM autorun-never is enabled (Automated)                                                 |     |     |     |
-| 1.8.9     | Ensure GDM autorun-never is not overridden (Automated)                                          |     |     |     |
-| 1.8.10    | Ensure XDCMP is not enabled (Automated)                                                         |     |     |     |
-| 1.9       | Ensure updates, patches, and additional security software are installed (Manual)                |     |     |     |
+| 1.4       | **Secure Boot Settings**                                                                        |  x  |     |     |
+| 1.4.1     | Ensure bootloader password is set (Automated)                                                   |  x  |     |     |
+| 1.4.2     | Ensure permissions on bootloader config are configured (Automated)                              |  x  |     |     |
+| 1.4.3     | Ensure authentication required for single user mode (Automated)                                 |  x  |     |     |
+| 1.5       | **Additional Process Hardening**                                                                |  x  |     |     |
+| 1.5.1     | Ensure address space layout randomization (ASLR) is enabled (Automated)                         |  x  |     |     |
+| 1.5.2     | Ensure prelink is not installed (Automated)                                                     |  x  |     |     |
+| 1.5.3     | Ensure Automatic Error Reporting is not enabled (Automated)                                     |  x  |     |     |
+| 1.5.4     | Ensure core dumps are restricted (Automated)                                                    |  x  |     |     |
+| 1.6       | **Mandatory Access Control**                                                                    |  x  |     |     |
+| 1.6.1     | **Configure AppArmor**                                                                          |  x  |     |     |
+| 1.6.1.1   | Ensure AppArmor is installed (Automated)                                                        |  x  |     |     |
+| 1.6.1.2   | Ensure AppArmor is enabled in the bootloader configuration (Automated)                          |  x  |     |     |
+| 1.6.1.3   | Ensure all AppArmor Profiles are in enforce or complain mode (Automated)                        |  x  |     |     |
+| 1.6.1.4   | Ensure all AppArmor Profiles are enforcing (Automated)                                          |  x  |     |     |
+| 1.7       | **Command Line Warning Banners**                                                                |  x  |     |     |
+| 1.7.1     | Ensure message of the day is configured properly (Automated)                                    |  x  |     |     |
+| 1.7.2     | Ensure local login warning banner is configured properly (Automated)                            |  x  |     |     |
+| 1.7.3     | Ensure remote login warning banner is configured properly (Automated)                           |  x  |     |     |
+| 1.7.4     | Ensure permissions on /etc/motd are configured (Automated)                                      |  x  |     |     |
+| 1.7.5     | Ensure permissions on /etc/issue are configured (Automated)                                     |  x  |     |     |
+| 1.7.6     | Ensure permissions on /etc/issue.net are configured (Automated)                                 |  x  |     |     |
+| 1.8       | **GNOME Display Manager**                                                                       |  x  |     |     |
+| 1.8.1     | Ensure GNOME Display Manager is removed (Automated)                                             |  x  |     |     |
+| 1.8.2     | Ensure GDM login banner is configured (Automated)                                               |  x  |     |     |
+| 1.8.3     | Ensure GDM disable-user-list option is enabled (Automated)                                      |  x  |     |     |
+| 1.8.4     | Ensure GDM screen locks when the user is idle (Automated)                                       |  x  |     |     |
+| 1.8.5     | Ensure GDM screen locks cannot be overridden (Automated)                                        |  x  |     |     |
+| 1.8.6     | Ensure GDM automatic mounting of removable media is disabled (Automated)                        |  x  |     |     |
+| 1.8.7     | Ensure GDM disabling automatic mounting of removable media is not overridden (Automated)        |  x  |     |     |
+| 1.8.8     | Ensure GDM autorun-never is enabled (Automated)                                                 |  x  |     |     |
+| 1.8.9     | Ensure GDM autorun-never is not overridden (Automated)                                          |  x  |     |     |
+| 1.8.10    | Ensure XDCMP is not enabled (Automated)                                                         |  x  |     |     |
+| 1.9       | Ensure updates, patches, and additional security software are installed (Manual)                |  x  |     |     |
 | 2         | **Services**                                                                                    |     |     |     |
 | 2.1       | **Configure Time Synchronization**                                                              |     |     |     |
 | 2.1.1     | **Ensure time synchronization is in use**                                                       |     |     |     |

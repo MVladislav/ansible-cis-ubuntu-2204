@@ -52,19 +52,19 @@ cis_ubuntu2204_rule_1_1_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_au
 cis_ubuntu2204_rule_1_1_10: true
 cis_ubuntu2204_rule_1_2_1: true
 cis_ubuntu2204_rule_1_2_2: true
-cis_ubuntu2204_rule_1_3_1: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
-cis_ubuntu2204_rule_1_3_2: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
-cis_ubuntu2204_rule_1_4_1: true
+cis_ubuntu2204_rule_1_3_1: true # NOTE: depends also on 'cis_ubuntu2204_config_aide|cis_ubuntu2204_install_aide'
+cis_ubuntu2204_rule_1_3_2: true # NOTE: depends also on 'cis_ubuntu2204_config_aide|cis_ubuntu2204_install_aide'
+cis_ubuntu2204_rule_1_4_1: false # NOTE: depends also on 'cis_ubuntu2204_set_boot_pass'
 cis_ubuntu2204_rule_1_4_2: true
-cis_ubuntu2204_rule_1_4_3: true
+cis_ubuntu2204_rule_1_4_3: false
 cis_ubuntu2204_rule_1_5_1: true
 cis_ubuntu2204_rule_1_5_2: true
 cis_ubuntu2204_rule_1_5_3: true
 cis_ubuntu2204_rule_1_5_4: true
 cis_ubuntu2204_rule_1_6_1_1: true
 cis_ubuntu2204_rule_1_6_1_2: true
-cis_ubuntu2204_rule_1_6_1_3: true
-cis_ubuntu2204_rule_1_6_1_4: true
+cis_ubuntu2204_rule_1_6_1_3: false
+cis_ubuntu2204_rule_1_6_1_4: false
 cis_ubuntu2204_rule_1_7_1: true
 cis_ubuntu2204_rule_1_7_2: true
 cis_ubuntu2204_rule_1_7_3: true
@@ -72,15 +72,15 @@ cis_ubuntu2204_rule_1_7_4: true
 cis_ubuntu2204_rule_1_7_5: true
 cis_ubuntu2204_rule_1_7_6: true
 cis_ubuntu2204_rule_1_8_1: true
-cis_ubuntu2204_rule_1_8_2: true
-cis_ubuntu2204_rule_1_8_3: true
-cis_ubuntu2204_rule_1_8_4: true
-cis_ubuntu2204_rule_1_8_5: true
-cis_ubuntu2204_rule_1_8_6: true
-cis_ubuntu2204_rule_1_8_7: true
-cis_ubuntu2204_rule_1_8_8: true
-cis_ubuntu2204_rule_1_8_9: true
-cis_ubuntu2204_rule_1_8_10: true
+cis_ubuntu2204_rule_1_8_2: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_8_3: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_8_4: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_8_5: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_8_6: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_8_7: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_8_8: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_8_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_8_10: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 cis_ubuntu2204_rule_1_9: true
 ## SECTION 2 rules
 cis_ubuntu2204_rule_2_1_1_1: true
@@ -310,8 +310,9 @@ cis_ubuntu2204_rule_6_2_17: true
 # SPECIAL options rule overview
 # ---------------------------------------
 # autofs allow auto mount (cis_ubuntu2204_rule_1_1_9)
-cis_ubuntu2204_allow_autofs: true
-# AIDE perform config (cis_ubuntu2204_rule_1_3_1,cis_ubuntu2204_rule_1_3_2)
+cis_ubuntu2204_allow_autofs: false
+# AIDE perform install/config (cis_ubuntu2204_rule_1_3_1|cis_ubuntu2204_rule_1_3_2)
+cis_ubuntu2204_install_aide: true
 cis_ubuntu2204_config_aide: true
 # AIDE cron settings
 cis_ubuntu2204_aide_cron:
@@ -323,3 +324,20 @@ cis_ubuntu2204_aide_cron:
   aide_day: "*"
   aide_month: "*"
   aide_weekday: "*"
+# BOOTLOADER set (cis_ubuntu2204_rule_1_4_1)
+cis_ubuntu2204_set_boot_pass: false
+cis_ubuntu2204_disable_boot_pass: true
+# gdm allow, else remove (cis_ubuntu2204_rule_1_8_*)
+cis_ubuntu2204_allow_gdm_gui: false
+
+# SPECIAL variables
+# ---------------------------------------
+# bootloader password. 'random' makes random password (cis_ubuntu2204_rule_1_4_1)
+cis_ubuntu2204_bootloader_password: random
+# root password. 'random' makes random password (cis_ubuntu2204_rule_1_4_3)
+cis_ubuntu2204_root_password: random
+# grub default file path (cis_ubuntu2204_rule_1_6_1_2)
+cis_ubuntu2204_default_grub_file: /etc/default/grub
+# gdm banner message (cis_ubuntu2204_rule_1_8_2)
+cis_ubuntu2204_gdm_warning_banner: |
+  Authorized uses only. All activity may be monitored and reported

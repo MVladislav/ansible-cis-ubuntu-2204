@@ -12,59 +12,108 @@
     masked: false
     state: reloaded
   listen: systemd restart and enable tmp.mount
-  when: ansible_virtualization_type != "docker"
 
-- name: "HANDLER | 1.1.3.1 | systemd restart and enable var.mount"
+# - name: "HANDLER | 1.1.3.1 | systemd restart and enable var.mount"
+#   become: true
+#   ansible.builtin.systemd:
+#     name: var.mount
+#     daemon_reload: true
+#     enabled: true
+#     masked: false
+#     state: reloaded
+#   listen: systemd restart and enable var.mount
+#   when: ansible_virtualization_type != "docker"
+
+# - name: "HANDLER | 1.1.4.1 | systemd restart and enable var.tmp.mount"
+#   become: true
+#   ansible.builtin.systemd:
+#     name: var.tmp.mount
+#     daemon_reload: true
+#     enabled: true
+#     masked: false
+#     state: reloaded
+#   listen: systemd restart and enable var.tmp.mount
+#   when: ansible_virtualization_type != "docker"
+
+# - name: "HANDLER | 1.1.5.1 | systemd restart and enable var.log.mount"
+#   become: true
+#   ansible.builtin.systemd:
+#     name: var.log.mount
+#     daemon_reload: true
+#     enabled: true
+#     masked: false
+#     state: reloaded
+#   listen: systemd restart and enable var.log.mount
+#   when: ansible_virtualization_type != "docker"
+
+# - name: "HANDLER | 1.1.6.1 | systemd restart and enable var.log.audit.mount"
+#   become: true
+#   ansible.builtin.systemd:
+#     name: var.log.audit.mount
+#     daemon_reload: true
+#     enabled: true
+#     masked: false
+#     state: reloaded
+#   listen: systemd restart and enable var.log.audit.mount
+#   when: ansible_virtualization_type != "docker"
+
+# - name: "HANDLER | 1.1.7.1 | systemd restart and enable home.mount"
+#   become: true
+#   ansible.builtin.systemd:
+#     name: home.mount
+#     daemon_reload: true
+#     enabled: true
+#     masked: false
+#     state: reloaded
+#   listen: systemd restart and enable home.mount
+#   when: ansible_virtualization_type != "docker"
+
+- name: "HANDLER | 1.5.4 | systemd restart and enable systemd-coredump"
   become: true
   ansible.builtin.systemd:
-    name: var.mount
+    name: systemd-coredump.socket
     daemon_reload: true
     enabled: true
     masked: false
-    state: reloaded
-  listen: systemd restart and enable var.mount
-  when: ansible_virtualization_type != "docker"
+    state: restarted
+  listen: restart systemd-coredump
 
-- name: "HANDLER | 1.1.4.1 | systemd restart and enable var.tmp.mount"
+- name: "HANDLER | 1.6.1 | systemd restart and enable apparmor"
   become: true
   ansible.builtin.systemd:
-    name: var.tmp.mount
+    name: apparmor.service
     daemon_reload: true
     enabled: true
     masked: false
-    state: reloaded
-  listen: systemd restart and enable var.tmp.mount
+    state: restarted
+  listen: restart apparmor
   when: ansible_virtualization_type != "docker"
 
-- name: "HANDLER | 1.1.5.1 | systemd restart and enable var.log.mount"
-  become: true
-  ansible.builtin.systemd:
-    name: var.log.mount
-    daemon_reload: true
-    enabled: true
-    masked: false
-    state: reloaded
-  listen: systemd restart and enable var.log.mount
-  when: ansible_virtualization_type != "docker"
+# ------------------------------------------------------------------------------
 
-- name: "HANDLER | 1.1.6.1 | systemd restart and enable var.log.audit.mount"
+- name: "HANDLER | 1.4.1 | generate new grub config"
   become: true
-  ansible.builtin.systemd:
-    name: var.log.audit.mount
-    daemon_reload: true
-    enabled: true
-    masked: false
-    state: reloaded
-  listen: systemd restart and enable var.log.audit.mount
-  when: ansible_virtualization_type != "docker"
+  ansible.builtin.command: grub-mkconfig -o "{{ cis_grub_cfg.stat.path }}"
+  listen: generate new grub config
+  changed_when: false
+  notify: fix permissions after generate new grub config handler
 
-- name: "HANDLER | 1.1.7.1 | systemd restart and enable home.mount"
+- name: "HANDLER | 1.4.1 | fix permissions after generate new grub config handler"
   become: true
-  ansible.builtin.systemd:
-    name: home.mount
-    daemon_reload: true
-    enabled: true
-    masked: false
-    state: reloaded
-  listen: systemd restart and enable home.mount
+  ansible.builtin.file:
+    path: "/boot/grub/grub.cfg"
+    owner: root
+    group: root
+    mode: "0400"
+  listen: fix permissions after generate new grub config handler
+
+# ------------------------------------------------------------------------------
+
+- name: "HANDLER | 1.6.1.2 | update-grub"
+  become: true
+  ansible.builtin.shell: /usr/sbin/update-grub
+  args:
+    executable: /bin/bash
+  changed_when: false
+  listen: update-grub
   when: ansible_virtualization_type != "docker"

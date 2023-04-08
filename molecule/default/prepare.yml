@@ -10,6 +10,11 @@
         update_cache: yes
     - name: "PREPARE | install grub files for testing under docker"
       block:
+        - name: "PREPARE | install grub-common for grub-mkpasswd-pbkdf2 to testing under docker"
+          apt:
+            name: grub-common
+            state: present
+            update_cache: yes
         - name: "PREPARE | create folder /boot/grub"
           file:
             name: /boot/grub

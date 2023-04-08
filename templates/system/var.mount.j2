@@ -15,3 +15,7 @@ What=ext4
 Where=/var
 Type=ext4
 Options={{ cis_ubuntu2204_rule_1_1_3_options }}
+
+# Make 'systemctl enable tmp.mount' work:
+[Install]
+WantedBy=local-fs.target

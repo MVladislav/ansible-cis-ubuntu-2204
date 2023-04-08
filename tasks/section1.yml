@@ -116,93 +116,93 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.1.3.1 | Ensure separate partition exists for '/var' | includes 1.1.3.2-3"
-  ansible.builtin.template:
-    src: system/var.mount.j2
-    dest: /etc/systemd/system/var.mount
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - systemd restart and enable var.mount
-  when:
-    - cis_ubuntu2204_rule_1_1_3_1
-  tags:
-    - rule_1_1_3
-    - server_l2
-    - workstation_l2
+# - name: "SECTION1 | 1.1.3.1 | Ensure separate partition exists for '/var' | includes 1.1.3.2-3"
+#   ansible.builtin.template:
+#     src: system/var.mount.j2
+#     dest: /etc/systemd/system/var.mount
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   notify:
+#     - systemd restart and enable var.mount
+#   when:
+#     - cis_ubuntu2204_rule_1_1_3_1
+#   tags:
+#     - rule_1_1_3
+#     - server_l2
+#     - workstation_l2
 
-# ------------------------------------------------------------------------------
+# # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.1.4.1 | Ensure separate partition exists for '/var/tmp' | includes 1.1.4.2-4"
-  ansible.builtin.template:
-    src: system/var.tmp.mount.j2
-    dest: /etc/systemd/system/var.tmp.mount
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - systemd restart and enable var.tmp.mount
-  when:
-    - cis_ubuntu2204_rule_1_1_4_1
-  tags:
-    - rule_1_1_4
-    - server_l2
-    - workstation_l2
+# - name: "SECTION1 | 1.1.4.1 | Ensure separate partition exists for '/var/tmp' | includes 1.1.4.2-4"
+#   ansible.builtin.template:
+#     src: system/var.tmp.mount.j2
+#     dest: /etc/systemd/system/var.tmp.mount
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   notify:
+#     - systemd restart and enable var.tmp.mount
+#   when:
+#     - cis_ubuntu2204_rule_1_1_4_1
+#   tags:
+#     - rule_1_1_4
+#     - server_l2
+#     - workstation_l2
 
-# ------------------------------------------------------------------------------
+# # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.1.5.1 | Ensure separate partition exists for '/var/log' | includes 1.1.5.2-4"
-  ansible.builtin.template:
-    src: system/var.log.mount.j2
-    dest: /etc/systemd/system/var.log.mount
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - systemd restart and enable var.log.mount
-  when:
-    - cis_ubuntu2204_rule_1_1_5_1
-  tags:
-    - rule_1_1_5
-    - server_l2
-    - workstation_l2
+# - name: "SECTION1 | 1.1.5.1 | Ensure separate partition exists for '/var/log' | includes 1.1.5.2-4"
+#   ansible.builtin.template:
+#     src: system/var.log.mount.j2
+#     dest: /etc/systemd/system/var.log.mount
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   notify:
+#     - systemd restart and enable var.log.mount
+#   when:
+#     - cis_ubuntu2204_rule_1_1_5_1
+#   tags:
+#     - rule_1_1_5
+#     - server_l2
+#     - workstation_l2
 
-# ------------------------------------------------------------------------------
+# # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.1.6.1 | Ensure separate partition exists for '/var/log/audit' | includes 1.1.6.2-4"
-  ansible.builtin.template:
-    src: system/var.log.audit.mount.j2
-    dest: /etc/systemd/system/var.log.audit.mount
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - systemd restart and enable var.log.audit.mount
-  when:
-    - cis_ubuntu2204_rule_1_1_6_1
-  tags:
-    - rule_1_1_6
-    - server_l2
-    - workstation_l2
+# - name: "SECTION1 | 1.1.6.1 | Ensure separate partition exists for '/var/log/audit' | includes 1.1.6.2-4"
+#   ansible.builtin.template:
+#     src: system/var.log.audit.mount.j2
+#     dest: /etc/systemd/system/var.log.audit.mount
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   notify:
+#     - systemd restart and enable var.log.audit.mount
+#   when:
+#     - cis_ubuntu2204_rule_1_1_6_1
+#   tags:
+#     - rule_1_1_6
+#     - server_l2
+#     - workstation_l2
 
-# ------------------------------------------------------------------------------
+# # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.1.7.1 | Ensure separate partition exists for '/home' | includes 1.1.7.2-3"
-  ansible.builtin.template:
-    src: system/home.mount.j2
-    dest: /etc/systemd/system/home.mount
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - systemd restart and enable home.mount
-  when:
-    - cis_ubuntu2204_rule_1_1_7_1
-  tags:
-    - rule_1_1_7
-    - server_l2
-    - workstation_l2
+# - name: "SECTION1 | 1.1.7.1 | Ensure separate partition exists for '/home' | includes 1.1.7.2-3"
+#   ansible.builtin.template:
+#     src: system/home.mount.j2
+#     dest: /etc/systemd/system/home.mount
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   notify:
+#     - systemd restart and enable home.mount
+#   when:
+#     - cis_ubuntu2204_rule_1_1_7_1
+#   tags:
+#     - rule_1_1_7
+#     - server_l2
+#     - workstation_l2
 
 # ------------------------------------------------------------------------------
 
@@ -287,6 +287,7 @@
     force_apt_get: true
     install_recommends: false
   when:
+    - cis_ubuntu2204_install_aide
     - cis_ubuntu2204_rule_1_3_1
     - not package_installed_postfix.rc == 0
   tags:
@@ -303,6 +304,7 @@
     force_apt_get: true
     install_recommends: false
   when:
+    - cis_ubuntu2204_install_aide
     - cis_ubuntu2204_rule_1_3_1
   tags:
     - rule_1_3
@@ -314,6 +316,7 @@
     path: /var/lib/aide/aide.db
   register: cis_stat_aide_db
   when:
+    - cis_ubuntu2204_install_aide
     - cis_ubuntu2204_config_aide
     - cis_ubuntu2204_rule_1_3_1
   tags:
@@ -326,6 +329,7 @@
   args:
     creates: /var/lib/aide/aide.db
   when:
+    - cis_ubuntu2204_install_aide
     - cis_ubuntu2204_config_aide
     - cis_ubuntu2204_rule_1_3_1
     - not cis_stat_aide_db.stat.exists
@@ -339,6 +343,7 @@
     path: /etc/cron.daily/aide
   register: cis_stat_aide_cron
   when:
+    - cis_ubuntu2204_install_aide
     - cis_ubuntu2204_config_aide
     - cis_ubuntu2204_rule_1_3_1
   tags:
@@ -358,11 +363,573 @@
     weekday: "{{ cis_ubuntu2204_aide_cron.aide_weekday | default('0') }}"
     job: "{{ cis_ubuntu2204_aide_cron.aide_job }}"
   when:
+    - cis_ubuntu2204_install_aide
     - cis_ubuntu2204_config_aide
     - cis_ubuntu2204_rule_1_3_2
     - not cis_stat_aide_cron.stat.exists
   tags:
     - rule_1_3
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate password"
+  ansible.builtin.shell: |
+    set -o pipefail &&
+      if [ '{{ cis_ubuntu2204_bootloader_password }}' == 'random' ]; then
+        PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c12)
+      else
+        PASSWORD='{{ cis_ubuntu2204_bootloader_password }}'
+      fi
+    echo -e "$PASSWORD\n$PASSWORD" | grub-mkpasswd-pbkdf2 | awk '/grub.pbkdf/{print$NF}'
+  register: cis_grub_bootloader_password
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when:
+    - cis_ubuntu2204_set_boot_pass
+    - cis_ubuntu2204_rule_1_4_1
+  tags:
+    - rule_1_4
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate config"
+  ansible.builtin.copy:
+    dest: /etc/grub.d/00_password
+    content: "cat << EOF\nset superusers=\"root\"\npassword_pbkdf2 root {{ cis_grub_bootloader_password.stdout }}\nEOF"
+    owner: root
+    group: root
+    mode: "0755"
+  notify: generate new grub config
+  when:
+    - cis_ubuntu2204_set_boot_pass
+    - cis_grub_bootloader_password is defined
+    - cis_grub_bootloader_password.stdout is defined
+    - cis_grub_bootloader_password.stdout | length > 0
+    - cis_ubuntu2204_rule_1_4_1
+  tags:
+    - rule_1_4
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | disable password for system boot"
+  ansible.builtin.replace:
+    path: /etc/grub.d/10_linux
+    regexp: '--class os"'
+    replace: '--class os --unrestricted"'
+  notify: generate new grub config
+  when:
+    - cis_ubuntu2204_set_boot_pass
+    - cis_ubuntu2204_disable_boot_pass
+    - cis_ubuntu2204_rule_1_4_1
+  tags:
+    - rule_1_4
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.4.2 | Ensure permissions on bootloader config are configured"
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: "0400"
+  with_items:
+    - path: /boot/grub/grub.cfg
+      check: "{{ cis_grub_cfg.stat.exists }}"
+    - path: /boot/grub/grub.conf
+      check: "{{ cis_grub_conf.stat.exists }}"
+    - path: /boot/grub/menu.lst
+      check: "{{ cis_menu_lst.stat.exists }}"
+  when:
+    - cis_ubuntu2204_rule_1_4_2
+    - item.check | bool
+  tags:
+    - rule_1_4
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.4.3 | Ensure authentication required for single user mode"
+  ansible.builtin.shell: |
+    set -o pipefail &&
+      if [ '{{ cis_ubuntu2204_root_password }}' == 'random' ]; then
+        PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c24)
+      else
+        PASSWORD='{{ cis_ubuntu2204_root_password }}'
+      fi
+    echo "root:$PASSWORD" | chpasswd
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when:
+    - cis_ubuntu2204_rule_1_4_3
+    - cis_current_root_password.stdout | length > 0
+  tags:
+    - rule_1_4
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION1 | 1.5.1 | Ensure address space layout randomization (ASLR) is enabled"
+  ansible.posix.sysctl:
+    name: kernel.randomize_va_space
+    value: "2"
+    state: present
+    reload: true
+    sysctl_set: true
+    ignoreerrors: true
+  when:
+    - cis_ubuntu2204_rule_1_5_1
+  tags:
+    - rule_1_5
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.5.2 | Ensure 'prelink' is not installed"
+  when:
+    - package_installed_prelink.rc == 0
+    - cis_ubuntu2204_rule_1_5_2
+  tags:
+    - rule_1_5
+    - server_l1
+    - workstation_l1
+  block:
+    - name: >
+        SECTION1 | 1.5.2 | Ensure 'prelink' is not installed | restore binaries to normal
+      ansible.builtin.command: prelink -ua
+      changed_when: false
+    - name: >
+        SECTION1 | 1.5.2 | Ensure 'prelink' is not installed | uninstall
+      ansible.builtin.apt:
+        name: prelink
+        state: absent
+
+- name: "SECTION1 | 1.5.3 | Ensure Automatic Error Reporting is not enabled"
+  when:
+    - service_status_apport.stdout == "loaded"
+    - cis_ubuntu2204_rule_1_5_3
+  tags:
+    - rule_1_5
+    - server_l1
+    - workstation_l2
+  block:
+    - name: >
+        SECTION1 | 1.5.3 | Ensure Automatic Error Reporting is not enabled | add or edit the enabled parameter to equal 0
+      ansible.builtin.lineinfile:
+        dest: /etc/default/apport
+        regexp: "^(#)?enabled="
+        line: "enabled=0"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0644"
+    - name: >
+        SECTION1 | 1.5.3 | Ensure Automatic Error Reporting is not enabled | stop and disable service
+      ansible.builtin.service:
+        name: autofs
+        enabled: false
+
+- name: "SECTION1 | 1.5.4 | Ensure core dumps are restricted"
+  when:
+    - cis_ubuntu2204_rule_1_5_4
+  tags:
+    - rule_1_5
+    - server_l1
+    - workstation_l1
+  block:
+    - name: >
+        SECTION1 | 1.5.4 | Ensure core dumps are restricted | set fs.suid_dumpable
+      ansible.posix.sysctl:
+        name: fs.suid_dumpable
+        value: "0"
+        state: present
+        reload: true
+        sysctl_set: true
+        ignoreerrors: true
+    - name: >
+        SECTION1 | 1.5.4 | Ensure core dumps are restricted | install systemd-coredump
+      ansible.builtin.apt:
+        name: systemd-coredump
+        state: present
+        force_apt_get: true
+        # install_recommends: false
+      notify: restart systemd-coredump
+    - name: >
+        SECTION1 | 1.5.4 | Ensure core dumps are restricted | ensure hard core 0 is set
+      ansible.builtin.lineinfile:
+        dest: /etc/security/limits.conf
+        line: "*                hard    core            0"
+        regexp: '(^#)?\*\s+hard\s+core\s+[0-9]+'
+        state: present
+        create: true
+        insertbefore: "# End of file"
+        mode: "0644"
+      notify: restart systemd-coredump
+    - name: >
+        SECTION1 | 1.5.4 | Ensure core dumps are restricted | set coredump.conf
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/coredump.conf
+        regexp: "{{ item.reg }}"
+        line: "{{ item.line }}"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0644"
+      with_items:
+        - reg: "^(#)?Storage="
+          line: "Storage=none"
+        - reg: "^(#)?ProcessSizeMax="
+          line: "ProcessSizeMax=0"
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION1 | 1.6.1.1 | Ensure AppArmor is installed"
+  ansible.builtin.apt:
+    name:
+      - apparmor
+      # 'apparmor-utils' installs 'aa-enforce'
+      - apparmor-utils
+    state: present
+    force_apt_get: true
+    # install_recommends: false
+  notify: restart apparmor
+  when:
+    - cis_ubuntu2204_rule_1_6_1_1
+  tags:
+    - rule_1_6_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.6.1.2 | Ensure AppArmor is enabled in the bootloader configuration"
+  when:
+    - cis_ubuntu2204_rule_1_6_1_2
+  tags:
+    - rule_1_6_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: >
+        SECTION1 | 1.6.1.2 | Ensure AppArmor is enabled in the bootloader configuration | add apparmor=1
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: '^(GRUB_CMDLINE_LINUX=(?!.*apparmor)\"[^\"]*)(\".*)'
+        replace: '\1 apparmor=1\2'
+      notify: update-grub
+    - name: >
+        SECTION1 | 1.6.1.2 | Ensure AppArmor is enabled in the bootloader configuration | add security=apparmor
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: '^(GRUB_CMDLINE_LINUX=(?!.*security)\"[^\"]*)(\".*)'
+        replace: '\1 security=apparmor\2'
+      notify: update-grub
+
+- name: "SECTION1 | 1.6.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode"
+  ansible.builtin.command: /usr/sbin/aa-enforce /etc/apparmor.d/*
+  # ansible.builtin.command: aa-complain /etc/apparmor.d/*
+  changed_when: false
+  notify: restart apparmor
+  when:
+    - cis_ubuntu2204_rule_1_6_1_3
+  tags:
+    - rule_1_6_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.6.1.4 | Ensure all AppArmor Profiles are enforcing"
+  ansible.builtin.command: /usr/sbin/aa-enforce /etc/apparmor.d/*
+  changed_when: false
+  notify: restart apparmor
+  when:
+    - cis_ubuntu2204_rule_1_6_1_4
+  tags:
+    - rule_1_6_1
+    - server_l2
+    - workstation_l2
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION1 | 1.7.1 | Ensure message of the day is configured properly"
+  ansible.builtin.copy:
+    content: Authorized uses only. All activity may be monitored and reported.
+    dest: /etc/motd
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_1_7_1
+  tags:
+    - rule_1_7
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.7.2 | Ensure local login warning banner is configured properly"
+  ansible.builtin.copy:
+    content: Authorized uses only. All activity may be monitored and reported.
+    dest: /etc/issue
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_1_7_2
+  tags:
+    - rule_1_7
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.7.3 | Ensure remote login warning banner is configured properly"
+  ansible.builtin.copy:
+    content: Authorized uses only. All activity may be monitored and reported.
+    dest: /etc/issue.net
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_1_7_3
+  tags:
+    - rule_1_7
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.7.4 | Ensure permissions on /etc/motd are configured"
+  ansible.builtin.file:
+    dest: /etc/motd
+    state: file
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_1_7_4
+  tags:
+    - rule_1_7
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.7.5 | Ensure permissions on /etc/issue are configured"
+  ansible.builtin.file:
+    dest: /etc/issue
+    state: file
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_1_7_5
+  tags:
+    - rule_1_7
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.7.6 | Ensure permissions on /etc/issue.net are configured"
+  ansible.builtin.file:
+    dest: /etc/issue.net
+    state: file
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_1_7_6
+  tags:
+    - rule_1_7
+    - server_l1
+    - workstation_l1
+# ------------------------------------------------------------------------------
+
+- name: "SECTION1 | 1.8.1 | Ensure GNOME Display Manager is removed"
+  ansible.builtin.apt:
+    name: gdm3
+    state: absent
+  when:
+    - not cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_1
+  tags:
+    - rule_1_8
+    - server_l2
+
+- name: "SECTION1 | 1.8.2 | Ensure GDM login banner is configured"
+  when:
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_2
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION1 | 1.8.2 | Ensure GDM login banner is configured | file gdm"
+      ansible.builtin.template:
+        src: gdm/profile-gdm.j2
+        dest: /etc/dconf/profile/gdm
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION1 | 1.8.2 | Ensure GDM login banner is configured | file 01-banner-message"
+      ansible.builtin.template:
+        src: gdm/01-banner-message.j2
+        dest: /etc/dconf/db/gdm.d/01-banner-message
+        owner: root
+        group: root
+        mode: "0644"
+
+# TODO: section 1.8 needs to be implemented
+# 1.8.3 | Ensure GDM disable-user-list option is enabled
+# 1.8.4 | Ensure GDM screen locks when the user is idle
+# 1.8.5 | Ensure GDM screen locks cannot be overridden
+# 1.8.6 | Ensure GDM automatic mounting of removable media is disabled
+# 1.8.7 | Ensure GDM disabling automatic mounting of removable media is not overridden
+# 1.8.8 | Ensure GDM autorun-never is enabled
+# 1.8.9 | Ensure GDM autorun-never is not overridden
+# 1.8.10 | Ensure XDCMP is not enabled
+
+- name: "SECTION1 | 1.8.3 | Ensure GDM disable-user-list option is enabled"
+  ansible.builtin.template:
+    src: gdm/00-login-screen.j2
+    dest: /etc/dconf/db/gdm.d/00-login-screen
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_1
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.8.4 | Ensure GDM screen locks when the user is idle"
+  when:
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_1
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION1 | 1.8.4 | Ensure GDM screen locks when the user is idle | file user"
+      ansible.builtin.template:
+        src: gdm/profile-user-j2
+        dest: /etc/dconf/profile/user
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION1 | 1.8.4 | Ensure GDM screen locks when the user is idle | file 00-screensaver"
+      ansible.builtin.template:
+        src: gdm/00-screensaver.j2
+        dest: /etc/dconf/db/local.d/00-screensaver
+        owner: root
+        group: root
+        mode: "0644"
+
+- name: "SECTION1 | 1.8.5 | Ensure GDM screen locks cannot be overridden"
+  ansible.builtin.template:
+    src: gdm/00-screensaver-locks.j2
+    dest: /etc/dconf/db/local.d/locks/00-screensaver
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_1
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.8.6 | Ensure GDM automatic mounting of removable media is disabled"
+  ansible.builtin.template:
+    src: gdm/00-media-automount.j2
+    dest: /etc/dconf/db/local.d/00-media-automount
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - not cis_ubuntu2204_allow_autofs
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_1
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l2
+
+- name: "SECTION1 | 1.8.7 | Ensure GDM disabling automatic mounting of removable media is not overridden"
+  ansible.builtin.template:
+    src: gdm/00-media-automount-locks.j2
+    dest: /etc/dconf/db/local.d/locks/00-media-automount
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - not cis_ubuntu2204_allow_autofs
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_1
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l2
+
+- name: "SECTION1 | 1.8.8 | Ensure GDM autorun-never is enabled"
+  ansible.builtin.template:
+    src: gdm/00-media-autorun.j2
+    dest: /etc/dconf/db/local.d/00-media-autorun
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_1
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.8.9 | Ensure GDM autorun-never is not overridden"
+  ansible.builtin.template:
+    src: gdm/00-media-autorun-locks.j2
+    dest: /etc/dconf/db/local.d/locks/00-media-autorun
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_1
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.8.10 | Ensure XDCMP is not enabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/gdm3/custom.conf
+    regexp: "^Enable"
+    line: "#Enable=false"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_8_1
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION1 | 1.9 | Ensure updates, patches, and additional security software are installed"
+  ansible.builtin.apt:
+    upgrade: dist
+    force_apt_get: true
+    # install_recommends: false
+  when:
+    - cis_ubuntu2204_rule_1_9
+  tags:
+    - rule_1_9
     - server_l1
     - workstation_l1
 # ------------------------------------------------------------------------------

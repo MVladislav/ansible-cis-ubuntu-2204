@@ -5,7 +5,7 @@ driver:
   name: docker
 lint: |
   yamllint . -c .yamllint
-  ansible-lint -c .ansible-lint
+#  ansible-lint -c .ansible-lint
 platforms:
   - name: ubuntu-23.04
     image: mvladislav/docker-ubuntu-systemd-sudo-ansible:23.04

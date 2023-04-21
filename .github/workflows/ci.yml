@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip --break-system-packages
-          python3 -m pip install molecule[lint,docker] yamllint ansible-lint --break-system-packages
+          python3 -m pip install molecule-docker molecule[lint] yamllint ansible-lint --break-system-packages
 
       - name: Test with molecule
         run: molecule test

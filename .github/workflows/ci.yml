@@ -19,12 +19,12 @@ jobs:
       - name: Set up Python 3.
         uses: actions/setup-python@v2
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip --break-system-packages
-          python3 -m pip install molecule-docker molecule[lint] yamllint ansible-lint --break-system-packages
+          python3 -m pip install --upgrade pip
+          python3 -m pip install molecule-docker molecule[lint] yamllint ansible-lint
 
       - name: Test with molecule
         run: molecule test

@@ -70,9 +70,19 @@
   changed_when: false
   check_mode: false
 
+- name: "PRE | 2.1.1.1 | check for 'systemd-timesyncd' service"
+  ansible.builtin.shell: |
+    set -o pipefail &&
+    systemctl show systemd-timesyncd | grep LoadState | cut -d = -f 2
+  args:
+    executable: /bin/bash
+  register: service_status_systemd_timesyncd
+  changed_when: false
+  check_mode: false
+
 # ------------------------------------------------------------------------------
 
-- name: "PRE | 1.3.1 | check if 'postfix' package is installed"
+- name: "PRE | 1.3.1, 2.2.15 | check if 'postfix' package is installed"
   ansible.builtin.command: "dpkg -V postfix"
   register: package_installed_postfix
   changed_when: false

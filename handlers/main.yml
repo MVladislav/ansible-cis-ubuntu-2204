@@ -89,6 +89,45 @@
   listen: restart apparmor
   when: ansible_virtualization_type != "docker"
 
+- name: "HANDLER | 2.2.1.1 | systemd restart and enable chrony"
+  become: true
+  ansible.builtin.systemd:
+    name: chrony
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: restarted
+  listen: "restart chrony"
+
+- name: "HANDLER | 2.2.1.1 | systemd restart and enable systemd-timesyncd"
+  become: true
+  ansible.builtin.systemd:
+    name: systemd-timesyncd
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: restarted
+  listen: "restart systemd-timesyncd"
+
+- name: "HANDLER | 2.2.1.1 | systemd restart and enable ntp"
+  become: true
+  ansible.builtin.systemd:
+    name: ntp
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: restarted
+  listen: "restart ntp"
+
+# ------------------------------------------------------------------------------
+
+- name: "HANDLER | EXTRA | systemd restart and enable xinetd"
+  become: true
+  ansible.builtin.systemd:
+    name: "xinetd"
+    state: restarted
+  listen: "restart xinetd"
+
 # ------------------------------------------------------------------------------
 
 - name: "HANDLER | 1.4.1 | generate new grub config"

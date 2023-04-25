@@ -58,12 +58,13 @@
           line: "install squashfs /bin/false"
         - reg: "^(#)?blacklist squashfs$"
           line: "blacklist squashfs"
-    - name: >
-        SECTION1 | 1.1.1.2 | Ensure mounting of 'squashfs' filesystems is disabled | unloading module
-      community.general.modprobe:
-        name: squashfs
-        state: absent
-      when: ansible_virtualization_type != "docker"
+    # TODO: check how can be changed to work
+    # - name: >
+    #     SECTION1 | 1.1.1.2 | Ensure mounting of 'squashfs' filesystems is disabled | unloading module
+    #   community.general.modprobe:
+    #     name: squashfs
+    #     state: absent
+    #   when: ansible_virtualization_type != "docker"
 
 - name: "SECTION1 | 1.1.1.3 | Ensure mounting of 'udf' filesystems is disabled"
   when:
@@ -276,8 +277,8 @@
       when: ansible_virtualization_type != "docker"
 
 # ------------------------------------------------------------------------------
-#TODO: 1.2.1
-#TODO: 1.2.2
+# TODO: 1.2.1
+# TODO: 1.2.2
 # ------------------------------------------------------------------------------
 
 - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | use nullmailer instead of postfix if not installed"
@@ -530,7 +531,7 @@
     - name: >
         SECTION1 | 1.5.3 | Ensure Automatic Error Reporting is not enabled | stop and disable service
       ansible.builtin.service:
-        name: autofs
+        name: apport
         enabled: false
 
 - name: "SECTION1 | 1.5.4 | Ensure core dumps are restricted"
@@ -745,6 +746,37 @@
     - rule_1_8
     - server_l2
 
+- name: "SECTION1 | 1.8.* | create folder /etc/dconf/db/*"
+  when:
+    - service_status_gdm3.stdout == "loaded"
+    - cis_ubuntu2204_allow_gdm_gui
+  tags:
+    - rule_1_8
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION1 | 1.8.* | create folder /etc/dconf/db/gdm.d"
+      ansible.builtin.file:
+        path: /etc/dconf/db/gdm.d
+        state: directory
+        owner: root
+        group: root
+        mode: "1755"
+    - name: "SECTION1 | 1.8.* | create folder /etc/dconf/db/local.d"
+      ansible.builtin.file:
+        path: /etc/dconf/db/local.d
+        state: directory
+        owner: root
+        group: root
+        mode: "1755"
+    - name: "SECTION1 | 1.8.* | create folder /etc/dconf/db/local.d/locks"
+      ansible.builtin.file:
+        path: /etc/dconf/db/local.d/locks
+        state: directory
+        owner: root
+        group: root
+        mode: "1755"
+
 - name: "SECTION1 | 1.8.2 | Ensure GDM login banner is configured"
   when:
     - service_status_gdm3.stdout == "loaded"
@@ -780,7 +812,7 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_1
+    - cis_ubuntu2204_rule_1_8_3
   tags:
     - rule_1_8
     - server_l1
@@ -790,7 +822,7 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_1
+    - cis_ubuntu2204_rule_1_8_4
   tags:
     - rule_1_8
     - server_l1
@@ -821,7 +853,7 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_1
+    - cis_ubuntu2204_rule_1_8_5
   tags:
     - rule_1_8
     - server_l1
@@ -838,7 +870,7 @@
     - not cis_ubuntu2204_allow_autofs
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_1
+    - cis_ubuntu2204_rule_1_8_6
   tags:
     - rule_1_8
     - server_l1
@@ -855,7 +887,7 @@
     - not cis_ubuntu2204_allow_autofs
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_1
+    - cis_ubuntu2204_rule_1_8_7
   tags:
     - rule_1_8
     - server_l1
@@ -871,7 +903,7 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_1
+    - cis_ubuntu2204_rule_1_8_8
   tags:
     - rule_1_8
     - server_l1
@@ -887,7 +919,7 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_1
+    - cis_ubuntu2204_rule_1_8_9
   tags:
     - rule_1_8
     - server_l1
@@ -906,7 +938,7 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_1
+    - cis_ubuntu2204_rule_1_8_10
   tags:
     - rule_1_8
     - server_l1

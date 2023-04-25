@@ -353,110 +353,88 @@ cis_ubuntu2204_2_2_rule_set:
       - xserver-xorg
       - xorg
       - x11*
-    check:
-      - cis_ubuntu2204_rule_2_2_1
-      - not cis_ubuntu2204_allow_gdm_gui
+    check: "{{ cis_ubuntu2204_rule_2_2_1 and not cis_ubuntu2204_allow_gdm_gui }}"
   - title: 2.2.2 | Ensure Avahi Server is not installed
     apt:
       - avahi-daemon
-    check:
-      - cis_ubuntu2204_rule_2_2_2
+    check: "{{ cis_ubuntu2204_rule_2_2_2 }}"
   - title: 2.2.3 | Ensure CUPS is not installed
     apt:
       - cups
-    check:
-      - cis_ubuntu2204_rule_2_2_3
+    check: "{{ cis_ubuntu2204_rule_2_2_3 }}"
   - title: 2.2.4 | Ensure DHCP Server is not installed
     apt:
       - isc-dhcp-server
-    check:
-      - cis_ubuntu2204_rule_2_2_4
+    check: "{{ cis_ubuntu2204_rule_2_2_4 }}"
   - title: 2.2.5 | Ensure LDAP server is not installed
     apt:
       - slapd
-    check:
-      - cis_ubuntu2204_rule_2_2_5
+    check: "{{ cis_ubuntu2204_rule_2_2_5 }}"
   - title: 2.2.6 | Ensure NFS is not installed
     apt:
       - nfs-kernel-server
-    check:
-      - cis_ubuntu2204_rule_2_2_6
+    check: "{{ cis_ubuntu2204_rule_2_2_6 }}"
   - title: 2.2.7 | Ensure DNS Server is not installed
     apt:
       - bind9
-    check:
-      - cis_ubuntu2204_rule_2_2_7
+    check: "{{ cis_ubuntu2204_rule_2_2_7 }}"
   - title: 2.2.8 | Ensure FTP Server is not installed
     apt:
       - vsftpd
-    check:
-      - cis_ubuntu2204_rule_2_2_8
+    check: "{{ cis_ubuntu2204_rule_2_2_8 }}"
   - title: 2.2.9 | Ensure HTTP server is not installed
     apt:
       - apache2
-    check:
-      - cis_ubuntu2204_rule_2_2_9
+    check: "{{ cis_ubuntu2204_rule_2_2_9 }}"
   - title: 2.2.10 | Ensure IMAP and POP3 server are not installed
     apt:
       - dovecot-imapd
       - dovecot-pop3d
-    check:
-      - cis_ubuntu2204_rule_2_2_10
+    check: "{{ cis_ubuntu2204_rule_2_2_10 }}"
   - title: 2.2.11 | Ensure Samba is not installed
     apt:
       - samba
-    check:
-      - cis_ubuntu2204_rule_2_2_11
+    check: "{{ cis_ubuntu2204_rule_2_2_11 }}"
   - title: 2.2.12 | Ensure HTTP Proxy Server is not installed
     apt:
       - squid
-    check:
-      - cis_ubuntu2204_rule_2_2_12
+    check: "{{ cis_ubuntu2204_rule_2_2_12 }}"
   - title: 2.2.13 | Ensure SNMP Server is not installed
     apt:
       - snmp
-    check:
-      - cis_ubuntu2204_rule_2_2_13
+    check: "{{ cis_ubuntu2204_rule_2_2_13 }}"
   - title: 2.2.14 | Ensure NIS Server is not installed
     apt:
       - nis
-    check:
-      - cis_ubuntu2204_rule_2_2_14
+    check: "{{ cis_ubuntu2204_rule_2_2_14 }}"
   - title: Ensure rsync service is either not installed or masked
     apt:
       - rsync
-    check:
-      - cis_ubuntu2204_rule_2_2_16
+    check: "{{ cis_ubuntu2204_rule_2_2_16 }}"
 
 cis_ubuntu2204_2_3_rule_set:
   - title: 2.3.1 | Ensure NIS Client is not installed
     apt:
       - nis
       - yp-tools
-    check:
-      - cis_ubuntu2204_rule_2_3_1
+    check: "{{ cis_ubuntu2204_rule_2_3_1 }}"
   - title: 2.3.2 | Ensure rsh client is not installed
     apt:
       - rsh-client
-    check:
-      - cis_ubuntu2204_rule_2_3_2
+    check: "{{ cis_ubuntu2204_rule_2_3_2 }}"
   - title: 2.3.3 | Ensure talk client is not installed
     apt:
       - talk
-    check:
-      - cis_ubuntu2204_rule_2_3_3
+    check: "{{ cis_ubuntu2204_rule_2_3_3 }}"
   - title: 2.3.4 | Ensure telnet client is not installed
     apt:
       - telnet
-    check:
-      - cis_ubuntu2204_rule_2_3_4
+    check: "{{ cis_ubuntu2204_rule_2_3_4 }}"
   - title: 2.3.5 | Ensure LDAP client is not installed
     apt:
       - ldap-utils
-    check:
-      - cis_ubuntu2204_rule_2_3_5
+    check: "{{ cis_ubuntu2204_rule_2_3_5 }}"
   - title: 2.3.6 | Ensure RPC is not installed
     apt:
       - rpcbind
-    check:
-      - cis_ubuntu2204_rule_2_3_6
+    check: "{{ cis_ubuntu2204_rule_2_3_6 }}"

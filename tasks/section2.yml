@@ -168,6 +168,7 @@
   ansible.builtin.apt:
     name: "{{ item.apt }}"
     state: absent
+    purge: true
   loop: "{{ cis_ubuntu2204_2_2_rule_set | flatten(levels=1) }}"
   when: item.check
   tags:
@@ -195,10 +196,11 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION2 | Service Clients ..."
+- name: "SECTION2 | 2.3.1-6 | Service Clients ..."
   ansible.builtin.apt:
     name: "{{ item.apt }}"
     state: absent
+    purge: true
   loop: "{{ cis_ubuntu2204_2_3_rule_set | flatten(levels=1) }}"
   when: item.check
   tags:

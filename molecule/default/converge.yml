@@ -20,6 +20,7 @@
     cis_ubuntu2204_rule_1_6_1_3: true
     cis_ubuntu2204_rule_1_6_1_4: true
     cis_ubuntu2204_allow_gdm_gui: true
+    cis_ubuntu2204_allow_cups: true
 
     cis_ubuntu2204_install_aide: true
     cis_ubuntu2204_config_aide: true

@@ -89,6 +89,9 @@ cis_ubuntu2204_rule_1_1_10: true
 # config and install AIDE, if not needed set as needed to 'false'
 cis_ubuntu2204_install_aide: true
 cis_ubuntu2204_config_aide: true
+
+# will remove printer service, if need set to 'true'
+cis_ubuntu2204_allow_cups: false
 ```
 
 variables to check for own purpose:

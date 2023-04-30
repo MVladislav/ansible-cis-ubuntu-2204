@@ -86,6 +86,10 @@ cis_ubuntu2204_rule_1_6_1_4: false
 # default here is changed to allow all outgoing traffic,
 # if you need to be cis conform, set to 'deny'
 cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
+
+# active journal upload to remote log collection, set 'true' to be conform
+# do not forget set related variables 'cis_ubuntu2204_set_journal_upload_*'
+cis_ubuntu2204_set_journal_upload: false
 ```
 
 special variable between server and client usage:
@@ -352,73 +356,73 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured (Automated)                                     |  x  |     |     |
 | 3.5.3.3.3 | Ensure ip6tables outbound and established connections are configured (Manual)                   |  x  |     |     |
 | 3.5.3.3.4 | Ensure ip6tables firewall rules exist for all open ports (Automated)                            |  x  |     |     |
-| 4         | **Logging and Auditing**                                                                        |     |     |     |
-| 4.1       | **Configure System Accounting (auditd)**                                                        |     |     |     |
-| 4.1.1     | **Ensure auditing is enabled**                                                                  |     |     |     |
-| 4.1.1.1   | Ensure auditd is installed (Automated)                                                          |     |     |     |
-| 4.1.1.2   | Ensure auditd service is enabled and active (Automated)                                         |     |     |     |
-| 4.1.1.3   | Ensure auditing for processes that start prior to auditd is enabled (Automated)                 |     |     |     |
-| 4.1.1.4   | Ensure audit_backlog_limit is sufficient (Automated)                                            |     |     |     |
-| 4.1.2     | **Configure Data Retention**                                                                    |     |     |     |
-| 4.1.2.1   | Ensure audit log storage size is configured (Automated)                                         |     |     |     |
-| 4.1.2.2   | Ensure audit logs are not automatically deleted (Automated)                                     |     |     |     |
-| 4.1.2.3   | Ensure system is disabled when audit logs are full (Automated)                                  |     |     |     |
-| 4.1.3     | **Configure auditd rules**                                                                      |     |     |     |
-| 4.1.3.1   | Ensure changes to system administration scope (sudoers) is collected (Automated)                |     |     |     |
-| 4.1.3.2   | Ensure actions as another user are always logged (Automated)                                    |     |     |     |
-| 4.1.3.3   | Ensure events that modify the sudo log file are collected (Automated)                           |     |     |     |
-| 4.1.3.4   | Ensure events that modify date and time information are collected (Automated)                   |     |     |     |
-| 4.1.3.5   | Ensure events that modify the system's network environment are collected (Automated)            |     |     |     |
-| 4.1.3.6   | Ensure use of privileged commands are collected (Automated)                                     |     |     |     |
-| 4.1.3.7   | Ensure unsuccessful file access attempts are collected (Automated)                              |     |     |     |
-| 4.1.3.8   | Ensure events that modify user/group information are collected (Automated)                      |     |     |     |
-| 4.1.3.9   | Ensure discretionary access control permission modification events are collected (Automated)    |     |     |     |
-| 4.1.3.10  | Ensure successful file system mounts are collected (Automated)                                  |     |     |     |
-| 4.1.3.11  | Ensure session initiation information is collected (Automated)                                  |     |     |     |
-| 4.1.3.12  | Ensure login and logout events are collected (Automated)                                        |     |     |     |
-| 4.1.3.13  | Ensure file deletion events by users are collected (Automated)                                  |     |     |     |
-| 4.1.3.14  | Ensure events that modify the system's Mandatory Access Controls are collected (Automated)      |     |     |     |
-| 4.1.3.15  | Ensure successful and unsuccessful attempts to use the chcon command are recorded (Automated)   |     |     |     |
-| 4.1.3.16  | Ensure successful and unsuccessful attempts to use the setfacl command are recorded (Automated) |     |     |     |
-| 4.1.3.17  | Ensure successful and unsuccessful attempts to use the chacl command are recorded (Automated)   |     |     |     |
-| 4.1.3.18  | Ensure successful and unsuccessful attempts to use the usermod command are recorded (Automated) |     |     |     |
-| 4.1.3.19  | Ensure kernel module loading unloading and modification is collected (Automated)                |     |     |     |
-| 4.1.3.20  | Ensure the audit configuration is immutable (Automated)                                         |     |     |     |
-| 4.1.3.21  | Ensure the running and on disk configuration is the same (Manual)                               |     |     |     |
-| 4.1.4     | **Configure auditd file access**                                                                |     |     |     |
-| 4.1.4.1   | Ensure audit log files are mode 0640 or less permissive (Automated)                             |     |     |     |
-| 4.1.4.2   | Ensure only authorized users own audit log files (Automated)                                    |     |     |     |
-| 4.1.4.3   | Ensure only authorized groups are assigned ownership of audit log files (Automated)             |     |     |     |
-| 4.1.4.4   | Ensure the audit log directory is 0750 or more restrictive (Automated)                          |     |     |     |
-| 4.1.4.5   | Ensure audit configuration files are 640 or more restrictive (Automated)                        |     |     |     |
-| 4.1.4.6   | Ensure audit configuration files are owned by root (Automated)                                  |     |     |     |
-| 4.1.4.7   | Ensure audit configuration files belong to group root (Automated)                               |     |     |     |
-| 4.1.4.8   | Ensure audit tools are 755 or more restrictive (Automated)                                      |     |     |     |
-| 4.1.4.9   | Ensure audit tools are owned by root (Automated)                                                |     |     |     |
-| 4.1.4.10  | Ensure audit tools belong to group root (Automated)                                             |     |     |     |
-| 4.1.4.11  | Ensure cryptographic mechanisms are used to protect the integrity of audit tools (Automated)    |     |     |     |
-| 4.2       | **Configure Logging**                                                                           |     |     |     |
-| 4.2.1     | **Configure journald**                                                                          |     |     |     |
-| 4.2.1.1   | **Ensure journald is configured to send logs to a remote log host**                             |     |     |     |
-| 4.2.1.1.1 | Ensure systemd-journal-remote is installed (Automated)                                          |     |     |     |
-| 4.2.1.1.2 | Ensure systemd-journal-remote is configured (Manual)                                            |     |     |     |
-| 4.2.1.1.3 | Ensure systemd-journal-remote is enabled (Manual)                                               |     |     |     |
-| 4.2.1.1.4 | Ensure journald is not configured to recieve logs from a remote client (Automated)              |     |     |     |
-| 4.2.1.2   | Ensure journald service is enabled (Automated)                                                  |     |     |     |
-| 4.2.1.3   | Ensure journald is configured to compress large log files (Automated)                           |     |     |     |
-| 4.2.1.4   | Ensure journald is configured to write logfiles to persistent disk (Automated)                  |     |     |     |
-| 4.2.1.5   | Ensure journald is not configured to send logs to rsyslog (Manual)                              |     |     |     |
-| 4.2.1.6   | Ensure journald log rotation is configured per site policy (Manual)                             |     |     |     |
-| 4.2.1.7   | Ensure journald default file permissions configured (Manual)                                    |     |     |     |
-| 4.2.2     | **Configure rsyslog**                                                                           |     |     |     |
-| 4.2.2.1   | Ensure rsyslog is installed (Automated)                                                         |     |     |     |
-| 4.2.2.2   | Ensure rsyslog service is enabled (Automated)                                                   |     |     |     |
-| 4.2.2.3   | Ensure journald is configured to send logs to rsyslog (Manual)                                  |     |     |     |
-| 4.2.2.4   | Ensure rsyslog default file permissions are configured (Automated)                              |     |     |     |
-| 4.2.2.5   | Ensure logging is configured (Manual)                                                           |     |     |     |
-| 4.2.2.6   | Ensure rsyslog is configured to send logs to a remote log host (Manual)                         |     |     |     |
-| 4.2.2.7   | Ensure rsyslog is not configured to receive logs from a remote client (Automated)               |     |     |     |
-| 4.2.3     | Ensure all logfiles have appropriate permissions and ownership (Automated)                      |     |     |     |
+| 4         | **Logging and Auditing**                                                                        |     |  x  |     |
+| 4.1       | **Configure System Accounting (auditd)**                                                        |     |  x  |     |
+| 4.1.1     | **Ensure auditing is enabled**                                                                  |  x  |     |     |
+| 4.1.1.1   | Ensure auditd is installed (Automated)                                                          |  x  |     |     |
+| 4.1.1.2   | Ensure auditd service is enabled and active (Automated)                                         |  x  |     |     |
+| 4.1.1.3   | Ensure auditing for processes that start prior to auditd is enabled (Automated)                 |  x  |     |     |
+| 4.1.1.4   | Ensure audit_backlog_limit is sufficient (Automated)                                            |  x  |     |     |
+| 4.1.2     | **Configure Data Retention**                                                                    |  x  |     |     |
+| 4.1.2.1   | Ensure audit log storage size is configured (Automated)                                         |  x  |     |     |
+| 4.1.2.2   | Ensure audit logs are not automatically deleted (Automated)                                     |  x  |     |     |
+| 4.1.2.3   | Ensure system is disabled when audit logs are full (Automated)                                  |  x  |     |     |
+| 4.1.3     | **Configure auditd rules**                                                                      |     |  x  |     |
+| 4.1.3.1   | Ensure changes to system administration scope (sudoers) is collected (Automated)                |  x  |     |     |
+| 4.1.3.2   | Ensure actions as another user are always logged (Automated)                                    |  x  |     |     |
+| 4.1.3.3   | Ensure events that modify the sudo log file are collected (Automated)                           |  x  |     |     |
+| 4.1.3.4   | Ensure events that modify date and time information are collected (Automated)                   |  x  |     |     |
+| 4.1.3.5   | Ensure events that modify the system's network environment are collected (Automated)            |  x  |     |     |
+| 4.1.3.6   | Ensure use of privileged commands are collected (Automated)                                     |     |  x  |     |
+| 4.1.3.7   | Ensure unsuccessful file access attempts are collected (Automated)                              |  x  |     |     |
+| 4.1.3.8   | Ensure events that modify user/group information are collected (Automated)                      |  x  |     |     |
+| 4.1.3.9   | Ensure discretionary access control permission modification events are collected (Automated)    |  x  |     |     |
+| 4.1.3.10  | Ensure successful file system mounts are collected (Automated)                                  |  x  |     |     |
+| 4.1.3.11  | Ensure session initiation information is collected (Automated)                                  |  x  |     |     |
+| 4.1.3.12  | Ensure login and logout events are collected (Automated)                                        |  x  |     |     |
+| 4.1.3.13  | Ensure file deletion events by users are collected (Automated)                                  |  x  |     |     |
+| 4.1.3.14  | Ensure events that modify the system's Mandatory Access Controls are collected (Automated)      |  x  |     |     |
+| 4.1.3.15  | Ensure successful and unsuccessful attempts to use the chcon command are recorded (Automated)   |  x  |     |     |
+| 4.1.3.16  | Ensure successful and unsuccessful attempts to use the setfacl command are recorded (Automated) |  x  |     |     |
+| 4.1.3.17  | Ensure successful and unsuccessful attempts to use the chacl command are recorded (Automated)   |  x  |     |     |
+| 4.1.3.18  | Ensure successful and unsuccessful attempts to use the usermod command are recorded (Automated) |  x  |     |     |
+| 4.1.3.19  | Ensure kernel module loading unloading and modification is collected (Automated)                |  x  |     |     |
+| 4.1.3.20  | Ensure the audit configuration is immutable (Automated)                                         |  x  |     |     |
+| 4.1.3.21  | Ensure the running and on disk configuration is the same (Manual)                               |     |     |  x  |
+| 4.1.4     | **Configure auditd file access**                                                                |     |  x  |     |
+| 4.1.4.1   | Ensure audit log files are mode 0640 or less permissive (Automated)                             |     |  x  |     |
+| 4.1.4.2   | Ensure only authorized users own audit log files (Automated)                                    |     |  x  |     |
+| 4.1.4.3   | Ensure only authorized groups are assigned ownership of audit log files (Automated)             |     |  x  |     |
+| 4.1.4.4   | Ensure the audit log directory is 0750 or more restrictive (Automated)                          |  x  |     |     |
+| 4.1.4.5   | Ensure audit configuration files are 640 or more restrictive (Automated)                        |  x  |     |     |
+| 4.1.4.6   | Ensure audit configuration files are owned by root (Automated)                                  |  x  |     |     |
+| 4.1.4.7   | Ensure audit configuration files belong to group root (Automated)                               |  x  |     |     |
+| 4.1.4.8   | Ensure audit tools are 755 or more restrictive (Automated)                                      |  x  |     |     |
+| 4.1.4.9   | Ensure audit tools are owned by root (Automated)                                                |  x  |     |     |
+| 4.1.4.10  | Ensure audit tools belong to group root (Automated)                                             |  x  |     |     |
+| 4.1.4.11  | Ensure cryptographic mechanisms are used to protect the integrity of audit tools (Automated)    |  x  |     |     |
+| 4.2       | **Configure Logging**                                                                           |     |  x  |     |
+| 4.2.1     | **Configure journald**                                                                          |     |  x  |     |
+| 4.2.1.1   | **Ensure journald is configured to send logs to a remote log host**                             |     |  x  |     |
+| 4.2.1.1.1 | Ensure systemd-journal-remote is installed (Automated)                                          |     |  x  |     |
+| 4.2.1.1.2 | Ensure systemd-journal-remote is configured (Manual)                                            |     |  x  |     |
+| 4.2.1.1.3 | Ensure systemd-journal-remote is enabled (Manual)                                               |  x  |     |     |
+| 4.2.1.1.4 | Ensure journald is not configured to recieve logs from a remote client (Automated)              |  x  |     |     |
+| 4.2.1.2   | Ensure journald service is enabled (Automated)                                                  |     |     |  x  |
+| 4.2.1.3   | Ensure journald is configured to compress large log files (Automated)                           |  x  |     |     |
+| 4.2.1.4   | Ensure journald is configured to write logfiles to persistent disk (Automated)                  |  x  |     |     |
+| 4.2.1.5   | Ensure journald is not configured to send logs to rsyslog (Manual)                              |  x  |     |     |
+| 4.2.1.6   | Ensure journald log rotation is configured per site policy (Manual)                             |     |     |  x  |
+| 4.2.1.7   | Ensure journald default file permissions configured (Manual)                                    |     |     |  x  |
+| 4.2.2     | **Configure rsyslog**                                                                           |     |  x  |     |
+| 4.2.2.1   | Ensure rsyslog is installed (Automated)                                                         |  x  |     |     |
+| 4.2.2.2   | Ensure rsyslog service is enabled (Automated)                                                   |  x  |     |     |
+| 4.2.2.3   | Ensure journald is configured to send logs to rsyslog (Manual)                                  |  x  |     |     |
+| 4.2.2.4   | Ensure rsyslog default file permissions are configured (Automated)                              |  x  |     |     |
+| 4.2.2.5   | Ensure logging is configured (Manual)                                                           |     |     |  x  |
+| 4.2.2.6   | Ensure rsyslog is configured to send logs to a remote log host (Manual)                         |     |     |  x  |
+| 4.2.2.7   | Ensure rsyslog is not configured to receive logs from a remote client (Automated)               |  x  |     |     |
+| 4.2.3     | Ensure all logfiles have appropriate permissions and ownership (Automated)                      |     |     |  x  |
 | 5         | **Access, Authentication and Authorization**                                                    |     |     |     |
 | 5.1       | **Configure time-based job schedulers**                                                         |     |     |     |
 | 5.1.1     | Ensure cron daemon is enabled and running (Automated)                                           |     |     |     |

@@ -8,7 +8,7 @@
 cis_ubuntu2204_section1: true
 cis_ubuntu2204_section2: true
 cis_ubuntu2204_section3: true
-cis_ubuntu2204_section4: false
+cis_ubuntu2204_section4: true
 cis_ubuntu2204_section5: false
 cis_ubuntu2204_section6: false
 
@@ -201,7 +201,7 @@ cis_ubuntu2204_rule_4_1_4_7: true
 cis_ubuntu2204_rule_4_1_4_8: true
 cis_ubuntu2204_rule_4_1_4_9: true
 cis_ubuntu2204_rule_4_1_4_10: true
-cis_ubuntu2204_rule_4_1_4_11: true
+cis_ubuntu2204_rule_4_1_4_11: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
 cis_ubuntu2204_rule_4_2_1_1_1: true
 cis_ubuntu2204_rule_4_2_1_1_2: true
 cis_ubuntu2204_rule_4_2_1_1_3: true
@@ -323,6 +323,8 @@ cis_ubuntu2204_allow_gdm_gui: false
 cis_ubuntu2204_allow_cups: false
 # ipv6 is required (cis_ubuntu2204_rule_3_1_1)
 cis_ubuntu2204_required_ipv6: false
+# cis_ubuntu2204_journal_upload_url (cis_ubuntu2204_rule_4_2_1_1_1-4)
+cis_ubuntu2204_set_journal_upload: false
 
 # ------------------------------------------------------------------------------
 
@@ -359,6 +361,31 @@ cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
 cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
 # defined nftable table name (cis_ubuntu2204_rule_3_5_2_4)
 cis_ubuntu2204_firewall_nftables_table_name: filter
+# audit backlog limit (cis_ubuntu2204_rule_4_1_1_4)
+cis_ubuntu2204_audit_backlog_limit: 8192
+# audit conf's
+cis_ubuntu2204_audit_max_log_file: 10
+cis_ubuntu2204_audit_max_log_file_action: keep_logs
+cis_ubuntu2204_audit_space_left_action: email
+cis_ubuntu2204_audit_action_mail_acct: root
+cis_ubuntu2204_audit_admin_space_left_action: halt # halt | single
+# sudo log file location (cis_4_1_3_3.rules.j2)
+cis_ubuntu2204_audit_sudo_log_file: /var/log/sudo.log
+# (cis_4_1_3_6.rules.j2|cis_4_1_3_7.rules.j2|cis_4_1_3_9.rules.j2|cis_4_1_3_10.rules.j2|cis_4_1_3_13.rules.j2)
+# (cis_4_1_3_15.rules.j2|cis_4_1_3_16.rules.j2|cis_4_1_3_17.rules.j2|cis_4_1_3_18.rules.j2|cis_4_1_3_19.rules.j2)
+cis_ubuntu2204_audit_uid_min: 1000
+cis_ubuntu2204_audit_log_path: /var/log/audit
+cis_ubuntu2204_audit_log_group: adm
+# systemd-journal-upload remote upload (4.2.1.1.*)
+cis_ubuntu2204_set_journal_upload_url: 192.168.50.42
+# TODO: set and un-commit in task (cis_ubuntu2204_rule_4_2_1_6)
+cis_ubuntu2204_set_journal_system_max_use:
+cis_ubuntu2204_set_journal_system_keep_free:
+cis_ubuntu2204_set_journal_runtime_max_use:
+cis_ubuntu2204_set_journal_runtime_keep_free:
+cis_ubuntu2204_set_journal_max_file_sec:
+# syslog to be used, default only current 'rsyslog' only available (cis_ubuntu2204_rule_4_2_2_*)
+cis_ubuntu2204_syslog: rsyslog
 
 # ------------------------------------------------------------------------------
 

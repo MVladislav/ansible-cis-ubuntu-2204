@@ -1,0 +1,2 @@
+-a always,exit -F arch=b64 -S rename,unlink,unlinkat,renameat -F auid>={{ cis_ubuntu2204_audit_uid_min }} -F auid!=unset -F key=delete
+-a always,exit -F arch=b32 -S rename,unlink,unlinkat,renameat -F auid>={{ cis_ubuntu2204_audit_uid_min }} -F auid!=unset -F key=delete

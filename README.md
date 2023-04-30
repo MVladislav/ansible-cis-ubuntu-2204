@@ -92,6 +92,9 @@ cis_ubuntu2204_config_aide: true
 
 # will remove printer service, if need set to 'true'
 cis_ubuntu2204_allow_cups: false
+
+# will disable ipv6 complete, if needed set to 'true'
+cis_ubuntu2204_required_ipv6: false
 ```
 
 variables to check for own purpose:
@@ -112,6 +115,9 @@ cis_ubuntu2204_aide_cron:
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
 cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com
 cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
+
+# choose firewall (cis_ubuntu2204_rule_3_5_1_1)
+cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
 ```
 
 variables to check if service is needed:
@@ -274,63 +280,63 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 2.3.5     | Ensure LDAP client is not installed (Automated)                                                 |  x  |     |     |
 | 2.3.6     | Ensure RPC is not installed (Automated)                                                         |  x  |     |     |
 | 2.4       | Ensure nonessential services are removed or masked (Manual)                                     |  x  |     |     |
-| 3         | **Network Configuration**                                                                       |     |     |     |
-| 3.1       | **Disable unused network protocols and devices**                                                |     |     |     |
-| 3.1.1     | Ensure system is checked to determine if IPv6 is enabled (Manual)                               |     |     |     |
-| 3.1.2     | Ensure wireless interfaces are disabled (Automated)                                             |     |     |     |
-| 3.2       | **Network Parameters (Host Only)**                                                              |     |     |     |
-| 3.2.1     | Ensure packet redirect sending is disabled (Automated)                                          |     |     |     |
-| 3.2.2     | Ensure IP forwarding is disabled (Automated)                                                    |     |     |     |
-| 3.3       | **Network Parameters (Host and Router)**                                                        |     |     |     |
-| 3.3.1     | Ensure source routed packets are not accepted (Automated)                                       |     |     |     |
-| 3.3.2     | Ensure ICMP redirects are not accepted (Automated)                                              |     |     |     |
-| 3.3.3     | Ensure secure ICMP redirects are not accepted (Automated)                                       |     |     |     |
-| 3.3.4     | Ensure suspicious packets are logged (Automated)                                                |     |     |     |
-| 3.3.5     | Ensure broadcast ICMP requests are ignored (Automated)                                          |     |     |     |
-| 3.3.6     | Ensure bogus ICMP responses are ignored (Automated)                                             |     |     |     |
-| 3.3.7     | Ensure Reverse Path Filtering is enabled (Automated)                                            |     |     |     |
-| 3.3.8     | Ensure TCP SYN Cookies is enabled (Automated)                                                   |     |     |     |
-| 3.3.9     | Ensure IPv6 router advertisements are not accepted (Automated)                                  |     |     |     |
-| 3.4       | **Uncommon Network Protocols**                                                                  |     |     |     |
-| 3.4.1     | Ensure DCCP is disabled (Automated)                                                             |     |     |     |
-| 3.4.2     | Ensure SCTP is disabled (Automated)                                                             |     |     |     |
-| 3.4.3     | Ensure RDS is disabled (Automated)                                                              |     |     |     |
-| 3.4.4     | Ensure TIPC is disabled (Automated)                                                             |     |     |     |
-| 3.5       | **Firewall Configuration**                                                                      |     |     |     |
-| 3.5.1     | **Configure UncomplicatedFirewall**                                                             |     |     |     |
-| 3.5.1.1   | Ensure ufw is installed (Automated)                                                             |     |     |     |
-| 3.5.1.2   | Ensure iptables-persistent is not installed with ufw (Automated)                                |     |     |     |
-| 3.5.1.3   | Ensure ufw service is enabled (Automated)                                                       |     |     |     |
-| 3.5.1.4   | Ensure ufw loopback traffic is configured (Automated)                                           |     |     |     |
-| 3.5.1.5   | Ensure ufw outbound connections are configured (Manual)                                         |     |     |     |
-| 3.5.1.6   | Ensure ufw firewall rules exist for all open ports (Automated)                                  |     |     |     |
-| 3.5.1.7   | Ensure ufw default deny firewall policy (Automated)                                             |     |     |     |
-| 3.5.2     | **Configure nftables**                                                                          |     |     |     |
-| 3.5.2.1   | Ensure nftables is installed (Automated)                                                        |     |     |     |
-| 3.5.2.2   | Ensure ufw is uninstalled or disabled with nftables (Automated)                                 |     |     |     |
-| 3.5.2.3   | Ensure iptables are flushed with nftables (Manual)                                              |     |     |     |
-| 3.5.2.4   | Ensure a nftables table exists (Automated)                                                      |     |     |     |
-| 3.5.2.5   | Ensure nftables base chains exist (Automated)                                                   |     |     |     |
-| 3.5.2.6   | Ensure nftables loopback traffic is configured (Automated)                                      |     |     |     |
-| 3.5.2.7   | Ensure nftables outbound and established connections are configured (Manual)                    |     |     |     |
-| 3.5.2.8   | Ensure nftables default deny firewall policy (Automated)                                        |     |     |     |
-| 3.5.2.9   | Ensure nftables service is enabled (Automated)                                                  |     |     |     |
-| 3.5.2.10  | Ensure nftables rules are permanent (Automated)                                                 |     |     |     |
-| 3.5.3     | **Configure iptables**                                                                          |     |     |     |
-| 3.5.3.1   | **Configure iptables software**                                                                 |     |     |     |
-| 3.5.3.1.1 | Ensure iptables packages are installed (Automated)                                              |     |     |     |
-| 3.5.3.1.2 | Ensure nftables is not installed with iptables (Automated)                                      |     |     |     |
-| 3.5.3.1.3 | Ensure ufw is uninstalled or disabled with iptables (Automated)                                 |     |     |     |
-| 3.5.3.2   | **Configure IPv4 iptables**                                                                     |     |     |     |
-| 3.5.3.2.1 | Ensure iptables default deny firewall policy (Automated)                                        |     |     |     |
-| 3.5.3.2.2 | Ensure iptables loopback traffic is configured (Automated)                                      |     |     |     |
-| 3.5.3.2.3 | Ensure iptables outbound and established connections are configured (Manual)                    |     |     |     |
-| 3.5.3.2.4 | Ensure iptables firewall rules exist for all open ports (Automated)                             |     |     |     |
-| 3.5.3.3   | **Configure IPv6 ip6tables**                                                                    |     |     |     |
-| 3.5.3.3.1 | Ensure ip6tables default deny firewall policy (Automated)                                       |     |     |     |
-| 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured (Automated)                                     |     |     |     |
-| 3.5.3.3.3 | Ensure ip6tables outbound and established connections are configured (Manual)                   |     |     |     |
-| 3.5.3.3.4 | Ensure ip6tables firewall rules exist for all open ports (Automated)                            |     |     |     |
+| 3         | **Network Configuration**                                                                       |     |  x  |     |
+| 3.1       | **Disable unused network protocols and devices**                                                |     |  x  |     |
+| 3.1.1     | Ensure system is checked to determine if IPv6 is enabled (Manual)                               |  x  |     |     |
+| 3.1.2     | Ensure wireless interfaces are disabled (Automated)                                             |     |     |  x  |
+| 3.2       | **Network Parameters (Host Only)**                                                              |  x  |     |     |
+| 3.2.1     | Ensure packet redirect sending is disabled (Automated)                                          |  x  |     |     |
+| 3.2.2     | Ensure IP forwarding is disabled (Automated)                                                    |  x  |     |     |
+| 3.3       | **Network Parameters (Host and Router)**                                                        |  x  |     |     |
+| 3.3.1     | Ensure source routed packets are not accepted (Automated)                                       |  x  |     |     |
+| 3.3.2     | Ensure ICMP redirects are not accepted (Automated)                                              |  x  |     |     |
+| 3.3.3     | Ensure secure ICMP redirects are not accepted (Automated)                                       |  x  |     |     |
+| 3.3.4     | Ensure suspicious packets are logged (Automated)                                                |  x  |     |     |
+| 3.3.5     | Ensure broadcast ICMP requests are ignored (Automated)                                          |  x  |     |     |
+| 3.3.6     | Ensure bogus ICMP responses are ignored (Automated)                                             |  x  |     |     |
+| 3.3.7     | Ensure Reverse Path Filtering is enabled (Automated)                                            |  x  |     |     |
+| 3.3.8     | Ensure TCP SYN Cookies is enabled (Automated)                                                   |  x  |     |     |
+| 3.3.9     | Ensure IPv6 router advertisements are not accepted (Automated)                                  |  x  |     |     |
+| 3.4       | **Uncommon Network Protocols**                                                                  |  x  |     |     |
+| 3.4.1     | Ensure DCCP is disabled (Automated)                                                             |  x  |     |     |
+| 3.4.2     | Ensure SCTP is disabled (Automated)                                                             |  x  |     |     |
+| 3.4.3     | Ensure RDS is disabled (Automated)                                                              |  x  |     |     |
+| 3.4.4     | Ensure TIPC is disabled (Automated)                                                             |  x  |     |     |
+| 3.5       | **Firewall Configuration**                                                                      |  x  |     |     |
+| 3.5.1     | **Configure UncomplicatedFirewall**                                                             |  x  |     |     |
+| 3.5.1.1   | Ensure ufw is installed (Automated)                                                             |  x  |     |     |
+| 3.5.1.2   | Ensure iptables-persistent is not installed with ufw (Automated)                                |  x  |     |     |
+| 3.5.1.3   | Ensure ufw service is enabled (Automated)                                                       |  x  |     |     |
+| 3.5.1.4   | Ensure ufw loopback traffic is configured (Automated)                                           |  x  |     |     |
+| 3.5.1.5   | Ensure ufw outbound connections are configured (Manual)                                         |  x  |     |     |
+| 3.5.1.6   | Ensure ufw firewall rules exist for all open ports (Automated)                                  |  x  |     |     |
+| 3.5.1.7   | Ensure ufw default deny firewall policy (Automated)                                             |  x  |     |     |
+| 3.5.2     | **Configure nftables**                                                                          |  x  |     |     |
+| 3.5.2.1   | Ensure nftables is installed (Automated)                                                        |  x  |     |     |
+| 3.5.2.2   | Ensure ufw is uninstalled or disabled with nftables (Automated)                                 |  x  |     |     |
+| 3.5.2.3   | Ensure iptables are flushed with nftables (Manual)                                              |  x  |     |     |
+| 3.5.2.4   | Ensure a nftables table exists (Automated)                                                      |  x  |     |     |
+| 3.5.2.5   | Ensure nftables base chains exist (Automated)                                                   |  x  |     |     |
+| 3.5.2.6   | Ensure nftables loopback traffic is configured (Automated)                                      |  x  |     |     |
+| 3.5.2.7   | Ensure nftables outbound and established connections are configured (Manual)                    |  x  |     |     |
+| 3.5.2.8   | Ensure nftables default deny firewall policy (Automated)                                        |  x  |     |     |
+| 3.5.2.9   | Ensure nftables service is enabled (Automated)                                                  |  x  |     |     |
+| 3.5.2.10  | Ensure nftables rules are permanent (Automated)                                                 |  x  |     |     |
+| 3.5.3     | **Configure iptables**                                                                          |  x  |     |     |
+| 3.5.3.1   | **Configure iptables software**                                                                 |  x  |     |     |
+| 3.5.3.1.1 | Ensure iptables packages are installed (Automated)                                              |  x  |     |     |
+| 3.5.3.1.2 | Ensure nftables is not installed with iptables (Automated)                                      |  x  |     |     |
+| 3.5.3.1.3 | Ensure ufw is uninstalled or disabled with iptables (Automated)                                 |  x  |     |     |
+| 3.5.3.2   | **Configure IPv4 iptables**                                                                     |  x  |     |     |
+| 3.5.3.2.1 | Ensure iptables default deny firewall policy (Automated)                                        |  x  |     |     |
+| 3.5.3.2.2 | Ensure iptables loopback traffic is configured (Automated)                                      |  x  |     |     |
+| 3.5.3.2.3 | Ensure iptables outbound and established connections are configured (Manual)                    |  x  |     |     |
+| 3.5.3.2.4 | Ensure iptables firewall rules exist for all open ports (Automated)                             |  x  |     |     |
+| 3.5.3.3   | **Configure IPv6 ip6tables**                                                                    |  x  |     |     |
+| 3.5.3.3.1 | Ensure ip6tables default deny firewall policy (Automated)                                       |  x  |     |     |
+| 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured (Automated)                                     |  x  |     |     |
+| 3.5.3.3.3 | Ensure ip6tables outbound and established connections are configured (Manual)                   |  x  |     |     |
+| 3.5.3.3.4 | Ensure ip6tables firewall rules exist for all open ports (Automated)                            |  x  |     |     |
 | 4         | **Logging and Auditing**                                                                        |     |     |     |
 | 4.1       | **Configure System Accounting (auditd)**                                                        |     |     |     |
 | 4.1.1     | **Ensure auditing is enabled**                                                                  |     |     |     |

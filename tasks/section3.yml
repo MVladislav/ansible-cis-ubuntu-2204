@@ -2,3 +2,912 @@
 # tasks file for ansible-cis-ubuntu-2204
 
 # ------------------------------------------------------------------------------
+
+- name: "SECTION3 | 3.1.1 | Ensure system is checked to determine if IPv6 is enabled"
+  when:
+    - cis_ubuntu2204_rule_3_1_1
+    - not cis_ubuntu2204_required_ipv6
+  tags:
+    - rule_3_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.1.1 | Ensure system is checked to determine if IPv6 is enabled | sysctl"
+      ansible.posix.sysctl:
+        name: "{{ item }}"
+        value: "1"
+        sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+        sysctl_set: true
+        state: present
+        reload: true
+        ignoreerrors: true
+      with_items:
+        - net.ipv6.conf.all.disable_ipv6
+        - net.ipv6.conf.default.disable_ipv6
+        # - net.ipv6.conf.lo.disable_ipv6
+    - name: "SECTION3 | 3.1.1 | Ensure system is checked to determine if IPv6 is enabled | grub add"
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: '^(GRUB_CMDLINE_LINUX=(?!.*ipv6.disable)\"[^\"]*)(\".*)'
+        replace: '\1 ipv6.disable=1\2'
+    - name: "SECTION3 | 3.1.1 | Ensure system is checked to determine if IPv6 is enabled | grub replace"
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: "ipv6.disable=0"
+        replace: "ipv6.disable=1"
+
+# TODO:
+# if [ -n "$(find /sys/class/net/*/ -type d -name wireless)" ]; then
+#   mname=$(for driverdir in $(find /sys/class/net/*/ -type d -name wireless | xargs -0 dirname); do basename "$(readlink -f"$driverdir"/device/driver/module)"; done | sort -u)
+#   for dm in $mname; do
+#     echo "install $dm /bin/true" >>/etc/modprobe.d/disable_wireless.conf
+#   done
+# fi
+# # command -v nmcli >/dev/null
+# nmcli radio all off
+#
+# - name: "SECTION3 | 3.1.2 | Ensure wireless interfaces are disabled"
+#   when:
+#     - cis_ubuntu2204_rule_3_1_2
+#   tags:
+#     - rule_3_1
+#     - server_l1
+#     - workstation_l2
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION3 | 3.2.1 | Ensure packet redirect sending is disabled"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "0"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.conf.all.send_redirects
+    - net.ipv4.conf.default.send_redirects
+  when:
+    - cis_ubuntu2204_rule_3_2_1
+  tags:
+    - rule_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.2.2 | Ensure IP forwarding is disabled"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "0"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.ip_forward
+    - net.ipv6.conf.all.forwarding
+  when:
+    - cis_ubuntu2204_rule_3_2_2
+  tags:
+    - rule_3_2
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION3 | 3.3.1 | Ensure source routed packets are not accepted"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "0"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.conf.all.accept_source_route
+    - net.ipv4.conf.default.accept_source_route
+    - net.ipv6.conf.all.accept_source_route
+    - net.ipv6.conf.default.accept_source_route
+  when:
+    - cis_ubuntu2204_rule_3_3_1
+  tags:
+    - rule_3_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.3.2 | Ensure ICMP redirects are not accepted"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "0"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.conf.all.accept_redirects
+    - net.ipv4.conf.default.accept_redirects
+    - net.ipv6.conf.all.accept_redirects
+    - net.ipv6.conf.default.accept_redirects
+  when:
+    - cis_ubuntu2204_rule_3_3_2
+  tags:
+    - rule_3_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.3.3 | Ensure secure ICMP redirects are not accepted"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "0"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.conf.default.secure_redirects
+    - net.ipv4.conf.all.secure_redirects
+  when:
+    - cis_ubuntu2204_rule_3_3_3
+  tags:
+    - rule_3_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.3.4 | Ensure suspicious packets are logged"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "0"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.conf.all.log_martians
+    - net.ipv4.conf.default.log_martians
+  when:
+    - cis_ubuntu2204_rule_3_3_4
+  tags:
+    - rule_3_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.3.5 | Ensure broadcast ICMP requests are ignored"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.icmp_echo_ignore_broadcasts
+  when:
+    - cis_ubuntu2204_rule_3_3_5
+  tags:
+    - rule_3_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.3.6 | Ensure bogus ICMP responses are ignored"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.icmp_ignore_bogus_error_responses
+  when:
+    - cis_ubuntu2204_rule_3_3_6
+  tags:
+    - rule_3_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.3.7 | Ensure Reverse Path Filtering is enabled"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.conf.all.rp_filter
+    - net.ipv4.conf.default.rp_filter
+  when:
+    - cis_ubuntu2204_rule_3_3_7
+  tags:
+    - rule_3_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.3.8 | Ensure TCP SYN Cookies is enabled"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv4.tcp_syncookies
+  when:
+    - cis_ubuntu2204_rule_3_3_8
+  tags:
+    - rule_3_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.3.9 | Ensure IPv6 router advertisements are not accepted"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "0"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
+  with_items:
+    - net.ipv6.conf.all.accept_ra
+    - net.ipv6.conf.default.accept_ra
+  when:
+    - cis_ubuntu2204_rule_3_3_9
+  tags:
+    - rule_3_3
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION3 | 3.4.1 | Ensure DCCP is disabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/modprobe.d/cis.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - reg: '^(#)?install dccp(\s|$)'
+      line: "install dccp /bin/false"
+    - reg: "^(#)?blacklist dccp$"
+      line: "blacklist dccp"
+  when:
+    - cis_ubuntu2204_rule_3_4_1
+  tags:
+    - rule_3_4
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION3 | 3.4.2 | Ensure SCTP is disabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/modprobe.d/cis.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - reg: '^(#)?install sctp(\s|$)'
+      line: "install sctp /bin/false"
+    - reg: "^(#)?blacklist sctp$"
+      line: "blacklist sctp"
+  when:
+    - cis_ubuntu2204_rule_3_4_2
+  tags:
+    - rule_3_4
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION3 | 3.4.3 | Ensure RDS is disabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/modprobe.d/cis.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - reg: '^(#)?install rds(\s|$)'
+      line: "install rds /bin/false"
+    - reg: "^(#)?blacklist rds$"
+      line: "blacklist rds"
+  when:
+    - cis_ubuntu2204_rule_3_4_3
+  tags:
+    - rule_3_4
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION3 | 3.4.4 | Ensure TIPC is disabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/modprobe.d/cis.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - reg: '^(#)?install tipc(\s|$)'
+      line: "install tipc /bin/false"
+    - reg: "^(#)?blacklist tipc$"
+      line: "blacklist tipc"
+  when:
+    - cis_ubuntu2204_rule_3_4_4
+  tags:
+    - rule_3_4
+    - server_l2
+    - workstation_l2
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION3 | 3.5.1.1 | Ensure ufw is installed"
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    install_recommends: false
+  when:
+    - cis_ubuntu2204_rule_3_5_1_1
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_3_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.1.2 | Ensure iptables-persistent is not installed with ufw"
+  ansible.builtin.apt:
+    name: iptables-persistent
+    state: absent
+    purge: true
+  when:
+    - cis_ubuntu2204_rule_3_5_1_2
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_3_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.1.3 | Ensure ufw service is enabled"
+  when:
+    - cis_ubuntu2204_rule_3_5_1_3
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_3_5_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.1.3 | Ensure ufw service is enabled | allow ssh"
+      community.general.ufw:
+        rule: allow
+        direction: in
+        from_ip: any
+        to_ip: any
+        to_port: 22
+        protocol: tcp
+        interface: "{{ ansible_default_ipv4['interface'] }}"
+        log: true
+        comment: "allow incoming connection on standard ssh port"
+    - name: "SECTION3 | 3.5.1.3 | Ensure ufw service is enabled | enable"
+      ansible.builtin.service:
+        name: ufw
+        state: started
+        daemon_reload: true
+        enabled: true
+
+- name: "SECTION3 | 3.5.1.4 | Ensure ufw loopback traffic is configured"
+  when:
+    - cis_ubuntu2204_rule_3_5_1_4
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_3_5_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.1.4 | Ensure ufw loopback traffic is configured | ingress allow in on lo"
+      community.general.ufw:
+        rule: allow
+        direction: in
+        interface: lo
+    - name: "SECTION3 | 3.5.1.4 | Ensure ufw loopback traffic is configured | egress allow out on lo"
+      community.general.ufw:
+        rule: allow
+        direction: out
+        interface: lo
+    - name: "SECTION3 | 3.5.1.4 | Ensure ufw loopback traffic is configured | ingress deny in from 127.0.0.0/8"
+      community.general.ufw:
+        rule: deny
+        direction: in
+        from: "127.0.0.0/8"
+    - name: "SECTION3 | 3.5.1.4 | Ensure ufw loopback traffic is configured | ingress deny in from ::1"
+      community.general.ufw:
+        rule: deny
+        direction: in
+        from: "::1"
+
+- name: "SECTION3 | 3.5.1.5 | Ensure ufw outbound connections are configured"
+  community.general.ufw:
+    rule: allow
+    direction: out
+    interface: all
+  when:
+    - cis_ubuntu2204_rule_3_5_1_5
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_3_5_1
+    - server_l1
+    - workstation_l1
+
+# TODO: check if needed and how to configure best way
+# NOTE: also defined out allow, because '3.5.1.7' will defined with out deny
+- name: "SECTION3 | 3.5.1.6 | Ensure ufw firewall rules exist for all open ports"
+  community.general.ufw:
+    rule: allow
+    direction: "{{ item.direction }}"
+    port: "{{ item.port }}"
+    protocol: "{{ item.protocol }}"
+    log: true
+    comment: "{{ item.comment }}"
+  with_items:
+    - direction: out
+      port: 80
+      protocol: any
+      comment: "allow http out"
+    - direction: out
+      port: 443
+      protocol: any
+      comment: "allow https out"
+    - direction: out
+      port: 53
+      protocol: any
+      comment: "allow dns out"
+  when:
+    - cis_ubuntu2204_rule_3_5_1_6
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_3_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.1.7 | Ensure ufw default deny firewall policy"
+  community.general.ufw:
+    rule: "{{ item.rule }}"
+    direction: "{{ item.direction }}"
+  with_items:
+    - rule: deny
+      direction: in
+    - rule: deny
+      direction: out
+    - rule: deny
+      direction: routed
+  when:
+    - cis_ubuntu2204_rule_3_5_1_7
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_3_5_1
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION3 | 3.5.2.1 | Ensure nftables is installed"
+  ansible.builtin.apt:
+    name: nftables
+    state: present
+    install_recommends: false
+  when:
+    - cis_ubuntu2204_rule_3_5_2_1
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.2.2 | Ensure ufw is uninstalled or disabled with nftables"
+  ansible.builtin.apt:
+    name: ufw
+    state: absent
+    purge: true
+  when:
+    - cis_ubuntu2204_rule_3_5_2_2
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.2.3 | Ensure iptables are flushed with nftables"
+  when:
+    - cis_ubuntu2204_rule_3_5_2_3
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.2.3 | Ensure iptables are flushed with nftables | ipv4"
+      ansible.builtin.iptables:
+        flush: true
+    - name: "SECTION3 | 3.5.2.3 | Ensure iptables are flushed with nftables | ipv6"
+      ansible.builtin.iptables:
+        flush: true
+        ip_version: ipv6
+
+- name: "SECTION3 | 3.5.2.4 | Ensure a nftables table exists"
+  ansible.builtin.command: >
+    nft create table inet {{ cis_ubuntu2204_firewall_nftables_table_name }}
+  changed_when: false
+  failed_when: false
+  when:
+    - cis_ubuntu2204_rule_3_5_2_4
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.2.5 | Ensure nftables base chains exist"
+  ansible.builtin.command: >
+    nft create chain inet {{ cis_ubuntu2204_firewall_nftables_table_name }} {{ item }} { type filter hook {{ item }} priority 0 \; }
+  changed_when: false
+  failed_when: false
+  with_items:
+    - input
+    - forward
+    - output
+  when:
+    - cis_ubuntu2204_rule_3_5_2_5
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.2.6 | Ensure nftables loopback traffic is configured"
+  when:
+    - cis_ubuntu2204_rule_3_5_2_6
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.2.6 | Ensure nftables loopback traffic is configured | ingress lo accept"
+      ansible.builtin.command: >
+        nft add rule inet {{ cis_ubuntu2204_firewall_nftables_table_name }} input iif lo accept
+      changed_when: false
+      failed_when: false
+    - name: "SECTION3 | 3.5.2.6 | Ensure nftables loopback traffic is configured | ingress 127.0.0.0/8 counter drop"
+      ansible.builtin.command: >
+        nft create rule inet {{ cis_ubuntu2204_firewall_nftables_table_name }} input ip saddr 127.0.0.0/8 counter drop
+      changed_when: false
+      failed_when: false
+    - name: "SECTION3 | 3.5.2.6 | Ensure nftables loopback traffic is configured | ingress ::1 counter drop"
+      ansible.builtin.command: >
+        nft add rule inet {{ cis_ubuntu2204_firewall_nftables_table_name }} input ip6 saddr ::1 counter drop
+      changed_when: false
+      failed_when: false
+
+- name: "SECTION3 | 3.5.2.7 | Ensure nftables outbound and established connections are configured"
+  ansible.builtin.command: >
+    nft add rule inet {{ cis_ubuntu2204_firewall_nftables_table_name }} {{ item.dir }} ip protocol {{ item.protocol }} ct state {{ item.state }} accept
+  changed_when: false
+  failed_when: false
+  with_items:
+    - dir: input
+      protocol: tcp
+      state: established
+    - dir: input
+      protocol: udp
+      state: established
+    - dir: input
+      protocol: icmp
+      state: established
+    - dir: output
+      protocol: tcp
+      state: new,related,established
+    - dir: output
+      protocol: udp
+      state: new,related,established
+    - dir: output
+      protocol: icmp
+      state: new,related,established
+  when:
+    - cis_ubuntu2204_rule_3_5_2_7
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.2.8 | Ensure nftables default deny firewall policy"
+  ansible.builtin.command: >
+    nft chain inet {{ cis_ubuntu2204_firewall_nftables_table_name }} {{ item }} { policy drop \; }
+  changed_when: false
+  failed_when: false
+  with_items:
+    - input
+    - forward
+    - output
+  when:
+    - cis_ubuntu2204_rule_3_5_2_8
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.2.9 | Ensure nftables service is enabled"
+  ansible.builtin.service:
+    name: nftables
+    state: started
+    daemon_reload: true
+    enabled: true
+  when:
+    - cis_ubuntu2204_rule_3_5_2_9
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.2.10 | Ensure nftables rules are permanent"
+  ansible.builtin.command: >
+    nft list table inet {{ cis_ubuntu2204_firewall_nftables_table_name }} > /etc/nftables.conf
+  changed_when: false
+  failed_when: false
+  when:
+    - cis_ubuntu2204_rule_3_5_2_10
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_3_5_2
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION3 | 3.5.3.1.1 | Ensure iptables packages are installed"
+  ansible.builtin.apt:
+    name:
+      - iptables
+      - iptables-persistent
+    state: present
+    install_recommends: false
+  when:
+    - cis_ubuntu2204_rule_3_5_3_1_1
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.3.1.2 | Ensure nftables is not installed with iptables"
+  ansible.builtin.apt:
+    name: nftables
+    state: absent
+    purge: true
+  when:
+    - cis_ubuntu2204_rule_3_5_3_1_2
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.3.1.3 | Ensure ufw is uninstalled or disabled with iptables"
+  ansible.builtin.apt:
+    name: ufw
+    state: absent
+    purge: true
+  when:
+    - cis_ubuntu2204_rule_3_5_3_1_3
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_1
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION3 | 3.5.3.2.1 | Ensure iptables default deny firewall policy"
+  ansible.builtin.iptables:
+    chain: "{{ item }}"
+    policy: DROP
+  loop:
+    - INPUT
+    - OUTPUT
+    - FORWARD
+  when:
+    - cis_ubuntu2204_rule_3_5_3_2_1
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.3.2.2 | Ensure iptables loopback traffic is configured"
+  when:
+    - cis_ubuntu2204_rule_3_5_3_2_2
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.3.2.2 | Ensure iptables loopback traffic is configured | ingress lo allow"
+      ansible.builtin.iptables:
+        chain: INPUT
+        in_interface: lo
+        jump: ACCEPT
+    - name: "SECTION3 | 3.5.3.2.2 | Ensure iptables loopback traffic is configured | egress lo allow"
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        in_interface: lo
+        jump: ACCEPT
+    - name: "SECTION3 | 3.5.3.2.2 | Ensure iptables loopback traffic is configured | ingress 127.0.0.0/8 deny"
+      ansible.builtin.iptables:
+        chain: INPUT
+        source: 127.0.0.0/8
+        jump: DROP
+
+- name: "SECTION3 | 3.5.3.2.3 | Ensure iptables outbound and established connections are configured"
+  when:
+    - cis_ubuntu2204_rule_3_5_3_2_3
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.3.2.3 | Ensure iptables outbound and established connections are configured | output"
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        protocol: "{{ item }}"
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+      with_items:
+        - tcp
+        - udp
+        - icmp
+    - name: "SECTION3 | 3.5.3.2.3 | Ensure iptables outbound and established connections are configured | input "
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: "{{ item }}"
+        ctstate: ESTABLISHED
+        jump: ACCEPT
+      with_items:
+        - tcp
+        - udp
+        - icmp
+
+- name: "SECTION3 | 3.5.3.2.4 | Ensure iptables firewall rules exist for all open ports"
+  when:
+    - cis_ubuntu2204_rule_3_5_3_2_4
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.3.2.4 | Ensure iptables firewall rules exist for all open ports | ssh"
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 22
+        ctstate: NEW
+        jump: ACCEPT
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION3 | 3.5.3.3.1 | Ensure ip6tables default deny firewall policy"
+  ansible.builtin.iptables:
+    chain: "{{ item }}"
+    policy: DROP
+    ip_version: ipv6
+  loop:
+    - INPUT
+    - OUTPUT
+    - FORWARD
+  when:
+    - cis_ubuntu2204_rule_3_5_3_3_1
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION3 | 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured"
+  when:
+    - cis_ubuntu2204_rule_3_5_3_3_2
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_3
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured | ingress lo allow"
+      ansible.builtin.iptables:
+        chain: INPUT
+        in_interface: lo
+        jump: ACCEPT
+        ip_version: ipv6
+    - name: "SECTION3 | 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured | egress lo allow"
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        in_interface: lo
+        jump: ACCEPT
+        ip_version: ipv6
+    - name: "SECTION3 | 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured | ingress ::1 deny"
+      ansible.builtin.iptables:
+        chain: INPUT
+        source: ::1
+        jump: DROP
+        ip_version: ipv6
+
+- name: "SECTION3 | 3.5.3.3.3 | Ensure ip6tables outbound and established connections are configured"
+  when:
+    - cis_ubuntu2204_rule_3_5_3_3_3
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_3
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.3.3.3 | Ensure ip6tables outbound and established connections are configured | output"
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        protocol: "{{ item }}"
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv6
+      with_items:
+        - tcp
+        - udp
+        - icmp
+    - name: "SECTION3 | 3.5.3.3.3 | Ensure ip6tables outbound and established connections are configured | input "
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: "{{ item }}"
+        ctstate: ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv6
+      with_items:
+        - tcp
+        - udp
+        - icmp
+
+- name: "SECTION3 | 3.5.3.3.4 | Ensure ip6tables firewall rules exist for all open ports"
+  when:
+    - cis_ubuntu2204_rule_3_5_3_3_4
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_3_5_3_3
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.3.3.4 | Ensure ip6tables firewall rules exist for all open ports | ssh"
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 22
+        ctstate: NEW
+        jump: ACCEPT
+        ip_version: ipv6

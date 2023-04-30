@@ -10,6 +10,7 @@
 [![Ansible Molecule Test](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml/badge.svg)](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml)
 
 - [CIS - Ubuntu 22.04](#cis---ubuntu-2204)
+  - [TODO](#todo)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
   - [Dependencies](#dependencies)
@@ -36,6 +37,15 @@ This role was developed against a clean install of the Operating System. \
 If you are implimenting to an existing system please review this role for any site specific changes that are needed.
 
 Based on [CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisecurity.org/#/).
+
+## TODO
+
+- implement section 3, 4, 5 and 6
+- improve grub changes
+  - make changes for lvm or zfs
+  - create checker and add for if grub exists with lines like, because we only check for replace in section
+    - `GRUB_CMDLINE_LINUX`
+- check ufw sysctl usage
 
 ## Requirements
 
@@ -495,7 +505,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 6.2.14    | Ensure no local interactive user has .netrc files (Automated)                                   |     |     |     |
 | 6.2.15    | Ensure no local interactive user has .forward files (Automated)                                 |     |     |     |
 | 6.2.16    | Ensure no local interactive user has .rhosts files (Automated)                                  |     |     |     |
-| 6.2.17    | **Ensure local interactive user dot files are not group or world writable (Automated)**         |     |     |     |
+| 6.2.17    | Ensure local interactive user dot files are not group or world writable (Automated)             |     |     |     |
 
 ## License
 

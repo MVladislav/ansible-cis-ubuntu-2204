@@ -30,6 +30,7 @@
         dest: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: '^(GRUB_CMDLINE_LINUX=(?!.*ipv6.disable)\"[^\"]*)(\".*)'
         replace: '\1 ipv6.disable=1\2'
+      notify: update-grub
     - name: "SECTION3 | 3.1.1 | Ensure system is checked to determine if IPv6 is enabled | grub replace"
       ansible.builtin.replace:
         dest: "{{ cis_ubuntu2204_default_grub_file }}"

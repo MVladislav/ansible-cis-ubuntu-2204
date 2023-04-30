@@ -134,34 +134,34 @@ cis_ubuntu2204_rule_3_4_1: true
 cis_ubuntu2204_rule_3_4_2: true
 cis_ubuntu2204_rule_3_4_3: true
 cis_ubuntu2204_rule_3_4_4: true
-cis_ubuntu2204_rule_3_5_1_1: true
-cis_ubuntu2204_rule_3_5_1_2: true
-cis_ubuntu2204_rule_3_5_1_3: true
-cis_ubuntu2204_rule_3_5_1_4: true
-cis_ubuntu2204_rule_3_5_1_5: true
-cis_ubuntu2204_rule_3_5_1_6: true
-cis_ubuntu2204_rule_3_5_1_7: true
-cis_ubuntu2204_rule_3_5_2_1: true
-cis_ubuntu2204_rule_3_5_2_2: true
-cis_ubuntu2204_rule_3_5_2_3: true
-cis_ubuntu2204_rule_3_5_2_4: true
-cis_ubuntu2204_rule_3_5_2_5: true
-cis_ubuntu2204_rule_3_5_2_6: true
-cis_ubuntu2204_rule_3_5_2_7: true
-cis_ubuntu2204_rule_3_5_2_8: true
-cis_ubuntu2204_rule_3_5_2_9: true
-cis_ubuntu2204_rule_3_5_2_10: true
-cis_ubuntu2204_rule_3_5_3_1_1: true
-cis_ubuntu2204_rule_3_5_3_1_2: true
-cis_ubuntu2204_rule_3_5_3_1_3: true
-cis_ubuntu2204_rule_3_5_3_2_1: true
-cis_ubuntu2204_rule_3_5_3_2_2: true
-cis_ubuntu2204_rule_3_5_3_2_3: true
-cis_ubuntu2204_rule_3_5_3_2_4: true
-cis_ubuntu2204_rule_3_5_3_3_1: true
-cis_ubuntu2204_rule_3_5_3_3_2: true
-cis_ubuntu2204_rule_3_5_3_3_3: true
-cis_ubuntu2204_rule_3_5_3_3_4: true
+cis_ubuntu2204_rule_3_5_1_1: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_3_5_1_2: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_3_5_1_3: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_3_5_1_4: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_3_5_1_5: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_3_5_1_6: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_3_5_1_7: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_3_5_2_1: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_2_2: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_2_3: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_2_4: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_2_5: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_2_6: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_2_7: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_2_8: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_2_9: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_2_10: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_3_5_3_1_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_1_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_1_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_2_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_2_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_2_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_2_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_3_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_3_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_3_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_5_3_3_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 ## SECTION 4 rules
 cis_ubuntu2204_rule_4_1_1_1: true
 cis_ubuntu2204_rule_4_1_1_2: true
@@ -311,7 +311,7 @@ cis_ubuntu2204_rule_6_2_17: true
 # ---------------------------------------
 # autofs allow auto mount (cis_ubuntu2204_rule_1_1_9)
 cis_ubuntu2204_allow_autofs: false
-# AIDE perform install/config (cis_ubuntu2204_rule_1_3_1|cis_ubuntu2204_rule_1_3_2)
+# AIDE perform install/config (cis_ubuntu2204_rule_1_3_1|cis_ubuntu2204_rule_1_3_2|cis_ubuntu2204_rule_4_1_4_11)
 cis_ubuntu2204_install_aide: true
 cis_ubuntu2204_config_aide: true
 # BOOTLOADER set (cis_ubuntu2204_rule_1_4_1)
@@ -355,7 +355,7 @@ cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com
 cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
 # general path for sysctl conf file
 cis_ubuntu2204_sysctl_file_path: /etc/sysctl.conf
-# choose firewall (cis_ubuntu2204_rule_3_5_1_1)
+# choose firewall (cis_ubuntu2204_rule_3_5_*)
 cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
 # define if outgoing traffic should be default deny or allow (cis_ubuntu2204_rule_3_5_1_7)
 cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
@@ -369,7 +369,7 @@ cis_ubuntu2204_audit_max_log_file_action: keep_logs
 cis_ubuntu2204_audit_space_left_action: email
 cis_ubuntu2204_audit_action_mail_acct: root
 cis_ubuntu2204_audit_admin_space_left_action: halt # halt | single
-# sudo log file location (cis_4_1_3_3.rules.j2)
+# (cis_4_1_3_3.rules.j2)
 cis_ubuntu2204_audit_sudo_log_file: /var/log/sudo.log
 # (cis_4_1_3_6.rules.j2|cis_4_1_3_7.rules.j2|cis_4_1_3_9.rules.j2|cis_4_1_3_10.rules.j2|cis_4_1_3_13.rules.j2)
 # (cis_4_1_3_15.rules.j2|cis_4_1_3_16.rules.j2|cis_4_1_3_17.rules.j2|cis_4_1_3_18.rules.j2|cis_4_1_3_19.rules.j2)

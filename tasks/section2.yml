@@ -77,7 +77,7 @@
     - name: "SECTION2 | 2.1.2.2 | Ensure chrony is running as user _chrony | set in chronyd"
       ansible.builtin.lineinfile:
         dest: /etc/sysconfig/chronyd
-        regexp: "^(#)?OPTIONS="
+        regexp: '^(#)?OPTIONS((.*)?=|\s|$)'
         line: 'OPTIONS="-u _chrony"'
         state: present
         create: true
@@ -143,7 +143,7 @@
 - name: "SECTION2 | 2.1.4.3 | Ensure ntp is running as user ntp"
   ansible.builtin.lineinfile:
     dest: /etc/init.d/ntp
-    regexp: "^(#)?RUNASUSER="
+    regexp: '^(#)?RUNASUSER((.*)?=|\s|$)'
     line: "RUNASUSER=ntp"
     state: present
     create: true
@@ -179,7 +179,7 @@
 - name: "SECTION2 | 2.2.15 | Ensure mail transfer agent is configured for local-only mode"
   ansible.builtin.lineinfile:
     dest: /etc/postfix/main.cf
-    regexp: "^(#)?inet_interfaces"
+    regexp: '^(#)?inet_interfaces((.*)?=|\s|$)'
     line: "inet_interfaces = loopback-only"
     state: present
     create: true

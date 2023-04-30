@@ -522,7 +522,7 @@
         SECTION1 | 1.5.3 | Ensure Automatic Error Reporting is not enabled | add or edit the enabled parameter to equal 0
       ansible.builtin.lineinfile:
         dest: /etc/default/apport
-        regexp: "^(#)?enabled="
+        regexp: '^(#)?enabled((.*)?=|\s|$)'
         line: "enabled=0"
         state: present
         create: true
@@ -586,9 +586,9 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: "^(#)?Storage="
+        - reg: '^(#)?Storage((.*)?=|\s|$)'
           line: "Storage=none"
-        - reg: "^(#)?ProcessSizeMax="
+        - reg: '^(#)?ProcessSizeMax((.*)?=|\s|$)'
           line: "ProcessSizeMax=0"
 
 # ------------------------------------------------------------------------------
@@ -930,7 +930,7 @@
 - name: "SECTION1 | 1.8.10 | Ensure XDCMP is not enabled"
   ansible.builtin.lineinfile:
     dest: /etc/gdm3/custom.conf
-    regexp: "^Enable"
+    regexp: '^Enable((.*)?=|\s|$)'
     line: "#Enable=false"
     state: present
     create: true

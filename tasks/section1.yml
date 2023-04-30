@@ -23,7 +23,7 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: "^(#)?install cramfs \/bin\/(true|false)$"
+        - reg: '^(#)?install cramfs(\s|$)'
           line: "install cramfs /bin/false"
         - reg: "^(#)?blacklist cramfs$"
           line: "blacklist cramfs"
@@ -54,7 +54,7 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: "^(#)?install squashfs \/bin\/(true|false)$"
+        - reg: '^(#)?install squashfs(\s|$)'
           line: "install squashfs /bin/false"
         - reg: "^(#)?blacklist squashfs$"
           line: "blacklist squashfs"
@@ -86,7 +86,7 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: "^(#)?install udf \/bin\/(true|false)$"
+        - reg: '^(#)?install udf(\s|$)'
           line: "install udf /bin/false"
         - reg: "^(#)?blacklist udf$"
           line: "blacklist udf"
@@ -265,7 +265,7 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: "^(#)?install usb-storage \/bin\/(true|false)$"
+        - reg: '^(#)?install usb-storage(\s|$)'
           line: "install usb-storage /bin/false"
         - reg: "^(#)?blacklist usb-storage$"
           line: "blacklist usb-storage"
@@ -478,9 +478,10 @@
   ansible.posix.sysctl:
     name: kernel.randomize_va_space
     value: "2"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
     state: present
     reload: true
-    sysctl_set: true
     ignoreerrors: true
   when:
     - cis_ubuntu2204_rule_1_5_1
@@ -547,9 +548,10 @@
       ansible.posix.sysctl:
         name: fs.suid_dumpable
         value: "0"
+        sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+        sysctl_set: true
         state: present
         reload: true
-        sysctl_set: true
         ignoreerrors: true
       tags:
         - molecule-idempotence-notest

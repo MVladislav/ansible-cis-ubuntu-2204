@@ -405,13 +405,10 @@
         protocol: tcp
         interface: "{{ ansible_default_ipv4['interface'] }}"
         log: true
-        comment: "allow incoming connection on standard ssh port"
+        comment: "allow incoming connection on standard ssh port for interface {{ ansible_default_ipv4['interface'] }}"
     - name: "SECTION3 | 3.5.1.3 | Ensure ufw service is enabled | enable"
-      ansible.builtin.service:
-        name: ufw
-        state: started
-        daemon_reload: true
-        enabled: true
+      community.general.ufw:
+        state: enabled
 
 - name: "SECTION3 | 3.5.1.4 | Ensure ufw loopback traffic is configured"
   when:
@@ -427,27 +424,32 @@
         rule: allow
         direction: in
         interface: lo
+        log: false
     - name: "SECTION3 | 3.5.1.4 | Ensure ufw loopback traffic is configured | egress allow out on lo"
       community.general.ufw:
         rule: allow
         direction: out
         interface: lo
+        log: false
     - name: "SECTION3 | 3.5.1.4 | Ensure ufw loopback traffic is configured | ingress deny in from 127.0.0.0/8"
       community.general.ufw:
         rule: deny
         direction: in
         from: "127.0.0.0/8"
+        log: false
     - name: "SECTION3 | 3.5.1.4 | Ensure ufw loopback traffic is configured | ingress deny in from ::1"
       community.general.ufw:
         rule: deny
         direction: in
         from: "::1"
+        log: false
 
 - name: "SECTION3 | 3.5.1.5 | Ensure ufw outbound connections are configured"
   community.general.ufw:
     rule: allow
     direction: out
     interface: all
+    log: true
   when:
     - cis_ubuntu2204_rule_3_5_1_5
     - cis_ubuntu2204_firewall == "ufw"
@@ -457,47 +459,29 @@
     - workstation_l1
 
 # TODO: check if needed and how to configure best way
-# NOTE: also defined out allow, because '3.5.1.7' will defined with out deny
-- name: "SECTION3 | 3.5.1.6 | Ensure ufw firewall rules exist for all open ports"
-  community.general.ufw:
-    rule: allow
-    direction: "{{ item.direction }}"
-    port: "{{ item.port }}"
-    protocol: "{{ item.protocol }}"
-    log: true
-    comment: "{{ item.comment }}"
-  with_items:
-    - direction: out
-      port: 80
-      protocol: any
-      comment: "allow http out"
-    - direction: out
-      port: 443
-      protocol: any
-      comment: "allow https out"
-    - direction: out
-      port: 53
-      protocol: any
-      comment: "allow dns out"
-  when:
-    - cis_ubuntu2204_rule_3_5_1_6
-    - cis_ubuntu2204_firewall == "ufw"
-  tags:
-    - rule_3_5_1
-    - server_l1
-    - workstation_l1
+# - name: "SECTION3 | 3.5.1.6 | Ensure ufw firewall rules exist for all open ports"
+#   community.general.ufw:
+#     rule: allow
+#     direction: "{{ item.direction }}"
+#     port: "{{ item.port }}"
+#     protocol: "{{ item.protocol }}"
+#     log: true
+#     comment: "{{ item.comment }}"
+#   with_items:
+#     - rule: allow
+#       port: 80
+#       direction: in
+#       protocol: any
+#       comment: "allow http in"
+#   when:
+#     - cis_ubuntu2204_rule_3_5_1_6
+#     - cis_ubuntu2204_firewall == "ufw"
+#   tags:
+#     - rule_3_5_1
+#     - server_l1
+#     - workstation_l1
 
 - name: "SECTION3 | 3.5.1.7 | Ensure ufw default deny firewall policy"
-  community.general.ufw:
-    rule: "{{ item.rule }}"
-    direction: "{{ item.direction }}"
-  with_items:
-    - rule: deny
-      direction: in
-    - rule: deny
-      direction: out
-    - rule: deny
-      direction: routed
   when:
     - cis_ubuntu2204_rule_3_5_1_7
     - cis_ubuntu2204_firewall == "ufw"
@@ -505,6 +489,23 @@
     - rule_3_5_1
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION3 | 3.5.1.7 | Ensure ufw default deny firewall policy | in deny"
+      community.general.ufw:
+        policy: deny
+        direction: incoming
+        log: true
+    - name: "SECTION3 | 3.5.1.7 | Ensure ufw default deny firewall policy | out deny"
+      community.general.ufw:
+        policy: "{{ cis_ubuntu2204_firewall_ufw_outgoing_policy | default('deny') }}"
+        direction: outgoing
+        log: true
+    - name: "SECTION3 | 3.5.1.7 | Ensure ufw default deny firewall policy | routed deny"
+      community.general.ufw:
+        policy: deny
+        direction: routed
+        route: yes
+        log: true
 
 # ------------------------------------------------------------------------------
 

@@ -7,7 +7,7 @@
 # ---------------------------------------
 cis_ubuntu2204_section1: true
 cis_ubuntu2204_section2: true
-cis_ubuntu2204_section3: false
+cis_ubuntu2204_section3: true
 cis_ubuntu2204_section4: false
 cis_ubuntu2204_section5: false
 cis_ubuntu2204_section6: false
@@ -117,7 +117,7 @@ cis_ubuntu2204_rule_2_3_5: true
 cis_ubuntu2204_rule_2_3_6: true
 cis_ubuntu2204_rule_2_4: true
 ## SECTION 3 rules
-cis_ubuntu2204_rule_3_1_1: true
+cis_ubuntu2204_rule_3_1_1: true # NOTE: depends also on 'cis_ubuntu2204_required_ipv6'
 cis_ubuntu2204_rule_3_1_2: true
 cis_ubuntu2204_rule_3_2_1: true
 cis_ubuntu2204_rule_3_2_2: true
@@ -321,6 +321,8 @@ cis_ubuntu2204_disable_boot_pass: true
 cis_ubuntu2204_allow_gdm_gui: false
 # cups allow printer service, else remove (cis_ubuntu2204_rule_2_2_3)
 cis_ubuntu2204_allow_cups: false
+# ipv6 is required (cis_ubuntu2204_rule_3_1_1)
+cis_ubuntu2204_required_ipv6: false
 
 # ------------------------------------------------------------------------------
 
@@ -349,6 +351,14 @@ cis_ubuntu2204_gdm_warning_banner: |
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
 cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com
 cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
+# general path for sysctl conf file
+cis_ubuntu2204_sysctl_file_path: /etc/sysctl.conf
+# choose firewall (cis_ubuntu2204_rule_3_5_1_1)
+cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
+# define if outgoing traffic should be default deny or allow (cis_ubuntu2204_rule_3_5_1_7)
+cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
+# defined nftable table name (cis_ubuntu2204_rule_3_5_2_4)
+cis_ubuntu2204_firewall_nftables_table_name: filter
 
 # ------------------------------------------------------------------------------
 

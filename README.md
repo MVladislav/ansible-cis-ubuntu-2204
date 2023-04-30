@@ -81,6 +81,11 @@ cis_ubuntu2204_rule_1_4_3: false
 cis_ubuntu2204_rule_1_6_1_3: false
 # Ensure all AppArmor Profiles are enforcing
 cis_ubuntu2204_rule_1_6_1_4: false
+
+# cis define to deny all outgoing traffic and whitelist all needed
+# default here is changed to allow all outgoing traffic,
+# if you need to be cis conform, set to 'deny'
+cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
 ```
 
 special variable between server and client usage:
@@ -312,14 +317,14 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 3.4.2     | Ensure SCTP is disabled (Automated)                                                             |  x  |     |     |
 | 3.4.3     | Ensure RDS is disabled (Automated)                                                              |  x  |     |     |
 | 3.4.4     | Ensure TIPC is disabled (Automated)                                                             |  x  |     |     |
-| 3.5       | **Firewall Configuration**                                                                      |  x  |     |     |
-| 3.5.1     | **Configure UncomplicatedFirewall**                                                             |  x  |     |     |
+| 3.5       | **Firewall Configuration**                                                                      |     |  x  |     |
+| 3.5.1     | **Configure UncomplicatedFirewall**                                                             |     |  x  |     |
 | 3.5.1.1   | Ensure ufw is installed (Automated)                                                             |  x  |     |     |
 | 3.5.1.2   | Ensure iptables-persistent is not installed with ufw (Automated)                                |  x  |     |     |
 | 3.5.1.3   | Ensure ufw service is enabled (Automated)                                                       |  x  |     |     |
 | 3.5.1.4   | Ensure ufw loopback traffic is configured (Automated)                                           |  x  |     |     |
 | 3.5.1.5   | Ensure ufw outbound connections are configured (Manual)                                         |  x  |     |     |
-| 3.5.1.6   | Ensure ufw firewall rules exist for all open ports (Automated)                                  |  x  |     |     |
+| 3.5.1.6   | Ensure ufw firewall rules exist for all open ports (Automated)                                  |     |     |  x  |
 | 3.5.1.7   | Ensure ufw default deny firewall policy (Automated)                                             |  x  |     |     |
 | 3.5.2     | **Configure nftables**                                                                          |  x  |     |     |
 | 3.5.2.1   | Ensure nftables is installed (Automated)                                                        |  x  |     |     |

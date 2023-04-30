@@ -9,7 +9,7 @@
   vars:
     cis_ubuntu2204_section1: true
     cis_ubuntu2204_section2: true
-    cis_ubuntu2204_section3: false
+    cis_ubuntu2204_section3: true
     cis_ubuntu2204_section4: false
     cis_ubuntu2204_section5: false
     cis_ubuntu2204_section6: false
@@ -24,3 +24,7 @@
 
     cis_ubuntu2204_install_aide: true
     cis_ubuntu2204_config_aide: true
+
+    cis_ubuntu2204_required_ipv6: true
+    cis_ubuntu2204_firewall: ufw
+    cis_ubuntu2204_firewall_ufw_outgoing_policy: allow

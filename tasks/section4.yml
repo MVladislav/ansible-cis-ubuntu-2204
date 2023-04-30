@@ -77,6 +77,7 @@
     - rule_4_1_2
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.2.2 | Ensure audit logs are not automatically deleted"
   ansible.builtin.lineinfile:
@@ -95,6 +96,7 @@
     - rule_4_1_2
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.2.3 | Ensure system is disabled when audit logs are full"
   when:
@@ -154,6 +156,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.2 | Ensure actions as another user are always logged"
   ansible.builtin.template:
@@ -169,6 +172,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.3 | Ensure events that modify the sudo log file are collected"
   ansible.builtin.template:
@@ -184,6 +188,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.4 | Ensure events that modify date and time information are collected"
   ansible.builtin.template:
@@ -199,6 +204,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.5 | Ensure events that modify the system's network environment are collected"
   ansible.builtin.template:
@@ -214,6 +220,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 # TODO: check if findmnt us used correct (zfs)
 - name: "SECTION4 | 4.1.3.6 | Ensure use of privileged commands are collected"
@@ -223,6 +230,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
   block:
     - name: "SECTION4 | 4.1.3.6 | Ensure use of privileged commands are collected | get list of setuid/setguid binaries"
       ansible.builtin.shell: >
@@ -258,6 +266,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.8 | Ensure events that modify user/group information are collected"
   ansible.builtin.template:
@@ -273,6 +282,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.9 | Ensure discretionary access control permission modification events are collected"
   ansible.builtin.template:
@@ -288,6 +298,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.10 | Ensure successful file system mounts are collected"
   ansible.builtin.template:
@@ -303,6 +314,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.11 | Ensure session initiation information is collected"
   ansible.builtin.template:
@@ -318,6 +330,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.12 | Ensure login and logout events are collected"
   ansible.builtin.template:
@@ -333,6 +346,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.13 | Ensure file deletion events by users are collected"
   ansible.builtin.template:
@@ -348,6 +362,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.14 | Ensure events that modify the system's Mandatory Access Controls are collected"
   ansible.builtin.template:
@@ -363,6 +378,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.15 | Ensure successful and unsuccessful attempts to use the chcon command are recorded"
   ansible.builtin.template:
@@ -378,6 +394,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.16 | Ensure successful and unsuccessful attempts to use the setfacl command are recorded"
   ansible.builtin.template:
@@ -393,6 +410,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.17 | Ensure successful and unsuccessful attempts to use the chacl command are recorded"
   ansible.builtin.template:
@@ -408,6 +426,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.18 | Ensure successful and unsuccessful attempts to use the usermod command are recorded"
   ansible.builtin.template:
@@ -423,6 +442,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.19 | Ensure kernel module loading unloading and modification is collected"
   ansible.builtin.template:
@@ -438,6 +458,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.3.20 | Ensure the audit configuration is immutable"
   ansible.builtin.template:
@@ -453,6 +474,7 @@
     - rule_4_1_3
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 # - name: "SECTION4 | 4.1.3.21 | Ensure the running and on disk configuration is the same"
 #   when:
@@ -475,6 +497,7 @@
     - rule_4_1_4
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.1.4.2 | Ensure only authorized users own audit log files"
   ansible.builtin.file:
@@ -535,6 +558,7 @@
     - rule_4_1_4
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
   block:
     - name: "SECTION4 | 4.1.4.5 | Ensure audit configuration files are 640 or more restrictive | find *.conf"
       ansible.builtin.find:
@@ -843,6 +867,7 @@
     - rule_4_2_1
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
 
 # TODO: define values
 # - name: "SECTION4 | 4.2.1.6 | Ensure journald log rotation is configured per site policy"
@@ -931,6 +956,7 @@
     - rule_4_2_2
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
 
 - name: "SECTION4 | 4.2.2.4 | Ensure rsyslog default file permissions are configured"
   ansible.builtin.lineinfile:

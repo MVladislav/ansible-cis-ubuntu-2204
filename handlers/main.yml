@@ -128,6 +128,7 @@
     masked: false
     state: restarted
   listen: "restart auditd"
+  when: ansible_virtualization_type != "docker"
 
 - name: "HANDLER | 4.2.1.1.2 | systemd restart and enable systemd-journal-upload"
   become: true
@@ -201,5 +202,6 @@
   become: true
   ansible.builtin.command: /sbin/augenrules --load
   changed_when: false
+  failed_when: false
   listen: load audit rules
   notify: restart auditd

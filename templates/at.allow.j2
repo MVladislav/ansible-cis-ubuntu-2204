@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+
+{% for user in cis_ubuntu2204_at_allow_users %}
+{{ user }}
+{% endfor %}

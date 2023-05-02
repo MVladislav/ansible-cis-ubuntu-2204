@@ -9,7 +9,7 @@ cis_ubuntu2204_section1: true
 cis_ubuntu2204_section2: true
 cis_ubuntu2204_section3: true
 cis_ubuntu2204_section4: true
-cis_ubuntu2204_section5: false
+cis_ubuntu2204_section5: true
 cis_ubuntu2204_section6: false
 
 # CIS rules
@@ -252,6 +252,7 @@ cis_ubuntu2204_rule_5_2_19: true
 cis_ubuntu2204_rule_5_2_20: true
 cis_ubuntu2204_rule_5_2_21: true
 cis_ubuntu2204_rule_5_2_22: true
+cis_ubuntu2204_rule_5_2_23: true # NOTE: own added, not included in CIS
 cis_ubuntu2204_rule_5_3_1: true
 cis_ubuntu2204_rule_5_3_2: true
 cis_ubuntu2204_rule_5_3_3: true
@@ -386,7 +387,69 @@ cis_ubuntu2204_set_journal_runtime_keep_free:
 cis_ubuntu2204_set_journal_max_file_sec:
 # syslog to be used, default only current 'rsyslog' only available (cis_ubuntu2204_rule_4_2_2_*)
 cis_ubuntu2204_syslog: rsyslog
-
+# cron allow users (cis_ubuntu2204_rule_5_1_9)
+cis_ubuntu2204_cron_allow_users:
+  - "{{ ansible_user }}"
+# at allow users (cis_ubuntu2204_rule_5_1_9)
+cis_ubuntu2204_at_allow_users:
+  - "{{ ansible_user }}"
+# ssh conf's
+# allows/denies for users/groups (cis_ubuntu2204_rule_5_2_4)
+#cis_ubuntu2204_ssh_allow_users: root,user
+cis_ubuntu2204_ssh_allow_groups: ssh
+#cis_ubuntu2204_ssh_deny_users: root,user
+#cis_ubuntu2204_ssh_deny_groups: root,ssh
+# log level (cis_ubuntu2204_rule_5_2_5)
+cis_ubuntu2204_ssh_log_level: VERBOSE # VERBOSE | INFO
+# Ciphers (cis_ubuntu2204_rule_5_2_13)
+cis_ubuntu2204_ssh_ciphers:
+  - chacha20-poly1305@openssh.com
+  - aes256-gcm@openssh.com
+  - aes128-gcm@openssh.com
+  - aes256-ctr
+  - aes192-ctr
+  - aes128-ctr
+# MACs (cis_ubuntu2204_rule_5_2_14)
+cis_ubuntu2204_ssh_macs:
+  - hmac-sha2-512-etm@openssh.com
+  - hmac-sha2-256-etm@openssh.com
+  - hmac-sha2-512
+  - hmac-sha2-256
+# KexAlgorithms (cis_ubuntu2204_rule_5_2_15)
+cis_ubuntu2204_ssh_kex_algorithms:
+  - curve25519-sha256@libssh.org
+  - ecdh-sha2-nistp521
+  - ecdh-sha2-nistp384
+  - ecdh-sha2-nistp256
+  - diffie-hellman-group-exchange-sha256
+# address family, key alg, accept key types (cis_ubuntu2204_rule_5_2_23)
+cis_ubuntu2204_ssh_address_family: "inet"
+cis_ubuntu2204_ssh_host_key_algorithms:
+  - ssh-ed25519-cert-v01@openssh.com
+  - ssh-rsa-cert-v01@openssh.com
+  - ssh-ed25519
+  - ssh-rsa
+  - ecdsa-sha2-nistp521-cert-v01@openssh.com
+  - ecdsa-sha2-nistp384-cert-v01@openssh.com
+  - ecdsa-sha2-nistp256-cert-v01@openssh.com
+  - ecdsa-sha2-nistp521
+  - ecdsa-sha2-nistp384
+  - ecdsa-sha2-nistp256
+cis_ubuntu2204_ssh_pubkey_accepted_key_types:
+  - ssh-ed25519
+# pw quality policies (cis_ubuntu2204_rule_5_4_1)
+cis_ubuntu2204_pwquality:
+  - key: "minlen"
+    value: "14"
+  - key: "dcredit"
+    value: "-1"
+  - key: "ucredit"
+    value: "-1"
+  - key: "ocredit"
+    value: "-1"
+  - key: "lcredit"
+    value: "-1"
+cis_ubuntu2204_encrypt_method: yescrypt # yescrypt | sha512
 # ------------------------------------------------------------------------------
 
 # SPECIAL multi similar CIS rules set

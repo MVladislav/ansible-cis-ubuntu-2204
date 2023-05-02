@@ -46,6 +46,9 @@ Based on [CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisecur
   - create checker and add for if grub exists with lines like, because we only check for replace in section
     - `GRUB_CMDLINE_LINUX`
 - check ufw sysctl usage
+- test cron/at with docker if setup correct
+  - current cron not installed and will be skipped
+- improve with some variables for section5
 
 ## Requirements
 
@@ -62,6 +65,13 @@ cis_ubuntu2204_section3: true
 cis_ubuntu2204_section4: true
 cis_ubuntu2204_section5: true
 cis_ubuntu2204_section6: true
+```
+
+variables not included in CIS:
+
+```yaml
+# additional configs for ssh which not defined to set by CIS
+cis_ubuntu2204_rule_5_2_23: true
 ```
 
 some variables which recommended by CIS, but disable in this role:
@@ -137,6 +147,32 @@ cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
 
 # choose firewall (cis_ubuntu2204_rule_3_5_1_1)
 cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
+
+# cron allow users (cis_ubuntu2204_rule_5_1_9)
+cis_ubuntu2204_cron_allow_users:
+  - "{{ ansible_user }}"
+# at allow users (cis_ubuntu2204_rule_5_1_9)
+cis_ubuntu2204_at_allow_users:
+  - "{{ ansible_user }}"
+
+# allows/denies for users/groups (cis_ubuntu2204_rule_5_2_4)
+#cis_ubuntu2204_ssh_allow_users: root,user
+cis_ubuntu2204_ssh_allow_groups: ssh
+#cis_ubuntu2204_ssh_deny_users: root,user
+#cis_ubuntu2204_ssh_deny_groups: root,ssh
+
+# pw quality policies (cis_ubuntu2204_rule_5_4_1)
+cis_ubuntu2204_pwquality:
+  - key: "minlen"
+    value: "14"
+  - key: "dcredit"
+    value: "-1"
+  - key: "ucredit"
+    value: "-1"
+  - key: "ocredit"
+    value: "-1"
+  - key: "lcredit"
+    value: "-1"
 ```
 
 variables to check if service is needed:
@@ -424,64 +460,64 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 4.2.2.7   | Ensure rsyslog is not configured to receive logs from a remote client (Automated)               |  x  |     |     |
 | 4.2.3     | Ensure all logfiles have appropriate permissions and ownership (Automated)                      |     |     |  x  |
 | 5         | **Access, Authentication and Authorization**                                                    |     |     |     |
-| 5.1       | **Configure time-based job schedulers**                                                         |     |     |     |
-| 5.1.1     | Ensure cron daemon is enabled and running (Automated)                                           |     |     |     |
-| 5.1.2     | Ensure permissions on /etc/crontab are configured (Automated)                                   |     |     |     |
-| 5.1.3     | Ensure permissions on /etc/cron.hourly are configured (Automated)                               |     |     |     |
-| 5.1.4     | Ensure permissions on /etc/cron.daily are configured (Automated)                                |     |     |     |
-| 5.1.5     | Ensure permissions on /etc/cron.weekly are configured (Automated)                               |     |     |     |
-| 5.1.6     | Ensure permissions on /etc/cron.monthly are configured (Automated)                              |     |     |     |
-| 5.1.7     | Ensure permissions on /etc/cron.d are configured (Automated)                                    |     |     |     |
-| 5.1.8     | Ensure cron is restricted to authorized users (Automated)                                       |     |     |     |
-| 5.1.9     | Ensure at is restricted to authorized users (Automated)                                         |     |     |     |
-| 5.2       | **Configure SSH Server**                                                                        |     |     |     |
-| 5.2.1     | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                           |     |     |     |
-| 5.2.2     | Ensure permissions on SSH private host key files are configured (Automated)                     |     |     |     |
-| 5.2.3     | Ensure permissions on SSH public host key files are configured (Automated)                      |     |     |     |
-| 5.2.4     | Ensure SSH access is limited (Automated)                                                        |     |     |     |
-| 5.2.5     | Ensure SSH LogLevel is appropriate (Automated)                                                  |     |     |     |
-| 5.2.6     | Ensure SSH PAM is enabled (Automated)                                                           |     |     |     |
-| 5.2.7     | Ensure SSH root login is disabled (Automated)                                                   |     |     |     |
-| 5.2.8     | Ensure SSH HostbasedAuthentication is disabled (Automated)                                      |     |     |     |
-| 5.2.9     | Ensure SSH PermitEmptyPasswords is disabled (Automated)                                         |     |     |     |
-| 5.2.10    | Ensure SSH PermitUserEnvironment is disabled (Automated)                                        |     |     |     |
-| 5.2.11    | Ensure SSH IgnoreRhosts is enabled (Automated)                                                  |     |     |     |
-| 5.2.12    | Ensure SSH X11 forwarding is disabled (Automated)                                               |     |     |     |
-| 5.2.13    | Ensure only strong Ciphers are used (Automated)                                                 |     |     |     |
-| 5.2.14    | Ensure only strong MAC algorithms are used (Automated)                                          |     |     |     |
-| 5.2.15    | Ensure only strong Key Exchange algorithms are used (Automated)                                 |     |     |     |
-| 5.2.16    | Ensure SSH AllowTcpForwarding is disabled (Automated)                                           |     |     |     |
-| 5.2.17    | Ensure SSH warning banner is configured (Automated)                                             |     |     |     |
-| 5.2.18    | Ensure SSH MaxAuthTries is set to 4 or less (Automated)                                         |     |     |     |
-| 5.2.19    | Ensure SSH MaxStartups is configured (Automated)                                                |     |     |     |
-| 5.2.20    | Ensure SSH MaxSessions is set to 10 or less (Automated)                                         |     |     |     |
-| 5.2.21    | Ensure SSH LoginGraceTime is set to one minute or less (Automated)                              |     |     |     |
-| 5.2.22    | Ensure SSH Idle Timeout Interval is configured (Automated)                                      |     |     |     |
-| 5.3       | **Configure privilege escalation**                                                              |     |     |     |
-| 5.3.1     | Ensure sudo is installed (Automated)                                                            |     |     |     |
-| 5.3.2     | Ensure sudo commands use pty (Automated)                                                        |     |     |     |
-| 5.3.3     | Ensure sudo log file exists (Automated)                                                         |     |     |     |
-| 5.3.4     | Ensure users must provide password for privilege escalation (Automated)                         |     |     |     |
-| 5.3.5     | Ensure re-authentication for privilege escalation is not disabled globally (Automated)          |     |     |     |
-| 5.3.6     | Ensure sudo authentication timeout is configured correctly (Automated)                          |     |     |     |
-| 5.3.7     | Ensure access to the su command is restricted (Automated)                                       |     |     |     |
-| 5.4       | **Configure PAM**                                                                               |     |     |     |
-| 5.4.1     | Ensure password creation requirements are configured (Automated)                                |     |     |     |
-| 5.4.2     | Ensure lockout for failed password attempts is configured (Automated)                           |     |     |     |
-| 5.4.3     | Ensure password reuse is limited (Automated)                                                    |     |     |     |
-| 5.4.4     | Ensure password hashing algorithm is up to date with the latest standards (Automated)           |     |     |     |
-| 5.4.5     | Ensure all current passwords uses the configured hashing algorithm (Manual)                     |     |     |     |
-| 5.5       | **User Accounts and Environment**                                                               |     |     |     |
-| 5.5.1     | **Set Shadow Password Suite Parameters**                                                        |     |     |     |
-| 5.5.1.1   | Ensure minimum days between password changes is configured (Automated)                          |     |     |     |
-| 5.5.1.2   | Ensure password expiration is 365 days or less (Automated)                                      |     |     |     |
-| 5.5.1.3   | Ensure password expiration warning days is 7 or more (Automated)                                |     |     |     |
-| 5.5.1.4   | Ensure inactive password lock is 30 days or less (Automated)                                    |     |     |     |
-| 5.5.1.5   | Ensure all users last password change date is in the past (Automated)                           |     |     |     |
-| 5.5.2     | Ensure system accounts are secured (Automated)                                                  |     |     |     |
-| 5.5.3     | Ensure default group for the root account is GID 0 (Automated)                                  |     |     |     |
-| 5.5.4     | Ensure default user umask is 027 or more restrictive (Automated)                                |     |     |     |
-| 5.5.5     | Ensure default user shell timeout is 900 seconds or less (Automated)                            |     |     |     |
+| 5.1       | **Configure time-based job schedulers**                                                         |  x  |     |     |
+| 5.1.1     | Ensure cron daemon is enabled and running (Automated)                                           |  x  |     |     |
+| 5.1.2     | Ensure permissions on /etc/crontab are configured (Automated)                                   |  x  |     |     |
+| 5.1.3     | Ensure permissions on /etc/cron.hourly are configured (Automated)                               |  x  |     |     |
+| 5.1.4     | Ensure permissions on /etc/cron.daily are configured (Automated)                                |  x  |     |     |
+| 5.1.5     | Ensure permissions on /etc/cron.weekly are configured (Automated)                               |  x  |     |     |
+| 5.1.6     | Ensure permissions on /etc/cron.monthly are configured (Automated)                              |  x  |     |     |
+| 5.1.7     | Ensure permissions on /etc/cron.d are configured (Automated)                                    |  x  |     |     |
+| 5.1.8     | Ensure cron is restricted to authorized users (Automated)                                       |  x  |     |     |
+| 5.1.9     | Ensure at is restricted to authorized users (Automated)                                         |  x  |     |     |
+| 5.2       | **Configure SSH Server**                                                                        |  x  |     |     |
+| 5.2.1     | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                           |  x  |     |     |
+| 5.2.2     | Ensure permissions on SSH private host key files are configured (Automated)                     |  x  |     |     |
+| 5.2.3     | Ensure permissions on SSH public host key files are configured (Automated)                      |  x  |     |     |
+| 5.2.4     | Ensure SSH access is limited (Automated)                                                        |  x  |     |     |
+| 5.2.5     | Ensure SSH LogLevel is appropriate (Automated)                                                  |  x  |     |     |
+| 5.2.6     | Ensure SSH PAM is enabled (Automated)                                                           |  x  |     |     |
+| 5.2.7     | Ensure SSH root login is disabled (Automated)                                                   |  x  |     |     |
+| 5.2.8     | Ensure SSH HostbasedAuthentication is disabled (Automated)                                      |  x  |     |     |
+| 5.2.9     | Ensure SSH PermitEmptyPasswords is disabled (Automated)                                         |  x  |     |     |
+| 5.2.10    | Ensure SSH PermitUserEnvironment is disabled (Automated)                                        |  x  |     |     |
+| 5.2.11    | Ensure SSH IgnoreRhosts is enabled (Automated)                                                  |  x  |     |     |
+| 5.2.12    | Ensure SSH X11 forwarding is disabled (Automated)                                               |  x  |     |     |
+| 5.2.13    | Ensure only strong Ciphers are used (Automated)                                                 |  x  |     |     |
+| 5.2.14    | Ensure only strong MAC algorithms are used (Automated)                                          |  x  |     |     |
+| 5.2.15    | Ensure only strong Key Exchange algorithms are used (Automated)                                 |  x  |     |     |
+| 5.2.16    | Ensure SSH AllowTcpForwarding is disabled (Automated)                                           |  x  |     |     |
+| 5.2.17    | Ensure SSH warning banner is configured (Automated)                                             |  x  |     |     |
+| 5.2.18    | Ensure SSH MaxAuthTries is set to 4 or less (Automated)                                         |  x  |     |     |
+| 5.2.19    | Ensure SSH MaxStartups is configured (Automated)                                                |  x  |     |     |
+| 5.2.20    | Ensure SSH MaxSessions is set to 10 or less (Automated)                                         |  x  |     |     |
+| 5.2.21    | Ensure SSH LoginGraceTime is set to one minute or less (Automated)                              |  x  |     |     |
+| 5.2.22    | Ensure SSH Idle Timeout Interval is configured (Automated)                                      |  x  |     |     |
+| 5.3       | **Configure privilege escalation**                                                              |  x  |     |     |
+| 5.3.1     | Ensure sudo is installed (Automated)                                                            |  x  |     |     |
+| 5.3.2     | Ensure sudo commands use pty (Automated)                                                        |  x  |     |     |
+| 5.3.3     | Ensure sudo log file exists (Automated)                                                         |  x  |     |     |
+| 5.3.4     | Ensure users must provide password for privilege escalation (Automated)                         |  x  |     |     |
+| 5.3.5     | Ensure re-authentication for privilege escalation is not disabled globally (Automated)          |  x  |     |     |
+| 5.3.6     | Ensure sudo authentication timeout is configured correctly (Automated)                          |  x  |     |     |
+| 5.3.7     | Ensure access to the su command is restricted (Automated)                                       |  x  |     |     |
+| 5.4       | **Configure PAM**                                                                               |     |  x  |     |
+| 5.4.1     | Ensure password creation requirements are configured (Automated)                                |  x  |     |     |
+| 5.4.2     | Ensure lockout for failed password attempts is configured (Automated)                           |  x  |     |     |
+| 5.4.3     | Ensure password reuse is limited (Automated)                                                    |  x  |     |     |
+| 5.4.4     | Ensure password hashing algorithm is up to date with the latest standards (Automated)           |  x  |     |     |
+| 5.4.5     | Ensure all current passwords uses the configured hashing algorithm (Manual)                     |     |     |  x  |
+| 5.5       | **User Accounts and Environment**                                                               |     |  x  |     |
+| 5.5.1     | **Set Shadow Password Suite Parameters**                                                        |     |  x  |     |
+| 5.5.1.1   | Ensure minimum days between password changes is configured (Automated)                          |  x  |     |     |
+| 5.5.1.2   | Ensure password expiration is 365 days or less (Automated)                                      |  x  |     |     |
+| 5.5.1.3   | Ensure password expiration warning days is 7 or more (Automated)                                |  x  |     |     |
+| 5.5.1.4   | Ensure inactive password lock is 30 days or less (Automated)                                    |  x  |     |     |
+| 5.5.1.5   | Ensure all users last password change date is in the past (Automated)                           |     |     |  x  |
+| 5.5.2     | Ensure system accounts are secured (Automated)                                                  |  x  |     |     |
+| 5.5.3     | Ensure default group for the root account is GID 0 (Automated)                                  |  x  |     |     |
+| 5.5.4     | Ensure default user umask is 027 or more restrictive (Automated)                                |  x  |     |     |
+| 5.5.5     | Ensure default user shell timeout is 900 seconds or less (Automated)                            |  x  |     |     |
 | 6         | **System Maintenance**                                                                          |     |     |     |
 | 6.1       | **System File Permissions**                                                                     |     |     |     |
 | 6.1.1     | Ensure permissions on /etc/passwd are configured (Automated)                                    |     |     |     |

@@ -13,18 +13,47 @@
     cis_ubuntu2204_section4: true
     cis_ubuntu2204_section5: true
     cis_ubuntu2204_section6: false
-
+    # -------------------------
     cis_ubuntu2204_rule_1_4_1: true
     cis_ubuntu2204_set_boot_pass: true
     cis_ubuntu2204_rule_1_4_3: true
+    # -------------------------
     cis_ubuntu2204_rule_1_6_1_3: true
     cis_ubuntu2204_rule_1_6_1_4: true
+    # -------------------------
     cis_ubuntu2204_allow_gdm_gui: true
-    cis_ubuntu2204_allow_cups: true
-
+    cis_ubuntu2204_allow_autofs: true
+    # cis_ubuntu2204_rule_1_1_10: false # Disable USB Storage
+    cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com
+    cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
     cis_ubuntu2204_install_aide: true
     cis_ubuntu2204_config_aide: true
-
-    cis_ubuntu2204_required_ipv6: true
+    cis_ubuntu2204_allow_cups: true
+    # -------------------------
+    cis_ubuntu2204_required_ipv6: false
     cis_ubuntu2204_firewall: ufw
     cis_ubuntu2204_firewall_ufw_outgoing_policy: allow
+    # -------------------------
+    cis_ubuntu2204_ssh_allow_groups: None
+    cis_ubuntu2204_cron_allow_users: None
+    cis_ubuntu2204_at_allow_users: None
+    # +++++++++++++++++++++++++
+    # cis_ubuntu2204_cron_allow_users:
+    #   - "{{ ansible_user }}"
+    # cis_ubuntu2204_at_allow_users:
+    #   - "{{ ansible_user }}"
+    # cis_ubuntu2204_ssh_allow_groups: ssh
+    # -------------------------
+    # cis_ubuntu2204_set_journal_upload: true
+    # -------------------------
+    cis_ubuntu2204_pwquality:
+      - key: "minlen"
+        value: "8"
+      - key: "dcredit"
+        value: "-1"
+      - key: "ucredit"
+        value: "-1"
+      - key: "ocredit"
+        value: "-1"
+      - key: "lcredit"
+        value: "-1"

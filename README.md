@@ -13,6 +13,11 @@
   - [TODO](#todo)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
+    - [run only setup per section](#run-only-setup-per-section)
+    - [variables not included in CIS](#variables-not-included-in-cis)
+    - [variables which are recommended by CIS, but disable in this role](#variables-which-are-recommended-by-cis-but-disable-in-this-role)
+    - [variable special usable between server and client](#variable-special-usable-between-server-and-client)
+    - [variables to check and set for own purpose](#variables-to-check-and-set-for-own-purpose)
   - [Dependencies](#dependencies)
   - [Example Playbook](#example-playbook)
   - [Definitions](#definitions)
@@ -33,10 +38,10 @@ Tested with:
 This role **will make changes to the system** that could break things. \
 This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
 
-This role was developed against a clean install of the Operating System. \
-If you are implimenting to an existing system please review this role for any site specific changes that are needed.
+This role was **developed against a clean install** of the Operating System. \
+If you are **implementing to an existing system** please **review** this role for any **site specific changes** that are needed.
 
-Based on [CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisecurity.org/#/).
+Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisecurity.org/#/)**.
 
 ## TODO
 
@@ -45,18 +50,39 @@ Based on [CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisecur
   - make changes for lvm or zfs
   - create checker and add for if grub exists with lines like, because we only check for replace in section
     - `GRUB_CMDLINE_LINUX`
+- make cis_ubuntu2204_rule_1_6_1_3 not same as cis_ubuntu2204_rule_1_6_1_4 to have an option
 - check ufw sysctl usage
+- improve cis_ubuntu2204_set_journal_upload
 - test cron/at with docker if setup correct
   - current cron not installed and will be skipped
 - improve with some variables for section5
 
 ## Requirements
 
-...
+You should **carefully read** through the tasks
+to **make sure these changes will not break your systems**
+before running this playbook.
+
+To start working in this Role you just need to **install** **Python** and **Ansible**:
+
+```sh
+$sudo apt install python3 python3-pip sshpass
+# if python >= 3.11 used add also '--break-system-packages'
+$python3 -m pip install ansible yamllint
+```
+
+For run **tests** with **molecule**, you need also to **install**:
+
+```sh
+# if python >= 3.11 used add also '--break-system-packages'
+$python3 -m pip install molecule molecule-plugins[docker] ansible-lint
+```
 
 ## Role Variables
 
-run only setup per section:
+### run only setup per section
+
+> _default all section are active and will performed_
 
 ```yaml
 cis_ubuntu2204_section1: true
@@ -67,16 +93,16 @@ cis_ubuntu2204_section5: true
 cis_ubuntu2204_section6: true
 ```
 
-variables not included in CIS:
+### variables not included in CIS
 
 ```yaml
 # additional configs for ssh which not defined to set by CIS
 cis_ubuntu2204_rule_5_2_23: true
 ```
 
-some variables which recommended by CIS, but disable in this role:
+### variables which are recommended by CIS, but disable in this role
 
-> change 'false' below to 'true', to be CIS recommended if you need it
+> _change 'false' below to 'true', to be CIS recommended if needed_
 
 ```yaml
 # Ensure bootloader password is set
@@ -97,16 +123,19 @@ cis_ubuntu2204_rule_1_6_1_4: false
 # if you need to be cis conform, set to 'deny'
 cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
 
-# active journal upload to remote log collection, set 'true' to be conform
+# active journal upload to remote log collection
 # do not forget set related variables 'cis_ubuntu2204_set_journal_upload_*'
 cis_ubuntu2204_set_journal_upload: false
 ```
 
-special variable between server and client usage:
+### variable special usable between server and client
+
+> _check services which will removed or disabled,
+> which maybe needed, for example especial for client usage_
 
 ```yaml
-# will remove gdm gui, if needed set to 'true'
-# if 'true', recommended configs will perform, check rules 1.8.2-1.8.10
+# will purge gdm/gui, if needed set to 'true'
+# if 'true', recommended configs will perform in rules 1.8.2 - 1.8.10
 cis_ubuntu2204_allow_gdm_gui: false
 
 # will disable auto mount, if needed set to 'true'
@@ -115,18 +144,18 @@ cis_ubuntu2204_allow_autofs: false
 # will disable USB storage, if needed set to 'false'
 cis_ubuntu2204_rule_1_1_10: true
 
-# config and install AIDE, if not needed set as needed to 'false'
+# will install and config AIDE, if not needed set to 'false'
 cis_ubuntu2204_install_aide: true
 cis_ubuntu2204_config_aide: true
 
-# will remove printer service, if need set to 'true'
+# will purge printer service, if need set to 'true'
 cis_ubuntu2204_allow_cups: false
 
 # will disable ipv6 complete, if needed set to 'true'
 cis_ubuntu2204_required_ipv6: false
 ```
 
-variables to check for own purpose:
+### variables to check and set for own purpose
 
 ```yaml
 # AIDE cron settings
@@ -140,28 +169,31 @@ cis_ubuntu2204_aide_cron:
   aide_month: "*"
   aide_weekday: "*"
 
-# choose time synchronization (cis_ubuntu2204_rule_2_1_1_1)
+# choose time synchronization
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
 cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com
 cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
 
-# choose firewall (cis_ubuntu2204_rule_3_5_1_1)
+# choose firewall
 cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
 
-# cron allow users (cis_ubuntu2204_rule_5_1_9)
+# put None or list of users
+# cron allow users
 cis_ubuntu2204_cron_allow_users:
   - "{{ ansible_user }}"
-# at allow users (cis_ubuntu2204_rule_5_1_9)
+# at allow users
 cis_ubuntu2204_at_allow_users:
   - "{{ ansible_user }}"
 
-# allows/denies for users/groups (cis_ubuntu2204_rule_5_2_4)
+# allows/denies for users/groups (4 possible variables can be used/activated)
+# put None or list of users (comma separated user list)
+# default set to add ssh as group to allow use ssh (do not forget add group to user)
 #cis_ubuntu2204_ssh_allow_users: root,user
 cis_ubuntu2204_ssh_allow_groups: ssh
 #cis_ubuntu2204_ssh_deny_users: root,user
-#cis_ubuntu2204_ssh_deny_groups: root,ssh
+#cis_ubuntu2204_ssh_deny_groups: root,group
 
-# pw quality policies (cis_ubuntu2204_rule_5_4_1)
+# pw quality policies
 cis_ubuntu2204_pwquality:
   - key: "minlen"
     value: "14"
@@ -175,20 +207,50 @@ cis_ubuntu2204_pwquality:
     value: "-1"
 ```
 
-variables to check if service is needed:
-
-```yaml
-cis_ubuntu2204_install_aide: true
-cis_ubuntu2204_config_aide: true
-```
-
 ## Dependencies
 
 Developed and testes with Ansible 2.14.4
 
 ## Example Playbook
 
-...
+example usage you can find also [here](https://github.com/MVladislav/ansible-env-setup).
+
+```yaml
+- name: CIS | install on clients
+  become: true
+  remote_user: "{{ ansible_user }}"
+  hosts:
+    - clients
+  roles:
+    - role: ansible-cis-ubuntu-2204
+      cis_ubuntu2204_section1: true
+      cis_ubuntu2204_section2: true
+      cis_ubuntu2204_section3: true
+      cis_ubuntu2204_section4: true
+      cis_ubuntu2204_section5: true
+      cis_ubuntu2204_section6: true
+      # -------------------------
+      cis_ubuntu2204_rule_1_6_1_3: false
+      cis_ubuntu2204_rule_1_6_1_4: false
+      # -------------------------
+      cis_ubuntu2204_allow_gdm_gui: true
+      cis_ubuntu2204_allow_autofs: true
+      # cis_ubuntu2204_rule_1_1_10: false # Disable USB Storage
+      cis_ubuntu2204_time_synchronization_ntp_server: '{{ ansible_host_default_ntp | default("time.cloudflare.com")}}'
+      cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
+      cis_ubuntu2204_install_aide: "{{ cis_setup_aide | default(false) | bool }}"
+      cis_ubuntu2204_config_aide: "{{ cis_setup_aide | default(false) | bool }}"
+      cis_ubuntu2204_allow_cups: true
+      # -------------------------
+      cis_ubuntu2204_required_ipv6: true
+      cis_ubuntu2204_firewall: ufw
+      cis_ubuntu2204_firewall_ufw_outgoing_policy: allow
+      # -------------------------
+      cis_ubuntu2204_ssh_allow_groups: None
+      cis_ubuntu2204_cron_allow_users: None
+      cis_ubuntu2204_at_allow_users: None
+      # -------------------------
+```
 
 ## Definitions
 

@@ -10,7 +10,7 @@ cis_ubuntu2204_section2: true
 cis_ubuntu2204_section3: true
 cis_ubuntu2204_section4: true
 cis_ubuntu2204_section5: true
-cis_ubuntu2204_section6: false
+cis_ubuntu2204_section6: true
 
 # CIS rules
 # ---------------------------------------
@@ -299,8 +299,8 @@ cis_ubuntu2204_rule_6_2_8: true
 cis_ubuntu2204_rule_6_2_9: true
 cis_ubuntu2204_rule_6_2_10: true
 cis_ubuntu2204_rule_6_2_11: true
-cis_ubuntu2204_rule_6_2_12: true
-cis_ubuntu2204_rule_6_2_13: true
+# cis_ubuntu2204_rule_6_2_12: true # NOTE: combined/same as 'cis_ubuntu2204_rule_6_2_12'
+# cis_ubuntu2204_rule_6_2_13: true # NOTE: combined/same as 'cis_ubuntu2204_rule_6_2_12'
 cis_ubuntu2204_rule_6_2_14: true
 cis_ubuntu2204_rule_6_2_15: true
 cis_ubuntu2204_rule_6_2_16: true

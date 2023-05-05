@@ -18,6 +18,7 @@
     - [variables which are recommended by CIS, but disable in this role](#variables-which-are-recommended-by-cis-but-disable-in-this-role)
     - [variable special usable between server and client](#variable-special-usable-between-server-and-client)
     - [variables to check and set for own purpose](#variables-to-check-and-set-for-own-purpose)
+    - [variable rules implemented, but only print information for manual check](#variable-rules-implemented-but-only-print-information-for-manual-check)
   - [Dependencies](#dependencies)
   - [Example Playbook](#example-playbook)
   - [Definitions](#definitions)
@@ -68,14 +69,14 @@ To start working in this Role you just need to **install** **Python** and **Ansi
 ```sh
 $sudo apt install python3 python3-pip sshpass
 # if python >= 3.11 used add also '--break-system-packages'
-$python3 -m pip install ansible yamllint
+$python3 -m pip install ansible ansible-lint yamllint
 ```
 
 For run **tests** with **molecule**, you need also to **install**:
 
 ```sh
 # if python >= 3.11 used add also '--break-system-packages'
-$python3 -m pip install molecule molecule-plugins[docker] ansible-lint
+$python3 -m pip install molecule molecule-plugins[docker]
 ```
 
 ## Role Variables
@@ -205,6 +206,36 @@ cis_ubuntu2204_pwquality:
     value: "-1"
   - key: "lcredit"
     value: "-1"
+```
+
+### variable rules implemented, but only print information for manual check
+
+```sh
+# SECTION2 | 2.4 | Ensure rsync service is either not installed or masked
+cis_ubuntu2204_rule_2_4: true
+
+# SECTION6 | 6.1.10 | Ensure no unowned files or directories exist
+cis_ubuntu2204_rule_6_1_10: true
+# SECTION6 | 6.1.11 | Ensure no ungrouped files or directories exist
+cis_ubuntu2204_rule_6_1_11: true
+# SECTION6 | 6.1.12 | Audit SUID executables
+cis_ubuntu2204_rule_6_1_12: true
+# SECTION6 | 6.1.13 | Audit SGID executables
+cis_ubuntu2204_rule_6_1_13: true
+# SECTION6 | 6.2.3 | Ensure all groups in /etc/passwd exist in /etc/group
+cis_ubuntu2204_rule_6_2_3: true
+# SECTION6 | 6.2.5 | Ensure no duplicate UIDs exist
+cis_ubuntu2204_rule_6_2_5: true
+# SECTION6 | 6.2.6 | Ensure no duplicate GIDs exist
+cis_ubuntu2204_rule_6_2_6: true
+# SECTION6 | 6.2.7 | Ensure no duplicate user names exist
+cis_ubuntu2204_rule_6_2_7 true
+# SECTION6 | 6.2.8 | Ensure no duplicate group names exist
+cis_ubuntu2204_rule_6_2_8 true
+# SECTION6 | 6.2.9 | Ensure root PATH Integrity
+cis_ubuntu2204_rule_6_2_9 true
+# SECTION6 | 6.2.10 | Ensure root is the only UID 0 account
+cis_ubuntu2204_rule_6_2_10 true
 ```
 
 ## Dependencies
@@ -580,39 +611,39 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 5.5.3     | Ensure default group for the root account is GID 0 (Automated)                                  |  x  |     |     |
 | 5.5.4     | Ensure default user umask is 027 or more restrictive (Automated)                                |  x  |     |     |
 | 5.5.5     | Ensure default user shell timeout is 900 seconds or less (Automated)                            |  x  |     |     |
-| 6         | **System Maintenance**                                                                          |     |     |     |
-| 6.1       | **System File Permissions**                                                                     |     |     |     |
-| 6.1.1     | Ensure permissions on /etc/passwd are configured (Automated)                                    |     |     |     |
-| 6.1.2     | Ensure permissions on /etc/passwd- are configured (Automated)                                   |     |     |     |
-| 6.1.3     | Ensure permissions on /etc/group are configured (Automated)                                     |     |     |     |
-| 6.1.4     | Ensure permissions on /etc/group- are configured (Automated)                                    |     |     |     |
-| 6.1.5     | Ensure permissions on /etc/shadow are configured (Automated)                                    |     |     |     |
-| 6.1.6     | Ensure permissions on /etc/shadow- are configured (Automated)                                   |     |     |     |
-| 6.1.7     | Ensure permissions on /etc/gshadow are configured (Automated)                                   |     |     |     |
-| 6.1.8     | Ensure permissions on /etc/gshadow- are configured (Automated)                                  |     |     |     |
-| 6.1.9     | Ensure no world writable files exist (Automated)                                                |     |     |     |
-| 6.1.10    | Ensure no unowned files or directories exist (Automated)                                        |     |     |     |
-| 6.1.11    | Ensure no ungrouped files or directories exist (Automated)                                      |     |     |     |
-| 6.1.12    | Audit SUID executables (Manual)                                                                 |     |     |     |
-| 6.1.13    | Audit SGID executables (Manual)                                                                 |     |     |     |
-| 6.2       | **Local User and Group Settings**                                                               |     |     |     |
-| 6.2.1     | Ensure accounts in /etc/passwd use shadowed passwords (Automated)                               |     |     |     |
-| 6.2.2     | Ensure /etc/shadow password fields are not empty (Automated)                                    |     |     |     |
-| 6.2.3     | Ensure all groups in /etc/passwd exist in /etc/group (Automated)                                |     |     |     |
-| 6.2.4     | Ensure shadow group is empty (Automated)                                                        |     |     |     |
-| 6.2.5     | Ensure no duplicate UIDs exist (Automated)                                                      |     |     |     |
-| 6.2.6     | Ensure no duplicate GIDs exist (Automated)                                                      |     |     |     |
-| 6.2.7     | Ensure no duplicate user names exist (Automated)                                                |     |     |     |
-| 6.2.8     | Ensure no duplicate group names exist (Automated)                                               |     |     |     |
-| 6.2.9     | Ensure root PATH Integrity (Automated)                                                          |     |     |     |
-| 6.2.10    | Ensure root is the only UID 0 account (Automated)                                               |     |     |     |
-| 6.2.11    | Ensure local interactive user home directories exist (Automated)                                |     |     |     |
-| 6.2.12    | Ensure local interactive users own their home directories (Automated)                           |     |     |     |
-| 6.2.13    | Ensure local interactive user home directories are mode 750 or more restrictive (Automated)     |     |     |     |
-| 6.2.14    | Ensure no local interactive user has .netrc files (Automated)                                   |     |     |     |
-| 6.2.15    | Ensure no local interactive user has .forward files (Automated)                                 |     |     |     |
-| 6.2.16    | Ensure no local interactive user has .rhosts files (Automated)                                  |     |     |     |
-| 6.2.17    | Ensure local interactive user dot files are not group or world writable (Automated)             |     |     |     |
+| 6         | **System Maintenance**                                                                          |     |  x  |     |
+| 6.1       | **System File Permissions**                                                                     |     |  x  |     |
+| 6.1.1     | Ensure permissions on /etc/passwd are configured (Automated)                                    |  x  |     |     |
+| 6.1.2     | Ensure permissions on /etc/passwd- are configured (Automated)                                   |  x  |     |     |
+| 6.1.3     | Ensure permissions on /etc/group are configured (Automated)                                     |  x  |     |     |
+| 6.1.4     | Ensure permissions on /etc/group- are configured (Automated)                                    |  x  |     |     |
+| 6.1.5     | Ensure permissions on /etc/shadow are configured (Automated)                                    |  x  |     |     |
+| 6.1.6     | Ensure permissions on /etc/shadow- are configured (Automated)                                   |  x  |     |     |
+| 6.1.7     | Ensure permissions on /etc/gshadow are configured (Automated)                                   |  x  |     |     |
+| 6.1.8     | Ensure permissions on /etc/gshadow- are configured (Automated)                                  |  x  |     |     |
+| 6.1.9     | Ensure no world writable files exist (Automated)                                                |  x  |     |     |
+| 6.1.10    | Ensure no unowned files or directories exist (Automated)                                        |     |  x  |     |
+| 6.1.11    | Ensure no ungrouped files or directories exist (Automated)                                      |     |  x  |     |
+| 6.1.12    | Audit SUID executables (Manual)                                                                 |     |  x  |     |
+| 6.1.13    | Audit SGID executables (Manual)                                                                 |     |  x  |     |
+| 6.2       | **Local User and Group Settings**                                                               |     |  x  |     |
+| 6.2.1     | Ensure accounts in /etc/passwd use shadowed passwords (Automated)                               |  x  |     |     |
+| 6.2.2     | Ensure /etc/shadow password fields are not empty (Automated)                                    |  x  |     |     |
+| 6.2.3     | Ensure all groups in /etc/passwd exist in /etc/group (Automated)                                |     |  x  |     |
+| 6.2.4     | Ensure shadow group is empty (Automated)                                                        |     |  x  |     |
+| 6.2.5     | Ensure no duplicate UIDs exist (Automated)                                                      |     |  x  |     |
+| 6.2.6     | Ensure no duplicate GIDs exist (Automated)                                                      |     |  x  |     |
+| 6.2.7     | Ensure no duplicate user names exist (Automated)                                                |     |  x  |     |
+| 6.2.8     | Ensure no duplicate group names exist (Automated)                                               |     |  x  |     |
+| 6.2.9     | Ensure root PATH Integrity (Automated)                                                          |     |  x  |     |
+| 6.2.10    | Ensure root is the only UID 0 account (Automated)                                               |     |  x  |     |
+| 6.2.11    | Ensure local interactive user home directories exist (Automated)                                |  x  |     |     |
+| 6.2.12    | Ensure local interactive users own their home directories (Automated)                           |  x  |     |     |
+| 6.2.13    | Ensure local interactive user home directories are mode 750 or more restrictive (Automated)     |  x  |     |     |
+| 6.2.14    | Ensure no local interactive user has .netrc files (Automated)                                   |  x  |     |     |
+| 6.2.15    | Ensure no local interactive user has .forward files (Automated)                                 |  x  |     |     |
+| 6.2.16    | Ensure no local interactive user has .rhosts files (Automated)                                  |  x  |     |     |
+| 6.2.17    | Ensure local interactive user dot files are not group or world writable (Automated)             |  x  |     |     |
 
 ## License
 

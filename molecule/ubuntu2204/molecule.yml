@@ -4,19 +4,6 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: ubuntu-23.04
-    image: mvladislav/docker-ubuntu-systemd-sudo-ansible:23.04
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - /sys/fs/cgroup/system.slice:/sys/fs/cgroup/system.slice:rw
-    tmpfs:
-      - /run
-      - /run/lock
-      - /tmp
-    privileged: true
-    cgroupns_mode: host
-    pre_build_image: true
   - name: ubuntu-22.04
     image: mvladislav/docker-ubuntu-systemd-sudo-ansible:22.04
     command: ${MOLECULE_DOCKER_COMMAND:-""}

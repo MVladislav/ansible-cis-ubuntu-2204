@@ -1,0 +1,58 @@
+---
+- name: PREPARE
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: "PREPARE | install openssh-server for testing under docker"
+      apt:
+        name: openssh-server
+        state: present
+        update_cache: yes
+    - name: "PREPARE | install grub files for testing under docker"
+      block:
+        - name: "PREPARE | install grub-common for grub-mkpasswd-pbkdf2 to testing under docker"
+          apt:
+            name: grub-common
+            state: present
+            update_cache: yes
+
+        - name: "PREPARE | create folder /boot/grub"
+          file:
+            name: /boot/grub
+            state: directory
+          changed_when: false
+        - name: "PREPARE | touch /boot/grub/grub.cfg"
+          file:
+            name: /boot/grub/grub.cfg
+            state: touch
+          changed_when: false
+
+        - name: "PREPARE | touch /etc/default/grub"
+          file:
+            name: /etc/default/grub
+            state: touch
+          changed_when: false
+
+    - name: "PREPARE | SECTION6 | prepare files to trigger some task"
+      ansible.builtin.shell: |
+        set -o pipefail
+        # SECTION6 | 6.1.9 | Ensure no world writable files exist
+        touch /abc && chmod 777 /abc
+        # SECTION6 | 6.2.1 | Ensure accounts in /etc/passwd use shadowed passwords
+        sed -e 's|^ubuntu:[^:]*:|ubuntu:abc:|' -i /etc/passwd
+        # SECTION6 | 6.2.2 | Ensure /etc/shadow password fields are not empty
+        sed -e 's|^ubuntu:[^:]*:|ubuntu::|' -i /etc/shadow
+        # SECTION6 | 6.2.4 | Ensure shadow group is empty
+        echo "shadow:x::666" >> /etc/group
+        # SECTION6 | 6.2.11 | Ensure local interactive user home directories exist
+        useradd abc
+        # SECTION6 | 6.2.14 | Ensure no local interactive user has .netrc files
+        # SECTION6 | 6.2.15 | Ensure no local interactive user has .forward files
+        # SECTION6 | 6.2.16 | Ensure no local interactive user has .rhosts files
+        touch /root/{.netrc,.forward,.rhosts}
+        # SECTION6 | 6.2.17 | Ensure local interactive user dot files are not group or world writable
+        chmod 777 /root/.profile
+      args:
+        executable: /bin/bash
+      changed_when: false
+      check_mode: false

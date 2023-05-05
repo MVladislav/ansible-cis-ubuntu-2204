@@ -597,6 +597,8 @@
       line: "UseDNS no"
     - reg: "^(#)?AcceptEnv"
       line: "AcceptEnv LANG LC_*"
+    - reg: "^(#)?AuthorizedKeysFile"
+      line: "AuthorizedKeysFile .ssh/authorized_keys"
     - reg: "^(#)?Subsystem"
       line: "Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO"
     - reg: "^(#)?HostKey /etc/ssh/ssh_host_ed25519_key"

@@ -3,16 +3,26 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint: |
-  set -e
-  yamllint . -c .yamllint
-  ansible-lint -c .ansible-lint
 platforms:
   - name: ubuntu-23.04
     image: mvladislav/docker-ubuntu-systemd-sudo-ansible:23.04
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup/system.slice:/sys/fs/cgroup/system.slice:rw
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+    privileged: true
+    cgroupns_mode: host
+    pre_build_image: true
+  - name: ubuntu-22.04
+    image: mvladislav/docker-ubuntu-systemd-sudo-ansible:22.04
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup/system.slice:/sys/fs/cgroup/system.slice:rw
     tmpfs:
       - /run
       - /run/lock
@@ -39,6 +49,7 @@ provisioner:
       poll_interval: 3
       forks: 100
       conditional_bare_variables: false
+      remote_tmp: /var/tmp
     connection:
       pipelining: true
     ssh_connection:

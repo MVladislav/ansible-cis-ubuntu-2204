@@ -181,10 +181,10 @@ cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
 # put None or list of users
 # cron allow users
 cis_ubuntu2204_cron_allow_users:
-  - "{{ ansible_user }}"
+  - root
 # at allow users
 cis_ubuntu2204_at_allow_users:
-  - "{{ ansible_user }}"
+  - root
 
 # allows/denies for users/groups (4 possible variables can be used/activated)
 # put None or list of users (comma separated user list)
@@ -261,25 +261,53 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_section5: true
       cis_ubuntu2204_section6: true
       # -------------------------
-      cis_ubuntu2204_rule_1_6_1_3: false
-      cis_ubuntu2204_rule_1_6_1_4: false
+      cis_ubuntu2204_rule_1_4_1: false # bootloader password
+      cis_ubuntu2204_set_boot_pass: false # bootloader password
+      cis_ubuntu2204_rule_1_4_3: false # authentication required for single user mode
+      # -------------------------
+      cis_ubuntu2204_rule_1_6_1_3: false # AppArmor enforce mode
+      cis_ubuntu2204_rule_1_6_1_4: false # AppArmor enforce mode
       # -------------------------
       cis_ubuntu2204_allow_gdm_gui: true
       cis_ubuntu2204_allow_autofs: true
-      # cis_ubuntu2204_rule_1_1_10: false # Disable USB Storage
+      cis_ubuntu2204_rule_1_1_10: false # Disable USB Storage
+      cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
       cis_ubuntu2204_time_synchronization_ntp_server: '{{ ansible_host_default_ntp | default("time.cloudflare.com")}}'
       cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
-      cis_ubuntu2204_install_aide: "{{ cis_setup_aide | default(false) | bool }}"
-      cis_ubuntu2204_config_aide: "{{ cis_setup_aide | default(false) | bool }}"
       cis_ubuntu2204_allow_cups: true
       # -------------------------
-      cis_ubuntu2204_required_ipv6: true
+      cis_ubuntu2204_install_aide: "{{ cis_setup_aide | default(false) | bool }}"
+      cis_ubuntu2204_config_aide: "{{ cis_setup_aide | default(false) | bool }}"
+      cis_ubuntu2204_aide_cron:
+        cron_user: root
+        cron_file: aide
+        aide_job: "/usr/bin/aide.wrapper --config /etc/aide/aide.conf --check"
+        aide_minute: 0
+        aide_hour: 5
+        aide_day: "*"
+        aide_month: "*"
+        aide_weekday: "*"
+      # -------------------------
+      cis_ubuntu2204_required_ipv6: "{{ cis_ipv6_required | default(false) | bool }}"
       cis_ubuntu2204_firewall: ufw
       cis_ubuntu2204_firewall_ufw_outgoing_policy: allow
       # -------------------------
       cis_ubuntu2204_ssh_allow_groups: None
-      cis_ubuntu2204_cron_allow_users: None
-      cis_ubuntu2204_at_allow_users: None
+      cis_ubuntu2204_cron_allow_users:
+        - root
+      cis_ubuntu2204_at_allow_users:
+        - root
+      cis_ubuntu2204_pwquality:
+        - key: "minlen"
+          value: "8"
+        - key: "dcredit"
+          value: "-1"
+        - key: "ucredit"
+          value: "-1"
+        - key: "ocredit"
+          value: "-1"
+        - key: "lcredit"
+          value: "-1"
       # -------------------------
 ```
 

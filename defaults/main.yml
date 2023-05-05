@@ -389,10 +389,10 @@ cis_ubuntu2204_set_journal_max_file_sec:
 cis_ubuntu2204_syslog: rsyslog
 # cron allow users (cis_ubuntu2204_rule_5_1_9)
 cis_ubuntu2204_cron_allow_users:
-  - "{{ ansible_user }}"
+  - root
 # at allow users (cis_ubuntu2204_rule_5_1_9)
 cis_ubuntu2204_at_allow_users:
-  - "{{ ansible_user }}"
+  - root
 # ssh conf's
 # allows/denies for users/groups (cis_ubuntu2204_rule_5_2_4)
 #cis_ubuntu2204_ssh_allow_users: root,user

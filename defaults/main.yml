@@ -313,7 +313,7 @@ cis_ubuntu2204_rule_6_2_17: true
 # autofs allow auto mount (cis_ubuntu2204_rule_1_1_9)
 cis_ubuntu2204_allow_autofs: false
 # AIDE perform install/config (cis_ubuntu2204_rule_1_3_1|cis_ubuntu2204_rule_1_3_2|cis_ubuntu2204_rule_4_1_4_11)
-cis_ubuntu2204_install_aide: true
+cis_ubuntu2204_install_aide: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
 cis_ubuntu2204_config_aide: true
 # BOOTLOADER set (cis_ubuntu2204_rule_1_4_1)
 cis_ubuntu2204_set_boot_pass: false
@@ -450,6 +450,7 @@ cis_ubuntu2204_pwquality:
   - key: "lcredit"
     value: "-1"
 cis_ubuntu2204_encrypt_method: yescrypt # yescrypt | sha512
+
 # ------------------------------------------------------------------------------
 
 # SPECIAL multi similar CIS rules set

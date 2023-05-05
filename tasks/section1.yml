@@ -281,29 +281,7 @@
 # TODO: 1.2.2
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | use nullmailer instead of postfix if not installed"
-  ansible.builtin.apt:
-    name: nullmailer
-    state: present
-    force_apt_get: true
-    install_recommends: false
-  when:
-    - cis_ubuntu2204_install_aide
-    - cis_ubuntu2204_rule_1_3_1
-    - not package_installed_postfix.rc == 0
-  tags:
-    - rule_1_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | install AIDE"
-  ansible.builtin.apt:
-    name:
-      - aide
-      - aide-common
-    state: present
-    force_apt_get: true
-    install_recommends: false
+- name: "SECTION1 | 1.3.1 | Ensure AIDE is installed"
   when:
     - cis_ubuntu2204_install_aide
     - cis_ubuntu2204_rule_1_3_1
@@ -311,46 +289,42 @@
     - rule_1_3
     - server_l1
     - workstation_l1
-
-- name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | stat AIDE DB"
-  ansible.builtin.stat:
-    path: /var/lib/aide/aide.db
-  register: cis_stat_aide_db
-  when:
-    - cis_ubuntu2204_install_aide
-    - cis_ubuntu2204_config_aide
-    - cis_ubuntu2204_rule_1_3_1
-  tags:
-    - rule_1_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | iniz AIDE | could take time ..."
-  ansible.builtin.command: /usr/sbin/aideinit
-  args:
-    creates: /var/lib/aide/aide.db
-  when:
-    - cis_ubuntu2204_install_aide
-    - cis_ubuntu2204_config_aide
-    - cis_ubuntu2204_rule_1_3_1
-    - not cis_stat_aide_db.stat.exists
-  tags:
-    - rule_1_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | stat AIDE daily cron"
-  ansible.builtin.stat:
-    path: /etc/cron.daily/aide
-  register: cis_stat_aide_cron
-  when:
-    - cis_ubuntu2204_install_aide
-    - cis_ubuntu2204_config_aide
-    - cis_ubuntu2204_rule_1_3_1
-  tags:
-    - rule_1_3
-    - server_l1
-    - workstation_l1
+  block:
+    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | use nullmailer instead of postfix if not installed"
+      ansible.builtin.apt:
+        name: nullmailer
+        state: present
+        force_apt_get: true
+        install_recommends: false
+      when:
+        - not package_installed_postfix.rc == 0
+    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | install AIDE"
+      ansible.builtin.apt:
+        name:
+          - aide
+          - aide-common
+        state: present
+        force_apt_get: true
+        install_recommends: false
+    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | stat AIDE DB"
+      ansible.builtin.stat:
+        path: /var/lib/aide/aide.db
+      register: cis_stat_aide_db
+      when:
+        - cis_ubuntu2204_config_aide
+    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | iniz AIDE | could take time ..."
+      ansible.builtin.command: /usr/sbin/aideinit
+      args:
+        creates: /var/lib/aide/aide.db
+      when:
+        - cis_ubuntu2204_config_aide
+        - not cis_stat_aide_db.stat.exists
+    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | stat AIDE daily cron"
+      ansible.builtin.stat:
+        path: /etc/cron.daily/aide
+      register: cis_stat_aide_cron
+      when:
+        - cis_ubuntu2204_config_aide
 
 - name: "SECTION1 | 1.3.2 | Ensure filesystem integrity is regularly checked"
   ansible.builtin.cron:
@@ -375,19 +349,7 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate password"
-  ansible.builtin.shell: |
-    set -o pipefail &&
-      if [ '{{ cis_ubuntu2204_bootloader_password }}' == 'random' ]; then
-        PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c12)
-      else
-        PASSWORD='{{ cis_ubuntu2204_bootloader_password }}'
-      fi
-    echo -e "$PASSWORD\n$PASSWORD" | grub-mkpasswd-pbkdf2 | awk '/grub.pbkdf/{print$NF}'
-  register: cis_grub_bootloader_password
-  args:
-    executable: /bin/bash
-  changed_when: false
+- name: "SECTION1 | 1.4.1 | Ensure bootloader password is set"
   when:
     - cis_ubuntu2204_set_boot_pass
     - cis_ubuntu2204_rule_1_4_1
@@ -395,41 +357,42 @@
     - rule_1_4
     - server_l1
     - workstation_l1
-    - molecule-idempotence-notest
-
-- name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate config"
-  ansible.builtin.copy:
-    dest: /etc/grub.d/00_password
-    content: "cat << EOF\nset superusers=\"root\"\npassword_pbkdf2 root {{ cis_grub_bootloader_password.stdout }}\nEOF"
-    owner: root
-    group: root
-    mode: "0755"
-  notify: generate new grub config
-  when:
-    - cis_ubuntu2204_set_boot_pass
-    - cis_grub_bootloader_password is defined
-    - cis_grub_bootloader_password.stdout is defined
-    - cis_grub_bootloader_password.stdout | length > 0
-    - cis_ubuntu2204_rule_1_4_1
-  tags:
-    - rule_1_4
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | disable password for system boot"
-  ansible.builtin.replace:
-    path: /etc/grub.d/10_linux
-    regexp: '--class os"'
-    replace: '--class os --unrestricted"'
-  notify: generate new grub config
-  when:
-    - cis_ubuntu2204_set_boot_pass
-    - cis_ubuntu2204_disable_boot_pass
-    - cis_ubuntu2204_rule_1_4_1
-  tags:
-    - rule_1_4
-    - server_l1
-    - workstation_l1
+  block:
+    - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate password"
+      ansible.builtin.shell: |
+        set -o pipefail &&
+          if [ '{{ cis_ubuntu2204_bootloader_password }}' == 'random' ]; then
+            PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c12)
+          else
+            PASSWORD='{{ cis_ubuntu2204_bootloader_password }}'
+          fi
+        echo -e "$PASSWORD\n$PASSWORD" | grub-mkpasswd-pbkdf2 | awk '/grub.pbkdf/{print$NF}'
+      register: cis_grub_bootloader_password
+      args:
+        executable: /bin/bash
+      changed_when: false
+      tags:
+        - molecule-idempotence-notest
+    - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate config"
+      ansible.builtin.copy:
+        dest: /etc/grub.d/00_password
+        content: "cat << EOF\nset superusers=\"root\"\npassword_pbkdf2 root {{ cis_grub_bootloader_password.stdout }}\nEOF"
+        owner: root
+        group: root
+        mode: "0755"
+      notify: generate new grub config
+      when:
+        - cis_grub_bootloader_password is defined
+        - cis_grub_bootloader_password.stdout is defined
+        - cis_grub_bootloader_password.stdout | length > 0
+    - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | disable password for system boot"
+      ansible.builtin.replace:
+        path: /etc/grub.d/10_linux
+        regexp: '--class os"'
+        replace: '--class os --unrestricted"'
+      notify: generate new grub config
+      when:
+        - cis_ubuntu2204_disable_boot_pass
 
 - name: "SECTION1 | 1.4.2 | Ensure permissions on bootloader config are configured"
   ansible.builtin.file:

@@ -179,7 +179,7 @@ cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
 # choose firewall
 cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
 
-# put None or list of users
+# put 'null' or list of users
 # cron allow users
 cis_ubuntu2204_cron_allow_users:
   - root
@@ -188,7 +188,7 @@ cis_ubuntu2204_at_allow_users:
   - root
 
 # allows/denies for users/groups (4 possible variables can be used/activated)
-# put None or list of users (comma separated user list)
+# put 'null' or list of users (comma separated user list)
 # default set to add ssh as group to allow use ssh (do not forget add group to user)
 #cis_ubuntu2204_ssh_allow_users: root,user
 cis_ubuntu2204_ssh_allow_groups: ssh
@@ -293,7 +293,7 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_firewall: ufw
       cis_ubuntu2204_firewall_ufw_outgoing_policy: allow
       # -------------------------
-      cis_ubuntu2204_ssh_allow_groups: None
+      cis_ubuntu2204_ssh_allow_groups: null
       cis_ubuntu2204_cron_allow_users:
         - root
       cis_ubuntu2204_at_allow_users:

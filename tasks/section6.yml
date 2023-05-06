@@ -551,7 +551,11 @@
         - cis_ubuntu2204_root_is_the_only_uid_0_account.stdout_lines is defined
         - cis_ubuntu2204_root_is_the_only_uid_0_account.stdout_lines | length > 0
 
-- name: "SECTION6 | 6.2.11 | Ensure local interactive user home directories exist"
+- name: |
+
+    SECTION6 | 6.2.11 | Ensure local interactive user home directories exist
+    SECTION6 | 6.2.12 | Ensure local interactive users own their home directories
+    SECTION6 | 6.2.13 | Ensure local interactive user home directories are mode 750 or more restrictive
   when:
     - cis_ubuntu2204_rule_6_2_11
   tags:
@@ -580,12 +584,6 @@
       # when:
       #   - cis_ubuntu2204_list_of_user_home.stdout_lines is defined
       #   - cis_ubuntu2204_list_of_user_home.stdout_lines | length > 0
-
-# NOTE: will still be set in rule 'cis_ubuntu2204_rule_6_2_11'
-# - name: "SECTION6 | 6.2.12 | Ensure local interactive users own their home directories"
-
-# NOTE: will still be set in rule 'cis_ubuntu2204_rule_6_2_11'
-# - name: "SECTION6 | 6.2.13 | Ensure local interactive user home directories are mode 750 or more restrictive"
 
 - name: "SECTION6 | 6.2.14 | Ensure no local interactive user has .netrc files"
   when:

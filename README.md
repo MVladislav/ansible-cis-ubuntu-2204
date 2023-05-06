@@ -46,17 +46,17 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisec
 
 ## TODO
 
-- implement section 3, 4, 5 and 6
 - improve grub changes
   - make changes for lvm or zfs
   - create checker and add for if grub exists with lines like, because we only check for replace in section
     - `GRUB_CMDLINE_LINUX`
-- make cis_ubuntu2204_rule_1_6_1_3 not same as cis_ubuntu2204_rule_1_6_1_4 to have an option
+- improve auditd for 32 or 64 system check to add rules
 - check ufw sysctl usage
 - improve cis_ubuntu2204_set_journal_upload
-- test cron/at with docker if setup correct
-  - current cron not installed and will be skipped
 - improve with some variables for section5
+- extend cis_ubuntu2204_rule_5_3_4
+  - to also check in subfiles under '/etc/sudoers.d/'
+- rules under '5.4', should be more tested
 
 ## Requirements
 
@@ -114,9 +114,10 @@ cis_ubuntu2204_set_boot_pass: false
 cis_ubuntu2204_rule_1_4_3: false
 
 # Ensure all AppArmor Profiles are in enforce or complain mode
-# (will be same as 'cis_ubuntu2204_rule_1_6_1_4')
+# NOTE: will perform Profiles as complain mode
 cis_ubuntu2204_rule_1_6_1_3: false
 # Ensure all AppArmor Profiles are enforcing
+# NOTE: will perform Profiles as enforcing mode
 cis_ubuntu2204_rule_1_6_1_4: false
 
 # cis define to deny all outgoing traffic and whitelist all needed
@@ -210,7 +211,7 @@ cis_ubuntu2204_pwquality:
 
 ### variable rules implemented, but only print information for manual check
 
-```sh
+```yaml
 # SECTION2 | 2.4 | Ensure rsync service is either not installed or masked
 cis_ubuntu2204_rule_2_4: true
 
@@ -229,13 +230,13 @@ cis_ubuntu2204_rule_6_2_5: true
 # SECTION6 | 6.2.6 | Ensure no duplicate GIDs exist
 cis_ubuntu2204_rule_6_2_6: true
 # SECTION6 | 6.2.7 | Ensure no duplicate user names exist
-cis_ubuntu2204_rule_6_2_7 true
+cis_ubuntu2204_rule_6_2_7: true
 # SECTION6 | 6.2.8 | Ensure no duplicate group names exist
-cis_ubuntu2204_rule_6_2_8 true
+cis_ubuntu2204_rule_6_2_8: true
 # SECTION6 | 6.2.9 | Ensure root PATH Integrity
-cis_ubuntu2204_rule_6_2_9 true
+cis_ubuntu2204_rule_6_2_9: true
 # SECTION6 | 6.2.10 | Ensure root is the only UID 0 account
-cis_ubuntu2204_rule_6_2_10 true
+cis_ubuntu2204_rule_6_2_10: true
 ```
 
 ## Dependencies
@@ -265,7 +266,7 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_set_boot_pass: false # bootloader password
       cis_ubuntu2204_rule_1_4_3: false # authentication required for single user mode
       # -------------------------
-      cis_ubuntu2204_rule_1_6_1_3: false # AppArmor enforce mode
+      cis_ubuntu2204_rule_1_6_1_3: false # AppArmor complain mode
       cis_ubuntu2204_rule_1_6_1_4: false # AppArmor enforce mode
       # -------------------------
       cis_ubuntu2204_allow_gdm_gui: true
@@ -658,7 +659,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 6.2.1     | Ensure accounts in /etc/passwd use shadowed passwords (Automated)                               |  x  |     |     |
 | 6.2.2     | Ensure /etc/shadow password fields are not empty (Automated)                                    |  x  |     |     |
 | 6.2.3     | Ensure all groups in /etc/passwd exist in /etc/group (Automated)                                |     |  x  |     |
-| 6.2.4     | Ensure shadow group is empty (Automated)                                                        |     |  x  |     |
+| 6.2.4     | Ensure shadow group is empty (Automated)                                                        |  x  |     |     |
 | 6.2.5     | Ensure no duplicate UIDs exist (Automated)                                                      |     |  x  |     |
 | 6.2.6     | Ensure no duplicate GIDs exist (Automated)                                                      |     |  x  |     |
 | 6.2.7     | Ensure no duplicate user names exist (Automated)                                                |     |  x  |     |

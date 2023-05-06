@@ -36,7 +36,7 @@
         daemon_reload: false
         enabled: false
         masked: true
-        state: restarted
+        state: stopped
       when:
         - cis_ubuntu2204_time_synchronization_service != "systemd-timesyncd"
         - service_status_systemd_timesyncd.stdout == "loaded"

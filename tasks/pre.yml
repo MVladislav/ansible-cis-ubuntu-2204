@@ -16,12 +16,12 @@
     path: /boot/grub/grub.cfg
   register: cis_grub_cfg
 
-- name: "PRE | check the grub.conf configuration"
+- name: "PRE | 1.4.1 | check the grub.conf configuration"
   ansible.builtin.stat:
     path: /boot/grub/grub.conf
   register: cis_grub_conf
 
-- name: "PRE | check the menu.lst configuration"
+- name: "PRE | 1.4.1 | check the menu.lst configuration"
   ansible.builtin.stat:
     path: "/boot/grub/menu.lst"
   register: cis_menu_lst
@@ -102,16 +102,16 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "PRE | 1.3.1, 2.2.15 | check if 'postfix' package is installed"
-  ansible.builtin.command: "dpkg -V postfix"
-  register: package_installed_postfix
+- name: "PRE | 1.5.2 | check if 'prelink' package is installed"
+  ansible.builtin.command: "dpkg -V prelink"
+  register: package_installed_prelink
   changed_when: false
   failed_when: false
   check_mode: false
 
-- name: "PRE | 1.5.2 | check if 'prelink' package is installed"
-  ansible.builtin.command: "dpkg -V prelink"
-  register: package_installed_prelink
+- name: "PRE | 2.2.15 | check if 'postfix' package is installed"
+  ansible.builtin.command: "dpkg -V postfix"
+  register: package_installed_postfix
   changed_when: false
   failed_when: false
   check_mode: false

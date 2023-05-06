@@ -1,6 +1,9 @@
 exclude_paths:
-  - molecule/
-  - .github/
   - .git/
+  - .github/
+  - molecule/
 warn_list:
   - name[template] # Rule for checking task and play names.
+skip_list:
+  - yaml[comments-indentation]
+  - yaml[comments]

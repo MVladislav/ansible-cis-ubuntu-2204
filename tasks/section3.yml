@@ -505,7 +505,7 @@
       community.general.ufw:
         policy: deny
         direction: routed
-        route: yes
+        route: true
         log: true
 
 # ------------------------------------------------------------------------------

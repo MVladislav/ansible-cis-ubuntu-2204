@@ -690,7 +690,7 @@
         patterns: ".??*"
         file_type: file
         hidden: true
-        recurse: yes
+        recurse: true
       loop: "{{ cis_ubuntu2204_local_interactive_user_dot_files.stdout_lines }}"
       register: cis_ubuntu2204_local_interactive_user_dot_files_found
     - name: "SECTION6 | 6.2.17 | Ensure local interactive user dot files are not group or world writable | set permission"

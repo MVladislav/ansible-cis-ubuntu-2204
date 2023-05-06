@@ -33,10 +33,7 @@
     - name: "SECTION2 | 2.1.1.1 | Ensure a single time synchronization daemon is in use | mask systemd-timesyncd"
       ansible.builtin.systemd:
         name: systemd-timesyncd
-        daemon_reload: false
-        enabled: false
         masked: true
-        state: stopped
       when:
         - cis_ubuntu2204_time_synchronization_service != "systemd-timesyncd"
         - service_status_systemd_timesyncd.stdout == "loaded"

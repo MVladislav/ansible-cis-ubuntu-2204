@@ -125,6 +125,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_no_world_writable_files
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.1.9 | Ensure no world writable files exist | removing write access"
       ansible.builtin.file:
@@ -150,6 +151,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_no_unowned_files_or_directories
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.1.10 | Ensure no unowned files or directories exist | print info"
       ansible.builtin.debug:
@@ -182,6 +184,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_no_ungrouped_files_or_directories
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.1.11 | Ensure no ungrouped files or directories exist | print info"
       ansible.builtin.debug:
@@ -214,6 +217,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_suid_executables
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.1.12 | Audit SUID executables | print info"
       ansible.builtin.debug:
@@ -246,6 +250,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_sgid_executables
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.1.13 | Audit SGID executables | print info"
       ansible.builtin.debug:
@@ -290,6 +295,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_empty_password_fields
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.2 | Ensure /etc/shadow password fields are not empty | lock user"
       ansible.builtin.user:
@@ -323,6 +329,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_groups_for_passwd_exists_in_group
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.3 | Ensure all groups in /etc/passwd exist in /etc/group | print info"
       ansible.builtin.debug:
@@ -375,6 +382,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_duplicate_uids
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.5 | Ensure no duplicate UIDs exist | print info"
       ansible.builtin.debug:
@@ -407,6 +415,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_duplicate_gids
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.6 | Ensure no duplicate GIDs exist | print info"
       ansible.builtin.debug:
@@ -439,6 +448,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_duplicate_user_names
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.7 | Ensure no duplicate user names exist | print info"
       ansible.builtin.debug:
@@ -471,6 +481,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_duplicate_group_names
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.8 | Ensure no duplicate group names exist | print info"
       ansible.builtin.debug:
@@ -513,6 +524,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_root_path_integrity
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.9 | Ensure root PATH Integrity | print info"
       ansible.builtin.debug:
@@ -538,6 +550,7 @@
       ansible.builtin.command: "awk -F: '($3 == 0) { print $1 }' /etc/passwd"
       register: cis_ubuntu2204_root_is_the_only_uid_0_account
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.10 | Ensure root is the only UID 0 account | print info"
       ansible.builtin.debug:
@@ -572,6 +585,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_list_of_user_home
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.11 | Ensure local interactive user home directories exist | create home dir"
       ansible.builtin.file:
@@ -602,6 +616,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_local_interactive_user_netrc
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.14 | Ensure no local interactive user has .netrc files | create home dir"
       ansible.builtin.file:
@@ -629,6 +644,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_local_interactive_user_forward
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.15 | Ensure no local interactive user has .forward files | create home dir"
       ansible.builtin.file:
@@ -656,6 +672,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_local_interactive_user_rhosts
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.16 | Ensure no local interactive user has .rhosts files | create home dir"
       ansible.builtin.file:
@@ -683,6 +700,7 @@
         executable: /bin/bash
       register: cis_ubuntu2204_local_interactive_user_dot_files
       changed_when: false
+      failed_when: false
       check_mode: false
     - name: "SECTION6 | 6.2.17 | Ensure local interactive user dot files are not group or world writable | find dot files"
       ansible.builtin.find:

@@ -2,10 +2,6 @@
 
 ---
 
-**==> IN WORK <==**
-
----
-
 [![Ansible Lint](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ansible-lint.yml)
 [![Ansible Molecule Test](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml/badge.svg)](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml)
 
@@ -57,6 +53,7 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisec
 - extend cis_ubuntu2204_rule_5_3_4
   - to also check in subfiles under '/etc/sudoers.d/'
 - rules under '5.4', should be more tested
+  - example for 'cis_ubuntu2204_rule_5_4_2' wich fail to use password after performed
 
 ## Requirements
 
@@ -128,6 +125,9 @@ cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
 # active journal upload to remote log collection
 # do not forget set related variables 'cis_ubuntu2204_set_journal_upload_*'
 cis_ubuntu2204_set_journal_upload: false
+
+# Ensure lockout for failed password attempts is configured
+cis_ubuntu2204_rule_5_4_2: false
 ```
 
 ### variable special usable between server and client
@@ -265,6 +265,8 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_rule_1_4_1: false # bootloader password
       cis_ubuntu2204_set_boot_pass: false # bootloader password
       cis_ubuntu2204_rule_1_4_3: false # authentication required for single user mode
+      # -------------------------
+      cis_ubuntu2204_rule_5_4_2: false # lockout for failed password attempts # NOTE: will fail to use password
       # -------------------------
       cis_ubuntu2204_rule_1_6_1_3: false # AppArmor complain mode
       cis_ubuntu2204_rule_1_6_1_4: false # AppArmor enforce mode

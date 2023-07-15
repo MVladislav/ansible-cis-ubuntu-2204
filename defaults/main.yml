@@ -449,6 +449,7 @@ cis_ubuntu2204_pwquality:
     value: "-1"
   - key: "lcredit"
     value: "-1"
+cis_ubuntu2204_remember_reuse: 5
 cis_ubuntu2204_encrypt_method: yescrypt # yescrypt | sha512
 
 # ------------------------------------------------------------------------------

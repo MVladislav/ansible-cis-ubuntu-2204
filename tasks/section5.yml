@@ -854,7 +854,7 @@
     regexp: '^(#)?password(.*?)pam_unix\.so '
     line: >
       password [success=1 default=ignore] pam_unix.so obscure
-      use_authtok try_first_pass {{ cis_ubuntu2204_encrypt_method | lower }} remember=5
+      use_authtok try_first_pass {{ cis_ubuntu2204_encrypt_method | lower }} remember={{ cis_ubuntu2204_remember_reuse }}
     state: present
     create: true
     mode: "0644"
@@ -880,7 +880,9 @@
       ansible.builtin.lineinfile:
         dest: /etc/pam.d/common-password
         regexp: '^(#)?password(.*?)pam_unix\.so '
-        line: "password [success=1 default=ignore] pam_unix.so obscure use_authtok try_first_pass remember=5"
+        line: >
+          password [success=1 default=ignore] pam_unix.so obscure
+          use_authtok try_first_pass {{ cis_ubuntu2204_encrypt_method | lower }} remember={{ cis_ubuntu2204_remember_reuse }}
         state: present
         create: true
         mode: "0644"

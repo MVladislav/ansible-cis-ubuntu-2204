@@ -229,6 +229,7 @@
         mode: "0644"
       when:
         - cis_ubuntu2204_ssh_allow_users is defined
+        - cis_ubuntu2204_ssh_allow_users is not none
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | AllowGroups"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
@@ -239,6 +240,7 @@
         mode: "0644"
       when:
         - cis_ubuntu2204_ssh_allow_groups is defined
+        - cis_ubuntu2204_ssh_allow_groups is not none
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | DenyUsers"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
@@ -249,6 +251,7 @@
         mode: "0644"
       when:
         - cis_ubuntu2204_ssh_deny_users is defined
+        - cis_ubuntu2204_ssh_deny_users is not none
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | DenyGroups"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
@@ -259,6 +262,7 @@
         mode: "0644"
       when:
         - cis_ubuntu2204_ssh_deny_groups is defined
+        - cis_ubuntu2204_ssh_deny_groups is not none
 
 - name: "SECTION5 | 5.2.5 | Ensure SSH LogLevel is appropriate"
   ansible.builtin.lineinfile:

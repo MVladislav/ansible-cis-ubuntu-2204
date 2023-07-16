@@ -46,6 +46,8 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisec
   - make changes for lvm or zfs
   - create checker and add for if grub exists with lines like, because we only check for replace in section
     - `GRUB_CMDLINE_LINUX`
+  - make a copy from template if grub not exists
+    - <https://askubuntu.com/questions/406229/there-was-no-etc-default-grub-file-so-how-come-my-system-was-able-to-boot>
 - improve auditd for 32 or 64 system check to add rules
 - check ufw sysctl usage
 - improve cis_ubuntu2204_set_journal_upload
@@ -54,6 +56,7 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisec
   - to also check in subfiles under '/etc/sudoers.d/'
 - rules under '5.4', should be more tested
   - example for 'cis_ubuntu2204_rule_5_4_2' wich fail to use password after performed
+  - seams error found, but need tests, CIS pdf define success=1 but default value in ubuntu is success=2
 
 ## Requirements
 
@@ -207,6 +210,13 @@ cis_ubuntu2204_pwquality:
     value: "-1"
   - key: "lcredit"
     value: "-1"
+
+# NOTE: check the two success values, in CIS-pdf they are defined with '1'
+#       but on ubuntu-23.04 it is set per default as '2'
+cis_ubuntu2204_remember_reuse: 5
+cis_ubuntu2204_encrypt_method: yescrypt # yescrypt | sha512
+cis_ubuntu2204_common_auth_success: 2
+cis_ubuntu2204_common_password_success: 2
 ```
 
 ### variable rules implemented, but only print information for manual check

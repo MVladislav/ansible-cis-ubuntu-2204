@@ -806,7 +806,7 @@
         insertafter: "{{ item.insertafter }}"
       with_items:
         - reg: '^(#)?auth(.*?)pam_unix\.so nullok'
-          line: "auth [success=1 default=ignore] pam_unix.so nullok"
+          line: "auth [success={{ cis_ubuntu2204_common_auth_success }} default=ignore] pam_unix.so nullok"
           insertafter: 'auth(.*?)pam_faillock\.so preauth'
         - reg: '^(#)?auth(.*?)pam_faillock\.so authfail '
           line: "auth [default=die] pam_faillock.so authfail "
@@ -853,7 +853,7 @@
     dest: /etc/pam.d/common-password
     regexp: '^(#)?password(.*?)pam_unix\.so '
     line: >
-      password [success=1 default=ignore] pam_unix.so obscure
+      password [success={{ cis_ubuntu2204_common_password_success }} default=ignore] pam_unix.so obscure
       use_authtok try_first_pass {{ cis_ubuntu2204_encrypt_method | lower }} remember={{ cis_ubuntu2204_remember_reuse }}
     state: present
     create: true
@@ -881,7 +881,7 @@
         dest: /etc/pam.d/common-password
         regexp: '^(#)?password(.*?)pam_unix\.so '
         line: >
-          password [success=1 default=ignore] pam_unix.so obscure
+          password [success={{ cis_ubuntu2204_common_password_success }} default=ignore] pam_unix.so obscure
           use_authtok try_first_pass {{ cis_ubuntu2204_encrypt_method | lower }} remember={{ cis_ubuntu2204_remember_reuse }}
         state: present
         create: true

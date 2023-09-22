@@ -348,8 +348,7 @@ cis_ubuntu2204_root_password: random
 # grub default file path (cis_ubuntu2204_rule_1_6_1_2)
 cis_ubuntu2204_default_grub_file: /etc/default/grub
 # gdm banner message (cis_ubuntu2204_rule_1_8_2)
-cis_ubuntu2204_gdm_warning_banner: >
-  Authorized uses only. All activity may be monitored and reported
+cis_ubuntu2204_gdm_warning_banner: Authorized uses only. All activity may be monitored and reported
 # choose time synchronization (cis_ubuntu2204_rule_2_1_1_1)
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
 cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com

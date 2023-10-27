@@ -3,9 +3,9 @@ name: Ansible Molecule Test
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      - main
   pull_request:
-    branches: [main, develop]
   workflow_dispatch:
 
 jobs:

@@ -342,9 +342,9 @@ cis_ubuntu2204_aide_cron:
   aide_month: "*"
   aide_weekday: "*"
 # bootloader password. 'random' makes random password (cis_ubuntu2204_rule_1_4_1)
-cis_ubuntu2204_bootloader_password: random
+cis_ubuntu2204_bootloader_password: random # pragma: allowlist secret
 # root password. 'random' makes random password (cis_ubuntu2204_rule_1_4_3)
-cis_ubuntu2204_root_password: random
+cis_ubuntu2204_root_password: random # pragma: allowlist secret
 # grub default file path (cis_ubuntu2204_rule_1_6_1_2)
 cis_ubuntu2204_default_grub_file: /etc/default/grub
 # gdm banner message (cis_ubuntu2204_rule_1_8_2)
@@ -394,10 +394,10 @@ cis_ubuntu2204_at_allow_users:
   - root
 # ssh conf's
 # allows/denies for users/groups (cis_ubuntu2204_rule_5_2_4)
-#cis_ubuntu2204_ssh_allow_users: root,user
+# 'optional:' cis_ubuntu2204_ssh_allow_users: root,user
 cis_ubuntu2204_ssh_allow_groups: ssh
-#cis_ubuntu2204_ssh_deny_users: root,user
-#cis_ubuntu2204_ssh_deny_groups: root,ssh
+# 'optional:' cis_ubuntu2204_ssh_deny_users: root,user
+# 'optional:' cis_ubuntu2204_ssh_deny_groups: root,ssh
 # log level (cis_ubuntu2204_rule_5_2_5)
 cis_ubuntu2204_ssh_log_level: VERBOSE # VERBOSE | INFO
 # Ciphers (cis_ubuntu2204_rule_5_2_13)

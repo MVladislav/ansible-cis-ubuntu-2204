@@ -55,7 +55,7 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisec
 - extend cis_ubuntu2204_rule_5_3_4
   - to also check in subfiles under '/etc/sudoers.d/'
 - rules under '5.4', should be more tested
-  - example for 'cis_ubuntu2204_rule_5_4_2' wich fail to use password after performed
+  - example for 'cis_ubuntu2204_rule_5_4_2' which fail to use password after performed
   - seams error found, but need tests, CIS pdf define success=1 but default value in ubuntu is success=2
 
 ## Requirements
@@ -577,7 +577,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 4.2.1.1.1 | Ensure systemd-journal-remote is installed (Automated)                                          |     |  x  |     |
 | 4.2.1.1.2 | Ensure systemd-journal-remote is configured (Manual)                                            |     |  x  |     |
 | 4.2.1.1.3 | Ensure systemd-journal-remote is enabled (Manual)                                               |  x  |     |     |
-| 4.2.1.1.4 | Ensure journald is not configured to recieve logs from a remote client (Automated)              |  x  |     |     |
+| 4.2.1.1.4 | Ensure journald is not configured to receive logs from a remote client (Automated)              |  x  |     |     |
 | 4.2.1.2   | Ensure journald service is enabled (Automated)                                                  |     |     |  x  |
 | 4.2.1.3   | Ensure journald is configured to compress large log files (Automated)                           |  x  |     |     |
 | 4.2.1.4   | Ensure journald is configured to write logfiles to persistent disk (Automated)                  |  x  |     |     |

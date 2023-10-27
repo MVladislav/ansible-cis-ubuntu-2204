@@ -791,7 +791,7 @@
 #     - server_l1
 #     - workstation_l1
 
-- name: "SECTION4 | 4.2.1.1.4 | Ensure journald is not configured to recieve logs from a remote client"
+- name: "SECTION4 | 4.2.1.1.4 | Ensure journald is not configured to receive logs from a remote client"
   ansible.builtin.systemd:
     name: systemd-journal-remote.socket
     daemon_reload: true

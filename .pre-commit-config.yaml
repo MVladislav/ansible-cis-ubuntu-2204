@@ -13,7 +13,6 @@ repos:
     hooks:
       - id: codespell
         args:
-          - -L bumper
           - --ignore-words-list=ihs,ro,fo,iif
           - --skip="./.*,*.csv,*.json"
           - --quiet-level=2

@@ -6,11 +6,11 @@
 # CIS sections
 # ---------------------------------------
 cis_ubuntu2204_section1: true
-cis_ubuntu2204_section2: true
-cis_ubuntu2204_section3: true
-cis_ubuntu2204_section4: true
-cis_ubuntu2204_section5: true
-cis_ubuntu2204_section6: true
+cis_ubuntu2204_section2: false
+cis_ubuntu2204_section3: false
+cis_ubuntu2204_section4: false
+cis_ubuntu2204_section5: false
+cis_ubuntu2204_section6: false
 
 # CIS rules
 # ---------------------------------------

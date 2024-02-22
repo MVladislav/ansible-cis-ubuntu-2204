@@ -921,4 +921,5 @@
     - rule_1_9
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
 # ------------------------------------------------------------------------------

@@ -1,0 +1,9 @@
+---
+blank_issues_enabled: false
+contact_links:
+  - name: 🤔 I have a question or need support
+    url: https://github.com/MVladislav/ansible-cis-ubuntu-2204/discussions
+    about: This issue tracker is for bugs only, not general support questions. Please refer to our Discussions.
+  - name: 🚀 Feature Request
+    url: https://github.com/MVladislav/ansible-cis-ubuntu-2204/discussions/new?category=feature-requests
+    about: Remember to search for existing feature requests and "up-vote" any you like.

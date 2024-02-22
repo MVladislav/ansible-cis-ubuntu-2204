@@ -1,2 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# adding github settings to show correct language
+*.yml linguist-detectable=true
+*.yaml linguist-detectable=true
+*.j2 linguist-detectable=true
+*.md linguist-documentation

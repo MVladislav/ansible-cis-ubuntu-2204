@@ -1,5 +1,6 @@
 ---
 ##### CI for use by github no need for action to be added
+##### https://pre-commit.com/hooks.html
 ##### Inherited
 ci:
   autofix_prs: false
@@ -30,11 +31,8 @@ repos:
       - id: check-merge-conflict
       - id: check-added-large-files
       - id: check-case-conflict
-      # - id: no-commit-to-branch
-      #   args: [--branch, main]
 
       # General checks
-      - id: check-executables-have-shebangs
       - id: trailing-whitespace
         name: Trim Trailing Whitespace
         description: This hook trims trailing whitespace.
@@ -44,6 +42,9 @@ repos:
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
       - id: requirements-txt-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: mixed-line-ending
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v4.0.0-alpha.8

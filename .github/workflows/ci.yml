@@ -3,10 +3,14 @@ name: Ansible Molecule Test
 
 on:
   push:
-    branches:
-      - main
+    # branches: [main, develop]
+    tags:
+      - "*"
   pull_request:
+    branches: [main, develop]
   workflow_dispatch:
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 jobs:
   test:
@@ -24,10 +28,12 @@ jobs:
         molecule-os: ["ubuntu2204", "ubuntu2304"]
 
     steps:
-      - uses: actions/checkout@v3
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v4
 
+      # https://github.com/actions/setup-python
       - name: Set up Python ${{ matrix.python-version.version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version.version }}
 

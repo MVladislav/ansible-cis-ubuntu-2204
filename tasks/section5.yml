@@ -922,11 +922,11 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.5.1.2 | Ensure password expiration is 365 days or less"
+- name: "SECTION5 | 5.5.1.2 | Ensure password expiration is {{ cis_ubuntu2204_5_5_1_2_value }} days or less"
   ansible.builtin.lineinfile:
     dest: /etc/login.defs
     regexp: "^(#)?PASS_MAX_DAYS"
-    line: "PASS_MAX_DAYS 365"
+    line: "PASS_MAX_DAYS {{ cis_ubuntu2204_5_5_1_2_value }}"
     state: present
     create: true
     mode: "0644"

@@ -89,7 +89,7 @@
     - net.ipv4.ip_forward
     - net.ipv6.conf.all.forwarding
   when:
-    - cis_ubuntu2204_rule_3_2_2
+    - ansible_virtualization_type != "docker"
   tags:
     - rule_3_2
     - server_l1

@@ -305,7 +305,7 @@
     create: true
     mode: "0644"
   when:
-    - cis_ubuntu2204_rule_5_2_7
+    - cis_ubuntu2204_rule_5_2_7_value == 'ssh_root_login_disable' # variable on hosts inventory
     - service_status_ssh.stdout == "loaded"
   tags:
     - rule_5_2
@@ -449,7 +449,7 @@
     create: true
     mode: "0644"
   when:
-    - cis_ubuntu2204_rule_5_2_16
+    - cis_ubuntu2204_rule_5_2_16_value == "allow_ctp_forwarding_no"
     - service_status_ssh.stdout == "loaded"
   tags:
     - rule_5_2
@@ -580,7 +580,7 @@
     - reg: "^(#)?HostKeyAlgorithms"
       line: "HostKeyAlgorithms {{ cis_ubuntu2204_ssh_host_key_algorithms | join(',') }}"
     - reg: "^(#)?AuthenticationMethods"
-      line: "AuthenticationMethods publickey"
+      line: "AuthenticationMethods {{ cis_ubuntu2204_rule_5_2_23_authentication_methods_value | default(\"publickey\") }}"
     - reg: "^(#)?StrictModes"
       line: "StrictModes yes"
     - reg: "^(#)?PubkeyAuthentication"
@@ -588,7 +588,7 @@
     - reg: "^(#)?PubkeyAcceptedKeyTypes"
       line: "PubkeyAcceptedKeyTypes {{ cis_ubuntu2204_ssh_pubkey_accepted_key_types | join(',') }}"
     - reg: "^(#)?PasswordAuthentication"
-      line: "PasswordAuthentication no"
+      line: "PasswordAuthentication {{ PasswordAuthentication | default(\"no\") }}"
     - reg: "^(#)?ChallengeResponseAuthentication"
       line: "ChallengeResponseAuthentication no"
     - reg: "^(#)?GSSAPIAuthentication"
@@ -846,7 +846,7 @@
         - reg: "^(#)?fail_interval"
           line: "fail_interval = 900"
         - reg: "^(#)?unlock time"
-          line: "unlock time = 600"
+          line: "unlock time = 1800" # pci-dss compliance
 
 - name: "SECTION5 | 5.4.3 | Ensure password reuse is limited"
   ansible.builtin.lineinfile:
@@ -896,14 +896,17 @@
         create: true
         mode: "0644"
 
-# NOTE: is need to implement something?
-# - name: "SECTION5 | 5.4.5 | Ensure all current passwords uses the configured hashing algorithm"
-#   when:
-#     - cis_ubuntu2204_rule_5_4_5
-#   tags:
-#     - rule_5_4
-#     - server_l1
-#     - workstation_l1
+- name: "SECTION5 | 5.4.5 | Ensure all current passwords uses the configured hashing algorithm"
+  ansible.builtin.shell: >
+      UID_MIN=$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs) && awk -F: -v UID_MIN="${UID_MIN}" '( $3 >= UID_MIN && $1 != "nfsnobody" ) { print $1 }' /etc/passwd | xargs -n 1 chage -d 0
+  args:
+     executable: /bin/bash
+  when:
+    - cis_ubuntu2204_rule_5_4_5
+  tags:
+    - rule_5_4
+    - server_l1
+    - workstation_l1
 
 # ------------------------------------------------------------------------------
 
@@ -922,11 +925,11 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.5.1.2 | Ensure password expiration is {{ cis_ubuntu2204_5_5_1_2_value }} days or less"
+- name: "SECTION5 | 5.5.1.2 | Ensure password expiration is {{ cis_ubuntu2204_rule_5_5_1_2_value }} days or less"
   ansible.builtin.lineinfile:
     dest: /etc/login.defs
     regexp: "^(#)?PASS_MAX_DAYS"
-    line: "PASS_MAX_DAYS {{ cis_ubuntu2204_5_5_1_2_value }}"
+    line: "PASS_MAX_DAYS {{ cis_ubuntu2204_rule_5_5_1_2_value }}"
     state: present
     create: true
     mode: "0644"
@@ -967,13 +970,17 @@
     - server_l1
     - workstation_l1
 
-# - name: "SECTION5 | 5.5.1.5 | Ensure all users last password change date is in the past"
-#   when:
-#     - cis_ubuntu2204_rule_5_5_1_5
-#   tags:
-#     - rule_5_5_1
-#     - server_l1
-#     - workstation_l1
+ - name: "SECTION5 | 5.5.1.5 | Ensure all users last password change date is in the past"
+   ansible.builtin.shell: >
+      awk -F: '/^[^:]+:[^!*]/{print $1}' /etc/shadow | while read -r usr; \ do change=$(date -d "$(chage --list $usr | grep '^Last password change' | cut -d: -f2 | grep -v 'never$')" +%s); \ if [[ "$change" -gt "$(date +%s)" ]]; then \ echo "User: \"$usr\" last password change was \"$(chage --list $usr | grep '^Last password change' | cut -d: -f2)\""; fi; done
+   args:
+     executable: /bin/bash
+   when:
+     - cis_ubuntu2204_rule_5_5_1_5
+   tags:
+     - rule_5_5_1
+     - server_l1
+     - workstation_l1
 
 - name: "SECTION5 | 5.5.2 | Ensure system accounts are secured"
   when:

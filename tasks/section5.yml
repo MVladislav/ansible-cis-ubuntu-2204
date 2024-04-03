@@ -222,7 +222,7 @@
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | AllowUsers"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
-        regexp: "^(#)?AllowUsers"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}AllowUsers"
         line: "AllowUsers {{ cis_ubuntu2204_ssh_allow_users }}"
         state: present
         create: true
@@ -233,7 +233,7 @@
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | AllowGroups"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
-        regexp: "^(#)?AllowGroups"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}AllowGroups"
         line: "AllowGroups {{ cis_ubuntu2204_ssh_allow_groups }}"
         state: present
         create: true
@@ -244,7 +244,7 @@
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | DenyUsers"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
-        regexp: "^(#)?DenyUsers"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}DenyUsers"
         line: "DenyUsers {{ cis_ubuntu2204_ssh_deny_users }}"
         state: present
         create: true
@@ -255,7 +255,7 @@
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | DenyGroups"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
-        regexp: "^(#)?DenyGroups"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}DenyGroups"
         line: "DenyGroups {{ cis_ubuntu2204_ssh_deny_groups }}"
         state: present
         create: true
@@ -267,7 +267,7 @@
 - name: "SECTION5 | 5.2.5 | Ensure SSH LogLevel is appropriate"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?LogLevel"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}LogLevel"
     line: "LogLevel {{ cis_ubuntu2204_ssh_log_level }}"
     state: present
     create: true
@@ -283,7 +283,7 @@
 - name: "SECTION5 | 5.2.6 | Ensure SSH PAM is enabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?UsePAM"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}UsePAM"
     line: "UsePAM yes"
     state: present
     create: true
@@ -299,7 +299,7 @@
 - name: "SECTION5 | 5.2.7 | Ensure SSH root login is disabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?PermitRootLogin"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitRootLogin"
     line: "PermitRootLogin no"
     state: present
     create: true
@@ -315,7 +315,7 @@
 - name: "SECTION5 | 5.2.8 | Ensure SSH HostbasedAuthentication is disabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?HostbasedAuthentication"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}HostbasedAuthentication"
     line: "HostbasedAuthentication no"
     state: present
     create: true
@@ -331,7 +331,7 @@
 - name: "SECTION5 | 5.2.9 | Ensure SSH PermitEmptyPasswords is disabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?PermitEmptyPasswords"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitEmptyPasswords"
     line: "PermitEmptyPasswords no"
     state: present
     create: true
@@ -347,7 +347,7 @@
 - name: "SECTION5 | 5.2.10 | Ensure SSH PermitUserEnvironment is disabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?PermitUserEnvironment"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitUserEnvironment"
     line: "PermitUserEnvironment no"
     state: present
     create: true
@@ -363,7 +363,7 @@
 - name: "SECTION5 | 5.2.11 | Ensure SSH IgnoreRhosts is enabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?IgnoreRhosts"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}IgnoreRhosts"
     line: "IgnoreRhosts yes"
     state: present
     create: true
@@ -379,7 +379,7 @@
 - name: "SECTION5 | 5.2.12 | Ensure SSH X11 forwarding is disabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?X11Forwarding"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}X11Forwarding"
     line: "X11Forwarding no"
     state: present
     create: true
@@ -395,7 +395,7 @@
 - name: "SECTION5 | 5.2.13 | Ensure only strong Ciphers are used"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?Ciphers"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}Ciphers"
     line: "Ciphers {{ cis_ubuntu2204_ssh_ciphers | join(',') }}"
     state: present
     create: true
@@ -411,7 +411,7 @@
 - name: "SECTION5 | 5.2.14 | Ensure only strong MAC algorithms are used"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?MACs"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}MACs"
     line: "MACs {{ cis_ubuntu2204_ssh_macs | join(',') }}"
     state: present
     create: true
@@ -427,7 +427,7 @@
 - name: "SECTION5 | 5.2.15 | Ensure only strong Key Exchange algorithms are used"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?KexAlgorithms"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}KexAlgorithms"
     line: "KexAlgorithms {{ cis_ubuntu2204_ssh_kex_algorithms | join(',') }}"
     state: present
     create: true
@@ -443,7 +443,7 @@
 - name: "SECTION5 | 5.2.16 | Ensure SSH AllowTcpForwarding is disabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?AllowTcpForwarding"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}AllowTcpForwarding"
     line: "AllowTcpForwarding no"
     state: present
     create: true
@@ -459,7 +459,7 @@
 - name: "SECTION5 | 5.2.17 | Ensure SSH warning banner is configured"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?Banner"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}Banner"
     line: "Banner /etc/issue.net"
     state: present
     create: true
@@ -475,7 +475,7 @@
 - name: "SECTION5 | 5.2.18 | Ensure SSH MaxAuthTries is set to 4 or less"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?MaxAuthTries"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxAuthTries"
     line: "MaxAuthTries 4"
     state: present
     create: true
@@ -491,7 +491,7 @@
 - name: "SECTION5 | 5.2.19 | Ensure SSH MaxStartups is configured"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?MaxStartups"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxStartups"
     line: "MaxStartups 10:30:60"
     state: present
     create: true
@@ -507,7 +507,7 @@
 - name: "SECTION5 | 5.2.20 | Ensure SSH MaxSessions is set to 10 or less"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?MaxSessions"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxSessions"
     line: "MaxSessions 10"
     state: present
     create: true
@@ -523,7 +523,7 @@
 - name: "SECTION5 | 5.2.21 | Ensure SSH LoginGraceTime is set to one minute or less"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^(#)?LoginGraceTime"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}LoginGraceTime"
     line: "LoginGraceTime 60"
     state: present
     create: true
@@ -548,7 +548,7 @@
     - name: "SECTION5 | 5.2.22 | Ensure SSH Idle Timeout Interval is configured | ClientAliveInterval"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
-        regexp: "^(#)?ClientAliveInterval"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}ClientAliveInterval"
         line: "ClientAliveInterval 15"
         state: present
         create: true
@@ -556,7 +556,7 @@
     - name: "SECTION5 | 5.2.22 | Ensure SSH Idle Timeout Interval is configured | ClientAliveCountMax"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
-        regexp: "^(#)?ClientAliveCountMax"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}ClientAliveCountMax"
         line: "ClientAliveCountMax 3"
         state: present
         create: true
@@ -571,47 +571,47 @@
     create: true
     mode: "0644"
   with_items:
-    - reg: "^(#)?Port"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}Port"
       line: "Port 22"
-    - reg: "^(#)?AddressFamily"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}AddressFamily"
       line: "AddressFamily {{ cis_ubuntu2204_ssh_address_family }}"
-    - reg: "^(#)?ListenAddress"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress"
       line: "ListenAddress 0.0.0.0"
-    - reg: "^(#)?HostKeyAlgorithms"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKeyAlgorithms"
       line: "HostKeyAlgorithms {{ cis_ubuntu2204_ssh_host_key_algorithms | join(',') }}"
-    - reg: "^(#)?AuthenticationMethods"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthenticationMethods"
       line: "AuthenticationMethods publickey"
-    - reg: "^(#)?StrictModes"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}StrictModes"
       line: "StrictModes yes"
-    - reg: "^(#)?PubkeyAuthentication"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAuthentication"
       line: "PubkeyAuthentication yes"
-    - reg: "^(#)?PubkeyAcceptedKeyTypes"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAcceptedKeyTypes"
       line: "PubkeyAcceptedKeyTypes {{ cis_ubuntu2204_ssh_pubkey_accepted_key_types | join(',') }}"
-    - reg: "^(#)?PasswordAuthentication"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}PasswordAuthentication"
       line: "PasswordAuthentication no"
-    - reg: "^(#)?ChallengeResponseAuthentication"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}ChallengeResponseAuthentication"
       line: "ChallengeResponseAuthentication no"
-    - reg: "^(#)?GSSAPIAuthentication"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}GSSAPIAuthentication"
       line: "GSSAPIAuthentication no"
-    - reg: "^(#)?GSSAPICleanupCredentials"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}GSSAPICleanupCredentials"
       line: "GSSAPICleanupCredentials yes"
-    - reg: "^(#)?AllowAgentForwarding"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}AllowAgentForwarding"
       line: "AllowAgentForwarding yes"
-    - reg: "^(#)?PrintMotd"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}PrintMotd"
       line: "PrintMotd no"
-    - reg: "^(#)?UseDNS"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}UseDNS"
       line: "UseDNS no"
-    - reg: "^(#)?AcceptEnv"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}AcceptEnv"
       line: "AcceptEnv LANG LC_*"
-    - reg: "^(#)?AuthorizedKeysFile"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthorizedKeysFile"
       line: "AuthorizedKeysFile .ssh/authorized_keys"
-    - reg: "^(#)?Subsystem"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}Subsystem"
       line: "Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO"
-    - reg: "^(#)?HostKey /etc/ssh/ssh_host_ed25519_key"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_ed25519_key"
       line: "HostKey /etc/ssh/ssh_host_ed25519_key"
-    - reg: "^(#)?HostKey /etc/ssh/ssh_host_ecdsa_key"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_ecdsa_key"
       line: "HostKey /etc/ssh/ssh_host_ecdsa_key"
-    - reg: "^(#)?HostKey /etc/ssh/ssh_host_rsa_key"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_rsa_key"
       line: "HostKey /etc/ssh/ssh_host_rsa_key"
   when:
     - cis_ubuntu2204_rule_5_2_23
@@ -638,7 +638,7 @@
 - name: "SECTION5 | 5.3.2 | Ensure sudo commands use pty"
   ansible.builtin.lineinfile:
     dest: /etc/sudoers
-    regexp: '^(#)?Defaults\s+use_pty'
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+use_pty'
     line: "Defaults use_pty"
     state: present
     create: true
@@ -654,7 +654,7 @@
 - name: "SECTION5 | 5.3.3 | Ensure sudo log file exists"
   ansible.builtin.lineinfile:
     dest: /etc/sudoers
-    regexp: '^(#)?Defaults\s+logfile.*'
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+logfile.*'
     line: 'Defaults logfile="/var/log/sudo.log"'
     state: present
     create: true
@@ -705,7 +705,7 @@
     - name: "SECTION5 | 5.3.6 | Ensure sudo authentication timeout is configured correctly | env_reset, timestamp_timeout"
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
-        regexp: '^(#)?Defaults\s+env_reset,\s+timestamp_timeout=.*'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+env_reset,\s+timestamp_timeout=.*'
         line: "Defaults env_reset, timestamp_timeout=15"
         state: present
         create: true
@@ -714,7 +714,7 @@
     - name: "SECTION5 | 5.3.6 | Ensure sudo authentication timeout is configured correctly | timestamp_timeout"
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
-        regexp: '^(#)?Defaults\s+timestamp_timeout=.*'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+timestamp_timeout=.*'
         line: "Defaults timestamp_timeout=15"
         state: present
         create: true
@@ -723,7 +723,7 @@
     - name: "SECTION5 | 5.3.6 | Ensure sudo authentication timeout is configured correctly | env_reset"
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
-        regexp: '^(#)?Defaults\s+env_reset$'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+env_reset$'
         line: "Defaults env_reset"
         state: present
         create: true
@@ -745,7 +745,7 @@
     - name: "SECTION5 | 5.3.7 | Ensure access to the su command is restricted | set pam su"
       ansible.builtin.lineinfile:
         dest: /etc/pam.d/su
-        regexp: '^(#)?auth\s+required\s+pam_wheel\.so\s+use_uid\s+group='
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}auth\s+required\s+pam_wheel\.so\s+use_uid\s+group='
         line: "auth required pam_wheel.so use_uid group=sugroup"
         state: present
         create: true
@@ -771,7 +771,7 @@
     - name: "SECTION5 | 5.4.1 | Ensure password creation requirements are configured | set policy"
       ansible.builtin.lineinfile:
         dest: /etc/security/pwquality.conf
-        regexp: "^(#)?{{ item.key }}"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}{{ item.key }}"
         line: "{{ item.key }} = {{ item.value }}"
         state: present
         create: true
@@ -789,7 +789,7 @@
     - name: "SECTION5 | 5.4.2 | Ensure lockout for failed password attempts is configured | common-auth"
       ansible.builtin.lineinfile:
         dest: /etc/pam.d/common-auth
-        regexp: '^(#)?auth(.*?)pam_faillock\.so preauth'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_faillock\.so preauth'
         line: "auth required pam_faillock.so preauth"
         state: present
         create: true
@@ -805,28 +805,28 @@
         mode: "0644"
         insertafter: "{{ item.insertafter }}"
       with_items:
-        - reg: '^(#)?auth(.*?)pam_unix\.so nullok'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_unix\.so nullok'
           line: "auth [success={{ cis_ubuntu2204_common_auth_success }} default=ignore] pam_unix.so nullok"
           insertafter: 'auth(.*?)pam_faillock\.so preauth'
-        - reg: '^(#)?auth(.*?)pam_faillock\.so authfail '
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_faillock\.so authfail '
           line: "auth [default=die] pam_faillock.so authfail "
           insertafter: 'auth(.*?)pam_unix\.so nullok'
-        - reg: '^(#)?auth(.*?)pam_faillock\.so authsucc '
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_faillock\.so authsucc '
           line: "auth sufficient pam_faillock.so authsucc "
           insertafter: 'auth(.*?)pam_faillock\.so authfail '
-        - reg: '^(#)?auth(.*?)pam_deny\.so'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_deny\.so'
           line: "auth requisite pam_deny.so"
           insertafter: 'auth(.*?)pam_faillock\.so authsucc '
-        - reg: '^(#)?auth(.*?)pam_permit\.so'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_permit\.so'
           line: "auth required pam_permit.so"
           insertafter: 'auth(.*?)pam_deny\.so'
-        - reg: '^(#)?auth(.*?)pam_cap\.so'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_cap\.so'
           line: "auth optional pam_cap.so"
           insertafter: 'auth(.*?)pam_permit\.so'
     - name: "SECTION5 | 5.4.2 | Ensure lockout for failed password attempts is configured | common-auth"
       ansible.builtin.lineinfile:
         dest: /etc/pam.d/common-account
-        regexp: '^(#)?account(.*?)pam_faillock\.so'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}account(.*?)pam_faillock\.so'
         line: "account required pam_faillock.so"
         state: present
         create: true
@@ -841,17 +841,17 @@
         create: true
         mode: "0644"
       with_items:
-        - reg: "^(#)?deny"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}deny"
           line: "deny = 4"
-        - reg: "^(#)?fail_interval"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}fail_interval"
           line: "fail_interval = 900"
-        - reg: "^(#)?unlock time"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}unlock time"
           line: "unlock time = 600"
 
 - name: "SECTION5 | 5.4.3 | Ensure password reuse is limited"
   ansible.builtin.lineinfile:
     dest: /etc/pam.d/common-password
-    regexp: '^(#)?password(.*?)pam_unix\.so '
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}password(.*?)pam_unix\.so '
     line: >
       password [success={{ cis_ubuntu2204_common_password_success }} default=ignore] pam_unix.so obscure
       use_authtok try_first_pass {{ cis_ubuntu2204_encrypt_method | lower }} remember={{ cis_ubuntu2204_remember_reuse }}
@@ -879,7 +879,7 @@
     - name: "SECTION5 | 5.4.4 | Ensure password hashing algorithm is up to date with the latest standards | common-password"
       ansible.builtin.lineinfile:
         dest: /etc/pam.d/common-password
-        regexp: '^(#)?password(.*?)pam_unix\.so '
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}password(.*?)pam_unix\.so '
         line: >
           password [success={{ cis_ubuntu2204_common_password_success }} default=ignore] pam_unix.so obscure
           use_authtok try_first_pass {{ cis_ubuntu2204_encrypt_method | lower }} remember={{ cis_ubuntu2204_remember_reuse }}
@@ -890,7 +890,7 @@
     - name: "SECTION5 | 5.4.4 | Ensure password hashing algorithm is up to date with the latest standards | login.defs"
       ansible.builtin.lineinfile:
         dest: /etc/login.defs
-        regexp: "^(#)?ENCRYPT_METHOD"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}ENCRYPT_METHOD"
         line: "ENCRYPT_METHOD {{ cis_ubuntu2204_encrypt_method | upper }}"
         state: present
         create: true
@@ -910,7 +910,7 @@
 - name: "SECTION5 | 5.5.1.1 | Ensure minimum days between password changes is configured"
   ansible.builtin.lineinfile:
     dest: /etc/login.defs
-    regexp: "^(#)?PASS_MIN_DAYS"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_MIN_DAYS"
     line: "PASS_MIN_DAYS 1"
     state: present
     create: true
@@ -925,7 +925,7 @@
 - name: "SECTION5 | 5.5.1.2 | Ensure password expiration is 365 days or less"
   ansible.builtin.lineinfile:
     dest: /etc/login.defs
-    regexp: "^(#)?PASS_MAX_DAYS"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_MAX_DAYS"
     line: "PASS_MAX_DAYS 365"
     state: present
     create: true
@@ -940,7 +940,7 @@
 - name: "SECTION5 | 5.5.1.3 | Ensure password expiration warning days is 7 or more"
   ansible.builtin.lineinfile:
     dest: /etc/login.defs
-    regexp: "^(#)?PASS_WARN_AGE"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_WARN_AGE"
     line: "PASS_WARN_AGE 7"
     state: present
     create: true
@@ -955,7 +955,7 @@
 - name: "SECTION5 | 5.5.1.4 | Ensure inactive password lock is 30 days or less"
   ansible.builtin.lineinfile:
     dest: /etc/default/useradd
-    regexp: "^(#)?INACTIVE"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}INACTIVE"
     line: "INACTIVE=30"
     state: present
     create: true
@@ -1032,7 +1032,7 @@
     - name: "SECTION5 | 5.5.4 | Ensure default user umask is 027 or more restrictive | login.defs"
       ansible.builtin.lineinfile:
         dest: /etc/login.defs
-        regexp: "^(#)?UMASK"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}UMASK"
         line: "UMASK 027"
         state: present
         create: true
@@ -1040,7 +1040,7 @@
     - name: "SECTION5 | 5.5.4 | Ensure default user umask is 027 or more restrictive | bash.bashrc"
       ansible.builtin.lineinfile:
         dest: /etc/bash.bashrc
-        regexp: "^(#)?umask"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}umask"
         line: "umask 027"
         state: present
         create: true
@@ -1048,7 +1048,7 @@
     - name: "SECTION5 | 5.5.4 | Ensure default user umask is 027 or more restrictive | profile"
       ansible.builtin.lineinfile:
         dest: /etc/profile
-        regexp: "^(#)?umask"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}umask"
         line: "umask 027"
         state: present
         create: true
@@ -1056,7 +1056,7 @@
     - name: "SECTION5 | 5.5.4 | Ensure default user umask is 027 or more restrictive | 99-umask.sh"
       ansible.builtin.lineinfile:
         dest: /etc/profile.d/99-umask.sh
-        regexp: "^(#)?umask"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}umask"
         line: "umask 027"
         state: present
         create: true
@@ -1079,11 +1079,11 @@
         create: true
         mode: "0644"
       with_items:
-        - reg: "^(#)?TMOUT="
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}TMOUT="
           line: "TMOUT=900"
-        - reg: "^(#)?readonly TMOUT"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}readonly TMOUT"
           line: "readonly TMOUT"
-        - reg: "^(#)?export TMOUT"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}export TMOUT"
           line: "export TMOUT"
     - name: "SECTION5 | 5.5.5 | Ensure default user shell timeout is 900 seconds or less | profile"
       ansible.builtin.lineinfile:
@@ -1094,11 +1094,11 @@
         create: true
         mode: "0644"
       with_items:
-        - reg: "^(#)?TMOUT="
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}TMOUT="
           line: "TMOUT=900"
-        - reg: "^(#)?readonly TMOUT"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}readonly TMOUT"
           line: "readonly TMOUT"
-        - reg: "^(#)?export TMOUT"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}export TMOUT"
           line: "export TMOUT"
     - name: "SECTION5 | 5.5.5 | Ensure default user shell timeout is 900 seconds or less | 99-tmout.sh"
       ansible.builtin.lineinfile:
@@ -1109,9 +1109,9 @@
         create: true
         mode: "0644"
       with_items:
-        - reg: "^(#)?TMOUT="
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}TMOUT="
           line: "TMOUT=900"
-        - reg: "^(#)?readonly TMOUT"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}readonly TMOUT"
           line: "readonly TMOUT"
-        - reg: "^(#)?export TMOUT"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}export TMOUT"
           line: "export TMOUT"

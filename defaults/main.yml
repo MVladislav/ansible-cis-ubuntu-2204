@@ -307,6 +307,7 @@ cis_ubuntu2204_rule_6_2_16: true
 cis_ubuntu2204_rule_6_2_17: true
 
 # ------------------------------------------------------------------------------
+cis_ubuntu2204_regex_base_search: '^(#(\s)*)?'
 
 # SPECIAL options rule overview
 # ---------------------------------------
@@ -377,7 +378,7 @@ cis_ubuntu2204_audit_uid_min: 1000
 cis_ubuntu2204_audit_log_path: /var/log/audit
 cis_ubuntu2204_audit_log_group: adm
 # systemd-journal-upload remote upload (4.2.1.1.*)
-cis_ubuntu2204_set_journal_upload_url: 192.168.50.42
+cis_ubuntu2204_set_journal_upload_url: "{{ omit }}"
 # TODO: set and un-commit in task (cis_ubuntu2204_rule_4_2_1_6)
 cis_ubuntu2204_set_journal_system_max_use:
 cis_ubuntu2204_set_journal_system_keep_free:

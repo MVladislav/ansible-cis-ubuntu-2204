@@ -63,7 +63,7 @@
 - name: "SECTION4 | 4.1.2.1 | Ensure audit log storage size is configured"
   ansible.builtin.lineinfile:
     dest: /etc/audit/auditd.conf
-    regexp: '^(#)?max_log_file((.*)?=|\s|$)'
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}max_log_file((.*)?=|\s|$)'
     line: "max_log_file = {{ cis_ubuntu2204_audit_max_log_file }}"
     state: present
     create: true
@@ -82,7 +82,7 @@
 - name: "SECTION4 | 4.1.2.2 | Ensure audit logs are not automatically deleted"
   ansible.builtin.lineinfile:
     dest: /etc/audit/auditd.conf
-    regexp: '^(#)?max_log_file_action((.*)?=|\s|$)'
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}max_log_file_action((.*)?=|\s|$)'
     line: "max_log_file_action = {{ cis_ubuntu2204_audit_max_log_file_action }}"
     state: present
     create: true
@@ -109,7 +109,7 @@
     - name: "SECTION4 | 4.1.2.3 | Ensure system is disabled when audit logs are full | space_left_action"
       ansible.builtin.lineinfile:
         dest: /etc/audit/auditd.conf
-        regexp: '^(#)?space_left_action((.*)?=|\s|$)'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}space_left_action((.*)?=|\s|$)'
         line: "space_left_action = {{ cis_ubuntu2204_audit_space_left_action }}"
         state: present
         create: true
@@ -120,7 +120,7 @@
     - name: "SECTION4 | 4.1.2.3 | Ensure system is disabled when audit logs are full | action_mail_acct"
       ansible.builtin.lineinfile:
         dest: /etc/audit/auditd.conf
-        regexp: '^(#)?action_mail_acct((.*)?=|\s|$)'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}action_mail_acct((.*)?=|\s|$)'
         line: "action_mail_acct = {{ cis_ubuntu2204_audit_action_mail_acct }}"
         state: present
         create: true
@@ -131,7 +131,7 @@
     - name: "SECTION4 | 4.1.2.3 | Ensure system is disabled when audit logs are full | admin_space_left_action"
       ansible.builtin.lineinfile:
         dest: /etc/audit/auditd.conf
-        regexp: '^(#)?admin_space_left_action((.*)?=|\s|$)'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}admin_space_left_action((.*)?=|\s|$)'
         line: "admin_space_left_action = {{ cis_ubuntu2204_audit_admin_space_left_action }}"
         state: present
         create: true
@@ -521,7 +521,7 @@
     - name: "SECTION4 | 4.1.4.3 | Ensure only authorized groups are assigned ownership of audit log files | auditd.conf log_group"
       ansible.builtin.lineinfile:
         dest: /etc/audit/auditd.conf
-        regexp: '^(#)?log_group((.*)?=|\s|$)'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}log_group((.*)?=|\s|$)'
         line: "log_group = {{ cis_ubuntu2204_audit_log_group }}"
         state: present
         create: true
@@ -716,17 +716,17 @@
     group: root
     mode: "0644"
   with_items:
-    - reg: "^(#)?/sbin/auditctl"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/auditctl"
       line: "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "^(#)?/sbin/auditd"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/auditd"
       line: "/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "^(#)?/sbin/ausearch"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/ausearch"
       line: "/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "^(#)?/sbin/aureport"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/aureport"
       line: "/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "^(#)?/sbin/autrace"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/autrace"
       line: "/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "^(#)?/sbin/augenrules"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/augenrules"
       line: "/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512"
   when:
     - cis_ubuntu2204_rule_4_1_4_11
@@ -764,13 +764,13 @@
     group: root
     mode: "0644"
   with_items:
-    - reg: '^(#)?URL((.*)?=|\s|$)'
+    - reg: '{{ cis_ubuntu2204_regex_base_search }}URL((.*)?=|\s|$)'
       line: "URL={{ cis_ubuntu2204_set_journal_upload_url }}"
-    - reg: '^(#)?ServerKeyFile((.*)?=|\s|$)'
+    - reg: '{{ cis_ubuntu2204_regex_base_search }}ServerKeyFile((.*)?=|\s|$)'
       line: "ServerKeyFile=/etc/ssl/private/journal-upload.pem"
-    - reg: '^(#)?ServerCertificateFile((.*)?=|\s|$)'
+    - reg: '{{ cis_ubuntu2204_regex_base_search }}ServerCertificateFile((.*)?=|\s|$)'
       line: "ServerCertificateFile=/etc/ssl/certs/journal-upload.pem"
-    - reg: '^(#)?TrustedCertificateFile((.*)?=|\s|$)'
+    - reg: '{{ cis_ubuntu2204_regex_base_search }}TrustedCertificateFile((.*)?=|\s|$)'
       line: "TrustedCertificateFile=/etc/ssl/ca/trusted.pem"
   notify: restart systemd-journal-upload
   when:
@@ -818,7 +818,7 @@
 - name: "SECTION4 | 4.2.1.3 | Ensure journald is configured to compress large log files"
   ansible.builtin.lineinfile:
     dest: /etc/systemd/journald.conf
-    regexp: '^(#)?Compress((.*)?=|\s|$)'
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}Compress((.*)?=|\s|$)'
     line: "Compress=yes"
     state: present
     create: true
@@ -836,7 +836,7 @@
 - name: "SECTION4 | 4.2.1.4 | Ensure journald is configured to write logfiles to persistent disk"
   ansible.builtin.lineinfile:
     dest: /etc/systemd/journald.conf
-    regexp: '^(#)?Storage((.*)?=|\s|$)'
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}Storage((.*)?=|\s|$)'
     line: "Storage=persistent"
     state: present
     create: true
@@ -881,15 +881,15 @@
 #     group: root
 #     mode: "0644"
 #   with_items:
-#     - reg: '^(#)?SystemMaxUse((.*)?=|\s|$)'
+#     - reg: '{{ cis_ubuntu2204_regex_base_search }}SystemMaxUse((.*)?=|\s|$)'
 #       line: "SystemMaxUse="
-#     - reg: '^(#)?SystemKeepFree((.*)?=|\s|$)'
+#     - reg: '{{ cis_ubuntu2204_regex_base_search }}SystemKeepFree((.*)?=|\s|$)'
 #       line: "SystemKeepFree="
-#     - reg: '^(#)?RuntimeMaxUse((.*)?=|\s|$)'
+#     - reg: '{{ cis_ubuntu2204_regex_base_search }}RuntimeMaxUse((.*)?=|\s|$)'
 #       line: "RuntimeMaxUse="
-#     - reg: '^(#)?RuntimeKeepFree((.*)?=|\s|$)'
+#     - reg: '{{ cis_ubuntu2204_regex_base_search }}RuntimeKeepFree((.*)?=|\s|$)'
 #       line: "RuntimeKeepFree="
-#     - reg: '^(#)?MaxFileSec((.*)?=|\s|$)'
+#     - reg: '{{ cis_ubuntu2204_regex_base_search }}MaxFileSec((.*)?=|\s|$)'
 #       line: "MaxFileSec="
 #   notify: restart systemd-journald
 #   when:
@@ -939,7 +939,7 @@
 - name: "SECTION4 | 4.2.2.3 | Ensure journald is configured to send logs to rsyslog"
   ansible.builtin.lineinfile:
     dest: /etc/systemd/journald.conf
-    regexp: '^(#)?ForwardToSyslog((.*)?=|\s|$)'
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}ForwardToSyslog((.*)?=|\s|$)'
     line: "ForwardToSyslog=yes"
     state: present
     create: true
@@ -961,7 +961,7 @@
 - name: "SECTION4 | 4.2.2.4 | Ensure rsyslog default file permissions are configured"
   ansible.builtin.lineinfile:
     dest: /etc/rsyslog.conf
-    regexp: "^(#)?$FileCreateMode "
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}$FileCreateMode "
     line: "$FileCreateMode 0640"
     state: present
     create: true

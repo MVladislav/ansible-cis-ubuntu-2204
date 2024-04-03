@@ -23,9 +23,9 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: '^(#)?install cramfs(\s|$)'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}install cramfs(\s|$)'
           line: "install cramfs /bin/false"
-        - reg: "^(#)?blacklist cramfs$"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist cramfs$"
           line: "blacklist cramfs"
     - name: >
         SECTION1 | 1.1.1.1 | Ensure mounting of 'cramfs' filesystems is disabled | unloading module
@@ -54,9 +54,9 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: '^(#)?install squashfs(\s|$)'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}install squashfs(\s|$)'
           line: "install squashfs /bin/false"
-        - reg: "^(#)?blacklist squashfs$"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist squashfs$"
           line: "blacklist squashfs"
 # - name: >
 #     SECTION1 | 1.1.1.2 | Ensure mounting of 'squashfs' filesystems is disabled | unloading module
@@ -85,9 +85,9 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: '^(#)?install udf(\s|$)'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}install udf(\s|$)'
           line: "install udf /bin/false"
-        - reg: "^(#)?blacklist udf$"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist udf$"
           line: "blacklist udf"
     - name: >
         SECTION1 | 1.1.1.3 | Ensure mounting of 'udf' filesystems is disabled | unloading module
@@ -264,9 +264,9 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: '^(#)?install usb-storage(\s|$)'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}install usb-storage(\s|$)'
           line: "install usb-storage /bin/false"
-        - reg: "^(#)?blacklist usb-storage$"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist usb-storage$"
           line: "blacklist usb-storage"
     - name: >
         SECTION1 | 1.1.10 | Disable USB Storage | unloading module
@@ -484,7 +484,7 @@
         SECTION1 | 1.5.3 | Ensure Automatic Error Reporting is not enabled | add or edit the enabled parameter to equal 0
       ansible.builtin.lineinfile:
         dest: /etc/default/apport
-        regexp: '^(#)?enabled((.*)?=|\s|$)'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}enabled((.*)?=|\s|$)'
         line: "enabled=0"
         state: present
         create: true
@@ -529,8 +529,8 @@
         SECTION1 | 1.5.4 | Ensure core dumps are restricted | ensure hard core 0 is set
       ansible.builtin.lineinfile:
         dest: /etc/security/limits.conf
-        line: "*                hard    core            0"
         regexp: '(^#)?\*\s+hard\s+core\s+[0-9]+'
+        line: "*                hard    core            0"
         state: present
         create: true
         insertbefore: "# End of file"
@@ -548,9 +548,9 @@
         group: root
         mode: "0644"
       with_items:
-        - reg: '^(#)?Storage((.*)?=|\s|$)'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}Storage((.*)?=|\s|$)'
           line: "Storage=none"
-        - reg: '^(#)?ProcessSizeMax((.*)?=|\s|$)'
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}ProcessSizeMax((.*)?=|\s|$)'
           line: "ProcessSizeMax=0"
 
 # ------------------------------------------------------------------------------

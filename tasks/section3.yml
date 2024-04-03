@@ -282,9 +282,9 @@
     group: root
     mode: "0644"
   with_items:
-    - reg: '^(#)?install dccp(\s|$)'
+    - reg: '{{ cis_ubuntu2204_regex_base_search }}install dccp(\s|$)'
       line: "install dccp /bin/false"
-    - reg: "^(#)?blacklist dccp$"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist dccp$"
       line: "blacklist dccp"
   when:
     - cis_ubuntu2204_rule_3_4_1
@@ -304,9 +304,9 @@
     group: root
     mode: "0644"
   with_items:
-    - reg: '^(#)?install sctp(\s|$)'
+    - reg: '{{ cis_ubuntu2204_regex_base_search }}install sctp(\s|$)'
       line: "install sctp /bin/false"
-    - reg: "^(#)?blacklist sctp$"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist sctp$"
       line: "blacklist sctp"
   when:
     - cis_ubuntu2204_rule_3_4_2
@@ -326,9 +326,9 @@
     group: root
     mode: "0644"
   with_items:
-    - reg: '^(#)?install rds(\s|$)'
+    - reg: '{{ cis_ubuntu2204_regex_base_search }}install rds(\s|$)'
       line: "install rds /bin/false"
-    - reg: "^(#)?blacklist rds$"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist rds$"
       line: "blacklist rds"
   when:
     - cis_ubuntu2204_rule_3_4_3
@@ -348,9 +348,9 @@
     group: root
     mode: "0644"
   with_items:
-    - reg: '^(#)?install tipc(\s|$)'
+    - reg: '{{ cis_ubuntu2204_regex_base_search }}install tipc(\s|$)'
       line: "install tipc /bin/false"
-    - reg: "^(#)?blacklist tipc$"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist tipc$"
       line: "blacklist tipc"
   when:
     - cis_ubuntu2204_rule_3_4_4

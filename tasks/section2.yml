@@ -3,6 +3,24 @@
 
 # ------------------------------------------------------------------------------
 
+- name: "SECTION2 | 2.1.1 | Ensure autofs services are not in use"
+  ansible.builtin.systemd:
+    name: autofs.service
+    daemon_reload: true
+    enabled: false
+    masked: true
+    state: stopped
+  when:
+    - service_status_autofs.stdout == "loaded"
+    - not cis_ubuntu2204_allow_autofs
+    - cis_ubuntu2204_rule_2_1_1
+  tags:
+    - rule_2_1_1
+    - server_l1
+    - workstation_l2
+
+# ------------------------------------------------------------------------------
+
 - name: "SECTION2 | 2.1.1.1 | Ensure a single time synchronization daemon is in use"
   when:
     - cis_ubuntu2204_rule_2_1_1_1
@@ -11,7 +29,7 @@
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION2 | 2.1.1.1 | Ensure a single time synchronization daemon is in use | install service {{ cis_ubuntu2204_time_synchronization_service }}"
+    - name: "SECTION2 | 2.1.1.1 | Ensure a single time synchronization daemon is in use | install service 'chrony | systemd-timesyncd | ntp'"
       ansible.builtin.apt:
         name: "{{ cis_ubuntu2204_time_synchronization_service }}"
         state: present
@@ -74,7 +92,7 @@
     - name: "SECTION2 | 2.1.2.2 | Ensure chrony is running as user _chrony | set in chronyd"
       ansible.builtin.lineinfile:
         dest: /etc/sysconfig/chronyd
-        regexp: '^(#)?OPTIONS((.*)?=|\s|$)'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}OPTIONS((.*)?=|\s|$)'
         line: 'OPTIONS="-u _chrony"'
         state: present
         create: true
@@ -140,7 +158,7 @@
 - name: "SECTION2 | 2.1.4.3 | Ensure ntp is running as user ntp"
   ansible.builtin.lineinfile:
     dest: /etc/init.d/ntp
-    regexp: '^(#)?RUNASUSER((.*)?=|\s|$)'
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}RUNASUSER((.*)?=|\s|$)'
     line: "RUNASUSER=ntp"
     state: present
     create: true
@@ -176,7 +194,7 @@
 - name: "SECTION2 | 2.2.15 | Ensure mail transfer agent is configured for local-only mode"
   ansible.builtin.lineinfile:
     dest: /etc/postfix/main.cf
-    regexp: '^(#)?inet_interfaces((.*)?=|\s|$)'
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}inet_interfaces((.*)?=|\s|$)'
     line: "inet_interfaces = loopback-only"
     state: present
     create: true

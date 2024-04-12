@@ -3,24 +3,6 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION2 | 2.1.1 | Ensure autofs services are not in use"
-  ansible.builtin.systemd:
-    name: autofs.service
-    daemon_reload: true
-    enabled: false
-    masked: true
-    state: stopped
-  when:
-    - service_status_autofs.stdout == "loaded"
-    - not cis_ubuntu2204_allow_autofs
-    - cis_ubuntu2204_rule_2_1_1
-  tags:
-    - rule_2_1_1
-    - server_l1
-    - workstation_l2
-
-# ------------------------------------------------------------------------------
-
 - name: "SECTION2 | 2.1.1.1 | Ensure a single time synchronization daemon is in use"
   when:
     - cis_ubuntu2204_rule_2_1_1_1

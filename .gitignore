@@ -1,2 +1,52 @@
+# Ignore .hidden files
+.*
+# Ignore everything
+*
+
+!.github/
+!.github/**
+
+!.gitattributes
+!.gitignore
+!.gitempty
+
+!CONTRIBUTING.md
+!LICENCE
+!SECURITY.md
+
+!README.md
+
+!.pre-commit-config.yaml
+!.prettierrc.yml
+!.yamllint
+
+# ADD more
+!.ansible-lint
+!requirements.txt
+!requirements.yml
+
+!defaults/
+!defaults/**
+!files/
+!files/**
+!handlers/
+!handlers/**
+!meta/
+!meta/**
+!molecule/
+!molecule/**
+!tasks/
+!tasks/**
+!templates/
+!templates/**
+!tests/
+tests/*
+!tests/inventory
+!vars/
+!vars/**
+
 ### Ansible ###
 *.retry
+
+tasks/pre_extra.yml
+templates/sshd_config.j2

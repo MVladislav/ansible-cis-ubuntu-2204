@@ -515,7 +515,7 @@
         echo -e "$PASSWORD\n$PASSWORD" | grub-mkpasswd-pbkdf2 --iteration-count=600000 --salt=64 | awk '/grub.pbkdf/{print$NF}'
       register: cis_grub_bootloader_password
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       changed_when: false
       tags:
         - molecule-idempotence-notest

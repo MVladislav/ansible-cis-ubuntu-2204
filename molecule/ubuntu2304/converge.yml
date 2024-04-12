@@ -23,8 +23,8 @@
     cis_ubuntu2204_allow_gdm_gui: true
     cis_ubuntu2204_allow_autofs: true
     # cis_ubuntu2204_rule_1_1_1_8: false # Disable USB Storage
-    cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com
-    cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
+    cis_ubuntu2204_time_synchronization_time_server: time.cloudflare.com
+    cis_ubuntu2204_time_synchronization_time_fallback_server: ntp.ubuntu.com
     cis_ubuntu2204_allow_cups: true
     # -------------------------
     cis_ubuntu2204_install_aide: true

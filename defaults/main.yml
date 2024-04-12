@@ -73,40 +73,64 @@ cis_ubuntu2204_rule_1_7_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_gd
 cis_ubuntu2204_rule_1_7_10: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 ## SECTION 2 rules
 cis_ubuntu2204_rule_2_1_1: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
-
-cis_ubuntu2204_rule_2_1_1_1: true
-cis_ubuntu2204_rule_2_1_2_1: true
-cis_ubuntu2204_rule_2_1_2_2: true
-cis_ubuntu2204_rule_2_1_2_3: true
-cis_ubuntu2204_rule_2_1_3_1: true
-cis_ubuntu2204_rule_2_1_3_2: true
-cis_ubuntu2204_rule_2_1_4_1: true
-cis_ubuntu2204_rule_2_1_4_2: true
-cis_ubuntu2204_rule_2_1_4_3: true
-cis_ubuntu2204_rule_2_1_4_4: true
+cis_ubuntu2204_rule_2_1_1_remove: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
+cis_ubuntu2204_rule_2_1_2: true
+cis_ubuntu2204_rule_2_1_2_remove: true
+cis_ubuntu2204_rule_2_1_3: true
+cis_ubuntu2204_rule_2_1_3_remove: true
+cis_ubuntu2204_rule_2_1_4: true
+cis_ubuntu2204_rule_2_1_4_remove: true
+cis_ubuntu2204_rule_2_1_5: true
+cis_ubuntu2204_rule_2_1_5_remove: true
+cis_ubuntu2204_rule_2_1_6: true
+cis_ubuntu2204_rule_2_1_6_remove: true
+cis_ubuntu2204_rule_2_1_7: true
+cis_ubuntu2204_rule_2_1_7_remove: true
+cis_ubuntu2204_rule_2_1_8: true
+cis_ubuntu2204_rule_2_1_8_remove: true
+cis_ubuntu2204_rule_2_1_9: true
+cis_ubuntu2204_rule_2_1_9_remove: true
+cis_ubuntu2204_rule_2_1_10: true
+cis_ubuntu2204_rule_2_1_10_remove: true
+cis_ubuntu2204_rule_2_1_11: true # NOTE: depends also on 'cis_ubuntu2204_allow_cups'
+cis_ubuntu2204_rule_2_1_11_remove: true # NOTE: depends also on 'cis_ubuntu2204_allow_cups'
+cis_ubuntu2204_rule_2_1_12: true
+cis_ubuntu2204_rule_2_1_12_remove: true
+cis_ubuntu2204_rule_2_1_13: true
+cis_ubuntu2204_rule_2_1_13_remove: true
+cis_ubuntu2204_rule_2_1_14: true
+cis_ubuntu2204_rule_2_1_14_remove: true
+cis_ubuntu2204_rule_2_1_15: true
+cis_ubuntu2204_rule_2_1_15_remove: true
+cis_ubuntu2204_rule_2_1_16: true
+cis_ubuntu2204_rule_2_1_16_remove: true
+cis_ubuntu2204_rule_2_1_17: true
+cis_ubuntu2204_rule_2_1_17_remove: true
+cis_ubuntu2204_rule_2_1_18: true
+cis_ubuntu2204_rule_2_1_18_remove: true
+cis_ubuntu2204_rule_2_1_19: true
+cis_ubuntu2204_rule_2_1_19_remove: true
+cis_ubuntu2204_rule_2_1_20: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_2_1_20_remove: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 cis_ubuntu2204_rule_2_2_1: true
 cis_ubuntu2204_rule_2_2_2: true
-cis_ubuntu2204_rule_2_2_3: true # NOTE: depends also on 'cis_ubuntu2204_allow_cups'
+cis_ubuntu2204_rule_2_2_3: true
 cis_ubuntu2204_rule_2_2_4: true
 cis_ubuntu2204_rule_2_2_5: true
 cis_ubuntu2204_rule_2_2_6: true
-cis_ubuntu2204_rule_2_2_7: true
-cis_ubuntu2204_rule_2_2_8: true
-cis_ubuntu2204_rule_2_2_9: true
-cis_ubuntu2204_rule_2_2_10: true
-cis_ubuntu2204_rule_2_2_11: true
-cis_ubuntu2204_rule_2_2_12: true
-cis_ubuntu2204_rule_2_2_13: true
-cis_ubuntu2204_rule_2_2_14: true
-cis_ubuntu2204_rule_2_2_15: true
-cis_ubuntu2204_rule_2_2_16: true
-cis_ubuntu2204_rule_2_3_1: true
-cis_ubuntu2204_rule_2_3_2: true
-cis_ubuntu2204_rule_2_3_3: true
-cis_ubuntu2204_rule_2_3_4: true
-cis_ubuntu2204_rule_2_3_5: true
-cis_ubuntu2204_rule_2_3_6: true
-cis_ubuntu2204_rule_2_4: true
+cis_ubuntu2204_rule_2_3_1_1: true
+cis_ubuntu2204_rule_2_3_2_1: true
+cis_ubuntu2204_rule_2_3_3_1: true
+cis_ubuntu2204_rule_2_3_3_2: true
+cis_ubuntu2204_rule_2_4_1_1: true
+cis_ubuntu2204_rule_2_4_1_2: true
+cis_ubuntu2204_rule_2_4_1_3: true
+cis_ubuntu2204_rule_2_4_1_4: true
+cis_ubuntu2204_rule_2_4_1_5: true
+cis_ubuntu2204_rule_2_4_1_6: true
+cis_ubuntu2204_rule_2_4_1_7: true
+cis_ubuntu2204_rule_2_4_1_8: true
+cis_ubuntu2204_rule_2_4_2_1: true
 ## SECTION 3 rules
 cis_ubuntu2204_rule_3_1_1: true # NOTE: depends also on 'cis_ubuntu2204_required_ipv6'
 cis_ubuntu2204_rule_3_1_2: true
@@ -299,6 +323,7 @@ cis_ubuntu2204_rule_6_2_17: true
 
 # ------------------------------------------------------------------------------
 cis_ubuntu2204_regex_base_search: '^(#(\s)*)?'
+cis_ubuntu2204_shell_executable: /bin/bash
 
 # SPECIAL options rule overview
 # ---------------------------------------
@@ -307,7 +332,7 @@ cis_ubuntu2204_allow_autofs: false
 # BOOTLOADER set (cis_ubuntu2204_rule_1_4_1)
 cis_ubuntu2204_set_boot_pass: false
 cis_ubuntu2204_disable_boot_pass: true
-# gdm allow, else remove (cis_ubuntu2204_rule_1_7_*)
+# gdm allow, else remove (cis_ubuntu2204_rule_1_7_*,cis_ubuntu2204_rule_2_1_20)
 cis_ubuntu2204_allow_gdm_gui: false
 # cups allow printer service, else remove (cis_ubuntu2204_rule_2_2_3)
 cis_ubuntu2204_allow_cups: false
@@ -340,10 +365,10 @@ cis_ubuntu2204_default_grub_file: /etc/default/grub
 # cis_ubuntu2204_default_grub_file_template: /usr/share/grub/default/grub # NOTE: current not used
 # gdm banner message (cis_ubuntu2204_rule_1_7_2)
 cis_ubuntu2204_gdm_warning_banner: Authorized uses only. All activity may be monitored and reported
-# choose time synchronization (cis_ubuntu2204_rule_2_1_1_1)
-cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
-cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com
-cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
+# choose time synchronization (cis_ubuntu2204_rule_2_3_1_1)
+cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
+cis_ubuntu2204_time_synchronization_time_server: time.cloudflare.com
+cis_ubuntu2204_time_synchronization_time_fallback_server: ntp.ubuntu.com
 # general path for sysctl conf file
 cis_ubuntu2204_sysctl_file_path: /etc/sysctl.conf
 # choose firewall (cis_ubuntu2204_rule_3_5_*)
@@ -377,10 +402,10 @@ cis_ubuntu2204_set_journal_runtime_keep_free:
 cis_ubuntu2204_set_journal_max_file_sec:
 # syslog to be used, default only current 'rsyslog' only available (cis_ubuntu2204_rule_4_2_2_*)
 cis_ubuntu2204_syslog: rsyslog
-# cron allow users (cis_ubuntu2204_rule_5_1_9)
+# cron allow users (cis_ubuntu2204_rule_2_4_1_8)
 cis_ubuntu2204_cron_allow_users:
   - root
-# at allow users (cis_ubuntu2204_rule_5_1_9)
+# at allow users (cis_ubuntu2204_rule_2_4_2_1)
 cis_ubuntu2204_at_allow_users:
   - root
 # ssh conf's
@@ -463,96 +488,185 @@ cis_ubuntu2204_common_password_success: 2
 
 # ------------------------------------------------------------------------------
 
-# SPECIAL multi similar CIS rules set
-cis_ubuntu2204_2_2_rule_set:
-  - title: 2.2.1 | Ensure X Window System is not installed
+# SPECIAL multi similar CIS rules set for 2.1
+cis_ubuntu2204_2_1_rule_set:
+  - title: SECTION2 | 2.1.1 | Ensure autofs services are not in use
+    service:
+      - autofs.service
     apt:
-      - xserver-xorg
-      - xorg
-      - x11*
-    check: "{{ cis_ubuntu2204_rule_2_2_1 and not cis_ubuntu2204_allow_gdm_gui }}"
-  - title: 2.2.2 | Ensure Avahi Server is not installed
+      - autofs
+    disable: "{{ cis_ubuntu2204_rule_2_1_1 and not cis_ubuntu2204_allow_autofs }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_1_remove and not cis_ubuntu2204_allow_autofs }}"
+  - title: SECTION2 | 2.1.2 | Ensure avahi daemon services are not in use
+    service:
+      - avahi-daemon.socket
+      - avahi-daemon.service
     apt:
       - avahi-daemon
-    check: "{{ cis_ubuntu2204_rule_2_2_2 }}"
-  - title: 2.2.3 | Ensure CUPS is not installed
-    apt:
-      - cups
-    check: "{{ cis_ubuntu2204_rule_2_2_3 and not cis_ubuntu2204_allow_cups }}"
-  - title: 2.2.4 | Ensure DHCP Server is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_2 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_2_remove }}"
+  - title: SECTION2 | 2.1.3 | Ensure dhcp server services are not in use
+    service:
+      - isc-dhcp-server.service
+      - isc-dhcp-server6.service
     apt:
       - isc-dhcp-server
-    check: "{{ cis_ubuntu2204_rule_2_2_4 }}"
-  - title: 2.2.5 | Ensure LDAP server is not installed
-    apt:
-      - slapd
-    check: "{{ cis_ubuntu2204_rule_2_2_5 }}"
-  - title: 2.2.6 | Ensure NFS is not installed
-    apt:
-      - nfs-kernel-server
-    check: "{{ cis_ubuntu2204_rule_2_2_6 }}"
-  - title: 2.2.7 | Ensure DNS Server is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_3 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_3_remove }}"
+  - title: SECTION2 | 2.1.4 | Ensure dns server services are not in use
+    service:
+      - bind9.service
     apt:
       - bind9
-    check: "{{ cis_ubuntu2204_rule_2_2_7 }}"
-  - title: 2.2.8 | Ensure FTP Server is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_4 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_4_remove }}"
+  - title: SECTION2 | 2.1.5 | Ensure dnsmasq services are not in use
+    service:
+      - dnsmasq.service
+    apt:
+      - dnsmasq
+    disable: "{{ cis_ubuntu2204_rule_2_1_5 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_5_remove }}"
+  - title: SECTION2 | 2.1.6 | Ensure ftp server services are not in use
+    service:
+      - vsftpd.service
     apt:
       - vsftpd
-    check: "{{ cis_ubuntu2204_rule_2_2_8 }}"
-  - title: 2.2.9 | Ensure HTTP server is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_6 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_6_remove }}"
+  - title: SECTION2 | 2.1.7 | Ensure ldap server services are not in use
+    service:
+      - slapd.service
     apt:
-      - apache2
-    check: "{{ cis_ubuntu2204_rule_2_2_9 }}"
-  - title: 2.2.10 | Ensure IMAP and POP3 server are not installed
+      - slapd
+    disable: "{{ cis_ubuntu2204_rule_2_1_7 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_7_remove }}"
+  - title: SECTION2 | 2.1.8 | Ensure message access server services are not in use
+    service:
+      - dovecot.socket
+      - dovecot.service
     apt:
       - dovecot-imapd
       - dovecot-pop3d
-    check: "{{ cis_ubuntu2204_rule_2_2_10 }}"
-  - title: 2.2.11 | Ensure Samba is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_8 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_8_remove }}"
+  - title: SECTION2 | 2.1.9 | Ensure network file system services are not in use
+    service:
+      - nfs-server.service
     apt:
-      - samba
-    check: "{{ cis_ubuntu2204_rule_2_2_11 }}"
-  - title: 2.2.12 | Ensure HTTP Proxy Server is not installed
-    apt:
-      - squid
-    check: "{{ cis_ubuntu2204_rule_2_2_12 }}"
-  - title: 2.2.13 | Ensure SNMP Server is not installed
-    apt:
-      - snmp
-    check: "{{ cis_ubuntu2204_rule_2_2_13 }}"
-  - title: 2.2.14 | Ensure NIS Server is not installed
+      - nfs-kernel-server
+    disable: "{{ cis_ubuntu2204_rule_2_1_9 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_9_remove }}"
+  - title: SECTION2 | 2.1.10 | Ensure nis server services are not in use
+    service:
+      - ypserv.service
     apt:
       - nis
-    check: "{{ cis_ubuntu2204_rule_2_2_14 }}"
-  - title: Ensure rsync service is either not installed or masked
+      - ypserv
+    disable: "{{ cis_ubuntu2204_rule_2_1_10 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_10_remove }}"
+  - title: SECTION2 | 2.1.11 | Ensure print server services are not in use
+    service:
+      - cups.socket
+      - cups.service
+    apt:
+      - cups
+    disable: "{{ cis_ubuntu2204_rule_2_1_11 and not cis_ubuntu2204_allow_cups }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_11_remove and not cis_ubuntu2204_allow_cups }}"
+  - title: SECTION2 | 2.1.12 | Ensure rpcbind services are not in use
+    service:
+      - rpcbind.socket
+      - rpcbind.service
+    apt:
+      - rpcbind
+    disable: "{{ cis_ubuntu2204_rule_2_1_12 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_12_remove }}"
+  - title: SECTION2 | 2.1.13 | Ensure rsync services are not in use
+    service:
+      - rsync.service
     apt:
       - rsync
-    check: "{{ cis_ubuntu2204_rule_2_2_16 }}"
+    disable: "{{ cis_ubuntu2204_rule_2_1_13 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_13_remove }}"
+  - title: SECTION2 | 2.1.14 | Ensure samba file server services are not in use
+    service:
+      - smbd.service
+    apt:
+      - samba
+    check: "{{ cis_ubuntu2204_rule_2_1_14 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_14_remove }}"
+  - title: SECTION2 | 2.1.15 | Ensure snmp services are not in use
+    service:
+      - snmpd.service
+    apt:
+      - snmpd
+    check: "{{ cis_ubuntu2204_rule_2_1_15 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_15_remove }}"
+  - title: SECTION2 | 2.1.16 | Ensure tftp server services are not in use
+    service:
+      - tftpd-hpa.service
+    apt:
+      - tftpd-hpa
+    check: "{{ cis_ubuntu2204_rule_2_1_16 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_16_remove }}"
+  - title: SECTION2 | 2.1.17 | Ensure web proxy server services are not in use
+    service:
+      - squid.service
+    apt:
+      - squid
+    check: "{{ cis_ubuntu2204_rule_2_1_17 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_17_remove }}"
+  - title: SECTION2 | 2.1.18 | Ensure web server services are not in use
+    service:
+      - apache2.socket
+      - httpd.service
+      - nginx.service
+    apt:
+      - apache2
+      - nginx
+    check: "{{ cis_ubuntu2204_rule_2_1_18 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_18_remove }}"
+  - title: SECTION2 | 2.1.19 | Ensure xinetd services are not in use
+    service:
+      - xinetd.service
+    apt:
+      - xinetd
+    check: "{{ cis_ubuntu2204_rule_2_1_19 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_19_remove }}"
+  - title: 2.1.20 | Ensure X window server services are not in use
+    apt:
+      - xserver-common
+      - xserver-xorg
+      - xorg
+      - x11*
+    check: "{{ cis_ubuntu2204_rule_2_1_20 and not cis_ubuntu2204_allow_gdm_gui }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_20_remove and not cis_ubuntu2204_allow_gdm_gui }}"
 
-cis_ubuntu2204_2_3_rule_set:
-  - title: 2.3.1 | Ensure NIS Client is not installed
+# SPECIAL multi similar CIS rules set for 2.2
+cis_ubuntu2204_2_2_rule_set:
+  - title: 2.2.1 | Ensure nis Client is not installed
     apt:
       - nis
       - yp-tools
-    check: "{{ cis_ubuntu2204_rule_2_3_1 }}"
-  - title: 2.3.2 | Ensure rsh client is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_1 }}"
+  - title: 2.2.2 | Ensure rsh client is not installed
     apt:
       - rsh-client
-    check: "{{ cis_ubuntu2204_rule_2_3_2 }}"
-  - title: 2.3.3 | Ensure talk client is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_2 }}"
+  - title: 2.2.3 | Ensure talk client is not installed
     apt:
       - talk
-    check: "{{ cis_ubuntu2204_rule_2_3_3 }}"
-  - title: 2.3.4 | Ensure telnet client is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_3 }}"
+  - title: 2.2.4 | Ensure telnet client is not installed
     apt:
       - telnet
       - inetutils-telnet
-    check: "{{ cis_ubuntu2204_rule_2_3_4 }}"
-  - title: 2.3.5 | Ensure LDAP client is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_4 }}"
+  - title: 2.2.5 | Ensure ldap client is not installed
     apt:
       - ldap-utils
-    check: "{{ cis_ubuntu2204_rule_2_3_5 }}"
-  - title: 2.3.6 | Ensure RPC is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_5 }}"
+  - title: 2.2.6 | Ensure ftp client is not installed
     apt:
-      - rpcbind
-    check: "{{ cis_ubuntu2204_rule_2_3_6 }}"
+      - ftp
+    remove: "{{ cis_ubuntu2204_rule_2_2_6 }}"

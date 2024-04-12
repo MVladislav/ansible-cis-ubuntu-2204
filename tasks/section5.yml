@@ -3,152 +3,6 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION5 | 5.1.1 | Ensure cron daemon is enabled and running"
-  ansible.builtin.systemd:
-    name: cron
-    daemon_reload: true
-    enabled: true
-    masked: false
-    state: started
-  when:
-    - cis_ubuntu2204_rule_5_1_1
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.2 | Ensure permissions on /etc/crontab are configured"
-  ansible.builtin.file:
-    dest: /etc/crontab
-    owner: root
-    group: root
-    mode: "0600"
-  when:
-    - cis_ubuntu2204_rule_5_1_2
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.3 | Ensure permissions on /etc/cron.hourly are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.hourly
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_3
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.4 | Ensure permissions on /etc/cron.daily are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.daily
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_4
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.5 | Ensure permissions on /etc/cron.weekly are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.weekly
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_5
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.6 | Ensure permissions on /etc/cron.monthly are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.monthly
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_6
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.7 | Ensure permissions on /etc/cron.d are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.d
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_7
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.8 | Ensure cron is restricted to authorized users"
-  when:
-    - cis_ubuntu2204_rule_5_1_8
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION5 | 5.1.8 | Ensure cron is restricted to authorized users | rm cron.deny"
-      ansible.builtin.file:
-        dest: /etc/cron.deny
-        state: absent
-    - name: "SECTION5 | 5.1.8 | Ensure cron is restricted to authorized users | set cron.allow"
-      ansible.builtin.template:
-        src: cron.allow.j2
-        dest: /etc/cron.allow
-        owner: root
-        group: root
-        mode: "0600"
-
-- name: "SECTION5 | 5.1.9 | Ensure at is restricted to authorized users"
-  when:
-    - cis_ubuntu2204_rule_5_1_9
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION5 | 5.1.9 | Ensure at is restricted to authorized users | rm at.deny"
-      ansible.builtin.file:
-        dest: /etc/at.deny
-        state: absent
-    - name: "SECTION5 | 5.1.9 | Ensure at is restricted to authorized users | set at.allow"
-      ansible.builtin.template:
-        src: at.allow.j2
-        dest: /etc/at.allow
-        owner: root
-        group: root
-        mode: "0600"
-
 # ------------------------------------------------------------------------------
 
 - name: "SECTION5 | 5.2.1 | Ensure permissions on /etc/ssh/sshd_config are configured"
@@ -993,7 +847,7 @@
           usermod -s "$(which nologin)" "$user"
         done
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       changed_when: false
     - name: "SECTION5 | 5.5.2 | Ensure system accounts are secured | usermod -L"
       ansible.builtin.shell: >
@@ -1006,7 +860,7 @@
           usermod -L "$user"
         done
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       changed_when: false
 
 - name: "SECTION5 | 5.5.3 | Ensure default group for the root account is GID 0"

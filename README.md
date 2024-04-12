@@ -181,9 +181,9 @@ cis_ubuntu2204_aide_cron:
   aide_weekday: "*"
 
 # choose time synchronization
-cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
-cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com
-cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
+cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
+cis_ubuntu2204_time_synchronization_time_server: time.cloudflare.com
+cis_ubuntu2204_time_synchronization_time_fallback_server: ntp.ubuntu.com
 
 # choose firewall
 cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
@@ -239,8 +239,8 @@ cis_ubuntu2204_common_password_success: 2
 # NOT IMPLEMENTED # SECTION1 | 1.2.1.2 | Ensure package manager repositories are configured
 # cis_ubuntu2204_rule_1_2_1_2: true
 
-# SECTION2 | 2.4 | Ensure rsync service is either not installed or masked
-cis_ubuntu2204_rule_2_4: true
+# SECTION2 | 2.1.22 | Ensure only approved services are listening on a network interface
+cis_ubuntu2204_rule_2_1_22: true
 
 # SECTION6 | 6.1.10 | Ensure no unowned files or directories exist
 cis_ubuntu2204_rule_6_1_10: true
@@ -301,9 +301,9 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_allow_gdm_gui: true
       cis_ubuntu2204_allow_autofs: true # Disable auto mount, set to true to allow it and not disable
       cis_ubuntu2204_rule_1_1_1_8: false # Disable USB Storage, set to false to not disable
-      cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
-      cis_ubuntu2204_time_synchronization_ntp_server: '{{ ansible_host_default_ntp | default("time.cloudflare.com")}}'
-      cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
+      cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
+      cis_ubuntu2204_time_synchronization_time_server: '{{ ansible_host_default_ntp | default("time.cloudflare.com")}}'
+      cis_ubuntu2204_time_synchronization_time_fallback_server: ntp.ubuntu.com
       cis_ubuntu2204_allow_cups: true
       # -------------------------
       cis_ubuntu2204_install_aide: "{{ cis_setup_aide | default(false) | bool }}"
@@ -449,6 +449,59 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.7.8     | Ensure GDM autorun-never is enabled (Automated)                                          |  x  |     |     |
 | 1.7.9     | Ensure GDM autorun-never is not overridden (Automated)                                   |  x  |     |     |
 | 1.7.10    | Ensure XDCMP is not enabled (Automated)                                                  |  x  |     |     |
+| 2         | **Services**                                                                             |  x  |     |     |
+| 2.1       | **Configure Server Services**                                                            |  x  |     |     |
+| 2.1.1     | Ensure autofs services are not in use (Automated)                                        |  x  |     |     |
+| 2.1.2     | Ensure avahi daemon services are not in use (Automated)                                  |  x  |     |     |
+| 2.1.3     | Ensure dhcp server services are not in use (Automated)                                   |  x  |     |     |
+| 2.1.4     | Ensure dns server services are not in use (Automated)                                    |  x  |     |     |
+| 2.1.5     | Ensure dnsmasq services are not in use (Automated)                                       |  x  |     |     |
+| 2.1.6     | Ensure ftp server services are not in use (Automated)                                    |  x  |     |     |
+| 2.1.7     | Ensure ldap server services are not in use (Automated)                                   |  x  |     |     |
+| 2.1.8     | Ensure message access server services are not in use (Automated)                         |  x  |     |     |
+| 2.1.9     | Ensure network file system services are not in use (Automated)                           |  x  |     |     |
+| 2.1.10    | Ensure nis server services are not in use (Automated)                                    |  x  |     |     |
+| 2.1.11    | Ensure print server services are not in use (Automated)                                  |  x  |     |     |
+| 2.1.12    | Ensure rpcbind services are not in use (Automated)                                       |  x  |     |     |
+| 2.1.13    | Ensure rsync services are not in use (Automated)                                         |  x  |     |     |
+| 2.1.14    | Ensure samba file server services are not in use (Automated)                             |  x  |     |     |
+| 2.1.15    | Ensure snmp services are not in use (Automated)                                          |  x  |     |     |
+| 2.1.16    | Ensure tftp server services are not in use (Automated)                                   |  x  |     |     |
+| 2.1.17    | Ensure web proxy server services are not in use (Automated)                              |  x  |     |     |
+| 2.1.18    | Ensure web server services are not in use (Automated)                                    |  x  |     |     |
+| 2.1.19    | Ensure xinetd services are not in use (Automated)                                        |  x  |     |     |
+| 2.1.20    | Ensure X window server services are not in use (Automated)                               |  x  |     |     |
+| 2.1.21    | Ensure mail transfer agent is configured for local-only mode (Automated)                 |  x  |     |     |
+| 2.1.22    | Ensure only approved services are listening on a network interface (Manual)              |  x  |     |     |
+| 2.2       | **Configure Client Services**                                                            |  x  |     |     |
+| 2.2.1     | Ensure nis Client is not installed (Automated)                                           |  x  |     |     |
+| 2.2.2     | Ensure rsh client is not installed (Automated)                                           |  x  |     |     |
+| 2.2.3     | Ensure talk client is not installed (Automated)                                          |  x  |     |     |
+| 2.2.4     | Ensure telnet client is not installed (Automated)                                        |  x  |     |     |
+| 2.2.5     | Ensure ldap client is not installed (Automated)                                          |  x  |     |     |
+| 2.2.6     | Ensure ftp client is not installed (Automated)                                           |  x  |     |     |
+| 2.3       | **Configure Time Synchronization**                                                       |  x  |     |     |
+| 2.3.1     | **Ensure time synchronization is in use**                                                |  x  |     |     |
+| 2.3.1.1   | Ensure a single time synchronization daemon is in use (Automated)                        |  x  |     |     |
+| 2.3.2     | **Configure systemd-timesyncd**                                                          |  x  |     |     |
+| 2.3.2.1   | Ensure systemd-timesyncd configured with authorized timeserver (Manual)                  |  x  |     |     |
+| 2.3.2.2   | Ensure systemd-timesyncd is enabled and running (Automated)                              |  x  |     |     |
+| 2.3.3     | **Configure chrony**                                                                     |  x  |     |     |
+| 2.3.3.1   | Ensure chrony is configured with authorized timeserver (Manual)                          |  x  |     |     |
+| 2.3.3.2   | Ensure chrony is running as user \_chrony (Automated)                                    |  x  |     |     |
+| 2.3.3.3   | Ensure chrony is enabled and running (Automated)                                         |  x  |     |     |
+| 2.4       | **Job Schedulers**                                                                       |  x  |     |     |
+| 2.4.1     | **Configure time-based job schedulers**                                                  |  x  |     |     |
+| 2.4.1.1   | Ensure cron daemon is enabled and active (Automated)                                     |  x  |     |     |
+| 2.4.1.2   | Ensure permissions on /etc/crontab are configured (Automated)                            |  x  |     |     |
+| 2.4.1.3   | Ensure permissions on /etc/cron.hourly are configured (Automated)                        |  x  |     |     |
+| 2.4.1.4   | Ensure permissions on /etc/cron.daily are configured (Automated)                         |  x  |     |     |
+| 2.4.1.5   | Ensure permissions on /etc/cron.weekly are configured (Automated)                        |  x  |     |     |
+| 2.4.1.6   | Ensure permissions on /etc/cron.monthly are configured (Automated)                       |  x  |     |     |
+| 2.4.1.7   | Ensure permissions on /etc/cron.d are configured (Automated)                             |  x  |     |     |
+| 2.4.1.8   | Ensure crontab is restricted to authorized users (Automated)                             |  x  |     |     |
+| 2.4.2     | **Configure at**                                                                         |  x  |     |     |
+| 2.4.2.1   | Ensure at is restricted to authorized users (Automated)                                  |  x  |     |     |
 
 | #   | CIS Benchmark Recommendation Set | Yes | Y/N | No  |
 | :-- | :------------------------------- | :-: | :-: | :-: |
@@ -462,48 +515,6 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 | #         | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
 | :-------- | :---------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 2         | **Services**                                                                                    |  x  |     |     |
-| 2.1.1     | Ensure autofs services are not in use (Automated)                                               |  x  |     |     |
-| 2.1       | **Configure Time Synchronization**                                                              |  x  |     |     |
-| 2.1.1     | **Ensure time synchronization is in use**                                                       |  x  |     |     |
-| 2.1.1.1   | Ensure a single time synchronization daemon is in use (Automated)                               |  x  |     |     |
-| 2.1.2     | **Configure chrony**                                                                            |  x  |     |     |
-| 2.1.2.1   | Ensure chrony is configured with authorized timeserver (Manual)                                 |  x  |     |     |
-| 2.1.2.2   | Ensure chrony is running as user \_chrony (Automated)                                           |  x  |     |     |
-| 2.1.2.3   | Ensure chrony is enabled and running (Automated)                                                |  x  |     |     |
-| 2.1.3     | **Configure systemd-timesyncd**                                                                 |  x  |     |     |
-| 2.1.3.1   | Ensure systemd-timesyncd configured with authorized timeserver (Manual)                         |  x  |     |     |
-| 2.1.3.2   | Ensure systemd-timesyncd is enabled and running (Automated)                                     |  x  |     |     |
-| 2.1.4     | **Configure ntp**                                                                               |  x  |     |     |
-| 2.1.4.1   | Ensure ntp access control is configured (Automated)                                             |  x  |     |     |
-| 2.1.4.2   | Ensure ntp is configured with authorized timeserver (Manual)                                    |  x  |     |     |
-| 2.1.4.3   | Ensure ntp is running as user ntp (Automated)                                                   |  x  |     |     |
-| 2.1.4.4   | Ensure ntp is enabled and running (Automated)                                                   |  x  |     |     |
-| 2.2       | **Special Purpose Services**                                                                    |  x  |     |     |
-| 2.2.1     | Ensure X Window System is not installed (Automated)                                             |  x  |     |     |
-| 2.2.2     | Ensure Avahi Server is not installed (Automated)                                                |  x  |     |     |
-| 2.2.3     | Ensure CUPS is not installed (Automated)                                                        |  x  |     |     |
-| 2.2.4     | Ensure DHCP Server is not installed (Automated)                                                 |  x  |     |     |
-| 2.2.5     | Ensure LDAP server is not installed (Automated)                                                 |  x  |     |     |
-| 2.2.6     | Ensure NFS is not installed (Automated)                                                         |  x  |     |     |
-| 2.2.7     | Ensure DNS Server is not installed (Automated)                                                  |  x  |     |     |
-| 2.2.8     | Ensure FTP Server is not installed (Automated)                                                  |  x  |     |     |
-| 2.2.9     | Ensure HTTP server is not installed (Automated)                                                 |  x  |     |     |
-| 2.2.10    | Ensure IMAP and POP3 server are not installed (Automated)                                       |  x  |     |     |
-| 2.2.11    | Ensure Samba is not installed (Automated)                                                       |  x  |     |     |
-| 2.2.12    | Ensure HTTP Proxy Server is not installed (Automated)                                           |  x  |     |     |
-| 2.2.13    | Ensure SNMP Server is not installed (Automated)                                                 |  x  |     |     |
-| 2.2.14    | Ensure NIS Server is not installed (Automated)                                                  |  x  |     |     |
-| 2.2.15    | Ensure mail transfer agent is configured for local-only mode (Automated)                        |  x  |     |     |
-| 2.2.16    | Ensure rsync service is either not installed or masked (Automated)                              |  x  |     |     |
-| 2.3       | **Service Clients**                                                                             |  x  |     |     |
-| 2.3.1     | Ensure NIS Client is not installed (Automated)                                                  |  x  |     |     |
-| 2.3.2     | Ensure rsh client is not installed (Automated)                                                  |  x  |     |     |
-| 2.3.3     | Ensure talk client is not installed (Automated)                                                 |  x  |     |     |
-| 2.3.4     | Ensure telnet client is not installed (Automated)                                               |  x  |     |     |
-| 2.3.5     | Ensure LDAP client is not installed (Automated)                                                 |  x  |     |     |
-| 2.3.6     | Ensure RPC is not installed (Automated)                                                         |  x  |     |     |
-| 2.4       | Ensure nonessential services are removed or masked (Manual)                                     |  x  |     |     |
 | 3         | **Network Configuration**                                                                       |     |  x  |     |
 | 3.1       | **Disable unused network protocols and devices**                                                |     |  x  |     |
 | 3.1.1     | Ensure system is checked to determine if IPv6 is enabled (Manual)                               |  x  |     |     |
@@ -628,16 +639,6 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 4.2.2.7   | Ensure rsyslog is not configured to receive logs from a remote client (Automated)               |  x  |     |     |
 | 4.2.3     | Ensure all logfiles have appropriate permissions and ownership (Automated)                      |     |     |  x  |
 | 5         | **Access, Authentication and Authorization**                                                    |     |     |     |
-| 5.1       | **Configure time-based job schedulers**                                                         |  x  |     |     |
-| 5.1.1     | Ensure cron daemon is enabled and running (Automated)                                           |  x  |     |     |
-| 5.1.2     | Ensure permissions on /etc/crontab are configured (Automated)                                   |  x  |     |     |
-| 5.1.3     | Ensure permissions on /etc/cron.hourly are configured (Automated)                               |  x  |     |     |
-| 5.1.4     | Ensure permissions on /etc/cron.daily are configured (Automated)                                |  x  |     |     |
-| 5.1.5     | Ensure permissions on /etc/cron.weekly are configured (Automated)                               |  x  |     |     |
-| 5.1.6     | Ensure permissions on /etc/cron.monthly are configured (Automated)                              |  x  |     |     |
-| 5.1.7     | Ensure permissions on /etc/cron.d are configured (Automated)                                    |  x  |     |     |
-| 5.1.8     | Ensure cron is restricted to authorized users (Automated)                                       |  x  |     |     |
-| 5.1.9     | Ensure at is restricted to authorized users (Automated)                                         |  x  |     |     |
 | 5.2       | **Configure SSH Server**                                                                        |  x  |     |     |
 | 5.2.1     | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                           |  x  |     |     |
 | 5.2.2     | Ensure permissions on SSH private host key files are configured (Automated)                     |  x  |     |     |

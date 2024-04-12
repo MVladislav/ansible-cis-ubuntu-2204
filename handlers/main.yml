@@ -38,17 +38,7 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "HANDLER | 2.2.1.1 | systemd restart and enable chrony"
-  become: true
-  ansible.builtin.systemd:
-    name: chrony
-    daemon_reload: true
-    enabled: true
-    masked: false
-    state: restarted
-  listen: "restart chrony"
-
-- name: "HANDLER | 2.2.1.1 | systemd restart and enable systemd-timesyncd"
+- name: "HANDLER | 2.3.2.1 | systemd restart and enable systemd-timesyncd"
   become: true
   ansible.builtin.systemd:
     name: systemd-timesyncd
@@ -58,15 +48,15 @@
     state: restarted
   listen: "restart systemd-timesyncd"
 
-- name: "HANDLER | 2.2.1.1 | systemd restart and enable ntp"
+- name: "HANDLER | 2.3.1.1, 2.3.3.1-2 | systemd restart and enable chrony"
   become: true
   ansible.builtin.systemd:
-    name: ntp
+    name: chrony
     daemon_reload: true
     enabled: true
     masked: false
     state: restarted
-  listen: "restart ntp"
+  listen: "restart chrony"
 
 # ------------------------------------------------------------------------------
 

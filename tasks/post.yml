@@ -8,7 +8,7 @@
     set -o pipefail &&
     dpkg --list | (grep ^rc || true) | tr -s ' ' | cut -d ' ' -f 2
   args:
-    executable: /bin/bash
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: apt_removed_packages
   changed_when: false
 

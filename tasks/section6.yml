@@ -122,7 +122,7 @@
         | awk '{if (NR!=1) print $6}'
         | xargs -I '{}' find '{}' -xdev -type f -perm -0002 2>/dev/null
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_no_world_writable_files
       changed_when: false
       failed_when: false
@@ -148,7 +148,7 @@
         | awk {'if (NR!=1) print $6'}
         | xargs -I '{}' find '{}' -xdev -nouser 2>/dev/null
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_no_unowned_files_or_directories
       changed_when: false
       failed_when: false
@@ -181,7 +181,7 @@
         | awk '{if (NR!=1) print $6}'
         | xargs -I '{}' find '{}' -xdev -nogroup 2>/dev/null
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_no_ungrouped_files_or_directories
       changed_when: false
       failed_when: false
@@ -214,7 +214,7 @@
         | awk '{if (NR!=1) print $6}'
         | xargs -I '{}' find '{}' -xdev -type f -perm -4000 2>/dev/null
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_suid_executables
       changed_when: false
       failed_when: false
@@ -247,7 +247,7 @@
         | awk '{if (NR!=1) print $6}'
         | xargs -I '{}' find '{}' -xdev -type f -perm -2000 2>/dev/null
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_sgid_executables
       changed_when: false
       failed_when: false
@@ -292,7 +292,7 @@
         set -o pipefail &&
         awk -F: '($2 == "" ) { print $1 }' /etc/shadow 2>/dev/null
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_empty_password_fields
       changed_when: false
       failed_when: false
@@ -326,7 +326,7 @@
           fi
         done
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_groups_for_passwd_exists_in_group
       changed_when: false
       failed_when: false
@@ -379,7 +379,7 @@
           fi
         done
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_duplicate_uids
       changed_when: false
       failed_when: false
@@ -412,7 +412,7 @@
           echo "Duplicate GID ($x) in /etc/group"
         done
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_duplicate_gids
       changed_when: false
       failed_when: false
@@ -445,7 +445,7 @@
           echo "Duplicate login name $x in /etc/passwd"
         done
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_duplicate_user_names
       changed_when: false
       failed_when: false
@@ -478,7 +478,7 @@
           echo "Duplicate group name $x in /etc/group"
         done
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_duplicate_group_names
       changed_when: false
       failed_when: false
@@ -521,7 +521,7 @@
           fi
         done
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_root_path_integrity
       changed_when: false
       failed_when: false
@@ -582,7 +582,7 @@
         valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
         awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_list_of_user_home
       changed_when: false
       failed_when: false
@@ -613,7 +613,7 @@
         valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
         awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_local_interactive_user_netrc
       changed_when: false
       failed_when: false
@@ -641,7 +641,7 @@
         valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
         awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_local_interactive_user_forward
       changed_when: false
       failed_when: false
@@ -669,7 +669,7 @@
         valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
         awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_local_interactive_user_rhosts
       changed_when: false
       failed_when: false
@@ -697,7 +697,7 @@
         valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
         awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
       args:
-        executable: /bin/bash
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_local_interactive_user_dot_files
       changed_when: false
       failed_when: false

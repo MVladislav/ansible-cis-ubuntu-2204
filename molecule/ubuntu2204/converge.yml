@@ -16,10 +16,9 @@
     # -------------------------
     cis_ubuntu2204_rule_1_4_1: true
     cis_ubuntu2204_set_boot_pass: true
-    cis_ubuntu2204_rule_1_4_3: true
     # -------------------------
-    cis_ubuntu2204_rule_1_6_1_3: true
-    cis_ubuntu2204_rule_1_6_1_4: true
+    cis_ubuntu2204_rule_1_3_1_3: true
+    cis_ubuntu2204_rule_1_3_1_4: true
     # -------------------------
     cis_ubuntu2204_allow_gdm_gui: true
     cis_ubuntu2204_allow_autofs: true

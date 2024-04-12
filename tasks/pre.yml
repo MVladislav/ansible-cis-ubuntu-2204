@@ -28,18 +28,6 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "PRE | 1.4.3 | check if root has password"
-  ansible.builtin.shell: |
-    set -o pipefail &&
-    getent shadow | grep root | awk -F: '($2 == "*" || $2 == "!" ) { printf $2; }'
-  args:
-    executable: /bin/bash
-  register: cis_current_root_password
-  changed_when: false
-  check_mode: false
-
-# ------------------------------------------------------------------------------
-
 - name: "PRE | 1.1.9 | check for 'autofs' service"
   ansible.builtin.shell: |
     set -o pipefail &&
@@ -50,7 +38,7 @@
   changed_when: false
   check_mode: false
 
-- name: "PRE | 1.5.3 | check for 'apport' service"
+- name: "PRE | 1.5.5 | check for 'apport' service"
   ansible.builtin.shell: |
     set -o pipefail &&
     systemctl show apport | grep LoadState | cut -d = -f 2
@@ -60,7 +48,7 @@
   changed_when: false
   check_mode: false
 
-- name: "PRE | 1.8 | check for 'gdm3' service"
+- name: "PRE | 1.7 | check for 'gdm3' service"
   ansible.builtin.shell: |
     set -o pipefail &&
     systemctl show gdm3 | grep LoadState | cut -d = -f 2
@@ -109,7 +97,7 @@
   failed_when: false
   check_mode: false
 
-- name: "PRE | 1.5.2 | check if 'prelink' package is installed"
+- name: "PRE | 1.5.4 | check if 'prelink' package is installed"
   ansible.builtin.command: "dpkg -V prelink"
   register: package_installed_prelink
   changed_when: false

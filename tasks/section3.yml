@@ -658,11 +658,12 @@
     - workstation_l1
 
 - name: "SECTION3 | 3.5.2.9 | Ensure nftables service is enabled"
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: nftables
-    state: started
     daemon_reload: true
     enabled: true
+    masked: false
+    state: started
   when:
     - cis_ubuntu2204_rule_3_5_2_9
     - cis_ubuntu2204_firewall == "nftables"

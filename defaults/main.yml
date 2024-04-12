@@ -25,7 +25,7 @@ cis_ubuntu2204_rule_1_1_1_4: true # hfsplus
 cis_ubuntu2204_rule_1_1_1_5: true # jffs2
 cis_ubuntu2204_rule_1_1_1_6: true # squashfs - IMPACT: Snap packages utilizes squashfs as a compressed filesystem, disabling squashfs will cause Snap packages to fail.
 cis_ubuntu2204_rule_1_1_1_7: true # udf - IMPACT: Microsoft Azure requires the usage of udf.
-cis_ubuntu2204_rule_1_1_1_8: true # usb-storage
+cis_ubuntu2204_rule_1_1_1_8: true # usb-storage - IMPACT: Disabling the usb-storage module will disable any usage of USB storage devices.
 cis_ubuntu2204_rule_1_1_2_1: true # /tmp
 # cis_ubuntu2204_rule_1_1_2_1_1: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_1'
 cis_ubuntu2204_rule_1_1_2_1_2: true
@@ -43,37 +43,34 @@ cis_ubuntu2204_rule_1_1_2_2: true # /dev/shm
 # cis_ubuntu2204_rule_1_1_2_7: false # NOTE: not implemented, separate partition not created
 # cis_ubuntu2204_rule_1_2_1_1: true # NOTE: not implemented
 # cis_ubuntu2204_rule_1_2_1_2: true # NOTE: not implemented
-# cis_ubuntu2204_rule_1_2_2_1: true # NOTE: not implemented
-cis_ubuntu2204_rule_1_3_1: true # NOTE: depends also on 'cis_ubuntu2204_config_aide|cis_ubuntu2204_install_aide'
-cis_ubuntu2204_rule_1_3_2: true # NOTE: depends also on 'cis_ubuntu2204_config_aide|cis_ubuntu2204_install_aide'
-cis_ubuntu2204_rule_1_4_1: false # NOTE: depends also on 'cis_ubuntu2204_set_boot_pass'
+cis_ubuntu2204_rule_1_2_2_1: true
+cis_ubuntu2204_rule_1_3_1_1: true
+cis_ubuntu2204_rule_1_3_1_2: true
+cis_ubuntu2204_rule_1_3_1_3: true # NOTE: will run to have all in complain-mode, for enforce use cis_ubuntu2204_rule_1_3_1_4
+cis_ubuntu2204_rule_1_3_1_4: true # NOTE: disabled
+cis_ubuntu2204_rule_1_4_1: false # NOTE: depends also on 'cis_ubuntu2204_set_boot_pass' and 'cis_ubuntu2204_disable_boot_pass'
 cis_ubuntu2204_rule_1_4_2: true
-cis_ubuntu2204_rule_1_4_3: false # NOTE: disabled
 cis_ubuntu2204_rule_1_5_1: true
 cis_ubuntu2204_rule_1_5_2: true
 cis_ubuntu2204_rule_1_5_3: true
 cis_ubuntu2204_rule_1_5_4: true
-cis_ubuntu2204_rule_1_6_1_1: true
-cis_ubuntu2204_rule_1_6_1_2: true
-cis_ubuntu2204_rule_1_6_1_3: false # NOTE: disabled
-cis_ubuntu2204_rule_1_6_1_4: false # NOTE: disabled
+cis_ubuntu2204_rule_1_5_5: true
+cis_ubuntu2204_rule_1_6_1: true
+cis_ubuntu2204_rule_1_6_2: true
+cis_ubuntu2204_rule_1_6_3: true
+cis_ubuntu2204_rule_1_6_4: true
+cis_ubuntu2204_rule_1_6_5: true
+cis_ubuntu2204_rule_1_6_6: true
 cis_ubuntu2204_rule_1_7_1: true
-cis_ubuntu2204_rule_1_7_2: true
-cis_ubuntu2204_rule_1_7_3: true
-cis_ubuntu2204_rule_1_7_4: true
-cis_ubuntu2204_rule_1_7_5: true
-cis_ubuntu2204_rule_1_7_6: true
-cis_ubuntu2204_rule_1_8_1: true
-cis_ubuntu2204_rule_1_8_2: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_3: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_4: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_5: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_6: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_7: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_8: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_10: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_9: true
+cis_ubuntu2204_rule_1_7_2: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_3: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_4: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_5: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_6: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui' and 'cis_ubuntu2204_allow_autofs'
+cis_ubuntu2204_rule_1_7_7: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui' and 'cis_ubuntu2204_allow_autofs'
+cis_ubuntu2204_rule_1_7_8: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_10: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 ## SECTION 2 rules
 cis_ubuntu2204_rule_2_1_1: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
 
@@ -305,15 +302,12 @@ cis_ubuntu2204_regex_base_search: '^(#(\s)*)?'
 
 # SPECIAL options rule overview
 # ---------------------------------------
-# autofs allow auto mount (cis_ubuntu2204_rule_2_1_1)
+# autofs allow auto mount (cis_ubuntu2204_rule_1_7_6|cis_ubuntu2204_rule_1_7_7|cis_ubuntu2204_rule_2_1_1)
 cis_ubuntu2204_allow_autofs: false
-# AIDE perform install/config (cis_ubuntu2204_rule_1_3_1|cis_ubuntu2204_rule_1_3_2|cis_ubuntu2204_rule_4_1_4_11)
-cis_ubuntu2204_install_aide: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
-cis_ubuntu2204_config_aide: true
 # BOOTLOADER set (cis_ubuntu2204_rule_1_4_1)
 cis_ubuntu2204_set_boot_pass: false
 cis_ubuntu2204_disable_boot_pass: true
-# gdm allow, else remove (cis_ubuntu2204_rule_1_8_*)
+# gdm allow, else remove (cis_ubuntu2204_rule_1_7_*)
 cis_ubuntu2204_allow_gdm_gui: false
 # cups allow printer service, else remove (cis_ubuntu2204_rule_2_2_3)
 cis_ubuntu2204_allow_cups: false
@@ -321,6 +315,9 @@ cis_ubuntu2204_allow_cups: false
 cis_ubuntu2204_required_ipv6: false
 # cis_ubuntu2204_journal_upload_url (cis_ubuntu2204_rule_4_2_1_1_1-4)
 cis_ubuntu2204_set_journal_upload: false
+# AIDE perform install/config (cis_ubuntu2204_rule_6_1_1|cis_ubuntu2204_rule_6_1_2|cis_ubuntu2204_rule_6_1_3)
+cis_ubuntu2204_install_aide: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
+cis_ubuntu2204_config_aide: true
 
 # ------------------------------------------------------------------------------
 
@@ -338,12 +335,10 @@ cis_ubuntu2204_aide_cron:
   aide_weekday: "*"
 # bootloader password. 'random' makes random password (cis_ubuntu2204_rule_1_4_1)
 cis_ubuntu2204_bootloader_password: random # pragma: allowlist secret
-# root password. 'random' makes random password (cis_ubuntu2204_rule_1_4_3)
-cis_ubuntu2204_root_password: random # pragma: allowlist secret
-# grub default file path (cis_ubuntu2204_rule_1_6_1_2)
+# grub default file path (cis_ubuntu2204_rule_1_3_1_2)
 cis_ubuntu2204_default_grub_file: /etc/default/grub
-cis_ubuntu2204_default_grub_file_template: /usr/share/grub/default/grub
-# gdm banner message (cis_ubuntu2204_rule_1_8_2)
+# cis_ubuntu2204_default_grub_file_template: /usr/share/grub/default/grub # NOTE: current not used
+# gdm banner message (cis_ubuntu2204_rule_1_7_2)
 cis_ubuntu2204_gdm_warning_banner: Authorized uses only. All activity may be monitored and reported
 # choose time synchronization (cis_ubuntu2204_rule_2_1_1_1)
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp

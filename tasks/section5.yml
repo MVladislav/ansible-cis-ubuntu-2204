@@ -9,6 +9,7 @@
     daemon_reload: true
     enabled: true
     masked: false
+    state: started
   when:
     - cis_ubuntu2204_rule_5_1_1
     - service_status_cron.stdout == "loaded"

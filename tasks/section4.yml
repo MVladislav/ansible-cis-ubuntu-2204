@@ -797,7 +797,6 @@
     daemon_reload: true
     enabled: false
     masked: true
-    state: stopped
   when:
     - cis_ubuntu2204_rule_4_2_1_1_4
     - cis_ubuntu2204_set_journal_upload
@@ -928,6 +927,7 @@
     daemon_reload: true
     enabled: true
     masked: false
+    # state: started
   when:
     - cis_ubuntu2204_rule_4_2_2_2
     - cis_ubuntu2204_syslog == "rsyslog"

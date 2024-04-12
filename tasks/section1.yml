@@ -407,76 +407,91 @@
 # NOTE: apt-key list
 # TODO: SECTION1 | 1.2.1.2 | Ensure package manager repositories are configured (cis_ubuntu2204_rule_1_2_1_2)
 # NOTE: apt-cache policy
-# TODO: SECTION1 | 1.2.2.1 | Ensure updates, patches, and additional security software are installed (cis_ubuntu2204_rule_1_2_2_1)
-# NOTE: apt update && apt upgrade
+
+- name: "SECTION1 | 1.2.2.1 | Ensure updates, patches, and additional security software are installed"
+  ansible.builtin.apt:
+    upgrade: dist
+    force_apt_get: true
+    # install_recommends: false
+  when:
+    - cis_ubuntu2204_rule_1_2_2_1
+  tags:
+    - rule_1_2_2
+    - server_l1
+    - workstation_l1
+    - molecule-idempotence-notest
 
 # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.3.1 | Ensure AIDE is installed"
+- name: "SECTION1 | 1.3.1.1 | Ensure AppArmor is installed"
+  ansible.builtin.apt:
+    name:
+      - apparmor
+      # 'apparmor-utils' installs 'aa-enforce'
+      - apparmor-utils
+    state: present
+    force_apt_get: true
+  notify: restart apparmor
   when:
-    - cis_ubuntu2204_install_aide
-    - cis_ubuntu2204_rule_1_3_1
+    - cis_ubuntu2204_rule_1_3_1_1
   tags:
-    - rule_1_3
+    - rule_1_3_1
+    - server_l1
+    - workstation_l1
+
+# TODO: current the variable will only added when not exists, needs to improve to update the value if variable exists
+- name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration"
+  when:
+    - cis_ubuntu2204_rule_1_3_1_2
+  tags:
+    - rule_1_3_1
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | use nullmailer instead of postfix if not installed"
-      ansible.builtin.apt:
-        name: nullmailer
-        state: present
-        force_apt_get: true
-        install_recommends: false
-      when:
-        - not package_installed_postfix.rc == 0
-    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | install AIDE"
-      ansible.builtin.apt:
-        name:
-          - aide
-          - aide-common
-        state: present
-        force_apt_get: true
-        install_recommends: false
-    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | stat AIDE DB"
-      ansible.builtin.stat:
-        path: /var/lib/aide/aide.db
-      register: cis_stat_aide_db
-      when:
-        - cis_ubuntu2204_config_aide
-    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | iniz AIDE | could take time ..."
-      ansible.builtin.command: /usr/sbin/aideinit
-      args:
-        creates: /var/lib/aide/aide.db
-      when:
-        - cis_ubuntu2204_config_aide
-        - not cis_stat_aide_db.stat.exists
-    - name: "SECTION1 | 1.3.1 | Ensure AIDE is installed | stat AIDE daily cron"
-      ansible.builtin.stat:
-        path: /etc/cron.daily/aide
-      register: cis_stat_aide_cron
-      when:
-        - cis_ubuntu2204_config_aide
+    - name: >
+        SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | add apparmor=1
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*apparmor=)[^\"]*)(\".*)'
+        replace: '\1 apparmor=1\2'
+      notify: update-grub
+    - name: >
+        SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | add security=apparmor
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*security=)[^\"]*)(\".*)'
+        replace: '\1 security=apparmor\2'
+      notify: update-grub
 
-- name: "SECTION1 | 1.3.2 | Ensure filesystem integrity is regularly checked"
-  ansible.builtin.cron:
-    name: Run AIDE integrity check weekly
-    cron_file: "{{ cis_ubuntu2204_aide_cron.cron_file | default('aide') }}"
-    user: "{{ cis_ubuntu2204_aide_cron.cron_user | default('root') }}"
-    minute: "{{ cis_ubuntu2204_aide_cron.aide_minute | default('0') }}"
-    hour: "{{ cis_ubuntu2204_aide_cron.aide_hour | default('5') }}"
-    day: "{{ cis_ubuntu2204_aide_cron.aide_day | default('*') }}"
-    month: "{{ cis_ubuntu2204_aide_cron.aide_month | default('*') }}"
-    weekday: "{{ cis_ubuntu2204_aide_cron.aide_weekday | default('0') }}"
-    job: "{{ cis_ubuntu2204_aide_cron.aide_job }}"
+- name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode"
+  ansible.builtin.command: /usr/sbin/aa-complain /etc/apparmor.d/*
+  changed_when: false
+  notify: restart apparmor
   when:
-    - cis_ubuntu2204_install_aide
-    - cis_ubuntu2204_config_aide
-    - cis_ubuntu2204_rule_1_3_2
-    - not cis_stat_aide_cron.stat.exists
+    - cis_ubuntu2204_rule_1_3_1_3
   tags:
-    - rule_1_3
+    - rule_1_3_1
     - server_l1
     - workstation_l1
+
+- name: "SECTION1 | 1.3.1.4 | Ensure all AppArmor Profiles are enforcing"
+  ansible.builtin.command: /usr/sbin/aa-enforce /etc/apparmor.d/*
+  changed_when: false
+  notify: restart apparmor
+  when:
+    - cis_ubuntu2204_rule_1_3_1_4
+  tags:
+    - rule_1_3_1
+    - server_l2
+    - workstation_l2
 
 # ------------------------------------------------------------------------------
 
@@ -497,7 +512,7 @@
           else
             PASSWORD='{{ cis_ubuntu2204_bootloader_password }}'
           fi
-        echo -e "$PASSWORD\n$PASSWORD" | grub-mkpasswd-pbkdf2 | awk '/grub.pbkdf/{print$NF}'
+        echo -e "$PASSWORD\n$PASSWORD" | grub-mkpasswd-pbkdf2 --iteration-count=600000 --salt=64 | awk '/grub.pbkdf/{print$NF}'
       register: cis_grub_bootloader_password
       args:
         executable: /bin/bash
@@ -507,7 +522,7 @@
     - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate config"
       ansible.builtin.copy:
         dest: /etc/grub.d/00_password
-        content: "cat << EOF\nset superusers=\"root\"\npassword_pbkdf2 root {{ cis_grub_bootloader_password.stdout }}\nEOF"
+        content: "cat << EOF\nexec tail -n +2 $0\nset superusers=\"root\"\npassword_pbkdf2 root {{ cis_grub_bootloader_password.stdout }}\nEOF"
         owner: root
         group: root
         mode: "0755"
@@ -525,7 +540,7 @@
       when:
         - cis_ubuntu2204_disable_boot_pass
 
-- name: "SECTION1 | 1.4.2 | Ensure permissions on bootloader config are configured"
+- name: "SECTION1 | 1.4.2 | Ensure access to bootloader config is configured"
   ansible.builtin.file:
     path: "{{ item.path }}"
     owner: root
@@ -546,29 +561,9 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.4.3 | Ensure authentication required for single user mode"
-  ansible.builtin.shell: |
-    set -o pipefail &&
-      if [ '{{ cis_ubuntu2204_root_password }}' == 'random' ]; then
-        PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c24)
-      else
-        PASSWORD='{{ cis_ubuntu2204_root_password }}'
-      fi
-    echo "root:$PASSWORD" | chpasswd
-  args:
-    executable: /bin/bash
-  changed_when: false
-  when:
-    - cis_ubuntu2204_rule_1_4_3
-    - cis_current_root_password.stdout | length > 0
-  tags:
-    - rule_1_4
-    - server_l1
-    - workstation_l1
-
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.5.1 | Ensure address space layout randomization (ASLR) is enabled"
+- name: "SECTION1 | 1.5.1 | Ensure address space layout randomization is enabled"
   ansible.posix.sysctl:
     name: kernel.randomize_va_space
     value: "2"
@@ -584,61 +579,32 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.5.2 | Ensure 'prelink' is not installed"
+- name: "SECTION1 | 1.5.2 | Ensure ptrace_scope is restricted"
+  ansible.posix.sysctl:
+    name: kernel.yama.ptrace_scope
+    value: "1"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
   when:
-    - package_installed_prelink.rc == 0
     - cis_ubuntu2204_rule_1_5_2
   tags:
     - rule_1_5
     - server_l1
     - workstation_l1
-  block:
-    - name: >
-        SECTION1 | 1.5.2 | Ensure 'prelink' is not installed | restore binaries to normal
-      ansible.builtin.command: prelink -ua
-      changed_when: false
-    - name: >
-        SECTION1 | 1.5.2 | Ensure 'prelink' is not installed | uninstall
-      ansible.builtin.apt:
-        name: prelink
-        state: absent
 
-- name: "SECTION1 | 1.5.3 | Ensure Automatic Error Reporting is not enabled"
+- name: "SECTION1 | 1.5.3 | Ensure core dumps are restricted"
   when:
-    - service_status_apport.stdout == "loaded"
     - cis_ubuntu2204_rule_1_5_3
-  tags:
-    - rule_1_5
-    - server_l1
-    - workstation_l2
-  block:
-    - name: >
-        SECTION1 | 1.5.3 | Ensure Automatic Error Reporting is not enabled | add or edit the enabled parameter to equal 0
-      ansible.builtin.lineinfile:
-        dest: /etc/default/apport
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}enabled((.*)?=|\s|$)'
-        line: "enabled=0"
-        state: present
-        create: true
-        owner: root
-        group: root
-        mode: "0644"
-    - name: >
-        SECTION1 | 1.5.3 | Ensure Automatic Error Reporting is not enabled | stop and disable service
-      ansible.builtin.service:
-        name: apport
-        enabled: false
-
-- name: "SECTION1 | 1.5.4 | Ensure core dumps are restricted"
-  when:
-    - cis_ubuntu2204_rule_1_5_4
   tags:
     - rule_1_5
     - server_l1
     - workstation_l1
   block:
     - name: >
-        SECTION1 | 1.5.4 | Ensure core dumps are restricted | set fs.suid_dumpable
+        SECTION1 | 1.5.3 | Ensure core dumps are restricted | set fs.suid_dumpable
       ansible.posix.sysctl:
         name: fs.suid_dumpable
         value: "0"
@@ -650,15 +616,14 @@
       tags:
         - molecule-idempotence-notest
     - name: >
-        SECTION1 | 1.5.4 | Ensure core dumps are restricted | install systemd-coredump
+        SECTION1 | 1.5.3 | Ensure core dumps are restricted | install systemd-coredump
       ansible.builtin.apt:
         name: systemd-coredump
         state: present
         force_apt_get: true
-        # install_recommends: false
       notify: restart systemd-coredump
     - name: >
-        SECTION1 | 1.5.4 | Ensure core dumps are restricted | ensure hard core 0 is set
+        SECTION1 | 1.5.3 | Ensure core dumps are restricted | ensure hard core 0 is set
       ansible.builtin.lineinfile:
         dest: /etc/security/limits.conf
         regexp: '(^#)?\*\s+hard\s+core\s+[0-9]+'
@@ -669,7 +634,7 @@
         mode: "0644"
       notify: restart systemd-coredump
     - name: >
-        SECTION1 | 1.5.4 | Ensure core dumps are restricted | set coredump.conf
+        SECTION1 | 1.5.3 | Ensure core dumps are restricted | set coredump.conf
       ansible.builtin.lineinfile:
         dest: /etc/systemd/coredump.conf
         regexp: "{{ item.reg }}"
@@ -679,193 +644,175 @@
         owner: root
         group: root
         mode: "0644"
+      notify: restart systemd-coredump
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}Storage((.*)?=|\s|$)'
           line: "Storage=none"
         - reg: '{{ cis_ubuntu2204_regex_base_search }}ProcessSizeMax((.*)?=|\s|$)'
           line: "ProcessSizeMax=0"
 
-# ------------------------------------------------------------------------------
-
-- name: "SECTION1 | 1.6.1.1 | Ensure AppArmor is installed"
-  ansible.builtin.apt:
-    name:
-      - apparmor
-      # 'apparmor-utils' installs 'aa-enforce'
-      - apparmor-utils
-    state: present
-    force_apt_get: true
-    # install_recommends: false
-  notify: restart apparmor
+- name: "SECTION1 | 1.5.4 | Ensure prelink is not installed"
   when:
-    - cis_ubuntu2204_rule_1_6_1_1
+    - package_installed_prelink.rc == 0
+    - cis_ubuntu2204_rule_1_5_4
   tags:
-    - rule_1_6_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION1 | 1.6.1.2 | Ensure AppArmor is enabled in the bootloader configuration"
-  when:
-    - cis_ubuntu2204_rule_1_6_1_2
-  tags:
-    - rule_1_6_1
+    - rule_1_5
     - server_l1
     - workstation_l1
   block:
-    - name: >
-        SECTION1 | 1.6.1.2 | Ensure AppArmor is enabled in the bootloader configuration | add apparmor=1
-      ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
-        regexp: '^(GRUB_CMDLINE_LINUX=(?!.*apparmor)\"[^\"]*)(\".*)'
-        replace: '\1 apparmor=1\2'
-      notify: update-grub
-    - name: >
-        SECTION1 | 1.6.1.2 | Ensure AppArmor is enabled in the bootloader configuration | add security=apparmor
-      ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
-        regexp: '^(GRUB_CMDLINE_LINUX=(?!.*security)\"[^\"]*)(\".*)'
-        replace: '\1 security=apparmor\2'
-      notify: update-grub
+    - name: "SECTION1 | 1.5.4 | Ensure prelink is not installed | restore binaries to normal"
+      ansible.builtin.command: prelink -ua
+      changed_when: false
+    - name: "SECTION1 | 1.5.4 | Ensure prelink is not installed | uninstall"
+      ansible.builtin.apt:
+        name: prelink
+        state: absent
 
-- name: "SECTION1 | 1.6.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode"
-  # ansible.builtin.command: /usr/sbin/aa-enforce /etc/apparmor.d/*
-  ansible.builtin.command: /usr/sbin/aa-complain /etc/apparmor.d/*
-  changed_when: false
-  notify: restart apparmor
+- name: "SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled"
   when:
-    - cis_ubuntu2204_rule_1_6_1_3
+    - service_status_apport.stdout == "loaded"
+    - cis_ubuntu2204_rule_1_5_5
   tags:
-    - rule_1_6_1
+    - rule_1_5
     - server_l1
-    - workstation_l1
-
-- name: "SECTION1 | 1.6.1.4 | Ensure all AppArmor Profiles are enforcing"
-  ansible.builtin.command: /usr/sbin/aa-enforce /etc/apparmor.d/*
-  changed_when: false
-  notify: restart apparmor
-  when:
-    - cis_ubuntu2204_rule_1_6_1_4
-  tags:
-    - rule_1_6_1
-    - server_l2
     - workstation_l2
+  block:
+    - name: >
+        SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled | add or edit the enabled parameter to equal 0
+      ansible.builtin.lineinfile:
+        dest: /etc/default/apport
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}enabled((.*)?=|\s|$)'
+        line: "enabled=0"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0644"
+    - name: >
+        SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled | stop and disable service
+      ansible.builtin.systemd:
+        name: apport
+        daemon_reload: true
+        enabled: false
+        masked: true
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.7.1 | Ensure message of the day is configured properly"
+- name: "SECTION1 | 1.6.1 | Ensure message of the day is configured properly"
   ansible.builtin.copy:
-    content: Authorized uses only. All activity may be monitored and reported.
+    content: Authorized users only. All activity may be monitored and reported.
     dest: /etc/motd
-    mode: "0644"
+    mode: "0444"
   when:
-    - cis_ubuntu2204_rule_1_7_1
+    - cis_ubuntu2204_rule_1_6_1
   tags:
-    - rule_1_7
+    - rule_1_6
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.7.2 | Ensure local login warning banner is configured properly"
+- name: "SECTION1 | 1.6.2 | Ensure local login warning banner is configured properly"
   ansible.builtin.copy:
-    content: Authorized uses only. All activity may be monitored and reported.
+    content: Authorized users only. All activity may be monitored and reported.
     dest: /etc/issue
-    mode: "0644"
+    mode: "0444"
   when:
-    - cis_ubuntu2204_rule_1_7_2
+    - cis_ubuntu2204_rule_1_6_2
   tags:
-    - rule_1_7
+    - rule_1_6
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.7.3 | Ensure remote login warning banner is configured properly"
+- name: "SECTION1 | 1.6.3 | Ensure remote login warning banner is configured properly"
   ansible.builtin.copy:
-    content: Authorized uses only. All activity may be monitored and reported.
+    content: Authorized users only. All activity may be monitored and reported.
     dest: /etc/issue.net
-    mode: "0644"
+    mode: "0444"
   when:
-    - cis_ubuntu2204_rule_1_7_3
+    - cis_ubuntu2204_rule_1_6_3
   tags:
-    - rule_1_7
+    - rule_1_6
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.7.4 | Ensure permissions on /etc/motd are configured"
+- name: "SECTION1 | 1.6.4 | Ensure permissions on /etc/motd are configured"
   ansible.builtin.file:
     dest: /etc/motd
     state: file
     owner: root
     group: root
-    mode: "0644"
+    mode: "0444"
   when:
-    - cis_ubuntu2204_rule_1_7_4
+    - cis_ubuntu2204_rule_1_6_4
   tags:
-    - rule_1_7
+    - rule_1_6
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.7.5 | Ensure permissions on /etc/issue are configured"
+- name: "SECTION1 | 1.6.5 | Ensure permissions on /etc/issue are configured"
   ansible.builtin.file:
     dest: /etc/issue
     state: file
     owner: root
     group: root
-    mode: "0644"
+    mode: "0444"
   when:
-    - cis_ubuntu2204_rule_1_7_5
+    - cis_ubuntu2204_rule_1_6_5
   tags:
-    - rule_1_7
+    - rule_1_6
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.7.6 | Ensure permissions on /etc/issue.net are configured"
+- name: "SECTION1 | 1.6.6 | Ensure permissions on /etc/issue.net are configured"
   ansible.builtin.file:
     dest: /etc/issue.net
     state: file
     owner: root
     group: root
-    mode: "0644"
+    mode: "0444"
   when:
-    - cis_ubuntu2204_rule_1_7_6
+    - cis_ubuntu2204_rule_1_6_6
   tags:
-    - rule_1_7
+    - rule_1_6
     - server_l1
     - workstation_l1
+
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.8.1 | Ensure GNOME Display Manager is removed"
+- name: "SECTION1 | 1.7.1 | Ensure GNOME Display Manager is removed"
   ansible.builtin.apt:
     name: gdm3
     state: absent
   when:
     - not cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_1
+    - cis_ubuntu2204_rule_1_7_1
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l2
 
-- name: "SECTION1 | 1.8.* | create folder /etc/dconf/db/*"
+- name: "SECTION1 | 1.7.2-9 | create folder under '/etc/dconf/db/*', for upcoming tasks"
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION1 | 1.8.* | create folder /etc/dconf/db/gdm.d"
+    - name: "SECTION1 | 1.7.2-3 | create folder /etc/dconf/db/gdm.d"
       ansible.builtin.file:
         path: /etc/dconf/db/gdm.d
         state: directory
         owner: root
         group: root
         mode: "0755"
-    - name: "SECTION1 | 1.8.* | create folder /etc/dconf/db/local.d"
+    - name: "SECTION1 | 1.7.4/6/8 | create folder /etc/dconf/db/local.d"
       ansible.builtin.file:
         path: /etc/dconf/db/local.d
         state: directory
         owner: root
         group: root
         mode: "0755"
-    - name: "SECTION1 | 1.8.* | create folder /etc/dconf/db/local.d/locks"
+    - name: "SECTION1 | 1.7.5/7/9 | create folder /etc/dconf/db/local.d/locks"
       ansible.builtin.file:
         path: /etc/dconf/db/local.d/locks
         state: directory
@@ -873,24 +820,24 @@
         group: root
         mode: "0755"
 
-- name: "SECTION1 | 1.8.2 | Ensure GDM login banner is configured"
+- name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured"
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_2
+    - cis_ubuntu2204_rule_1_7_2
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION1 | 1.8.2 | Ensure GDM login banner is configured | file gdm"
+    - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured | file gdm"
       ansible.builtin.template:
         src: gdm/profile-gdm.j2
         dest: /etc/dconf/profile/gdm
         owner: root
         group: root
         mode: "0644"
-    - name: "SECTION1 | 1.8.2 | Ensure GDM login banner is configured | file 01-banner-message"
+    - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured | file 01-banner-message"
       ansible.builtin.template:
         src: gdm/01-banner-message.j2
         dest: /etc/dconf/db/gdm.d/01-banner-message
@@ -898,7 +845,7 @@
         group: root
         mode: "0644"
 
-- name: "SECTION1 | 1.8.3 | Ensure GDM disable-user-list option is enabled"
+- name: "SECTION1 | 1.7.3 | Ensure GDM disable-user-list option is enabled"
   ansible.builtin.template:
     src: gdm/00-login-screen.j2
     dest: /etc/dconf/db/gdm.d/00-login-screen
@@ -908,30 +855,30 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_3
+    - cis_ubuntu2204_rule_1_7_3
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.8.4 | Ensure GDM screen locks when the user is idle"
+- name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle"
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_4
+    - cis_ubuntu2204_rule_1_7_4
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION1 | 1.8.4 | Ensure GDM screen locks when the user is idle | file user"
+    - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | file user"
       ansible.builtin.template:
         src: gdm/profile-user-j2
         dest: /etc/dconf/profile/user
         owner: root
         group: root
         mode: "0644"
-    - name: "SECTION1 | 1.8.4 | Ensure GDM screen locks when the user is idle | file 00-screensaver"
+    - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | file 00-screensaver"
       ansible.builtin.template:
         src: gdm/00-screensaver.j2
         dest: /etc/dconf/db/local.d/00-screensaver
@@ -939,7 +886,7 @@
         group: root
         mode: "0644"
 
-- name: "SECTION1 | 1.8.5 | Ensure GDM screen locks cannot be overridden"
+- name: "SECTION1 | 1.7.5 | Ensure GDM screen locks cannot be overridden"
   ansible.builtin.template:
     src: gdm/00-screensaver-locks.j2
     dest: /etc/dconf/db/local.d/locks/00-screensaver
@@ -949,13 +896,13 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_5
+    - cis_ubuntu2204_rule_1_7_5
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.8.6 | Ensure GDM automatic mounting of removable media is disabled"
+- name: "SECTION1 | 1.7.6 | Ensure GDM automatic mounting of removable media is disabled"
   ansible.builtin.template:
     src: gdm/00-media-automount.j2
     dest: /etc/dconf/db/local.d/00-media-automount
@@ -966,13 +913,13 @@
     - not cis_ubuntu2204_allow_autofs
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_6
+    - cis_ubuntu2204_rule_1_7_6
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l2
 
-- name: "SECTION1 | 1.8.7 | Ensure GDM disabling automatic mounting of removable media is not overridden"
+- name: "SECTION1 | 1.7.7 | Ensure GDM disabling automatic mounting of removable media is not overridden"
   ansible.builtin.template:
     src: gdm/00-media-automount-locks.j2
     dest: /etc/dconf/db/local.d/locks/00-media-automount
@@ -983,13 +930,13 @@
     - not cis_ubuntu2204_allow_autofs
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_7
+    - cis_ubuntu2204_rule_1_7_7
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l2
 
-- name: "SECTION1 | 1.8.8 | Ensure GDM autorun-never is enabled"
+- name: "SECTION1 | 1.7.8 | Ensure GDM autorun-never is enabled"
   ansible.builtin.template:
     src: gdm/00-media-autorun.j2
     dest: /etc/dconf/db/local.d/00-media-autorun
@@ -999,13 +946,13 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_8
+    - cis_ubuntu2204_rule_1_7_8
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.8.9 | Ensure GDM autorun-never is not overridden"
+- name: "SECTION1 | 1.7.9 | Ensure GDM autorun-never is not overridden"
   ansible.builtin.template:
     src: gdm/00-media-autorun-locks.j2
     dest: /etc/dconf/db/local.d/locks/00-media-autorun
@@ -1015,43 +962,24 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_9
+    - cis_ubuntu2204_rule_1_7_9
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.8.10 | Ensure XDCMP is not enabled"
-  ansible.builtin.lineinfile:
+- name: "SECTION1 | 1.7.10 | Ensure XDCMP is not enabled"
+  ansible.builtin.template:
+    src: gdm/custom.conf.j2
     dest: /etc/gdm3/custom.conf
-    regexp: '^Enable((.*)?=|\s|$)'
-    line: "#Enable=false"
-    state: present
-    create: true
     owner: root
     group: root
     mode: "0644"
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
-    - cis_ubuntu2204_rule_1_8_10
+    - cis_ubuntu2204_rule_1_7_10
   tags:
-    - rule_1_8
+    - rule_1_7
     - server_l1
     - workstation_l1
-
-# ------------------------------------------------------------------------------
-
-- name: "SECTION1 | 1.9 | Ensure updates, patches, and additional security software are installed"
-  ansible.builtin.apt:
-    upgrade: dist
-    force_apt_get: true
-    # install_recommends: false
-  when:
-    - cis_ubuntu2204_rule_1_9
-  tags:
-    - rule_1_9
-    - server_l1
-    - workstation_l1
-    - molecule-idempotence-notest
-# ------------------------------------------------------------------------------

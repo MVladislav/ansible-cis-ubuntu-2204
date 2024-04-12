@@ -54,6 +54,7 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0](https://downloads.cisec
     - `GRUB_CMDLINE_LINUX`
   - make a copy from template if grub not exists
     - <https://askubuntu.com/questions/406229/there-was-no-etc-default-grub-file-so-how-come-my-system-was-able-to-boot>
+    - `sudo cp /usr/share/grub/default/grub /etc/default/`
 - improve auditd for 32 or 64 system check to add rules
 - check ufw sysctl usage
 - improve cis_ubuntu2204_set_journal_upload
@@ -63,6 +64,8 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0](https://downloads.cisec
 - rules under '5.4', should be more tested
   - example for 'cis_ubuntu2204_rule_5_4_2' which fail to use password after performed
   - seams error found, but need tests, CIS pdf define success=1 but default value in ubuntu is success=2
+- possible add 'usbguard' for rule 'cis_ubuntu2204_rule_1_1_1_8' when usb-storage should be loaded as alternative security
+  - <https://www.cyberciti.biz/security/how-to-protect-linux-against-rogue-usb-devices-using-usbguard/>
 
 ## Requirements
 
@@ -116,16 +119,12 @@ cis_ubuntu2204_rule_5_2_23: true
 # Ensure bootloader password is set
 cis_ubuntu2204_rule_1_4_1: false
 cis_ubuntu2204_set_boot_pass: false
+# this one needs to set to 'false', to not disable boot password
+cis_ubuntu2204_disable_boot_pass: true
 
-# Ensure authentication required for single user mode
-cis_ubuntu2204_rule_1_4_3: false
-
-# Ensure all AppArmor Profiles are in enforce or complain mode
-# NOTE: will perform Profiles as complain mode
-cis_ubuntu2204_rule_1_6_1_3: false
 # Ensure all AppArmor Profiles are enforcing
 # NOTE: will perform Profiles as enforcing mode
-cis_ubuntu2204_rule_1_6_1_4: false
+cis_ubuntu2204_rule_1_3_1_4: false
 
 # cis define to deny all outgoing traffic and whitelist all needed
 # default here is changed to allow all outgoing traffic,
@@ -147,7 +146,7 @@ cis_ubuntu2204_rule_5_4_2: false
 
 ```yaml
 # will purge gdm/gui, if gui is needed set to 'true'
-# if 'true' is set, recommended configs will perform in rules 1.8.2 - 1.8.10
+# if 'true' is set, recommended configs will perform in rules 1.7.2 - 1.7.10
 cis_ubuntu2204_allow_gdm_gui: false
 
 # will disable auto mount, if auto mount is needed set to 'true'
@@ -293,12 +292,11 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       # -------------------------
       cis_ubuntu2204_rule_1_4_1: false # bootloader password
       cis_ubuntu2204_set_boot_pass: false # bootloader password
-      cis_ubuntu2204_rule_1_4_3: false # authentication required for single user mode
       # -------------------------
       cis_ubuntu2204_rule_5_4_2: false # lockout for failed password attempts # NOTE: will fail to use password
       # -------------------------
-      cis_ubuntu2204_rule_1_6_1_3: false # AppArmor complain mode
-      cis_ubuntu2204_rule_1_6_1_4: false # AppArmor enforce mode
+      cis_ubuntu2204_rule_1_3_1_3: false # AppArmor complain mode
+      cis_ubuntu2204_rule_1_3_1_4: false # AppArmor enforce mode
       # -------------------------
       cis_ubuntu2204_allow_gdm_gui: true
       cis_ubuntu2204_allow_autofs: true # Disable auto mount, set to true to allow it and not disable
@@ -365,96 +363,105 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 ## CIS - List of Recommendations
 
+| #         | CIS Benchmark Recommendation Set                                                         | Yes | Y/N | No  |
+| :-------- | :--------------------------------------------------------------------------------------- | :-: | :-: | :-: |
+| 1         | **Initial Setup**                                                                        |     |  x  |     |
+| 1.1       | **Filesystem**                                                                           |     |  x  |     |
+| 1.1.1     | **Configure Filesystem Kernel Modules**                                                  |  x  |     |     |
+| 1.1.1.1   | Ensure cramfs kernel module is not available (Automated)                                 |  x  |     |     |
+| 1.1.1.2   | Ensure freevxfs kernel module is not available (Automated)                               |  x  |     |     |
+| 1.1.1.3   | Ensure hfs kernel module is not available (Automated)                                    |  x  |     |     |
+| 1.1.1.4   | Ensure hfsplus kernel module is not available (Automated)                                |  x  |     |     |
+| 1.1.1.5   | Ensure jffs2 kernel module is not available (Automated)                                  |  x  |     |     |
+| 1.1.1.6   | Ensure squashfs kernel module is not available (Automated)                               |  x  |     |     |
+| 1.1.1.7   | Ensure udf kernel module is not available (Automated)                                    |  x  |     |     |
+| 1.1.1.8   | Ensure usb-storage kernel module is not available (Automated)                            |  x  |     |     |
+| 1.1.2     | **Configure Filesystem Partitions**                                                      |  x  |     |     |
+| 1.1.2.1   | **Configure /tmp**                                                                       |  x  |     |     |
+| 1.1.2.1.1 | Ensure /tmp is a separate partition (Automated)                                          |  x  |     |     |
+| 1.1.2.1.2 | Ensure nodev option set on /tmp partition (Automated)                                    |  x  |     |     |
+| 1.1.2.1.3 | Ensure nosuid option set on /tmp partition (Automated)                                   |  x  |     |     |
+| 1.1.2.1.4 | Ensure noexec option set on /tmp partition (Automated)                                   |  x  |     |     |
+| 1.1.2.2   | **Configure /dev/shm**                                                                   |  x  |     |     |
+| 1.1.2.2.1 | Ensure /dev/shm is a separate partition (Automated)                                      |  x  |     |     |
+| 1.1.2.2.2 | Ensure nodev option set on /dev/shm partition (Automated)                                |  x  |     |     |
+| 1.1.2.2.3 | Ensure nosuid option set on /dev/shm partition (Automated)                               |  x  |     |     |
+| 1.1.2.2.4 | Ensure noexec option set on /dev/shm partition (Automated)                               |  x  |     |     |
+| 1.1.2.3   | **Configure /home**                                                                      |     |     |  x  |
+| 1.1.2.3.1 | Ensure separate partition exists for /home (Automated)                                   |     |     |  x  |
+| 1.1.2.3.2 | Ensure nodev option set on /home partition (Automated)                                   |     |     |  x  |
+| 1.1.2.3.3 | Ensure nosuid option set on /home partition (Automated)                                  |     |     |  x  |
+| 1.1.2.4   | **Configure /var**                                                                       |     |     |  x  |
+| 1.1.2.4.1 | Ensure separate partition exists for /var (Automated)                                    |     |     |  x  |
+| 1.1.2.4.2 | Ensure nodev option set on /var partition (Automated)                                    |     |     |  x  |
+| 1.1.2.4.3 | Ensure nosuid option set on /var partition (Automated)                                   |     |     |  x  |
+| 1.1.2.5   | **Configure /var/tmp**                                                                   |     |     |  x  |
+| 1.1.2.5.1 | Ensure separate partition exists for /var/tmp (Automated)                                |     |     |  x  |
+| 1.1.2.5.2 | Ensure nodev option set on /var/tmp partition (Automated)                                |     |     |  x  |
+| 1.1.2.5.3 | Ensure nosuid option set on /var/tmp partition (Automated)                               |     |     |  x  |
+| 1.1.2.5.4 | Ensure noexec option set on /var/tmp partition (Automated)                               |     |     |  x  |
+| 1.1.2.6   | **Configure /var/log**                                                                   |     |     |  x  |
+| 1.1.2.6.1 | Ensure separate partition exists for /var/log (Automated)                                |     |     |  x  |
+| 1.1.2.6.2 | Ensure nodev option set on /var/log partition (Automated)                                |     |     |  x  |
+| 1.1.2.6.3 | Ensure nosuid option set on /var/log partition (Automated)                               |     |     |  x  |
+| 1.1.2.6.4 | Ensure noexec option set on /var/log partition (Automated)                               |     |     |  x  |
+| 1.1.2.7   | **Configure /var/log/audit**                                                             |     |     |  x  |
+| 1.1.2.7.1 | Ensure separate partition exists for /var/log/audit (Automated)                          |     |     |  x  |
+| 1.1.2.7.2 | Ensure nodev option set on /var/log/audit partition (Automated)                          |     |     |  x  |
+| 1.1.2.7.3 | Ensure nosuid option set on /var/log/audit partition (Automated)                         |     |     |  x  |
+| 1.1.2.7.4 | Ensure noexec option set on /var/log/audit partition (Automated)                         |     |     |  x  |
+| 1.2       | **Package Management**                                                                   |     |  x  |     |
+| 1.2.1     | **Configure Package Repositories**                                                       |     |     |  x  |
+| 1.2.1.1   | Ensure GPG keys are configured                                                           |     |     |  x  |
+| 1.2.1.2   | Ensure package manager repositories are configured                                       |     |     |  x  |
+| 1.2.2     | **Configure Package Updates**                                                            |  x  |     |     |
+| 1.2.2.1   | Ensure updates, patches, and additional security software are installed                  |  x  |     |     |
+| 1.3       | **Mandatory Access Control**                                                             |  x  |     |     |
+| 1.3.1     | **Configure AppArmor**                                                                   |  x  |     |     |
+| 1.3.1.1   | Ensure AppArmor is installed (Automated)                                                 |  x  |     |     |
+| 1.3.1.2   | Ensure AppArmor is enabled in the bootloader configuration (Automated)                   |  x  |     |     |
+| 1.3.1.3   | Ensure all AppArmor Profiles are in enforce or complain mode (Automated)                 |  x  |     |     |
+| 1.3.1.4   | Ensure all AppArmor Profiles are enforcing (Automated)                                   |  x  |     |     |
+| 1.4       | **Configure Bootloader**                                                                 |  x  |     |     |
+| 1.4.1     | Ensure bootloader password is set (Automated)                                            |  x  |     |     |
+| 1.4.2     | Ensure access to bootloader config is configured (Automated)                             |  x  |     |     |
+| 1.5       | **Configure Additional Process Hardening**                                               |  x  |     |     |
+| 1.5.1     | Ensure address space layout randomization is enabled (Automated)                         |  x  |     |     |
+| 1.5.2     | Ensure ptrace_scope is restricted (Automated)                                            |  x  |     |     |
+| 1.5.3     | Ensure core dumps are restricted (Automated)                                             |  x  |     |     |
+| 1.5.4     | Ensure prelink is not installed (Automated)                                              |  x  |     |     |
+| 1.5.5     | Ensure Automatic Error Reporting is not enabled (Automated)                              |  x  |     |     |
+| 1.6       | **Command Line Warning Banners**                                                         |  x  |     |     |
+| 1.6.1     | Ensure message of the day is configured properly (Automated)                             |  x  |     |     |
+| 1.6.2     | Ensure local login warning banner is configured properly (Automated)                     |  x  |     |     |
+| 1.6.3     | Ensure remote login warning banner is configured properly (Automated)                    |  x  |     |     |
+| 1.6.4     | Ensure access to /etc/motd is configured (Automated)                                     |  x  |     |     |
+| 1.6.5     | Ensure access to /etc/issue is configured (Automated)                                    |  x  |     |     |
+| 1.6.6     | Ensure access to /etc/issue.net is configured (Automated)                                |  x  |     |     |
+| 1.7       | **GNOME Display Manager**                                                                |  x  |     |     |
+| 1.7.1     | Ensure GDM is removed (Automated)                                                        |  x  |     |     |
+| 1.7.2     | Ensure GDM login banner is configured (Automated)                                        |  x  |     |     |
+| 1.7.3     | Ensure GDM disable-user-list option is enabled (Automated)                               |  x  |     |     |
+| 1.7.4     | Ensure GDM screen locks when the user is idle (Automated)                                |  x  |     |     |
+| 1.7.5     | Ensure GDM screen locks cannot be overridden (Automated)                                 |  x  |     |     |
+| 1.7.6     | Ensure GDM automatic mounting of removable media is disabled (Automated)                 |  x  |     |     |
+| 1.7.7     | Ensure GDM disabling automatic mounting of removable media is not overridden (Automated) |  x  |     |     |
+| 1.7.8     | Ensure GDM autorun-never is enabled (Automated)                                          |  x  |     |     |
+| 1.7.9     | Ensure GDM autorun-never is not overridden (Automated)                                   |  x  |     |     |
+| 1.7.10    | Ensure XDCMP is not enabled (Automated)                                                  |  x  |     |     |
+
+| #   | CIS Benchmark Recommendation Set | Yes | Y/N | No  |
+| :-- | :------------------------------- | :-: | :-: | :-: |
+
+| #     | CIS Benchmark Recommendation Set                                                                                   | Yes | Y/N | No  |
+| :---- | :----------------------------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
+| 6.1   | **Filesystem Integrity Checking** (moved from 1.3)                                                                 |  x  |     |     |
+| 6.1.1 | Ensure AIDE is installed (Automated) (moved from 1.3.1)                                                            |  x  |     |     |
+| 6.1.2 | Ensure filesystem integrity is regularly checked (Automated) (moved from 1.3.2)                                    |  x  |     |     |
+| 6.1.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools (Automated) (Moved from 4.1.4.11) |  x  |     |     |
+
 | #         | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
 | :-------- | :---------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 1         | **Initial Setup**                                                                               |     |  x  |     |
-| 1.1       | **Filesystem**                                                                                  |     |  x  |     |
-| 1.1.1     | **Configure Filesystem Kernel Modules**                                                         |  x  |     |     |
-| 1.1.1.1   | Ensure cramfs kernel module is not available (Automated)                                        |  x  |     |     |
-| 1.1.1.2   | Ensure freevxfs kernel module is not available (Automated)                                      |  x  |     |     |
-| 1.1.1.3   | Ensure hfs kernel module is not available (Automated)                                           |  x  |     |     |
-| 1.1.1.4   | Ensure hfsplus kernel module is not available (Automated)                                       |  x  |     |     |
-| 1.1.1.5   | Ensure jffs2 kernel module is not available (Automated)                                         |  x  |     |     |
-| 1.1.1.6   | Ensure squashfs kernel module is not available (Automated)                                      |  x  |     |     |
-| 1.1.1.7   | Ensure udf kernel module is not available (Automated)                                           |  x  |     |     |
-| 1.1.1.8   | Ensure usb-storage kernel module is not available (Automated)                                   |  x  |     |     |
-| 1.1.2     | **Configure Filesystem Partitions**                                                             |  x  |     |     |
-| 1.1.2.1   | **Configure /tmp**                                                                              |  x  |     |     |
-| 1.1.2.1.1 | Ensure /tmp is a separate partition (Automated)                                                 |  x  |     |     |
-| 1.1.2.1.2 | Ensure nodev option set on /tmp partition (Automated)                                           |  x  |     |     |
-| 1.1.2.1.3 | Ensure nosuid option set on /tmp partition (Automated)                                          |  x  |     |     |
-| 1.1.2.1.4 | Ensure noexec option set on /tmp partition (Automated)                                          |  x  |     |     |
-| 1.1.2.2   | **Configure /dev/shm**                                                                          |  x  |     |     |
-| 1.1.2.2.1 | Ensure /dev/shm is a separate partition (Automated)                                             |  x  |     |     |
-| 1.1.2.2.2 | Ensure nodev option set on /dev/shm partition (Automated)                                       |  x  |     |     |
-| 1.1.2.2.3 | Ensure nosuid option set on /dev/shm partition (Automated)                                      |  x  |     |     |
-| 1.1.2.2.4 | Ensure noexec option set on /dev/shm partition (Automated)                                      |  x  |     |     |
-| 1.1.2.3   | **Configure /home**                                                                             |     |     |  x  |
-| 1.1.2.3.1 | Ensure separate partition exists for /home (Automated)                                          |     |     |  x  |
-| 1.1.2.3.2 | Ensure nodev option set on /home partition (Automated)                                          |     |     |  x  |
-| 1.1.2.3.3 | Ensure nosuid option set on /home partition (Automated)                                         |     |     |  x  |
-| 1.1.2.4   | **Configure /var**                                                                              |     |     |  x  |
-| 1.1.2.4.1 | Ensure separate partition exists for /var (Automated)                                           |     |     |  x  |
-| 1.1.2.4.2 | Ensure nodev option set on /var partition (Automated)                                           |     |     |  x  |
-| 1.1.2.4.3 | Ensure nosuid option set on /var partition (Automated)                                          |     |     |  x  |
-| 1.1.2.5   | **Configure /var/tmp**                                                                          |     |     |  x  |
-| 1.1.2.5.1 | Ensure separate partition exists for /var/tmp (Automated)                                       |     |     |  x  |
-| 1.1.2.5.2 | Ensure nodev option set on /var/tmp partition (Automated)                                       |     |     |  x  |
-| 1.1.2.5.3 | Ensure nosuid option set on /var/tmp partition (Automated)                                      |     |     |  x  |
-| 1.1.2.5.4 | Ensure noexec option set on /var/tmp partition (Automated)                                      |     |     |  x  |
-| 1.1.2.6   | **Configure /var/log**                                                                          |     |     |  x  |
-| 1.1.2.6.1 | Ensure separate partition exists for /var/log (Automated)                                       |     |     |  x  |
-| 1.1.2.6.2 | Ensure nodev option set on /var/log partition (Automated)                                       |     |     |  x  |
-| 1.1.2.6.3 | Ensure nosuid option set on /var/log partition (Automated)                                      |     |     |  x  |
-| 1.1.2.6.4 | Ensure noexec option set on /var/log partition (Automated)                                      |     |     |  x  |
-| 1.1.2.7   | **Configure /var/log/audit**                                                                    |     |     |  x  |
-| 1.1.2.7.1 | Ensure separate partition exists for /var/log/audit (Automated)                                 |     |     |  x  |
-| 1.1.2.7.2 | Ensure nodev option set on /var/log/audit partition (Automated)                                 |     |     |  x  |
-| 1.1.2.7.3 | Ensure nosuid option set on /var/log/audit partition (Automated)                                |     |     |  x  |
-| 1.1.2.7.4 | Ensure noexec option set on /var/log/audit partition (Automated)                                |     |     |  x  |
-| 1.2       | **Package Management**                                                                          |     |     |  x  |
-| 1.2.1     | **Configure Package Repositories**                                                              |     |     |  x  |
-| 1.2.1.1   | Ensure GPG keys are configured                                                                  |     |     |  x  |
-| 1.2.1.2   | Ensure package manager repositories are configured                                              |     |     |  x  |
-| 1.2.2     | **Configure Package Updates**                                                                   |     |     |  x  |
-| 1.2.2.1   | Ensure updates, patches, and additional security software are installed                         |     |     |  x  |
-| 1.3       | **Filesystem Integrity Checking**                                                               |  x  |     |     |
-| 1.3.1     | Ensure AIDE is installed (Automated)                                                            |  x  |     |     |
-| 1.3.2     | Ensure filesystem integrity is regularly checked (Automated)                                    |  x  |     |     |
-| 1.4       | **Secure Boot Settings**                                                                        |  x  |     |     |
-| 1.4.1     | Ensure bootloader password is set (Automated)                                                   |  x  |     |     |
-| 1.4.2     | Ensure permissions on bootloader config are configured (Automated)                              |  x  |     |     |
-| 1.4.3     | Ensure authentication required for single user mode (Automated)                                 |  x  |     |     |
-| 1.5       | **Additional Process Hardening**                                                                |  x  |     |     |
-| 1.5.1     | Ensure address space layout randomization (ASLR) is enabled (Automated)                         |  x  |     |     |
-| 1.5.2     | Ensure prelink is not installed (Automated)                                                     |  x  |     |     |
-| 1.5.3     | Ensure Automatic Error Reporting is not enabled (Automated)                                     |  x  |     |     |
-| 1.5.4     | Ensure core dumps are restricted (Automated)                                                    |  x  |     |     |
-| 1.6       | **Mandatory Access Control**                                                                    |  x  |     |     |
-| 1.6.1     | **Configure AppArmor**                                                                          |  x  |     |     |
-| 1.6.1.1   | Ensure AppArmor is installed (Automated)                                                        |  x  |     |     |
-| 1.6.1.2   | Ensure AppArmor is enabled in the bootloader configuration (Automated)                          |  x  |     |     |
-| 1.6.1.3   | Ensure all AppArmor Profiles are in enforce or complain mode (Automated)                        |  x  |     |     |
-| 1.6.1.4   | Ensure all AppArmor Profiles are enforcing (Automated)                                          |  x  |     |     |
-| 1.7       | **Command Line Warning Banners**                                                                |  x  |     |     |
-| 1.7.1     | Ensure message of the day is configured properly (Automated)                                    |  x  |     |     |
-| 1.7.2     | Ensure local login warning banner is configured properly (Automated)                            |  x  |     |     |
-| 1.7.3     | Ensure remote login warning banner is configured properly (Automated)                           |  x  |     |     |
-| 1.7.4     | Ensure permissions on /etc/motd are configured (Automated)                                      |  x  |     |     |
-| 1.7.5     | Ensure permissions on /etc/issue are configured (Automated)                                     |  x  |     |     |
-| 1.7.6     | Ensure permissions on /etc/issue.net are configured (Automated)                                 |  x  |     |     |
-| 1.8       | **GNOME Display Manager**                                                                       |  x  |     |     |
-| 1.8.1     | Ensure GNOME Display Manager is removed (Automated)                                             |  x  |     |     |
-| 1.8.2     | Ensure GDM login banner is configured (Automated)                                               |  x  |     |     |
-| 1.8.3     | Ensure GDM disable-user-list option is enabled (Automated)                                      |  x  |     |     |
-| 1.8.4     | Ensure GDM screen locks when the user is idle (Automated)                                       |  x  |     |     |
-| 1.8.5     | Ensure GDM screen locks cannot be overridden (Automated)                                        |  x  |     |     |
-| 1.8.6     | Ensure GDM automatic mounting of removable media is disabled (Automated)                        |  x  |     |     |
-| 1.8.7     | Ensure GDM disabling automatic mounting of removable media is not overridden (Automated)        |  x  |     |     |
-| 1.8.8     | Ensure GDM autorun-never is enabled (Automated)                                                 |  x  |     |     |
-| 1.8.9     | Ensure GDM autorun-never is not overridden (Automated)                                          |  x  |     |     |
-| 1.8.10    | Ensure XDCMP is not enabled (Automated)                                                         |  x  |     |     |
-| 1.9       | Ensure updates, patches, and additional security software are installed (Manual)                |  x  |     |     |
 | 2         | **Services**                                                                                    |  x  |     |     |
 | 2.1.1     | Ensure autofs services are not in use (Automated)                                               |  x  |     |     |
 | 2.1       | **Configure Time Synchronization**                                                              |  x  |     |     |
@@ -598,7 +605,6 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 4.1.4.8   | Ensure audit tools are 755 or more restrictive (Automated)                                      |  x  |     |     |
 | 4.1.4.9   | Ensure audit tools are owned by root (Automated)                                                |  x  |     |     |
 | 4.1.4.10  | Ensure audit tools belong to group root (Automated)                                             |  x  |     |     |
-| 4.1.4.11  | Ensure cryptographic mechanisms are used to protect the integrity of audit tools (Automated)    |  x  |     |     |
 | 4.2       | **Configure Logging**                                                                           |     |  x  |     |
 | 4.2.1     | **Configure journald**                                                                          |     |  x  |     |
 | 4.2.1.1   | **Ensure journald is configured to send logs to a remote log host**                             |     |  x  |     |

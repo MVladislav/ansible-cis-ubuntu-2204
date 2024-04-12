@@ -4,31 +4,31 @@
   gather_facts: false
   tasks:
     - name: "PREPARE | install openssh-server for testing under docker"
-      apt:
+      ansible.builtin.apt:
         name: openssh-server
         state: present
         update_cache: yes
     - name: "PREPARE | install grub files for testing under docker"
       block:
         - name: "PREPARE | install grub-common for grub-mkpasswd-pbkdf2 to testing under docker"
-          apt:
+          ansible.builtin.apt:
             name: grub-common
             state: present
             update_cache: yes
 
         - name: "PREPARE | create folder /boot/grub"
-          file:
+          ansible.builtin.file:
             name: /boot/grub
             state: directory
           changed_when: false
         - name: "PREPARE | touch /boot/grub/grub.cfg"
-          file:
+          ansible.builtin.file:
             name: /boot/grub/grub.cfg
             state: touch
           changed_when: false
 
         - name: "PREPARE | touch /etc/default/grub"
-          file:
+          ansible.builtin.file:
             name: /etc/default/grub
             state: touch
           changed_when: false

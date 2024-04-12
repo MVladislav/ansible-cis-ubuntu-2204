@@ -4,12 +4,13 @@
 [![Ansible Molecule Test](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml/badge.svg)](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml)
 
 - [CIS - Ubuntu 22.04](#cis---ubuntu-2204)
+  - [IN WORK update to v2.0.0](#in-work-update-to-v200)
   - [TODO](#todo)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
     - [run only setup per section](#run-only-setup-per-section)
-    - [variables not included in CIS](#variables-not-included-in-cis)
-    - [variables which are recommended by CIS, but disable in this role](#variables-which-are-recommended-by-cis-but-disable-in-this-role)
+    - [variables not included in CIS as additional extend](#variables-not-included-in-cis-as-additional-extend)
+    - [variables which are recommended by CIS, but disable in this role by default](#variables-which-are-recommended-by-cis-but-disable-in-this-role-by-default)
     - [variable special usable between server and client](#variable-special-usable-between-server-and-client)
     - [variables to check and set for own purpose](#variables-to-check-and-set-for-own-purpose)
     - [variable rules implemented, but only print information for manual check](#variable-rules-implemented-but-only-print-information-for-manual-check)
@@ -23,12 +24,19 @@
 
 ---
 
+## IN WORK update to v2.0.0
+
+> <https://workbench.cisecurity.org/benchmarks/17074>
+
+---
+
 Configure Ubuntu 22.04 to be CIS compliant.
 
 Tested with:
 
 - Ubuntu 22.04
 - Ubuntu 23.04
+- Ubuntu 23.10
 
 This role **will make changes to the system** that could break things. \
 This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
@@ -36,7 +44,7 @@ This is not an auditing tool but rather a remediation tool to be used after an a
 This role was **developed against a clean install** of the Operating System. \
 If you are **implementing to an existing system** please **review** this role for any **site specific changes** that are needed.
 
-Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0](https://downloads.cisecurity.org/#/)**.
+Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0](https://downloads.cisecurity.org/#/)**.
 
 ## TODO
 
@@ -66,14 +74,14 @@ To start working in this Role you just need to **install** **Python** and **Ansi
 
 ```sh
 $sudo apt install python3 python3-pip sshpass
-# if python >= 3.11 used add also '--break-system-packages'
+# if python >= 3.11 used, add also '--break-system-packages'
 $python3 -m pip install ansible ansible-lint yamllint
 ```
 
 For run **tests** with **molecule**, you need also to **install**:
 
 ```sh
-# if python >= 3.11 used add also '--break-system-packages'
+# if python >= 3.11 used, add also '--break-system-packages'
 $python3 -m pip install molecule molecule-plugins[docker]
 ```
 
@@ -90,16 +98,17 @@ cis_ubuntu2204_section3: true
 cis_ubuntu2204_section4: true
 cis_ubuntu2204_section5: true
 cis_ubuntu2204_section6: true
+cis_ubuntu2204_section7: true
 ```
 
-### variables not included in CIS
+### variables not included in CIS as additional extend
 
 ```yaml
-# additional configs for ssh which not defined to set by CIS
+# additional configs for ssh which not defined set by CIS
 cis_ubuntu2204_rule_5_2_23: true
 ```
 
-### variables which are recommended by CIS, but disable in this role
+### variables which are recommended by CIS, but disable in this role by default
 
 > _change 'false' below to 'true', to be CIS recommended if needed_
 
@@ -137,24 +146,24 @@ cis_ubuntu2204_rule_5_4_2: false
 > which maybe needed, for example especial for client usage_
 
 ```yaml
-# will purge gdm/gui, if needed set to 'true'
-# if 'true', recommended configs will perform in rules 1.8.2 - 1.8.10
+# will purge gdm/gui, if gui is needed set to 'true'
+# if 'true' is set, recommended configs will perform in rules 1.8.2 - 1.8.10
 cis_ubuntu2204_allow_gdm_gui: false
 
-# will disable auto mount, if needed set to 'true'
+# will disable auto mount, if auto mount is needed set to 'true'
 cis_ubuntu2204_allow_autofs: false
 
-# will disable USB storage, if needed set to 'false'
-cis_ubuntu2204_rule_1_1_10: true
+# will disable USB storage, if USB storage is needed set to 'false'
+cis_ubuntu2204_rule_1_1_1_8: true
 
 # will install and config AIDE, if not needed set to 'false'
 cis_ubuntu2204_install_aide: true
 cis_ubuntu2204_config_aide: true
 
-# will purge printer service, if need set to 'true'
+# will purge printer service, if printer service is need set to 'true'
 cis_ubuntu2204_allow_cups: false
 
-# will disable ipv6 complete, if needed set to 'true'
+# will disable ipv6 complete, if ipv6 is needed set to 'true'
 cis_ubuntu2204_required_ipv6: false
 ```
 
@@ -192,9 +201,14 @@ cis_ubuntu2204_at_allow_users:
 # put 'null' or list of users (comma separated user list)
 # default set to add ssh as group to allow use ssh (do not forget add group to user)
 #cis_ubuntu2204_ssh_allow_users: root,user
-cis_ubuntu2204_ssh_allow_groups: ssh
+#cis_ubuntu2204_ssh_allow_groups: root,ssh
 #cis_ubuntu2204_ssh_deny_users: root,user
-#cis_ubuntu2204_ssh_deny_groups: root,group
+#cis_ubuntu2204_ssh_deny_groups: root,ssh
+
+cis_ubuntu2204_ssh_permit_root_login: "no"
+cis_ubuntu2204_ssh_port: 22
+cis_ubuntu2204_ssh_authentication_methods: "publickey"
+cis_ubuntu2204_ssh_password_authentication: "no"
 
 # pw quality policies
 cis_ubuntu2204_pwquality:
@@ -209,6 +223,7 @@ cis_ubuntu2204_pwquality:
   - key: "lcredit"
     value: "-1"
 
+cis_ubuntu2204_faillock_unlock_time: 600
 # NOTE: check the two success values, in CIS-pdf they are defined with '1'
 #       but on ubuntu-23.04 it is set per default as '2'
 cis_ubuntu2204_remember_reuse: 5
@@ -220,6 +235,11 @@ cis_ubuntu2204_common_password_success: 2
 ### variable rules implemented, but only print information for manual check
 
 ```yaml
+# NOT IMPLEMENTED # SECTION1 | 1.2.1.1 | Ensure GPG keys are configured
+# cis_ubuntu2204_rule_1_2_1_1: true
+# NOT IMPLEMENTED # SECTION1 | 1.2.1.2 | Ensure package manager repositories are configured
+# cis_ubuntu2204_rule_1_2_1_2: true
+
 # SECTION2 | 2.4 | Ensure rsync service is either not installed or masked
 cis_ubuntu2204_rule_2_4: true
 
@@ -269,6 +289,7 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_section4: true
       cis_ubuntu2204_section5: true
       cis_ubuntu2204_section6: true
+      cis_ubuntu2204_section7: true
       # -------------------------
       cis_ubuntu2204_rule_1_4_1: false # bootloader password
       cis_ubuntu2204_set_boot_pass: false # bootloader password
@@ -280,8 +301,8 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_rule_1_6_1_4: false # AppArmor enforce mode
       # -------------------------
       cis_ubuntu2204_allow_gdm_gui: true
-      cis_ubuntu2204_allow_autofs: true
-      cis_ubuntu2204_rule_1_1_10: false # Disable USB Storage
+      cis_ubuntu2204_allow_autofs: true # Disable auto mount, set to true to allow it and not disable
+      cis_ubuntu2204_rule_1_1_1_8: false # Disable USB Storage, set to false to not disable
       cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
       cis_ubuntu2204_time_synchronization_ntp_server: '{{ ansible_host_default_ntp | default("time.cloudflare.com")}}'
       cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
@@ -347,48 +368,56 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | #         | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
 | :-------- | :---------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
 | 1         | **Initial Setup**                                                                               |     |  x  |     |
-| 1.1       | **Filesystem Configuration**                                                                    |     |  x  |     |
-| 1.1.1     | **Disable unused filesystems**                                                                  |  x  |     |     |
-| 1.1.1.1   | Ensure mounting of cramfs filesystems is disabled (Automated)                                   |  x  |     |     |
-| 1.1.1.2   | Ensure mounting of squashfs filesystems is disabled (Automated)                                 |  x  |     |     |
-| 1.1.1.3   | Ensure mounting of udf filesystems is disabled (Automated)                                      |  x  |     |     |
-| 1.1.2     | **Configure /tmp**                                                                              |  x  |     |     |
-| 1.1.2.1   | Ensure /tmp is a separate partition (Automated)                                                 |  x  |     |     |
-| 1.1.2.2   | Ensure nodev option set on /tmp partition (Automated)                                           |  x  |     |     |
-| 1.1.2.3   | Ensure noexec option set on /tmp partition (Automated)                                          |  x  |     |     |
-| 1.1.2.4   | Ensure nosuid option set on /tmp partition (Automated)                                          |  x  |     |     |
-| 1.1.3     | **Configure /var**                                                                              |     |     |  x  |
-| 1.1.3.1   | Ensure separate partition exists for /var (Automated)                                           |     |     |  x  |
-| 1.1.3.2   | Ensure nodev option set on /var partition (Automated)                                           |     |     |  x  |
-| 1.1.3.3   | Ensure nosuid option set on /var partition (Automated)                                          |     |     |  x  |
-| 1.1.4     | **Configure /var/tmp**                                                                          |     |     |  x  |
-| 1.1.4.1   | Ensure separate partition exists for /var/tmp (Automated)                                       |     |     |  x  |
-| 1.1.4.2   | Ensure noexec option set on /var/tmp partition (Automated)                                      |     |     |  x  |
-| 1.1.4.3   | Ensure nosuid option set on /var/tmp partition (Automated)                                      |     |     |  x  |
-| 1.1.4.4   | Ensure nodev option set on /var/tmp partition (Automated)                                       |     |     |  x  |
-| 1.1.5     | **Configure /var/log**                                                                          |     |     |  x  |
-| 1.1.5.1   | Ensure separate partition exists for /var/log (Automated)                                       |     |     |  x  |
-| 1.1.5.2   | Ensure nodev option set on /var/log partition (Automated)                                       |     |     |  x  |
-| 1.1.5.3   | Ensure noexec option set on /var/log partition (Automated)                                      |     |     |  x  |
-| 1.1.5.4   | Ensure nosuid option set on /var/log partition (Automated)                                      |     |     |  x  |
-| 1.1.6     | **Configure /var/log/audit**                                                                    |     |     |  x  |
-| 1.1.6.1   | Ensure separate partition exists for /var/log/audit (Automated)                                 |     |     |  x  |
-| 1.1.6.2   | Ensure noexec option set on /var/log/audit partition (Automated)                                |     |     |  x  |
-| 1.1.6.3   | Ensure nodev option set on /var/log/audit partition (Automated)                                 |     |     |  x  |
-| 1.1.6.4   | Ensure nosuid option set on /var/log/audit partition (Automated)                                |     |     |  x  |
-| 1.1.7     | **Configure /home**                                                                             |     |     |  x  |
-| 1.1.7.1   | Ensure separate partition exists for /home (Automated)                                          |     |     |  x  |
-| 1.1.7.2   | Ensure nodev option set on /home partition (Automated)                                          |     |     |  x  |
-| 1.1.7.3   | Ensure nosuid option set on /home partition (Automated)                                         |     |     |  x  |
-| 1.1.8     | **Configure /dev/shm**                                                                          |  x  |     |     |
-| 1.1.8.1   | Ensure nodev option set on /dev/shm partition (Automated)                                       |  x  |     |     |
-| 1.1.8.2   | Ensure noexec option set on /dev/shm partition (Automated)                                      |  x  |     |     |
-| 1.1.8.3   | Ensure nosuid option set on /dev/shm partition (Automated)                                      |  x  |     |     |
-| 1.1.9     | Disable Automounting (Automated)                                                                |  x  |     |     |
-| 1.1.10    | Disable USB Storage (Automated)                                                                 |  x  |     |     |
-| 1.2       | **Configure Software Updates**                                                                  |     |     |  x  |
-| 1.2.1     | Ensure package manager repositories are configured (Manual)                                     |     |     |  x  |
-| 1.2.2     | Ensure GPG keys are configured (Manual)                                                         |     |     |  x  |
+| 1.1       | **Filesystem**                                                                                  |     |  x  |     |
+| 1.1.1     | **Configure Filesystem Kernel Modules**                                                         |  x  |     |     |
+| 1.1.1.1   | Ensure cramfs kernel module is not available (Automated)                                        |  x  |     |     |
+| 1.1.1.2   | Ensure freevxfs kernel module is not available (Automated)                                      |  x  |     |     |
+| 1.1.1.3   | Ensure hfs kernel module is not available (Automated)                                           |  x  |     |     |
+| 1.1.1.4   | Ensure hfsplus kernel module is not available (Automated)                                       |  x  |     |     |
+| 1.1.1.5   | Ensure jffs2 kernel module is not available (Automated)                                         |  x  |     |     |
+| 1.1.1.6   | Ensure squashfs kernel module is not available (Automated)                                      |  x  |     |     |
+| 1.1.1.7   | Ensure udf kernel module is not available (Automated)                                           |  x  |     |     |
+| 1.1.1.8   | Ensure usb-storage kernel module is not available (Automated)                                   |  x  |     |     |
+| 1.1.2     | **Configure Filesystem Partitions**                                                             |  x  |     |     |
+| 1.1.2.1   | **Configure /tmp**                                                                              |  x  |     |     |
+| 1.1.2.1.1 | Ensure /tmp is a separate partition (Automated)                                                 |  x  |     |     |
+| 1.1.2.1.2 | Ensure nodev option set on /tmp partition (Automated)                                           |  x  |     |     |
+| 1.1.2.1.3 | Ensure nosuid option set on /tmp partition (Automated)                                          |  x  |     |     |
+| 1.1.2.1.4 | Ensure noexec option set on /tmp partition (Automated)                                          |  x  |     |     |
+| 1.1.2.2   | **Configure /dev/shm**                                                                          |  x  |     |     |
+| 1.1.2.2.1 | Ensure /dev/shm is a separate partition (Automated)                                             |  x  |     |     |
+| 1.1.2.2.2 | Ensure nodev option set on /dev/shm partition (Automated)                                       |  x  |     |     |
+| 1.1.2.2.3 | Ensure nosuid option set on /dev/shm partition (Automated)                                      |  x  |     |     |
+| 1.1.2.2.4 | Ensure noexec option set on /dev/shm partition (Automated)                                      |  x  |     |     |
+| 1.1.2.3   | **Configure /home**                                                                             |     |     |  x  |
+| 1.1.2.3.1 | Ensure separate partition exists for /home (Automated)                                          |     |     |  x  |
+| 1.1.2.3.2 | Ensure nodev option set on /home partition (Automated)                                          |     |     |  x  |
+| 1.1.2.3.3 | Ensure nosuid option set on /home partition (Automated)                                         |     |     |  x  |
+| 1.1.2.4   | **Configure /var**                                                                              |     |     |  x  |
+| 1.1.2.4.1 | Ensure separate partition exists for /var (Automated)                                           |     |     |  x  |
+| 1.1.2.4.2 | Ensure nodev option set on /var partition (Automated)                                           |     |     |  x  |
+| 1.1.2.4.3 | Ensure nosuid option set on /var partition (Automated)                                          |     |     |  x  |
+| 1.1.2.5   | **Configure /var/tmp**                                                                          |     |     |  x  |
+| 1.1.2.5.1 | Ensure separate partition exists for /var/tmp (Automated)                                       |     |     |  x  |
+| 1.1.2.5.2 | Ensure nodev option set on /var/tmp partition (Automated)                                       |     |     |  x  |
+| 1.1.2.5.3 | Ensure nosuid option set on /var/tmp partition (Automated)                                      |     |     |  x  |
+| 1.1.2.5.4 | Ensure noexec option set on /var/tmp partition (Automated)                                      |     |     |  x  |
+| 1.1.2.6   | **Configure /var/log**                                                                          |     |     |  x  |
+| 1.1.2.6.1 | Ensure separate partition exists for /var/log (Automated)                                       |     |     |  x  |
+| 1.1.2.6.2 | Ensure nodev option set on /var/log partition (Automated)                                       |     |     |  x  |
+| 1.1.2.6.3 | Ensure nosuid option set on /var/log partition (Automated)                                      |     |     |  x  |
+| 1.1.2.6.4 | Ensure noexec option set on /var/log partition (Automated)                                      |     |     |  x  |
+| 1.1.2.7   | **Configure /var/log/audit**                                                                    |     |     |  x  |
+| 1.1.2.7.1 | Ensure separate partition exists for /var/log/audit (Automated)                                 |     |     |  x  |
+| 1.1.2.7.2 | Ensure nodev option set on /var/log/audit partition (Automated)                                 |     |     |  x  |
+| 1.1.2.7.3 | Ensure nosuid option set on /var/log/audit partition (Automated)                                |     |     |  x  |
+| 1.1.2.7.4 | Ensure noexec option set on /var/log/audit partition (Automated)                                |     |     |  x  |
+| 1.2       | **Package Management**                                                                          |     |     |  x  |
+| 1.2.1     | **Configure Package Repositories**                                                              |     |     |  x  |
+| 1.2.1.1   | Ensure GPG keys are configured                                                                  |     |     |  x  |
+| 1.2.1.2   | Ensure package manager repositories are configured                                              |     |     |  x  |
+| 1.2.2     | **Configure Package Updates**                                                                   |     |     |  x  |
+| 1.2.2.1   | Ensure updates, patches, and additional security software are installed                         |     |     |  x  |
 | 1.3       | **Filesystem Integrity Checking**                                                               |  x  |     |     |
 | 1.3.1     | Ensure AIDE is installed (Automated)                                                            |  x  |     |     |
 | 1.3.2     | Ensure filesystem integrity is regularly checked (Automated)                                    |  x  |     |     |
@@ -427,6 +456,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.8.10    | Ensure XDCMP is not enabled (Automated)                                                         |  x  |     |     |
 | 1.9       | Ensure updates, patches, and additional security software are installed (Manual)                |  x  |     |     |
 | 2         | **Services**                                                                                    |  x  |     |     |
+| 2.1.1     | Ensure autofs services are not in use (Automated)                                               |  x  |     |     |
 | 2.1       | **Configure Time Synchronization**                                                              |  x  |     |     |
 | 2.1.1     | **Ensure time synchronization is in use**                                                       |  x  |     |     |
 | 2.1.1.1   | Ensure a single time synchronization daemon is in use (Automated)                               |  x  |     |     |

@@ -229,7 +229,6 @@
         mode: "0644"
       when:
         - cis_ubuntu2204_ssh_allow_users is defined
-        - cis_ubuntu2204_ssh_allow_users is not none
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | AllowGroups"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
@@ -240,7 +239,6 @@
         mode: "0644"
       when:
         - cis_ubuntu2204_ssh_allow_groups is defined
-        - cis_ubuntu2204_ssh_allow_groups is not none
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | DenyUsers"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
@@ -251,7 +249,6 @@
         mode: "0644"
       when:
         - cis_ubuntu2204_ssh_deny_users is defined
-        - cis_ubuntu2204_ssh_deny_users is not none
     - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | DenyGroups"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
@@ -262,7 +259,6 @@
         mode: "0644"
       when:
         - cis_ubuntu2204_ssh_deny_groups is defined
-        - cis_ubuntu2204_ssh_deny_groups is not none
 
 - name: "SECTION5 | 5.2.5 | Ensure SSH LogLevel is appropriate"
   ansible.builtin.lineinfile:
@@ -300,7 +296,7 @@
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitRootLogin"
-    line: "PermitRootLogin no"
+    line: "PermitRootLogin {{ cis_ubuntu2204_ssh_permit_root_login }}"
     state: present
     create: true
     mode: "0644"
@@ -476,7 +472,7 @@
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxAuthTries"
-    line: "MaxAuthTries 4"
+    line: "MaxAuthTries {{ cis_ubuntu2204_ssh_max_auth_tries }}"
     state: present
     create: true
     mode: "0644"
@@ -508,7 +504,7 @@
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxSessions"
-    line: "MaxSessions 10"
+    line: "MaxSessions {{ cis_ubuntu2204_ssh_max_sessions }}"
     state: present
     create: true
     mode: "0644"
@@ -549,7 +545,7 @@
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: "{{ cis_ubuntu2204_regex_base_search }}ClientAliveInterval"
-        line: "ClientAliveInterval 15"
+        line: "ClientAliveInterval {{ cis_ubuntu2204_ssh_client_alive_interval }}"
         state: present
         create: true
         mode: "0644"
@@ -557,7 +553,7 @@
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: "{{ cis_ubuntu2204_regex_base_search }}ClientAliveCountMax"
-        line: "ClientAliveCountMax 3"
+        line: "ClientAliveCountMax {{ cis_ubuntu2204_ssh_client_alive_count_max }}"
         state: present
         create: true
         mode: "0644"
@@ -572,7 +568,7 @@
     mode: "0644"
   with_items:
     - reg: "{{ cis_ubuntu2204_regex_base_search }}Port"
-      line: "Port 22"
+      line: "Port {{ cis_ubuntu2204_ssh_port }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AddressFamily"
       line: "AddressFamily {{ cis_ubuntu2204_ssh_address_family }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress"
@@ -580,7 +576,7 @@
     - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKeyAlgorithms"
       line: "HostKeyAlgorithms {{ cis_ubuntu2204_ssh_host_key_algorithms | join(',') }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthenticationMethods"
-      line: "AuthenticationMethods publickey"
+      line: "AuthenticationMethods {{ cis_ubuntu2204_ssh_authentication_methods }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}StrictModes"
       line: "StrictModes yes"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAuthentication"
@@ -588,7 +584,7 @@
     - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAcceptedKeyTypes"
       line: "PubkeyAcceptedKeyTypes {{ cis_ubuntu2204_ssh_pubkey_accepted_key_types | join(',') }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}PasswordAuthentication"
-      line: "PasswordAuthentication no"
+      line: "PasswordAuthentication {{ cis_ubuntu2204_ssh_password_authentication }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}ChallengeResponseAuthentication"
       line: "ChallengeResponseAuthentication no"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}GSSAPIAuthentication"
@@ -596,9 +592,11 @@
     - reg: "{{ cis_ubuntu2204_regex_base_search }}GSSAPICleanupCredentials"
       line: "GSSAPICleanupCredentials yes"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AllowAgentForwarding"
-      line: "AllowAgentForwarding yes"
+      line: "AllowAgentForwarding {{ cis_ubuntu2204_ssh_allow_agent_forwarding }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}PrintMotd"
       line: "PrintMotd no"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}TCPKeepAlive"
+      line: "TCPKeepAlive {{ cis_ubuntu2204_ssh_tcp_keep_alive }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}UseDNS"
       line: "UseDNS no"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AcceptEnv"
@@ -846,7 +844,7 @@
         - reg: "{{ cis_ubuntu2204_regex_base_search }}fail_interval"
           line: "fail_interval = 900"
         - reg: "{{ cis_ubuntu2204_regex_base_search }}unlock time"
-          line: "unlock time = 600"
+          line: "unlock time = {{ cis_ubuntu2204_faillock_unlock_time }}"
 
 - name: "SECTION5 | 5.4.3 | Ensure password reuse is limited"
   ansible.builtin.lineinfile:

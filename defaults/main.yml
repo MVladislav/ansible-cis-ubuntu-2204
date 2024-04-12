@@ -11,60 +11,52 @@ cis_ubuntu2204_section3: true
 cis_ubuntu2204_section4: true
 cis_ubuntu2204_section5: true
 cis_ubuntu2204_section6: true
+cis_ubuntu2204_section7: true
 
 # CIS rules
 # ---------------------------------------
 # NOTE: relates to 'CIS sections' above.
 #       Section needs to be enabled to also take effect related rules
 ## SECTION 1 rules
-cis_ubuntu2204_rule_1_1_1_1: true
-# IMPACT: Snap packages utilizes squashfs as a compressed filesystem,
-#       disabling squashfs will cause Snap packages to fail.
-cis_ubuntu2204_rule_1_1_1_2: true
-# IMPACT: Microsoft Azure requires the usage of udf.
-cis_ubuntu2204_rule_1_1_1_3: true
-cis_ubuntu2204_rule_1_1_2_1: true
-cis_ubuntu2204_rule_1_1_2_2: true
-cis_ubuntu2204_rule_1_1_2_3: true
-cis_ubuntu2204_rule_1_1_2_4: true
-cis_ubuntu2204_rule_1_1_3_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_3_2: true
-cis_ubuntu2204_rule_1_1_3_3: true
-cis_ubuntu2204_rule_1_1_4_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_4_2: true
-cis_ubuntu2204_rule_1_1_4_3: true
-cis_ubuntu2204_rule_1_1_4_4: true
-cis_ubuntu2204_rule_1_1_5_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_5_2: true
-cis_ubuntu2204_rule_1_1_5_3: true
-cis_ubuntu2204_rule_1_1_5_4: true
-cis_ubuntu2204_rule_1_1_6_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_6_2: true
-cis_ubuntu2204_rule_1_1_6_3: true
-cis_ubuntu2204_rule_1_1_6_4: true
-cis_ubuntu2204_rule_1_1_7_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_7_2: true
-cis_ubuntu2204_rule_1_1_7_3: true
-cis_ubuntu2204_rule_1_1_8_1: true
-cis_ubuntu2204_rule_1_1_8_2: true
-cis_ubuntu2204_rule_1_1_8_3: true
-cis_ubuntu2204_rule_1_1_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
-cis_ubuntu2204_rule_1_1_10: true
-cis_ubuntu2204_rule_1_2_1: true
-cis_ubuntu2204_rule_1_2_2: true
+cis_ubuntu2204_rule_1_1_1_1: true # cramfs
+cis_ubuntu2204_rule_1_1_1_2: true # freevxfs
+cis_ubuntu2204_rule_1_1_1_3: true # hfs
+cis_ubuntu2204_rule_1_1_1_4: true # hfsplus
+cis_ubuntu2204_rule_1_1_1_5: true # jffs2
+cis_ubuntu2204_rule_1_1_1_6: true # squashfs - IMPACT: Snap packages utilizes squashfs as a compressed filesystem, disabling squashfs will cause Snap packages to fail.
+cis_ubuntu2204_rule_1_1_1_7: true # udf - IMPACT: Microsoft Azure requires the usage of udf.
+cis_ubuntu2204_rule_1_1_1_8: true # usb-storage
+cis_ubuntu2204_rule_1_1_2_1: true # /tmp
+# cis_ubuntu2204_rule_1_1_2_1_1: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_1'
+cis_ubuntu2204_rule_1_1_2_1_2: true
+cis_ubuntu2204_rule_1_1_2_1_3: true
+cis_ubuntu2204_rule_1_1_2_1_4: true
+cis_ubuntu2204_rule_1_1_2_2: true # /dev/shm
+# cis_ubuntu2204_rule_1_1_2_2_1: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
+# cis_ubuntu2204_rule_1_1_2_2_2: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
+# cis_ubuntu2204_rule_1_1_2_2_3: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
+# cis_ubuntu2204_rule_1_1_2_2_4: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
+# cis_ubuntu2204_rule_1_1_2_3: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_4: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_5: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_6: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_7: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_2_1_1: true # NOTE: not implemented
+# cis_ubuntu2204_rule_1_2_1_2: true # NOTE: not implemented
+# cis_ubuntu2204_rule_1_2_2_1: true # NOTE: not implemented
 cis_ubuntu2204_rule_1_3_1: true # NOTE: depends also on 'cis_ubuntu2204_config_aide|cis_ubuntu2204_install_aide'
 cis_ubuntu2204_rule_1_3_2: true # NOTE: depends also on 'cis_ubuntu2204_config_aide|cis_ubuntu2204_install_aide'
 cis_ubuntu2204_rule_1_4_1: false # NOTE: depends also on 'cis_ubuntu2204_set_boot_pass'
 cis_ubuntu2204_rule_1_4_2: true
-cis_ubuntu2204_rule_1_4_3: false
+cis_ubuntu2204_rule_1_4_3: false # NOTE: disabled
 cis_ubuntu2204_rule_1_5_1: true
 cis_ubuntu2204_rule_1_5_2: true
 cis_ubuntu2204_rule_1_5_3: true
 cis_ubuntu2204_rule_1_5_4: true
 cis_ubuntu2204_rule_1_6_1_1: true
 cis_ubuntu2204_rule_1_6_1_2: true
-cis_ubuntu2204_rule_1_6_1_3: false
-cis_ubuntu2204_rule_1_6_1_4: false
+cis_ubuntu2204_rule_1_6_1_3: false # NOTE: disabled
+cis_ubuntu2204_rule_1_6_1_4: false # NOTE: disabled
 cis_ubuntu2204_rule_1_7_1: true
 cis_ubuntu2204_rule_1_7_2: true
 cis_ubuntu2204_rule_1_7_3: true
@@ -83,6 +75,8 @@ cis_ubuntu2204_rule_1_8_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_gd
 cis_ubuntu2204_rule_1_8_10: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 cis_ubuntu2204_rule_1_9: true
 ## SECTION 2 rules
+cis_ubuntu2204_rule_2_1_1: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
+
 cis_ubuntu2204_rule_2_1_1_1: true
 cis_ubuntu2204_rule_2_1_2_1: true
 cis_ubuntu2204_rule_2_1_2_2: true
@@ -252,7 +246,7 @@ cis_ubuntu2204_rule_5_2_19: true
 cis_ubuntu2204_rule_5_2_20: true
 cis_ubuntu2204_rule_5_2_21: true
 cis_ubuntu2204_rule_5_2_22: true
-cis_ubuntu2204_rule_5_2_23: true # NOTE: own added, not included in CIS
+cis_ubuntu2204_rule_5_2_23: true # EXTENDED: own added, not included in CIS
 cis_ubuntu2204_rule_5_3_1: true
 cis_ubuntu2204_rule_5_3_2: true
 cis_ubuntu2204_rule_5_3_3: true
@@ -261,7 +255,7 @@ cis_ubuntu2204_rule_5_3_5: true
 cis_ubuntu2204_rule_5_3_6: true
 cis_ubuntu2204_rule_5_3_7: true
 cis_ubuntu2204_rule_5_4_1: true
-cis_ubuntu2204_rule_5_4_2: false
+cis_ubuntu2204_rule_5_4_2: false # NOTE: disabled
 cis_ubuntu2204_rule_5_4_3: true
 cis_ubuntu2204_rule_5_4_4: true
 cis_ubuntu2204_rule_5_4_5: true
@@ -311,7 +305,7 @@ cis_ubuntu2204_regex_base_search: '^(#(\s)*)?'
 
 # SPECIAL options rule overview
 # ---------------------------------------
-# autofs allow auto mount (cis_ubuntu2204_rule_1_1_9)
+# autofs allow auto mount (cis_ubuntu2204_rule_2_1_1)
 cis_ubuntu2204_allow_autofs: false
 # AIDE perform install/config (cis_ubuntu2204_rule_1_3_1|cis_ubuntu2204_rule_1_3_2|cis_ubuntu2204_rule_4_1_4_11)
 cis_ubuntu2204_install_aide: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
@@ -348,6 +342,7 @@ cis_ubuntu2204_bootloader_password: random # pragma: allowlist secret
 cis_ubuntu2204_root_password: random # pragma: allowlist secret
 # grub default file path (cis_ubuntu2204_rule_1_6_1_2)
 cis_ubuntu2204_default_grub_file: /etc/default/grub
+cis_ubuntu2204_default_grub_file_template: /usr/share/grub/default/grub
 # gdm banner message (cis_ubuntu2204_rule_1_8_2)
 cis_ubuntu2204_gdm_warning_banner: Authorized uses only. All activity may be monitored and reported
 # choose time synchronization (cis_ubuntu2204_rule_2_1_1_1)
@@ -396,11 +391,26 @@ cis_ubuntu2204_at_allow_users:
 # ssh conf's
 # allows/denies for users/groups (cis_ubuntu2204_rule_5_2_4)
 # 'optional:' cis_ubuntu2204_ssh_allow_users: root,user
-cis_ubuntu2204_ssh_allow_groups: ssh
+# 'optional:' cis_ubuntu2204_ssh_allow_groups: root,ssh
 # 'optional:' cis_ubuntu2204_ssh_deny_users: root,user
 # 'optional:' cis_ubuntu2204_ssh_deny_groups: root,ssh
 # log level (cis_ubuntu2204_rule_5_2_5)
 cis_ubuntu2204_ssh_log_level: VERBOSE # VERBOSE | INFO
+# (cis_ubuntu2204_rule_5_2_7)
+cis_ubuntu2204_ssh_permit_root_login: "no"
+# (cis_ubuntu2204_rule_5_2_18)
+cis_ubuntu2204_ssh_max_auth_tries: 3
+# (cis_ubuntu2204_rule_5_2_20)
+cis_ubuntu2204_ssh_max_sessions: 2
+# (cis_ubuntu2204_rule_5_2_22)
+cis_ubuntu2204_ssh_client_alive_interval: 15
+cis_ubuntu2204_ssh_client_alive_count_max: 2
+# (cis_ubuntu2204_rule_5_2_23)
+cis_ubuntu2204_ssh_port: 22
+cis_ubuntu2204_ssh_authentication_methods: "publickey"
+cis_ubuntu2204_ssh_password_authentication: "no"
+cis_ubuntu2204_ssh_tcp_keep_alive: "yes"
+cis_ubuntu2204_ssh_allow_agent_forwarding: "yes"
 # Ciphers (cis_ubuntu2204_rule_5_2_13)
 cis_ubuntu2204_ssh_ciphers:
   - chacha20-poly1305@openssh.com
@@ -449,6 +459,8 @@ cis_ubuntu2204_pwquality:
     value: "-1"
   - key: "lcredit"
     value: "-1"
+# (cis_ubuntu2204_rule_5_4_2)
+cis_ubuntu2204_faillock_unlock_time: 600
 cis_ubuntu2204_remember_reuse: 5
 cis_ubuntu2204_encrypt_method: yescrypt # yescrypt | sha512
 cis_ubuntu2204_common_auth_success: 2

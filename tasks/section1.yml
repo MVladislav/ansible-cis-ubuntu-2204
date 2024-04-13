@@ -403,10 +403,64 @@
 #     - workstation_l2
 
 # ------------------------------------------------------------------------------
-# TODO: SECTION1 | 1.2.1.1 | Ensure GPG keys are configured (cis_ubuntu2204_rule_1_2_1_1)
-# NOTE: apt-key list
-# TODO: SECTION1 | 1.2.1.2 | Ensure package manager repositories are configured (cis_ubuntu2204_rule_1_2_1_2)
-# NOTE: apt-cache policy
+
+- name: "SECTION1 | 1.2.1.1 | Ensure GPG keys are configured"
+  when:
+    - cis_ubuntu2204_rule_1_2_1_1
+  tags:
+    - rule_1_2_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION1 | 1.2.1.1 | Ensure GPG keys are configured | get info"
+      ansible.builtin.shell: apt-key list
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_apt_key_list
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION1 | 1.2.1.1 | Ensure GPG keys are configured | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Ensure GPG keys are configured.
+          #############################################################################################
+          {{ cis_ubuntu2204_apt_key_list.stdout_lines | join(', ') }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_apt_key_list.stdout_lines is defined
+        - cis_ubuntu2204_apt_key_list.stdout_lines | length > 0
+
+- name: "SECTION1 | 1.2.1.2 | Ensure package manager repositories are configured"
+  when:
+    - cis_ubuntu2204_rule_1_2_1_2
+  tags:
+    - rule_1_2_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION1 | 1.2.1.2 | Ensure package manager repositories are configured | get info"
+      ansible.builtin.shell: apt-cache policy
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_apt_key_list
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION1 | 1.2.1.2 | Ensure package manager repositories are configured | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Ensure package manager repositories are configured.
+          #############################################################################################
+          {{ cis_ubuntu2204_apt_key_list.stdout_lines | join(', ') }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_apt_key_list.stdout_lines is defined
+        - cis_ubuntu2204_apt_key_list.stdout_lines | length > 0
+
+# ------------------------------------------------------------------------------
 
 - name: "SECTION1 | 1.2.2.1 | Ensure updates, patches, and additional security software are installed"
   ansible.builtin.apt:

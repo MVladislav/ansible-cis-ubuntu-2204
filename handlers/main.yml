@@ -60,7 +60,7 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "HANDLER | 4 | systemd restart and enable auditd"
+- name: "HANDLER | 6 | systemd restart and enable auditd"
   become: true
   ansible.builtin.systemd:
     name: auditd
@@ -71,7 +71,7 @@
   listen: "restart auditd"
   when: ansible_virtualization_type != "docker"
 
-- name: "HANDLER | 4.2.1.1.2 | systemd restart and enable systemd-journal-upload"
+- name: "HANDLER | 6.2.1.1.2 | systemd restart and enable systemd-journal-upload"
   become: true
   ansible.builtin.systemd:
     name: systemd-journal-upload
@@ -81,7 +81,7 @@
     state: restarted
   listen: "restart systemd-journal-upload"
 
-- name: "HANDLER | 4.2.1.3-6 | systemd restart and enable systemd-journald"
+- name: "HANDLER | 6.2.1.3-6 | systemd restart and enable systemd-journald"
   become: true
   ansible.builtin.systemd:
     name: systemd-journald
@@ -91,7 +91,7 @@
     state: restarted
   listen: "restart systemd-journald"
 
-- name: "HANDLER | 4.2.2.3-7 | systemd restart and enable rsyslog"
+- name: "HANDLER | 6.2.2.3-7 | systemd restart and enable rsyslog"
   become: true
   ansible.builtin.systemd:
     name: rsyslog
@@ -130,7 +130,7 @@
   listen: update-grub
   when: ansible_virtualization_type != "docker"
 
-- name: "HANDLER | 4 | merge and load the rules into active configuration"
+- name: "HANDLER | 6 | merge and load the rules into active configuration"
   become: true
   ansible.builtin.command: /sbin/augenrules --load
   changed_when: false

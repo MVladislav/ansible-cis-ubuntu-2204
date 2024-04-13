@@ -242,28 +242,21 @@ cis_ubuntu2204_common_password_success: 2
 # SECTION2 | 2.1.22 | Ensure only approved services are listening on a network interface
 cis_ubuntu2204_rule_2_1_22: true
 
-# SECTION6 | 6.1.10 | Ensure no unowned files or directories exist
-cis_ubuntu2204_rule_6_1_10: true
-# SECTION6 | 6.1.11 | Ensure no ungrouped files or directories exist
-cis_ubuntu2204_rule_6_1_11: true
-# SECTION6 | 6.1.12 | Audit SUID executables
-cis_ubuntu2204_rule_6_1_12: true
-# SECTION6 | 6.1.13 | Audit SGID executables
-cis_ubuntu2204_rule_6_1_13: true
-# SECTION6 | 6.2.3 | Ensure all groups in /etc/passwd exist in /etc/group
-cis_ubuntu2204_rule_6_2_3: true
-# SECTION6 | 6.2.5 | Ensure no duplicate UIDs exist
-cis_ubuntu2204_rule_6_2_5: true
-# SECTION6 | 6.2.6 | Ensure no duplicate GIDs exist
-cis_ubuntu2204_rule_6_2_6: true
-# SECTION6 | 6.2.7 | Ensure no duplicate user names exist
-cis_ubuntu2204_rule_6_2_7: true
-# SECTION6 | 6.2.8 | Ensure no duplicate group names exist
-cis_ubuntu2204_rule_6_2_8: true
-# SECTION6 | 6.2.9 | Ensure root PATH Integrity
-cis_ubuntu2204_rule_6_2_9: true
-# SECTION6 | 6.2.10 | Ensure root is the only UID 0 account
-cis_ubuntu2204_rule_6_2_10: true
+# SECTION7 | 7.1.12 | Ensure no files or directories without an owner and a group exist
+cis_ubuntu2204_rule_7_1_12: true
+# SECTION7 | 7.1.13 | Ensure SUID and SGID files are reviewed
+cis_ubuntu2204_rule_7_1_13: true
+
+# SECTION7 | 7.2.3 | Ensure all groups in /etc/passwd exist in /etc/group
+cis_ubuntu2204_rule_7_2_3: true
+# SECTION7 | 7.2.5 | Ensure no duplicate UIDs exist
+cis_ubuntu2204_rule_7_2_5: true
+# SECTION7 | 7.2.6 | Ensure no duplicate GIDs exist
+cis_ubuntu2204_rule_7_2_6: true
+# SECTION7 | 7.2.7 | Ensure no duplicate user names exist
+cis_ubuntu2204_rule_7_2_7: true
+# SECTION7 | 7.2.8 | Ensure no duplicate group names exist
+cis_ubuntu2204_rule_7_2_8: true
 ```
 
 ## Dependencies
@@ -363,13 +356,13 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 ## CIS - List of Recommendations
 
-| Key                                                                                | Count |
-| :--------------------------------------------------------------------------------- | :---- |
-| 🟢 Implemented                                                                     | 128   |
-| 🟡 Partly Implemented _(Mostly only Titles, because not all subtasks implemented)_ | 5     |
-| 🔴 Not Implemented                                                                 | 28    |
-| Total                                                                              |       |
-| Coverage (Implemented vs Total)                                                    |       |
+| Key                                                                  | Count |
+| :------------------------------------------------------------------- | :---- |
+| 🟢 Implemented                                                       | 143   |
+| 🟡 Partly Implemented or print info for manual check _(TITLE/RULES)_ | 8/9   |
+| 🔴 Not Implemented                                                   | 24    |
+| Total                                                                |       |
+| Coverage (Implemented vs Total)                                      |       |
 
 | #         | CIS Benchmark Recommendation Set                                                         | Yes | Y/N | No  |
 | :-------- | :--------------------------------------------------------------------------------------- | :-: | :-: | :-: |
@@ -419,9 +412,9 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.1.2.7.3 | Ensure nosuid option set on /var/log/audit partition (Automated)                         |     |     | 🔴  |
 | 1.1.2.7.4 | Ensure noexec option set on /var/log/audit partition (Automated)                         |     |     | 🔴  |
 | 1.2       | **Package Management**                                                                   |     | 🟡  |     |
-| 1.2.1     | **Configure Package Repositories**                                                       |     |     | 🔴  |
-| 1.2.1.1   | Ensure GPG keys are configured                                                           |     |     | 🔴  |
-| 1.2.1.2   | Ensure package manager repositories are configured                                       |     |     | 🔴  |
+| 1.2.1     | **Configure Package Repositories**                                                       |     | 🟡  |     |
+| 1.2.1.1   | Ensure GPG keys are configured                                                           |     | 🟡  |     |
+| 1.2.1.2   | Ensure package manager repositories are configured                                       |     | 🟡  |     |
 | 1.2.2     | **Configure Package Updates**                                                            | 🟢  |     |     |
 | 1.2.2.1   | Ensure updates, patches, and additional security software are installed                  | 🟢  |     |     |
 | 1.3       | **Mandatory Access Control**                                                             | 🟢  |     |     |
@@ -531,55 +524,41 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 3.3.9     | Ensure suspicious packets are logged (Automated)                                         | 🟢  |     |     |
 | 3.3.10    | Ensure TCP SYN Cookies is enabled (Automated)                                            | 🟢  |     |     |
 | 3.3.11    | Ensure IPv6 router advertisements are not accepted (Automated)                           | 🟢  |     |     |
-
-| #   | CIS Benchmark Recommendation Set | Yes | Y/N | No  |
-| :-- | :------------------------------- | :-: | :-: | :-: |
-
-| #     | CIS Benchmark Recommendation Set                                                                                   | Yes | Y/N | No  |
-| :---- | :----------------------------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 6.1   | **Filesystem Integrity Checking** (moved from 1.3)                                                                 |  x  |     |     |
-| 6.1.1 | Ensure AIDE is installed (Automated) (moved from 1.3.1)                                                            |  x  |     |     |
-| 6.1.2 | Ensure filesystem integrity is regularly checked (Automated) (moved from 1.3.2)                                    |  x  |     |     |
-| 6.1.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools (Automated) (Moved from 4.1.4.11) |  x  |     |     |
+| 7         | **System Maintenance**                                                                   |     | 🟡  |     |
+| 7.1       | **System File Permissions**                                                              |     | 🟡  |     |
+| 7.1.1     | Ensure permissions on /etc/passwd are configured (Automated)                             | 🟢  |     |     |
+| 7.1.2     | Ensure permissions on /etc/passwd- are configured (Automated)                            | 🟢  |     |     |
+| 7.1.3     | Ensure permissions on /etc/group are configured (Automated)                              | 🟢  |     |     |
+| 7.1.4     | Ensure permissions on /etc/group- are configured (Automated)                             | 🟢  |     |     |
+| 7.1.5     | Ensure permissions on /etc/shadow are configured (Automated)                             | 🟢  |     |     |
+| 7.1.6     | Ensure permissions on /etc/shadow- are configured (Automated)                            | 🟢  |     |     |
+| 7.1.7     | Ensure permissions on /etc/gshadow are configured (Automated)                            | 🟢  |     |     |
+| 7.1.8     | Ensure permissions on /etc/gshadow- are configured (Automated)                           | 🟢  |     |     |
+| 7.1.9     | Ensure permissions on /etc/shells are configured (Automated)                             | 🟢  |     |     |
+| 7.1.10    | Ensure permissions on /etc/security/opasswd are configured (Automated)                   | 🟢  |     |     |
+| 7.1.11    | Ensure world writable files and directories are secured (Automated)                      | 🟢  |     |     |
+| 7.1.12    | Ensure no files or directories without an owner and a group exist (Manual)               |     | 🟡  |     |
+| 7.1.13    | Ensure SUID and SGID files are reviewed (Manual)                                         |     | 🟡  |     |
+| 7.2       | **Local User and Group Settings**                                                        |     | 🟡  |     |
+| 7.2.1     | Ensure accounts in /etc/passwd use shadowed passwords (Automated)                        | 🟢  |     |     |
+| 7.2.2     | Ensure /etc/shadow password fields are not empty (Automated)                             | 🟢  |     |     |
+| 7.2.3     | Ensure all groups in /etc/passwd exist in /etc/group (Manual)                            |     | 🟡  |     |
+| 7.2.4     | Ensure shadow group is empty (Automated)                                                 | 🟢  |     |     |
+| 7.2.5     | Ensure no duplicate UIDs exist (Manual)                                                  |     | 🟡  |     |
+| 7.2.6     | Ensure no duplicate GIDs exist (Manual)                                                  |     | 🟡  |     |
+| 7.2.7     | Ensure no duplicate user names exist (Manual)                                            |     | 🟡  |     |
+| 7.2.8     | Ensure no duplicate group names exist (Manual)                                           |     | 🟡  |     |
+| 7.2.9     | Ensure local interactive user home directories are configured (Automated)                | 🟢  |     |     |
+| 7.2.10    | Ensure local interactive user dot files access is configured (Automated)                 | 🟢  |     |     |
 
 | #         | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
 | :-------- | :---------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 3.5       | **Firewall Configuration**                                                                      |     |  x  |     |
-| 3.5.1     | **Configure UncomplicatedFirewall**                                                             |     |  x  |     |
-| 3.5.1.1   | Ensure ufw is installed (Automated)                                                             |  x  |     |     |
-| 3.5.1.2   | Ensure iptables-persistent is not installed with ufw (Automated)                                |  x  |     |     |
-| 3.5.1.3   | Ensure ufw service is enabled (Automated)                                                       |  x  |     |     |
-| 3.5.1.4   | Ensure ufw loopback traffic is configured (Automated)                                           |  x  |     |     |
-| 3.5.1.5   | Ensure ufw outbound connections are configured (Manual)                                         |  x  |     |     |
-| 3.5.1.6   | Ensure ufw firewall rules exist for all open ports (Automated)                                  |     |     |  x  |
-| 3.5.1.7   | Ensure ufw default deny firewall policy (Automated)                                             |  x  |     |     |
-| 3.5.2     | **Configure nftables**                                                                          |  x  |     |     |
-| 3.5.2.1   | Ensure nftables is installed (Automated)                                                        |  x  |     |     |
-| 3.5.2.2   | Ensure ufw is uninstalled or disabled with nftables (Automated)                                 |  x  |     |     |
-| 3.5.2.3   | Ensure iptables are flushed with nftables (Manual)                                              |  x  |     |     |
-| 3.5.2.4   | Ensure a nftables table exists (Automated)                                                      |  x  |     |     |
-| 3.5.2.5   | Ensure nftables base chains exist (Automated)                                                   |  x  |     |     |
-| 3.5.2.6   | Ensure nftables loopback traffic is configured (Automated)                                      |  x  |     |     |
-| 3.5.2.7   | Ensure nftables outbound and established connections are configured (Manual)                    |  x  |     |     |
-| 3.5.2.8   | Ensure nftables default deny firewall policy (Automated)                                        |  x  |     |     |
-| 3.5.2.9   | Ensure nftables service is enabled (Automated)                                                  |  x  |     |     |
-| 3.5.2.10  | Ensure nftables rules are permanent (Automated)                                                 |  x  |     |     |
-| 3.5.3     | **Configure iptables**                                                                          |  x  |     |     |
-| 3.5.3.1   | **Configure iptables software**                                                                 |  x  |     |     |
-| 3.5.3.1.1 | Ensure iptables packages are installed (Automated)                                              |  x  |     |     |
-| 3.5.3.1.2 | Ensure nftables is not installed with iptables (Automated)                                      |  x  |     |     |
-| 3.5.3.1.3 | Ensure ufw is uninstalled or disabled with iptables (Automated)                                 |  x  |     |     |
-| 3.5.3.2   | **Configure IPv4 iptables**                                                                     |  x  |     |     |
-| 3.5.3.2.1 | Ensure iptables default deny firewall policy (Automated)                                        |  x  |     |     |
-| 3.5.3.2.2 | Ensure iptables loopback traffic is configured (Automated)                                      |  x  |     |     |
-| 3.5.3.2.3 | Ensure iptables outbound and established connections are configured (Manual)                    |  x  |     |     |
-| 3.5.3.2.4 | Ensure iptables firewall rules exist for all open ports (Automated)                             |  x  |     |     |
-| 3.5.3.3   | **Configure IPv6 ip6tables**                                                                    |  x  |     |     |
-| 3.5.3.3.1 | Ensure ip6tables default deny firewall policy (Automated)                                       |  x  |     |     |
-| 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured (Automated)                                     |  x  |     |     |
-| 3.5.3.3.3 | Ensure ip6tables outbound and established connections are configured (Manual)                   |  x  |     |     |
-| 3.5.3.3.4 | Ensure ip6tables firewall rules exist for all open ports (Automated)                            |  x  |     |     |
-| 4         | **Logging and Auditing**                                                                        |     |  x  |     |
+| 4         | **Logging and Auditing**                                                                        |     | 🟡  |     |
+| 6.1       | **Configure Filesystem Integrity Checking**                                                     | 🟢  |     |     |
+| 6.1.1     | Ensure AIDE is installed (Automated)                                                            | 🟢  |     |     |
+| 6.1.2     | Ensure filesystem integrity is regularly checked (Automated)                                    | 🟢  |     |     |
+| 6.1.3     | Ensure cryptographic mechanisms are used to protect the integrity of audit tools                | 🟢  |     |     |
+|           |                                                                                                 |     |     |     |
 | 4.1       | **Configure System Accounting (auditd)**                                                        |     |  x  |     |
 | 4.1.1     | **Ensure auditing is enabled**                                                                  |  x  |     |     |
 | 4.1.1.1   | Ensure auditd is installed (Automated)                                                          |  x  |     |     |
@@ -645,88 +624,101 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 4.2.2.6   | Ensure rsyslog is configured to send logs to a remote log host (Manual)                         |     |     |  x  |
 | 4.2.2.7   | Ensure rsyslog is not configured to receive logs from a remote client (Automated)               |  x  |     |     |
 | 4.2.3     | Ensure all logfiles have appropriate permissions and ownership (Automated)                      |     |     |  x  |
-| 5         | **Access, Authentication and Authorization**                                                    |     |     |     |
-| 5.2       | **Configure SSH Server**                                                                        |  x  |     |     |
-| 5.2.1     | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                           |  x  |     |     |
-| 5.2.2     | Ensure permissions on SSH private host key files are configured (Automated)                     |  x  |     |     |
-| 5.2.3     | Ensure permissions on SSH public host key files are configured (Automated)                      |  x  |     |     |
-| 5.2.4     | Ensure SSH access is limited (Automated)                                                        |  x  |     |     |
-| 5.2.5     | Ensure SSH LogLevel is appropriate (Automated)                                                  |  x  |     |     |
-| 5.2.6     | Ensure SSH PAM is enabled (Automated)                                                           |  x  |     |     |
-| 5.2.7     | Ensure SSH root login is disabled (Automated)                                                   |  x  |     |     |
-| 5.2.8     | Ensure SSH HostbasedAuthentication is disabled (Automated)                                      |  x  |     |     |
-| 5.2.9     | Ensure SSH PermitEmptyPasswords is disabled (Automated)                                         |  x  |     |     |
-| 5.2.10    | Ensure SSH PermitUserEnvironment is disabled (Automated)                                        |  x  |     |     |
-| 5.2.11    | Ensure SSH IgnoreRhosts is enabled (Automated)                                                  |  x  |     |     |
-| 5.2.12    | Ensure SSH X11 forwarding is disabled (Automated)                                               |  x  |     |     |
-| 5.2.13    | Ensure only strong Ciphers are used (Automated)                                                 |  x  |     |     |
-| 5.2.14    | Ensure only strong MAC algorithms are used (Automated)                                          |  x  |     |     |
-| 5.2.15    | Ensure only strong Key Exchange algorithms are used (Automated)                                 |  x  |     |     |
-| 5.2.16    | Ensure SSH AllowTcpForwarding is disabled (Automated)                                           |  x  |     |     |
-| 5.2.17    | Ensure SSH warning banner is configured (Automated)                                             |  x  |     |     |
-| 5.2.18    | Ensure SSH MaxAuthTries is set to 4 or less (Automated)                                         |  x  |     |     |
-| 5.2.19    | Ensure SSH MaxStartups is configured (Automated)                                                |  x  |     |     |
-| 5.2.20    | Ensure SSH MaxSessions is set to 10 or less (Automated)                                         |  x  |     |     |
-| 5.2.21    | Ensure SSH LoginGraceTime is set to one minute or less (Automated)                              |  x  |     |     |
-| 5.2.22    | Ensure SSH Idle Timeout Interval is configured (Automated)                                      |  x  |     |     |
-| 5.3       | **Configure privilege escalation**                                                              |  x  |     |     |
-| 5.3.1     | Ensure sudo is installed (Automated)                                                            |  x  |     |     |
-| 5.3.2     | Ensure sudo commands use pty (Automated)                                                        |  x  |     |     |
-| 5.3.3     | Ensure sudo log file exists (Automated)                                                         |  x  |     |     |
-| 5.3.4     | Ensure users must provide password for privilege escalation (Automated)                         |  x  |     |     |
-| 5.3.5     | Ensure re-authentication for privilege escalation is not disabled globally (Automated)          |  x  |     |     |
-| 5.3.6     | Ensure sudo authentication timeout is configured correctly (Automated)                          |  x  |     |     |
-| 5.3.7     | Ensure access to the su command is restricted (Automated)                                       |  x  |     |     |
-| 5.4       | **Configure PAM**                                                                               |     |  x  |     |
-| 5.4.1     | Ensure password creation requirements are configured (Automated)                                |  x  |     |     |
-| 5.4.2     | Ensure lockout for failed password attempts is configured (Automated)                           |  x  |     |     |
-| 5.4.3     | Ensure password reuse is limited (Automated)                                                    |  x  |     |     |
-| 5.4.4     | Ensure password hashing algorithm is up to date with the latest standards (Automated)           |  x  |     |     |
-| 5.4.5     | Ensure all current passwords uses the configured hashing algorithm (Manual)                     |     |     |  x  |
-| 5.5       | **User Accounts and Environment**                                                               |     |  x  |     |
-| 5.5.1     | **Set Shadow Password Suite Parameters**                                                        |     |  x  |     |
-| 5.5.1.1   | Ensure minimum days between password changes is configured (Automated)                          |  x  |     |     |
-| 5.5.1.2   | Ensure password expiration is 365 days or less (Automated)                                      |  x  |     |     |
-| 5.5.1.3   | Ensure password expiration warning days is 7 or more (Automated)                                |  x  |     |     |
-| 5.5.1.4   | Ensure inactive password lock is 30 days or less (Automated)                                    |  x  |     |     |
-| 5.5.1.5   | Ensure all users last password change date is in the past (Automated)                           |     |     |  x  |
-| 5.5.2     | Ensure system accounts are secured (Automated)                                                  |  x  |     |     |
-| 5.5.3     | Ensure default group for the root account is GID 0 (Automated)                                  |  x  |     |     |
-| 5.5.4     | Ensure default user umask is 027 or more restrictive (Automated)                                |  x  |     |     |
-| 5.5.5     | Ensure default user shell timeout is 900 seconds or less (Automated)                            |  x  |     |     |
-| 6         | **System Maintenance**                                                                          |     |  x  |     |
-| 6.1       | **System File Permissions**                                                                     |     |  x  |     |
-| 6.1.1     | Ensure permissions on /etc/passwd are configured (Automated)                                    |  x  |     |     |
-| 6.1.2     | Ensure permissions on /etc/passwd- are configured (Automated)                                   |  x  |     |     |
-| 6.1.3     | Ensure permissions on /etc/group are configured (Automated)                                     |  x  |     |     |
-| 6.1.4     | Ensure permissions on /etc/group- are configured (Automated)                                    |  x  |     |     |
-| 6.1.5     | Ensure permissions on /etc/shadow are configured (Automated)                                    |  x  |     |     |
-| 6.1.6     | Ensure permissions on /etc/shadow- are configured (Automated)                                   |  x  |     |     |
-| 6.1.7     | Ensure permissions on /etc/gshadow are configured (Automated)                                   |  x  |     |     |
-| 6.1.8     | Ensure permissions on /etc/gshadow- are configured (Automated)                                  |  x  |     |     |
-| 6.1.9     | Ensure no world writable files exist (Automated)                                                |  x  |     |     |
-| 6.1.10    | Ensure no unowned files or directories exist (Automated)                                        |     |  x  |     |
-| 6.1.11    | Ensure no ungrouped files or directories exist (Automated)                                      |     |  x  |     |
-| 6.1.12    | Audit SUID executables (Manual)                                                                 |     |  x  |     |
-| 6.1.13    | Audit SGID executables (Manual)                                                                 |     |  x  |     |
-| 6.2       | **Local User and Group Settings**                                                               |     |  x  |     |
-| 6.2.1     | Ensure accounts in /etc/passwd use shadowed passwords (Automated)                               |  x  |     |     |
-| 6.2.2     | Ensure /etc/shadow password fields are not empty (Automated)                                    |  x  |     |     |
-| 6.2.3     | Ensure all groups in /etc/passwd exist in /etc/group (Automated)                                |     |  x  |     |
-| 6.2.4     | Ensure shadow group is empty (Automated)                                                        |  x  |     |     |
-| 6.2.5     | Ensure no duplicate UIDs exist (Automated)                                                      |     |  x  |     |
-| 6.2.6     | Ensure no duplicate GIDs exist (Automated)                                                      |     |  x  |     |
-| 6.2.7     | Ensure no duplicate user names exist (Automated)                                                |     |  x  |     |
-| 6.2.8     | Ensure no duplicate group names exist (Automated)                                               |     |  x  |     |
-| 6.2.9     | Ensure root PATH Integrity (Automated)                                                          |     |  x  |     |
-| 6.2.10    | Ensure root is the only UID 0 account (Automated)                                               |     |  x  |     |
-| 6.2.11    | Ensure local interactive user home directories exist (Automated)                                |  x  |     |     |
-| 6.2.12    | Ensure local interactive users own their home directories (Automated)                           |  x  |     |     |
-| 6.2.13    | Ensure local interactive user home directories are mode 750 or more restrictive (Automated)     |  x  |     |     |
-| 6.2.14    | Ensure no local interactive user has .netrc files (Automated)                                   |  x  |     |     |
-| 6.2.15    | Ensure no local interactive user has .forward files (Automated)                                 |  x  |     |     |
-| 6.2.16    | Ensure no local interactive user has .rhosts files (Automated)                                  |  x  |     |     |
-| 6.2.17    | Ensure local interactive user dot files are not group or world writable (Automated)             |  x  |     |     |
+
+| #      | CIS Benchmark Recommendation Set                                | Yes | Y/N | No  |
+| :----- | :-------------------------------------------------------------- | :-: | :-: | :-: |
+| 7.2.9  | Ensure root PATH Integrity (Automated)                          |     |  x  |     |
+| 7.2.10 | Ensure root is the only UID 0 account (Automated)               |     |  x  |     |
+| 7.2.14 | Ensure no local interactive user has .netrc files (Automated)   |  x  |     |     |
+| 7.2.15 | Ensure no local interactive user has .forward files (Automated) |  x  |     |     |
+| 7.2.16 | Ensure no local interactive user has .rhosts files (Automated)  |  x  |     |     |
+
+| #         | CIS Benchmark Recommendation Set                                                       | Yes | Y/N | No  |
+| :-------- | :------------------------------------------------------------------------------------- | :-: | :-: | :-: |
+| 3.5       | **Firewall Configuration**                                                             |     |  x  |     |
+| 3.5.1     | **Configure UncomplicatedFirewall**                                                    |     |  x  |     |
+| 3.5.1.1   | Ensure ufw is installed (Automated)                                                    |  x  |     |     |
+| 3.5.1.2   | Ensure iptables-persistent is not installed with ufw (Automated)                       |  x  |     |     |
+| 3.5.1.3   | Ensure ufw service is enabled (Automated)                                              |  x  |     |     |
+| 3.5.1.4   | Ensure ufw loopback traffic is configured (Automated)                                  |  x  |     |     |
+| 3.5.1.5   | Ensure ufw outbound connections are configured (Manual)                                |  x  |     |     |
+| 3.5.1.6   | Ensure ufw firewall rules exist for all open ports (Automated)                         |     |     |  x  |
+| 3.5.1.7   | Ensure ufw default deny firewall policy (Automated)                                    |  x  |     |     |
+| 3.5.2     | **Configure nftables**                                                                 |  x  |     |     |
+| 3.5.2.1   | Ensure nftables is installed (Automated)                                               |  x  |     |     |
+| 3.5.2.2   | Ensure ufw is uninstalled or disabled with nftables (Automated)                        |  x  |     |     |
+| 3.5.2.3   | Ensure iptables are flushed with nftables (Manual)                                     |  x  |     |     |
+| 3.5.2.4   | Ensure a nftables table exists (Automated)                                             |  x  |     |     |
+| 3.5.2.5   | Ensure nftables base chains exist (Automated)                                          |  x  |     |     |
+| 3.5.2.6   | Ensure nftables loopback traffic is configured (Automated)                             |  x  |     |     |
+| 3.5.2.7   | Ensure nftables outbound and established connections are configured (Manual)           |  x  |     |     |
+| 3.5.2.8   | Ensure nftables default deny firewall policy (Automated)                               |  x  |     |     |
+| 3.5.2.9   | Ensure nftables service is enabled (Automated)                                         |  x  |     |     |
+| 3.5.2.10  | Ensure nftables rules are permanent (Automated)                                        |  x  |     |     |
+| 3.5.3     | **Configure iptables**                                                                 |  x  |     |     |
+| 3.5.3.1   | **Configure iptables software**                                                        |  x  |     |     |
+| 3.5.3.1.1 | Ensure iptables packages are installed (Automated)                                     |  x  |     |     |
+| 3.5.3.1.2 | Ensure nftables is not installed with iptables (Automated)                             |  x  |     |     |
+| 3.5.3.1.3 | Ensure ufw is uninstalled or disabled with iptables (Automated)                        |  x  |     |     |
+| 3.5.3.2   | **Configure IPv4 iptables**                                                            |  x  |     |     |
+| 3.5.3.2.1 | Ensure iptables default deny firewall policy (Automated)                               |  x  |     |     |
+| 3.5.3.2.2 | Ensure iptables loopback traffic is configured (Automated)                             |  x  |     |     |
+| 3.5.3.2.3 | Ensure iptables outbound and established connections are configured (Manual)           |  x  |     |     |
+| 3.5.3.2.4 | Ensure iptables firewall rules exist for all open ports (Automated)                    |  x  |     |     |
+| 3.5.3.3   | **Configure IPv6 ip6tables**                                                           |  x  |     |     |
+| 3.5.3.3.1 | Ensure ip6tables default deny firewall policy (Automated)                              |  x  |     |     |
+| 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured (Automated)                            |  x  |     |     |
+| 3.5.3.3.3 | Ensure ip6tables outbound and established connections are configured (Manual)          |  x  |     |     |
+| 3.5.3.3.4 | Ensure ip6tables firewall rules exist for all open ports (Automated)                   |  x  |     |     |
+| 5         | **Access, Authentication and Authorization**                                           |     |     |     |
+| 5.2       | **Configure SSH Server**                                                               |  x  |     |     |
+| 5.2.1     | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                  |  x  |     |     |
+| 5.2.2     | Ensure permissions on SSH private host key files are configured (Automated)            |  x  |     |     |
+| 5.2.3     | Ensure permissions on SSH public host key files are configured (Automated)             |  x  |     |     |
+| 5.2.4     | Ensure SSH access is limited (Automated)                                               |  x  |     |     |
+| 5.2.5     | Ensure SSH LogLevel is appropriate (Automated)                                         |  x  |     |     |
+| 5.2.6     | Ensure SSH PAM is enabled (Automated)                                                  |  x  |     |     |
+| 5.2.7     | Ensure SSH root login is disabled (Automated)                                          |  x  |     |     |
+| 5.2.8     | Ensure SSH HostbasedAuthentication is disabled (Automated)                             |  x  |     |     |
+| 5.2.9     | Ensure SSH PermitEmptyPasswords is disabled (Automated)                                |  x  |     |     |
+| 5.2.10    | Ensure SSH PermitUserEnvironment is disabled (Automated)                               |  x  |     |     |
+| 5.2.11    | Ensure SSH IgnoreRhosts is enabled (Automated)                                         |  x  |     |     |
+| 5.2.12    | Ensure SSH X11 forwarding is disabled (Automated)                                      |  x  |     |     |
+| 5.2.13    | Ensure only strong Ciphers are used (Automated)                                        |  x  |     |     |
+| 5.2.14    | Ensure only strong MAC algorithms are used (Automated)                                 |  x  |     |     |
+| 5.2.15    | Ensure only strong Key Exchange algorithms are used (Automated)                        |  x  |     |     |
+| 5.2.16    | Ensure SSH AllowTcpForwarding is disabled (Automated)                                  |  x  |     |     |
+| 5.2.17    | Ensure SSH warning banner is configured (Automated)                                    |  x  |     |     |
+| 5.2.18    | Ensure SSH MaxAuthTries is set to 4 or less (Automated)                                |  x  |     |     |
+| 5.2.19    | Ensure SSH MaxStartups is configured (Automated)                                       |  x  |     |     |
+| 5.2.20    | Ensure SSH MaxSessions is set to 10 or less (Automated)                                |  x  |     |     |
+| 5.2.21    | Ensure SSH LoginGraceTime is set to one minute or less (Automated)                     |  x  |     |     |
+| 5.2.22    | Ensure SSH Idle Timeout Interval is configured (Automated)                             |  x  |     |     |
+| 5.3       | **Configure privilege escalation**                                                     |  x  |     |     |
+| 5.3.1     | Ensure sudo is installed (Automated)                                                   |  x  |     |     |
+| 5.3.2     | Ensure sudo commands use pty (Automated)                                               |  x  |     |     |
+| 5.3.3     | Ensure sudo log file exists (Automated)                                                |  x  |     |     |
+| 5.3.4     | Ensure users must provide password for privilege escalation (Automated)                |  x  |     |     |
+| 5.3.5     | Ensure re-authentication for privilege escalation is not disabled globally (Automated) |  x  |     |     |
+| 5.3.6     | Ensure sudo authentication timeout is configured correctly (Automated)                 |  x  |     |     |
+| 5.3.7     | Ensure access to the su command is restricted (Automated)                              |  x  |     |     |
+| 5.4       | **Configure PAM**                                                                      |     |  x  |     |
+| 5.4.1     | Ensure password creation requirements are configured (Automated)                       |  x  |     |     |
+| 5.4.2     | Ensure lockout for failed password attempts is configured (Automated)                  |  x  |     |     |
+| 5.4.3     | Ensure password reuse is limited (Automated)                                           |  x  |     |     |
+| 5.4.4     | Ensure password hashing algorithm is up to date with the latest standards (Automated)  |  x  |     |     |
+| 5.4.5     | Ensure all current passwords uses the configured hashing algorithm (Manual)            |     |     |  x  |
+| 5.5       | **User Accounts and Environment**                                                      |     |  x  |     |
+| 5.5.1     | **Set Shadow Password Suite Parameters**                                               |     |  x  |     |
+| 5.5.1.1   | Ensure minimum days between password changes is configured (Automated)                 |  x  |     |     |
+| 5.5.1.2   | Ensure password expiration is 365 days or less (Automated)                             |  x  |     |     |
+| 5.5.1.3   | Ensure password expiration warning days is 7 or more (Automated)                       |  x  |     |     |
+| 5.5.1.4   | Ensure inactive password lock is 30 days or less (Automated)                           |  x  |     |     |
+| 5.5.1.5   | Ensure all users last password change date is in the past (Automated)                  |     |     |  x  |
+| 5.5.2     | Ensure system accounts are secured (Automated)                                         |  x  |     |     |
+| 5.5.3     | Ensure default group for the root account is GID 0 (Automated)                         |  x  |     |     |
+| 5.5.4     | Ensure default user umask is 027 or more restrictive (Automated)                       |  x  |     |     |
+| 5.5.5     | Ensure default user shell timeout is 900 seconds or less (Automated)                   |  x  |     |     |
 
 ## License
 

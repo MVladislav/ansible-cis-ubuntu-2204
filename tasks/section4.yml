@@ -705,37 +705,6 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION4 | 4.1.4.11 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
-  ansible.builtin.lineinfile:
-    dest: /etc/aide/aide.conf
-    regexp: "{{ item.reg }}"
-    line: "{{ item.line }}"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0644"
-  with_items:
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/auditctl"
-      line: "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/auditd"
-      line: "/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/ausearch"
-      line: "/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/aureport"
-      line: "/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/autrace"
-      line: "/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/augenrules"
-      line: "/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512"
-  when:
-    - cis_ubuntu2204_rule_4_1_4_11
-    - cis_ubuntu2204_config_aide
-  tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-
 # ------------------------------------------------------------------------------
 
 # TODO: improve and fix to work proper, setup current only less correct

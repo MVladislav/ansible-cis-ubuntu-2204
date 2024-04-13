@@ -72,6 +72,13 @@
   tags:
     - section6
 
+- name: "IMPORT TASK | section7"
+  ansible.builtin.import_tasks: section7.yml
+  become: true
+  when: cis_ubuntu2204_section7 | bool
+  tags:
+    - section7
+
 # ------------------------------------------------------------------------------
 
 - name: "IMPORT TASK | post"

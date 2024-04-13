@@ -39,7 +39,7 @@
       aide_month: "*"
       aide_weekday: "*"
     # -------------------------
-    cis_ubuntu2204_required_ipv6: false
+    cis_ubuntu2204_required_ipv6: true
     cis_ubuntu2204_firewall: ufw
     cis_ubuntu2204_firewall_ufw_outgoing_policy: allow
     # -------------------------

@@ -363,145 +363,174 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 ## CIS - List of Recommendations
 
+| Key                                                                                | Count |
+| :--------------------------------------------------------------------------------- | :---- |
+| 🟢 Implemented                                                                     | 128   |
+| 🟡 Partly Implemented _(Mostly only Titles, because not all subtasks implemented)_ | 5     |
+| 🔴 Not Implemented                                                                 | 28    |
+| Total                                                                              |       |
+| Coverage (Implemented vs Total)                                                    |       |
+
 | #         | CIS Benchmark Recommendation Set                                                         | Yes | Y/N | No  |
 | :-------- | :--------------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 1         | **Initial Setup**                                                                        |     |  x  |     |
-| 1.1       | **Filesystem**                                                                           |     |  x  |     |
-| 1.1.1     | **Configure Filesystem Kernel Modules**                                                  |  x  |     |     |
-| 1.1.1.1   | Ensure cramfs kernel module is not available (Automated)                                 |  x  |     |     |
-| 1.1.1.2   | Ensure freevxfs kernel module is not available (Automated)                               |  x  |     |     |
-| 1.1.1.3   | Ensure hfs kernel module is not available (Automated)                                    |  x  |     |     |
-| 1.1.1.4   | Ensure hfsplus kernel module is not available (Automated)                                |  x  |     |     |
-| 1.1.1.5   | Ensure jffs2 kernel module is not available (Automated)                                  |  x  |     |     |
-| 1.1.1.6   | Ensure squashfs kernel module is not available (Automated)                               |  x  |     |     |
-| 1.1.1.7   | Ensure udf kernel module is not available (Automated)                                    |  x  |     |     |
-| 1.1.1.8   | Ensure usb-storage kernel module is not available (Automated)                            |  x  |     |     |
-| 1.1.2     | **Configure Filesystem Partitions**                                                      |  x  |     |     |
-| 1.1.2.1   | **Configure /tmp**                                                                       |  x  |     |     |
-| 1.1.2.1.1 | Ensure /tmp is a separate partition (Automated)                                          |  x  |     |     |
-| 1.1.2.1.2 | Ensure nodev option set on /tmp partition (Automated)                                    |  x  |     |     |
-| 1.1.2.1.3 | Ensure nosuid option set on /tmp partition (Automated)                                   |  x  |     |     |
-| 1.1.2.1.4 | Ensure noexec option set on /tmp partition (Automated)                                   |  x  |     |     |
-| 1.1.2.2   | **Configure /dev/shm**                                                                   |  x  |     |     |
-| 1.1.2.2.1 | Ensure /dev/shm is a separate partition (Automated)                                      |  x  |     |     |
-| 1.1.2.2.2 | Ensure nodev option set on /dev/shm partition (Automated)                                |  x  |     |     |
-| 1.1.2.2.3 | Ensure nosuid option set on /dev/shm partition (Automated)                               |  x  |     |     |
-| 1.1.2.2.4 | Ensure noexec option set on /dev/shm partition (Automated)                               |  x  |     |     |
-| 1.1.2.3   | **Configure /home**                                                                      |     |     |  x  |
-| 1.1.2.3.1 | Ensure separate partition exists for /home (Automated)                                   |     |     |  x  |
-| 1.1.2.3.2 | Ensure nodev option set on /home partition (Automated)                                   |     |     |  x  |
-| 1.1.2.3.3 | Ensure nosuid option set on /home partition (Automated)                                  |     |     |  x  |
-| 1.1.2.4   | **Configure /var**                                                                       |     |     |  x  |
-| 1.1.2.4.1 | Ensure separate partition exists for /var (Automated)                                    |     |     |  x  |
-| 1.1.2.4.2 | Ensure nodev option set on /var partition (Automated)                                    |     |     |  x  |
-| 1.1.2.4.3 | Ensure nosuid option set on /var partition (Automated)                                   |     |     |  x  |
-| 1.1.2.5   | **Configure /var/tmp**                                                                   |     |     |  x  |
-| 1.1.2.5.1 | Ensure separate partition exists for /var/tmp (Automated)                                |     |     |  x  |
-| 1.1.2.5.2 | Ensure nodev option set on /var/tmp partition (Automated)                                |     |     |  x  |
-| 1.1.2.5.3 | Ensure nosuid option set on /var/tmp partition (Automated)                               |     |     |  x  |
-| 1.1.2.5.4 | Ensure noexec option set on /var/tmp partition (Automated)                               |     |     |  x  |
-| 1.1.2.6   | **Configure /var/log**                                                                   |     |     |  x  |
-| 1.1.2.6.1 | Ensure separate partition exists for /var/log (Automated)                                |     |     |  x  |
-| 1.1.2.6.2 | Ensure nodev option set on /var/log partition (Automated)                                |     |     |  x  |
-| 1.1.2.6.3 | Ensure nosuid option set on /var/log partition (Automated)                               |     |     |  x  |
-| 1.1.2.6.4 | Ensure noexec option set on /var/log partition (Automated)                               |     |     |  x  |
-| 1.1.2.7   | **Configure /var/log/audit**                                                             |     |     |  x  |
-| 1.1.2.7.1 | Ensure separate partition exists for /var/log/audit (Automated)                          |     |     |  x  |
-| 1.1.2.7.2 | Ensure nodev option set on /var/log/audit partition (Automated)                          |     |     |  x  |
-| 1.1.2.7.3 | Ensure nosuid option set on /var/log/audit partition (Automated)                         |     |     |  x  |
-| 1.1.2.7.4 | Ensure noexec option set on /var/log/audit partition (Automated)                         |     |     |  x  |
-| 1.2       | **Package Management**                                                                   |     |  x  |     |
-| 1.2.1     | **Configure Package Repositories**                                                       |     |     |  x  |
-| 1.2.1.1   | Ensure GPG keys are configured                                                           |     |     |  x  |
-| 1.2.1.2   | Ensure package manager repositories are configured                                       |     |     |  x  |
-| 1.2.2     | **Configure Package Updates**                                                            |  x  |     |     |
-| 1.2.2.1   | Ensure updates, patches, and additional security software are installed                  |  x  |     |     |
-| 1.3       | **Mandatory Access Control**                                                             |  x  |     |     |
-| 1.3.1     | **Configure AppArmor**                                                                   |  x  |     |     |
-| 1.3.1.1   | Ensure AppArmor is installed (Automated)                                                 |  x  |     |     |
-| 1.3.1.2   | Ensure AppArmor is enabled in the bootloader configuration (Automated)                   |  x  |     |     |
-| 1.3.1.3   | Ensure all AppArmor Profiles are in enforce or complain mode (Automated)                 |  x  |     |     |
-| 1.3.1.4   | Ensure all AppArmor Profiles are enforcing (Automated)                                   |  x  |     |     |
-| 1.4       | **Configure Bootloader**                                                                 |  x  |     |     |
-| 1.4.1     | Ensure bootloader password is set (Automated)                                            |  x  |     |     |
-| 1.4.2     | Ensure access to bootloader config is configured (Automated)                             |  x  |     |     |
-| 1.5       | **Configure Additional Process Hardening**                                               |  x  |     |     |
-| 1.5.1     | Ensure address space layout randomization is enabled (Automated)                         |  x  |     |     |
-| 1.5.2     | Ensure ptrace_scope is restricted (Automated)                                            |  x  |     |     |
-| 1.5.3     | Ensure core dumps are restricted (Automated)                                             |  x  |     |     |
-| 1.5.4     | Ensure prelink is not installed (Automated)                                              |  x  |     |     |
-| 1.5.5     | Ensure Automatic Error Reporting is not enabled (Automated)                              |  x  |     |     |
-| 1.6       | **Command Line Warning Banners**                                                         |  x  |     |     |
-| 1.6.1     | Ensure message of the day is configured properly (Automated)                             |  x  |     |     |
-| 1.6.2     | Ensure local login warning banner is configured properly (Automated)                     |  x  |     |     |
-| 1.6.3     | Ensure remote login warning banner is configured properly (Automated)                    |  x  |     |     |
-| 1.6.4     | Ensure access to /etc/motd is configured (Automated)                                     |  x  |     |     |
-| 1.6.5     | Ensure access to /etc/issue is configured (Automated)                                    |  x  |     |     |
-| 1.6.6     | Ensure access to /etc/issue.net is configured (Automated)                                |  x  |     |     |
-| 1.7       | **GNOME Display Manager**                                                                |  x  |     |     |
-| 1.7.1     | Ensure GDM is removed (Automated)                                                        |  x  |     |     |
-| 1.7.2     | Ensure GDM login banner is configured (Automated)                                        |  x  |     |     |
-| 1.7.3     | Ensure GDM disable-user-list option is enabled (Automated)                               |  x  |     |     |
-| 1.7.4     | Ensure GDM screen locks when the user is idle (Automated)                                |  x  |     |     |
-| 1.7.5     | Ensure GDM screen locks cannot be overridden (Automated)                                 |  x  |     |     |
-| 1.7.6     | Ensure GDM automatic mounting of removable media is disabled (Automated)                 |  x  |     |     |
-| 1.7.7     | Ensure GDM disabling automatic mounting of removable media is not overridden (Automated) |  x  |     |     |
-| 1.7.8     | Ensure GDM autorun-never is enabled (Automated)                                          |  x  |     |     |
-| 1.7.9     | Ensure GDM autorun-never is not overridden (Automated)                                   |  x  |     |     |
-| 1.7.10    | Ensure XDCMP is not enabled (Automated)                                                  |  x  |     |     |
-| 2         | **Services**                                                                             |  x  |     |     |
-| 2.1       | **Configure Server Services**                                                            |  x  |     |     |
-| 2.1.1     | Ensure autofs services are not in use (Automated)                                        |  x  |     |     |
-| 2.1.2     | Ensure avahi daemon services are not in use (Automated)                                  |  x  |     |     |
-| 2.1.3     | Ensure dhcp server services are not in use (Automated)                                   |  x  |     |     |
-| 2.1.4     | Ensure dns server services are not in use (Automated)                                    |  x  |     |     |
-| 2.1.5     | Ensure dnsmasq services are not in use (Automated)                                       |  x  |     |     |
-| 2.1.6     | Ensure ftp server services are not in use (Automated)                                    |  x  |     |     |
-| 2.1.7     | Ensure ldap server services are not in use (Automated)                                   |  x  |     |     |
-| 2.1.8     | Ensure message access server services are not in use (Automated)                         |  x  |     |     |
-| 2.1.9     | Ensure network file system services are not in use (Automated)                           |  x  |     |     |
-| 2.1.10    | Ensure nis server services are not in use (Automated)                                    |  x  |     |     |
-| 2.1.11    | Ensure print server services are not in use (Automated)                                  |  x  |     |     |
-| 2.1.12    | Ensure rpcbind services are not in use (Automated)                                       |  x  |     |     |
-| 2.1.13    | Ensure rsync services are not in use (Automated)                                         |  x  |     |     |
-| 2.1.14    | Ensure samba file server services are not in use (Automated)                             |  x  |     |     |
-| 2.1.15    | Ensure snmp services are not in use (Automated)                                          |  x  |     |     |
-| 2.1.16    | Ensure tftp server services are not in use (Automated)                                   |  x  |     |     |
-| 2.1.17    | Ensure web proxy server services are not in use (Automated)                              |  x  |     |     |
-| 2.1.18    | Ensure web server services are not in use (Automated)                                    |  x  |     |     |
-| 2.1.19    | Ensure xinetd services are not in use (Automated)                                        |  x  |     |     |
-| 2.1.20    | Ensure X window server services are not in use (Automated)                               |  x  |     |     |
-| 2.1.21    | Ensure mail transfer agent is configured for local-only mode (Automated)                 |  x  |     |     |
-| 2.1.22    | Ensure only approved services are listening on a network interface (Manual)              |  x  |     |     |
-| 2.2       | **Configure Client Services**                                                            |  x  |     |     |
-| 2.2.1     | Ensure nis Client is not installed (Automated)                                           |  x  |     |     |
-| 2.2.2     | Ensure rsh client is not installed (Automated)                                           |  x  |     |     |
-| 2.2.3     | Ensure talk client is not installed (Automated)                                          |  x  |     |     |
-| 2.2.4     | Ensure telnet client is not installed (Automated)                                        |  x  |     |     |
-| 2.2.5     | Ensure ldap client is not installed (Automated)                                          |  x  |     |     |
-| 2.2.6     | Ensure ftp client is not installed (Automated)                                           |  x  |     |     |
-| 2.3       | **Configure Time Synchronization**                                                       |  x  |     |     |
-| 2.3.1     | **Ensure time synchronization is in use**                                                |  x  |     |     |
-| 2.3.1.1   | Ensure a single time synchronization daemon is in use (Automated)                        |  x  |     |     |
-| 2.3.2     | **Configure systemd-timesyncd**                                                          |  x  |     |     |
-| 2.3.2.1   | Ensure systemd-timesyncd configured with authorized timeserver (Manual)                  |  x  |     |     |
-| 2.3.2.2   | Ensure systemd-timesyncd is enabled and running (Automated)                              |  x  |     |     |
-| 2.3.3     | **Configure chrony**                                                                     |  x  |     |     |
-| 2.3.3.1   | Ensure chrony is configured with authorized timeserver (Manual)                          |  x  |     |     |
-| 2.3.3.2   | Ensure chrony is running as user \_chrony (Automated)                                    |  x  |     |     |
-| 2.3.3.3   | Ensure chrony is enabled and running (Automated)                                         |  x  |     |     |
-| 2.4       | **Job Schedulers**                                                                       |  x  |     |     |
-| 2.4.1     | **Configure time-based job schedulers**                                                  |  x  |     |     |
-| 2.4.1.1   | Ensure cron daemon is enabled and active (Automated)                                     |  x  |     |     |
-| 2.4.1.2   | Ensure permissions on /etc/crontab are configured (Automated)                            |  x  |     |     |
-| 2.4.1.3   | Ensure permissions on /etc/cron.hourly are configured (Automated)                        |  x  |     |     |
-| 2.4.1.4   | Ensure permissions on /etc/cron.daily are configured (Automated)                         |  x  |     |     |
-| 2.4.1.5   | Ensure permissions on /etc/cron.weekly are configured (Automated)                        |  x  |     |     |
-| 2.4.1.6   | Ensure permissions on /etc/cron.monthly are configured (Automated)                       |  x  |     |     |
-| 2.4.1.7   | Ensure permissions on /etc/cron.d are configured (Automated)                             |  x  |     |     |
-| 2.4.1.8   | Ensure crontab is restricted to authorized users (Automated)                             |  x  |     |     |
-| 2.4.2     | **Configure at**                                                                         |  x  |     |     |
-| 2.4.2.1   | Ensure at is restricted to authorized users (Automated)                                  |  x  |     |     |
+| 1         | **Initial Setup**                                                                        |     | 🟡  |     |
+| 1.1       | **Filesystem**                                                                           |     | 🟡  |     |
+| 1.1.1     | **Configure Filesystem Kernel Modules**                                                  | 🟢  |     |     |
+| 1.1.1.1   | Ensure cramfs kernel module is not available (Automated)                                 | 🟢  |     |     |
+| 1.1.1.2   | Ensure freevxfs kernel module is not available (Automated)                               | 🟢  |     |     |
+| 1.1.1.3   | Ensure hfs kernel module is not available (Automated)                                    | 🟢  |     |     |
+| 1.1.1.4   | Ensure hfsplus kernel module is not available (Automated)                                | 🟢  |     |     |
+| 1.1.1.5   | Ensure jffs2 kernel module is not available (Automated)                                  | 🟢  |     |     |
+| 1.1.1.6   | Ensure squashfs kernel module is not available (Automated)                               | 🟢  |     |     |
+| 1.1.1.7   | Ensure udf kernel module is not available (Automated)                                    | 🟢  |     |     |
+| 1.1.1.8   | Ensure usb-storage kernel module is not available (Automated)                            | 🟢  |     |     |
+| 1.1.2     | **Configure Filesystem Partitions**                                                      | 🟢  |     |     |
+| 1.1.2.1   | **Configure /tmp**                                                                       | 🟢  |     |     |
+| 1.1.2.1.1 | Ensure /tmp is a separate partition (Automated)                                          | 🟢  |     |     |
+| 1.1.2.1.2 | Ensure nodev option set on /tmp partition (Automated)                                    | 🟢  |     |     |
+| 1.1.2.1.3 | Ensure nosuid option set on /tmp partition (Automated)                                   | 🟢  |     |     |
+| 1.1.2.1.4 | Ensure noexec option set on /tmp partition (Automated)                                   | 🟢  |     |     |
+| 1.1.2.2   | **Configure /dev/shm**                                                                   | 🟢  |     |     |
+| 1.1.2.2.1 | Ensure /dev/shm is a separate partition (Automated)                                      | 🟢  |     |     |
+| 1.1.2.2.2 | Ensure nodev option set on /dev/shm partition (Automated)                                | 🟢  |     |     |
+| 1.1.2.2.3 | Ensure nosuid option set on /dev/shm partition (Automated)                               | 🟢  |     |     |
+| 1.1.2.2.4 | Ensure noexec option set on /dev/shm partition (Automated)                               | 🟢  |     |     |
+| 1.1.2.3   | **Configure /home**                                                                      |     |     | 🔴  |
+| 1.1.2.3.1 | Ensure separate partition exists for /home (Automated)                                   |     |     | 🔴  |
+| 1.1.2.3.2 | Ensure nodev option set on /home partition (Automated)                                   |     |     | 🔴  |
+| 1.1.2.3.3 | Ensure nosuid option set on /home partition (Automated)                                  |     |     | 🔴  |
+| 1.1.2.4   | **Configure /var**                                                                       |     |     | 🔴  |
+| 1.1.2.4.1 | Ensure separate partition exists for /var (Automated)                                    |     |     | 🔴  |
+| 1.1.2.4.2 | Ensure nodev option set on /var partition (Automated)                                    |     |     | 🔴  |
+| 1.1.2.4.3 | Ensure nosuid option set on /var partition (Automated)                                   |     |     | 🔴  |
+| 1.1.2.5   | **Configure /var/tmp**                                                                   |     |     | 🔴  |
+| 1.1.2.5.1 | Ensure separate partition exists for /var/tmp (Automated)                                |     |     | 🔴  |
+| 1.1.2.5.2 | Ensure nodev option set on /var/tmp partition (Automated)                                |     |     | 🔴  |
+| 1.1.2.5.3 | Ensure nosuid option set on /var/tmp partition (Automated)                               |     |     | 🔴  |
+| 1.1.2.5.4 | Ensure noexec option set on /var/tmp partition (Automated)                               |     |     | 🔴  |
+| 1.1.2.6   | **Configure /var/log**                                                                   |     |     | 🔴  |
+| 1.1.2.6.1 | Ensure separate partition exists for /var/log (Automated)                                |     |     | 🔴  |
+| 1.1.2.6.2 | Ensure nodev option set on /var/log partition (Automated)                                |     |     | 🔴  |
+| 1.1.2.6.3 | Ensure nosuid option set on /var/log partition (Automated)                               |     |     | 🔴  |
+| 1.1.2.6.4 | Ensure noexec option set on /var/log partition (Automated)                               |     |     | 🔴  |
+| 1.1.2.7   | **Configure /var/log/audit**                                                             |     |     | 🔴  |
+| 1.1.2.7.1 | Ensure separate partition exists for /var/log/audit (Automated)                          |     |     | 🔴  |
+| 1.1.2.7.2 | Ensure nodev option set on /var/log/audit partition (Automated)                          |     |     | 🔴  |
+| 1.1.2.7.3 | Ensure nosuid option set on /var/log/audit partition (Automated)                         |     |     | 🔴  |
+| 1.1.2.7.4 | Ensure noexec option set on /var/log/audit partition (Automated)                         |     |     | 🔴  |
+| 1.2       | **Package Management**                                                                   |     | 🟡  |     |
+| 1.2.1     | **Configure Package Repositories**                                                       |     |     | 🔴  |
+| 1.2.1.1   | Ensure GPG keys are configured                                                           |     |     | 🔴  |
+| 1.2.1.2   | Ensure package manager repositories are configured                                       |     |     | 🔴  |
+| 1.2.2     | **Configure Package Updates**                                                            | 🟢  |     |     |
+| 1.2.2.1   | Ensure updates, patches, and additional security software are installed                  | 🟢  |     |     |
+| 1.3       | **Mandatory Access Control**                                                             | 🟢  |     |     |
+| 1.3.1     | **Configure AppArmor**                                                                   | 🟢  |     |     |
+| 1.3.1.1   | Ensure AppArmor is installed (Automated)                                                 | 🟢  |     |     |
+| 1.3.1.2   | Ensure AppArmor is enabled in the bootloader configuration (Automated)                   | 🟢  |     |     |
+| 1.3.1.3   | Ensure all AppArmor Profiles are in enforce or complain mode (Automated)                 | 🟢  |     |     |
+| 1.3.1.4   | Ensure all AppArmor Profiles are enforcing (Automated)                                   | 🟢  |     |     |
+| 1.4       | **Configure Bootloader**                                                                 | 🟢  |     |     |
+| 1.4.1     | Ensure bootloader password is set (Automated)                                            | 🟢  |     |     |
+| 1.4.2     | Ensure access to bootloader config is configured (Automated)                             | 🟢  |     |     |
+| 1.5       | **Configure Additional Process Hardening**                                               | 🟢  |     |     |
+| 1.5.1     | Ensure address space layout randomization is enabled (Automated)                         | 🟢  |     |     |
+| 1.5.2     | Ensure ptrace_scope is restricted (Automated)                                            | 🟢  |     |     |
+| 1.5.3     | Ensure core dumps are restricted (Automated)                                             | 🟢  |     |     |
+| 1.5.4     | Ensure prelink is not installed (Automated)                                              | 🟢  |     |     |
+| 1.5.5     | Ensure Automatic Error Reporting is not enabled (Automated)                              | 🟢  |     |     |
+| 1.6       | **Command Line Warning Banners**                                                         | 🟢  |     |     |
+| 1.6.1     | Ensure message of the day is configured properly (Automated)                             | 🟢  |     |     |
+| 1.6.2     | Ensure local login warning banner is configured properly (Automated)                     | 🟢  |     |     |
+| 1.6.3     | Ensure remote login warning banner is configured properly (Automated)                    | 🟢  |     |     |
+| 1.6.4     | Ensure access to /etc/motd is configured (Automated)                                     | 🟢  |     |     |
+| 1.6.5     | Ensure access to /etc/issue is configured (Automated)                                    | 🟢  |     |     |
+| 1.6.6     | Ensure access to /etc/issue.net is configured (Automated)                                | 🟢  |     |     |
+| 1.7       | **GNOME Display Manager**                                                                | 🟢  |     |     |
+| 1.7.1     | Ensure GDM is removed (Automated)                                                        | 🟢  |     |     |
+| 1.7.2     | Ensure GDM login banner is configured (Automated)                                        | 🟢  |     |     |
+| 1.7.3     | Ensure GDM disable-user-list option is enabled (Automated)                               | 🟢  |     |     |
+| 1.7.4     | Ensure GDM screen locks when the user is idle (Automated)                                | 🟢  |     |     |
+| 1.7.5     | Ensure GDM screen locks cannot be overridden (Automated)                                 | 🟢  |     |     |
+| 1.7.6     | Ensure GDM automatic mounting of removable media is disabled (Automated)                 | 🟢  |     |     |
+| 1.7.7     | Ensure GDM disabling automatic mounting of removable media is not overridden (Automated) | 🟢  |     |     |
+| 1.7.8     | Ensure GDM autorun-never is enabled (Automated)                                          | 🟢  |     |     |
+| 1.7.9     | Ensure GDM autorun-never is not overridden (Automated)                                   | 🟢  |     |     |
+| 1.7.10    | Ensure XDCMP is not enabled (Automated)                                                  | 🟢  |     |     |
+| 2         | **Services**                                                                             | 🟢  |     |     |
+| 2.1       | **Configure Server Services**                                                            | 🟢  |     |     |
+| 2.1.1     | Ensure autofs services are not in use (Automated)                                        | 🟢  |     |     |
+| 2.1.2     | Ensure avahi daemon services are not in use (Automated)                                  | 🟢  |     |     |
+| 2.1.3     | Ensure dhcp server services are not in use (Automated)                                   | 🟢  |     |     |
+| 2.1.4     | Ensure dns server services are not in use (Automated)                                    | 🟢  |     |     |
+| 2.1.5     | Ensure dnsmasq services are not in use (Automated)                                       | 🟢  |     |     |
+| 2.1.6     | Ensure ftp server services are not in use (Automated)                                    | 🟢  |     |     |
+| 2.1.7     | Ensure ldap server services are not in use (Automated)                                   | 🟢  |     |     |
+| 2.1.8     | Ensure message access server services are not in use (Automated)                         | 🟢  |     |     |
+| 2.1.9     | Ensure network file system services are not in use (Automated)                           | 🟢  |     |     |
+| 2.1.10    | Ensure nis server services are not in use (Automated)                                    | 🟢  |     |     |
+| 2.1.11    | Ensure print server services are not in use (Automated)                                  | 🟢  |     |     |
+| 2.1.12    | Ensure rpcbind services are not in use (Automated)                                       | 🟢  |     |     |
+| 2.1.13    | Ensure rsync services are not in use (Automated)                                         | 🟢  |     |     |
+| 2.1.14    | Ensure samba file server services are not in use (Automated)                             | 🟢  |     |     |
+| 2.1.15    | Ensure snmp services are not in use (Automated)                                          | 🟢  |     |     |
+| 2.1.16    | Ensure tftp server services are not in use (Automated)                                   | 🟢  |     |     |
+| 2.1.17    | Ensure web proxy server services are not in use (Automated)                              | 🟢  |     |     |
+| 2.1.18    | Ensure web server services are not in use (Automated)                                    | 🟢  |     |     |
+| 2.1.19    | Ensure xinetd services are not in use (Automated)                                        | 🟢  |     |     |
+| 2.1.20    | Ensure X window server services are not in use (Automated)                               | 🟢  |     |     |
+| 2.1.21    | Ensure mail transfer agent is configured for local-only mode (Automated)                 | 🟢  |     |     |
+| 2.1.22    | Ensure only approved services are listening on a network interface (Manual)              | 🟢  |     |     |
+| 2.2       | **Configure Client Services**                                                            | 🟢  |     |     |
+| 2.2.1     | Ensure nis Client is not installed (Automated)                                           | 🟢  |     |     |
+| 2.2.2     | Ensure rsh client is not installed (Automated)                                           | 🟢  |     |     |
+| 2.2.3     | Ensure talk client is not installed (Automated)                                          | 🟢  |     |     |
+| 2.2.4     | Ensure telnet client is not installed (Automated)                                        | 🟢  |     |     |
+| 2.2.5     | Ensure ldap client is not installed (Automated)                                          | 🟢  |     |     |
+| 2.2.6     | Ensure ftp client is not installed (Automated)                                           | 🟢  |     |     |
+| 2.3       | **Configure Time Synchronization**                                                       | 🟢  |     |     |
+| 2.3.1     | **Ensure time synchronization is in use**                                                | 🟢  |     |     |
+| 2.3.1.1   | Ensure a single time synchronization daemon is in use (Automated)                        | 🟢  |     |     |
+| 2.3.2     | **Configure systemd-timesyncd**                                                          | 🟢  |     |     |
+| 2.3.2.1   | Ensure systemd-timesyncd configured with authorized timeserver (Manual)                  | 🟢  |     |     |
+| 2.3.2.2   | Ensure systemd-timesyncd is enabled and running (Automated)                              | 🟢  |     |     |
+| 2.3.3     | **Configure chrony**                                                                     | 🟢  |     |     |
+| 2.3.3.1   | Ensure chrony is configured with authorized timeserver (Manual)                          | 🟢  |     |     |
+| 2.3.3.2   | Ensure chrony is running as user \_chrony (Automated)                                    | 🟢  |     |     |
+| 2.3.3.3   | Ensure chrony is enabled and running (Automated)                                         | 🟢  |     |     |
+| 2.4       | **Job Schedulers**                                                                       | 🟢  |     |     |
+| 2.4.1     | **Configure time-based job schedulers**                                                  | 🟢  |     |     |
+| 2.4.1.1   | Ensure cron daemon is enabled and active (Automated)                                     | 🟢  |     |     |
+| 2.4.1.2   | Ensure permissions on /etc/crontab are configured (Automated)                            | 🟢  |     |     |
+| 2.4.1.3   | Ensure permissions on /etc/cron.hourly are configured (Automated)                        | 🟢  |     |     |
+| 2.4.1.4   | Ensure permissions on /etc/cron.daily are configured (Automated)                         | 🟢  |     |     |
+| 2.4.1.5   | Ensure permissions on /etc/cron.weekly are configured (Automated)                        | 🟢  |     |     |
+| 2.4.1.6   | Ensure permissions on /etc/cron.monthly are configured (Automated)                       | 🟢  |     |     |
+| 2.4.1.7   | Ensure permissions on /etc/cron.d are configured (Automated)                             | 🟢  |     |     |
+| 2.4.1.8   | Ensure crontab is restricted to authorized users (Automated)                             | 🟢  |     |     |
+| 2.4.2     | **Configure at**                                                                         | 🟢  |     |     |
+| 2.4.2.1   | Ensure at is restricted to authorized users (Automated)                                  | 🟢  |     |     |
+| 3         | **Network**                                                                              |     | 🟡  |     |
+| 3.1.1     | Ensure IPv6 status is identified (Manual)                                                | 🟢  |     |     |
+| 3.1.2     | Ensure wireless interfaces are disabled (Automated)                                      |     |     | 🔴  |
+| 3.1.3     | Ensure bluetooth services are not in use (Automated)                                     | 🟢  |     |     |
+| 3.2       | **Configure Network Kernel Modules**                                                     | 🟢  |     |     |
+| 3.2.1     | Ensure dccp kernel module is not available (Automated)                                   | 🟢  |     |     |
+| 3.2.2     | Ensure tipc kernel module is not available (Automated)                                   | 🟢  |     |     |
+| 3.2.3     | Ensure rds kernel module is not available (Automated)                                    | 🟢  |     |     |
+| 3.2.4     | Ensure sctp kernel module is not available (Automated)                                   | 🟢  |     |     |
+| 3.3       | **Configure Network Kernel Parameters**                                                  | 🟢  |     |     |
+| 3.3.1     | Ensure ip forwarding is disabled (Automated)                                             | 🟢  |     |     |
+| 3.3.2     | Ensure packet redirect sending is disabled (Automated)                                   | 🟢  |     |     |
+| 3.3.3     | Ensure bogus icmp responses are ignored (Automated)                                      | 🟢  |     |     |
+| 3.3.4     | Ensure broadcast ICMP requests are ignored (Automated)                                   | 🟢  |     |     |
+| 3.3.5     | Ensure ICMP redirects are not accepted (Automated)                                       | 🟢  |     |     |
+| 3.3.6     | Ensure secure ICMP redirects are not accepted (Automated)                                | 🟢  |     |     |
+| 3.3.7     | Ensure Reverse Path Filtering is enabled (Automated)                                     | 🟢  |     |     |
+| 3.3.8     | Ensure source routed packets are not accepted (Automated)                                | 🟢  |     |     |
+| 3.3.9     | Ensure suspicious packets are logged (Automated)                                         | 🟢  |     |     |
+| 3.3.10    | Ensure TCP SYN Cookies is enabled (Automated)                                            | 🟢  |     |     |
+| 3.3.11    | Ensure IPv6 router advertisements are not accepted (Automated)                           | 🟢  |     |     |
 
 | #   | CIS Benchmark Recommendation Set | Yes | Y/N | No  |
 | :-- | :------------------------------- | :-: | :-: | :-: |
@@ -515,28 +544,6 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 | #         | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
 | :-------- | :---------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 3         | **Network Configuration**                                                                       |     |  x  |     |
-| 3.1       | **Disable unused network protocols and devices**                                                |     |  x  |     |
-| 3.1.1     | Ensure system is checked to determine if IPv6 is enabled (Manual)                               |  x  |     |     |
-| 3.1.2     | Ensure wireless interfaces are disabled (Automated)                                             |     |     |  x  |
-| 3.2       | **Network Parameters (Host Only)**                                                              |  x  |     |     |
-| 3.2.1     | Ensure packet redirect sending is disabled (Automated)                                          |  x  |     |     |
-| 3.2.2     | Ensure IP forwarding is disabled (Automated)                                                    |  x  |     |     |
-| 3.3       | **Network Parameters (Host and Router)**                                                        |  x  |     |     |
-| 3.3.1     | Ensure source routed packets are not accepted (Automated)                                       |  x  |     |     |
-| 3.3.2     | Ensure ICMP redirects are not accepted (Automated)                                              |  x  |     |     |
-| 3.3.3     | Ensure secure ICMP redirects are not accepted (Automated)                                       |  x  |     |     |
-| 3.3.4     | Ensure suspicious packets are logged (Automated)                                                |  x  |     |     |
-| 3.3.5     | Ensure broadcast ICMP requests are ignored (Automated)                                          |  x  |     |     |
-| 3.3.6     | Ensure bogus ICMP responses are ignored (Automated)                                             |  x  |     |     |
-| 3.3.7     | Ensure Reverse Path Filtering is enabled (Automated)                                            |  x  |     |     |
-| 3.3.8     | Ensure TCP SYN Cookies is enabled (Automated)                                                   |  x  |     |     |
-| 3.3.9     | Ensure IPv6 router advertisements are not accepted (Automated)                                  |  x  |     |     |
-| 3.4       | **Uncommon Network Protocols**                                                                  |  x  |     |     |
-| 3.4.1     | Ensure DCCP is disabled (Automated)                                                             |  x  |     |     |
-| 3.4.2     | Ensure SCTP is disabled (Automated)                                                             |  x  |     |     |
-| 3.4.3     | Ensure RDS is disabled (Automated)                                                              |  x  |     |     |
-| 3.4.4     | Ensure TIPC is disabled (Automated)                                                             |  x  |     |     |
 | 3.5       | **Firewall Configuration**                                                                      |     |  x  |     |
 | 3.5.1     | **Configure UncomplicatedFirewall**                                                             |     |  x  |     |
 | 3.5.1.1   | Ensure ufw is installed (Automated)                                                             |  x  |     |     |

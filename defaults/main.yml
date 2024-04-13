@@ -231,6 +231,57 @@ cis_ubuntu2204_rule_5_5_5: true
 cis_ubuntu2204_rule_6_1_1: true # NOTE: depends also on 'cis_ubuntu2204_install_aide|cis_ubuntu2204_config_aide'
 cis_ubuntu2204_rule_6_1_2: true # NOTE: depends also on 'cis_ubuntu2204_install_aide|cis_ubuntu2204_config_aide'
 cis_ubuntu2204_rule_6_1_3: true # NOTE: depends also on 'cis_ubuntu2204_install_aide|cis_ubuntu2204_config_aide'
+cis_ubuntu2204_rule_6_2_1_1_1: true
+cis_ubuntu2204_rule_6_2_1_1_2: true
+cis_ubuntu2204_rule_6_2_1_1_3: true
+cis_ubuntu2204_rule_6_2_1_1_4: true
+cis_ubuntu2204_rule_6_2_1_1_5: true
+cis_ubuntu2204_rule_6_2_1_1_6: true
+cis_ubuntu2204_rule_6_2_1_2_1: true # NOTE: depends also on 'cis_ubuntu2204_set_journal_upload'
+cis_ubuntu2204_rule_6_2_1_2_2: true # NOTE: depends also on 'cis_ubuntu2204_set_journal_upload'
+# cis_ubuntu2204_rule_6_2_1_2_3: true # NOTE: implicit in 'cis_ubuntu2204_rule_6_2_1_2_2'
+cis_ubuntu2204_rule_6_2_1_2_4: true # NOTE: depends also on 'cis_ubuntu2204_set_journal_upload'
+cis_ubuntu2204_rule_6_2_2_1: true
+cis_ubuntu2204_rule_6_3_1_1: true
+cis_ubuntu2204_rule_6_3_1_2: true
+cis_ubuntu2204_rule_6_3_1_3: true
+cis_ubuntu2204_rule_6_3_1_4: true
+cis_ubuntu2204_rule_6_3_2_1: true
+cis_ubuntu2204_rule_6_3_2_2: true
+cis_ubuntu2204_rule_6_3_2_3: true
+cis_ubuntu2204_rule_6_3_2_4: true
+cis_ubuntu2204_rule_6_3_3_1: true
+cis_ubuntu2204_rule_6_3_3_2: true
+cis_ubuntu2204_rule_6_3_3_3: true
+cis_ubuntu2204_rule_6_3_3_4: true
+cis_ubuntu2204_rule_6_3_3_5: true
+cis_ubuntu2204_rule_6_3_3_6: true
+cis_ubuntu2204_rule_6_3_3_7: true
+cis_ubuntu2204_rule_6_3_3_8: true
+cis_ubuntu2204_rule_6_3_3_9: true
+cis_ubuntu2204_rule_6_3_3_10: true
+cis_ubuntu2204_rule_6_3_3_11: true
+cis_ubuntu2204_rule_6_3_3_12: true
+cis_ubuntu2204_rule_6_3_3_13: true
+cis_ubuntu2204_rule_6_3_3_14: true
+cis_ubuntu2204_rule_6_3_3_15: true
+cis_ubuntu2204_rule_6_3_3_16: true
+cis_ubuntu2204_rule_6_3_3_17: true
+cis_ubuntu2204_rule_6_3_3_18: true
+cis_ubuntu2204_rule_6_3_3_19: true
+cis_ubuntu2204_rule_6_3_3_20: true
+# cis_ubuntu2204_rule_6_3_3_21: true # NOTE: implicit in 'cis_ubuntu2204_rule_6_3_3_1-20'
+cis_ubuntu2204_rule_6_3_4_0: true
+cis_ubuntu2204_rule_6_3_4_1: true
+cis_ubuntu2204_rule_6_3_4_2: true
+cis_ubuntu2204_rule_6_3_4_3: true
+cis_ubuntu2204_rule_6_3_4_4: true
+cis_ubuntu2204_rule_6_3_4_5: true
+cis_ubuntu2204_rule_6_3_4_6: true
+cis_ubuntu2204_rule_6_3_4_7: true
+cis_ubuntu2204_rule_6_3_4_8: true
+cis_ubuntu2204_rule_6_3_4_9: true
+cis_ubuntu2204_rule_6_3_4_10: true
 ## SECTION 7 rules
 cis_ubuntu2204_rule_7_1_1: true
 cis_ubuntu2204_rule_7_1_2: true
@@ -258,6 +309,7 @@ cis_ubuntu2204_rule_7_2_10: true
 
 # ------------------------------------------------------------------------------
 cis_ubuntu2204_regex_base_search: '^(#(\s)*)?'
+# cis_ubuntu2204_regex_base_search_post: '((.*)?=|\s|$)'
 cis_ubuntu2204_shell_executable: /bin/bash
 
 # SPECIAL options rule overview
@@ -273,9 +325,9 @@ cis_ubuntu2204_allow_gdm_gui: false
 cis_ubuntu2204_allow_cups: false
 # ipv6 is required (cis_ubuntu2204_rule_3_1_1)
 cis_ubuntu2204_required_ipv6: false
-# cis_ubuntu2204_journal_upload_url (cis_ubuntu2204_rule_6_2_1_1_1-4)
+# cis_ubuntu2204_journal_upload_url (cis_ubuntu2204_rule_6_2_1_2_1-4)
 cis_ubuntu2204_set_journal_upload: false
-# AIDE perform install/config (cis_ubuntu2204_rule_6_1_1|cis_ubuntu2204_rule_6_1_2|cis_ubuntu2204_rule_6_1_3)
+# AIDE perform install/config (cis_ubuntu2204_rule_6_1_1-3)
 cis_ubuntu2204_install_aide: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
 cis_ubuntu2204_config_aide: true
 
@@ -399,31 +451,36 @@ cis_ubuntu2204_aide_cron:
   aide_day: "*"
   aide_month: "*"
   aide_weekday: "*"
-# audit backlog limit (cis_ubuntu2204_rule_6_1_1_4)
-cis_ubuntu2204_audit_backlog_limit: 8192
-# audit conf's
-cis_ubuntu2204_audit_max_log_file: 10
-cis_ubuntu2204_audit_max_log_file_action: keep_logs
-cis_ubuntu2204_audit_space_left_action: email
-cis_ubuntu2204_audit_action_mail_acct: root
-cis_ubuntu2204_audit_admin_space_left_action: halt # halt | single
-# (cis_6_1_3_3.rules.j2)
-cis_ubuntu2204_audit_sudo_log_file: /var/log/sudo.log
-# (cis_6_1_3_6.rules.j2|cis_6_1_3_7.rules.j2|cis_6_1_3_9.rules.j2|cis_6_1_3_10.rules.j2|cis_6_1_3_13.rules.j2)
-# (cis_6_1_3_15.rules.j2|cis_6_1_3_16.rules.j2|cis_6_1_3_17.rules.j2|cis_6_1_3_18.rules.j2|cis_6_1_3_19.rules.j2)
-cis_ubuntu2204_audit_uid_min: 1000
-cis_ubuntu2204_audit_log_path: /var/log/audit
-cis_ubuntu2204_audit_log_group: adm
-# systemd-journal-upload remote upload (6.2.1.1.*)
+# journald log file rotation (cis_ubuntu2204_rule_6_2_1_1_3)
+cis_ubuntu2204_journald_system_max_use: 4G
+cis_ubuntu2204_journald_system_keep_free: 8G
+cis_ubuntu2204_journald_runtime_max_use: 256M
+cis_ubuntu2204_journald_runtime_keep_free: 512M
+cis_ubuntu2204_journald_max_file_sec: 1month
+# systemd-journal-upload remote upload (cis_ubuntu2204_rule_6_2_1_2_2)
 cis_ubuntu2204_set_journal_upload_url: "{{ omit }}"
-# TODO: set and un-commit in task (cis_ubuntu2204_rule_6_2_1_6)
-cis_ubuntu2204_set_journal_system_max_use:
-cis_ubuntu2204_set_journal_system_keep_free:
-cis_ubuntu2204_set_journal_runtime_max_use:
-cis_ubuntu2204_set_journal_runtime_keep_free:
-cis_ubuntu2204_set_journal_max_file_sec:
-# syslog to be used, default only current 'rsyslog' only available (cis_ubuntu2204_rule_6_2_2_*)
-cis_ubuntu2204_syslog: rsyslog
+cis_ubuntu2204_set_journal_upload_server_key_file: /etc/ssl/private/journal-upload.pem
+cis_ubuntu2204_set_journal_upload_server_certificate_file: /etc/ssl/certs/journal-upload.pem
+cis_ubuntu2204_set_journal_upload_trusted_certificate_file: /etc/ssl/ca/trusted.pem
+
+# audit backlog limit (cis_ubuntu2204_rule_6_3_1_4)
+cis_ubuntu2204_audit_backlog_limit: 8192
+# audit conf's (cis_ubuntu2204_rule_6_3_2_*)
+cis_ubuntu2204_audit_max_log_file: 8
+cis_ubuntu2204_audit_max_log_file_action: keep_logs
+cis_ubuntu2204_audit_disk_full_action: halt # halt | single
+cis_ubuntu2204_audit_disk_error_action: halt # halt | syslog | single
+cis_ubuntu2204_audit_space_left_action: email # email | exec | single | halt
+cis_ubuntu2204_audit_admin_space_left_action: single # single | halt
+# (cis_ubuntu2204_rule_6_3_4_1-4)
+cis_ubuntu2204_audit_log_path: /var/log/audit
+# auditd group (cis_ubuntu2204_rule_6_3_4_3)
+cis_ubuntu2204_audit_log_group: adm
+# in file (cis_6_3_3_3.rules.j2)
+cis_ubuntu2204_audit_sudo_log_file: /var/log/sudo.log
+# in file (cis_6_3_3_6.rules.j2|cis_6_3_3_7.rules.j2|cis_6_3_3_9.rules.j2|cis_6_3_3_10.rules.j2|cis_6_3_3_13.rules.j2)
+# in file (cis_6_3_3_15.rules.j2|cis_6_3_3_16.rules.j2|cis_6_3_3_17.rules.j2|cis_6_3_3_18.rules.j2|cis_6_3_3_19.rules.j2)
+cis_ubuntu2204_audit_uid_min: 1000
 
 # ------------------------------------------------------------------------------
 
@@ -609,3 +666,26 @@ cis_ubuntu2204_2_2_rule_set:
     apt:
       - ftp
     remove: "{{ cis_ubuntu2204_rule_2_2_6 }}"
+
+# SPECIAL multi similar CIS rules set for 6.2.2.1
+cis_ubuntu2204_logfiles_access:
+  - files: 'lastlog|lastlog\.*|wtmp|wtmp\.*|wtmp-*|btmp|btmp\.*|btmp-*|README'
+    mode: 664
+    owner: root
+    group: utmp # root
+  - files: 'secure|auth\.log|syslog|messages'
+    mode: 640
+    owner: syslog # root
+    group: "{{ cis_ubuntu2204_audit_log_group }}" # root
+  - files: "SSSD|sssd"
+    mode: 660
+    owner: sssd # root
+    group: sssd # root
+  - files: "gdm|gdm3"
+    mode: 660
+    owner: root
+    group: gdm # root|gdm3
+  - files: '*\.journal|*\.journal~'
+    mode: 640
+    owner: root
+    group: systemd-journal # root

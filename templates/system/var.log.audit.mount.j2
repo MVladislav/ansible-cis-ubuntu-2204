@@ -7,15 +7,15 @@
 {% if cis_ubuntu2204_rule_1_1_2_7_4 %}{% set _ = cis_ubuntu2204_rule_1_1_2_7_options.append('noexec') %}{% endif %}
 {% set cis_ubuntu2204_rule_1_1_2_7_options = cis_ubuntu2204_rule_1_1_2_7_options|join(',') %}
 [Unit]
-Description=Temporary Directory /var/log/audit
-ConditionPathIsSymbolicLink=!/var/log/audit
+Description=Temporary Directory {{ cis_ubuntu2204_audit_log_path }}
+ConditionPathIsSymbolicLink=!{{ cis_ubuntu2204_audit_log_path }}
 DefaultDependencies=no
 Conflicts=umount.target
 Before=local-fs.target umount.target
 After=swap.target
 
 [Mount]
-Where=/var/log/audit
+Where={{ cis_ubuntu2204_audit_log_path }}
 What=/dev/sdb
 Type=ext4
 Options={{ cis_ubuntu2204_rule_1_1_2_7_options }}

@@ -1,0 +1,3 @@
+{% for proc_path in cis_ubuntu2204_audit_proc_paths.stdout_lines -%}
+-a always,exit -F path="{{ proc_path }}" -F perm=x -F auid>="{{ cis_ubuntu2204_audit_uid_min }}" -F auid!=unset -k privileged
+{% endfor %}

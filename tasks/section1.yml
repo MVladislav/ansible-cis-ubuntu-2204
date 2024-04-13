@@ -466,7 +466,6 @@
   ansible.builtin.apt:
     upgrade: dist
     force_apt_get: true
-    # install_recommends: false
   when:
     - cis_ubuntu2204_rule_1_2_2_1
   tags:

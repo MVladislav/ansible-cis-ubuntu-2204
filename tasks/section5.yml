@@ -429,16 +429,12 @@
       line: "AddressFamily {{ cis_ubuntu2204_ssh_address_family }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress"
       line: "ListenAddress 0.0.0.0"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKeyAlgorithms"
-      line: "HostKeyAlgorithms {{ cis_ubuntu2204_ssh_host_key_algorithms | join(',') }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthenticationMethods"
       line: "AuthenticationMethods {{ cis_ubuntu2204_ssh_authentication_methods }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}StrictModes"
       line: "StrictModes yes"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAuthentication"
       line: "PubkeyAuthentication yes"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAcceptedKeyTypes"
-      line: "PubkeyAcceptedKeyTypes {{ cis_ubuntu2204_ssh_pubkey_accepted_key_types | join(',') }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}PasswordAuthentication"
       line: "PasswordAuthentication {{ cis_ubuntu2204_ssh_password_authentication }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}ChallengeResponseAuthentication"
@@ -549,7 +545,7 @@
     - name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation | update /etc/sudoers"
       ansible.builtin.replace:
         dest: /etc/sudoers
-        regexp: "(.*NOPASSWD.*)"
+        regexp: "^(?!#)(.*NOPASSWD.*)"
         replace: '#\1'
         validate: "visudo -cf %s"
 
@@ -563,7 +559,7 @@
     - name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation | update '/etc/sudoers.d/*'"
       ansible.builtin.replace:
         dest: "{{ item.path }}"
-        regexp: "(.*NOPASSWD.*)"
+        regexp: "^(?!#)(.*NOPASSWD.*)"
         replace: '#\1'
         validate: "visudo -cf %s"
       with_items: "{{ cis_ubuntu2204_sudoers_d_files.files }}"
@@ -579,8 +575,8 @@
     - name: "SECTION5 | 5.2.5 | Ensure re-authentication for privilege escalation is not disabled globally | update /etc/sudoers"
       ansible.builtin.replace:
         dest: /etc/sudoers
-        regexp: "(.*!authenticate.*)"
-        replace: '# \1'
+        regexp: "^(?!#)(.*!authenticate.*)"
+        replace: '#\1'
         validate: "visudo -cf %s"
 
     - name: "SECTION5 | 5.2.5 | Ensure re-authentication for privilege escalation is not disabled globally | search files inside '/etc/sudoers.d/*'"
@@ -593,8 +589,8 @@
     - name: "SECTION5 | 5.2.5 | Ensure re-authentication for privilege escalation is not disabled globally | update '/etc/sudoers.d/*'"
       ansible.builtin.replace:
         dest: "{{ item.path }}"
-        regexp: "(.*!authenticate.*)"
-        replace: '# \1'
+        regexp: "^(?!#)(.*!authenticate.*)"
+        replace: '#\1'
         validate: "visudo -cf %s"
       with_items: "{{ cis_ubuntu2204_sudoers_d_files.files }}"
 
@@ -1438,19 +1434,23 @@
 
 - name: "SECTION5 | 5.4.3.3 | Ensure default user umask is configured"
   ansible.builtin.lineinfile:
-    dest: "{{ item }}"
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}UMASK"
-    line: "UMASK 0027"
+    dest: "{{ item.dest }}"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}{{ item.field }}"
+    line: "{{ item.field }} 0027"
     state: present
     create: true
     mode: "0644"
   with_items:
-    - /etc/profile
-    - /etc/bash.bashrc
-    # - /etc/pam.d/postlogin
-    - /etc/login.defs
-    # - /etc/default/login
-    - /etc/profile.d/99-umask.sh
+    - dest: /etc/profile
+      field: umask
+    - dest: /etc/bash.bashrc
+      field: umask
+    # dest: - /etc/pam.d/postlogin
+    - dest: /etc/login.defs
+      field: UMASK
+    # dest: - /etc/default/login
+    - dest: /etc/profile.d/99-umask.sh
+      field: umask
   when:
     - cis_ubuntu2204_rule_5_4_3_3
   tags:

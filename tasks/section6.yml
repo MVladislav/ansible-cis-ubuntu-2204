@@ -303,7 +303,7 @@
         paths: /var/log/
         file_type: file
         recurse: true
-      register: cis_ubuntu2204_logiles
+      register: cis_ubuntu2204_logfiles
     - name: "SECTION6 | 6.2.2.1 | Ensure access to all logfiles has been configured | set logfile access"
       ansible.builtin.file:
         dest: "{{ item.path }}"
@@ -917,7 +917,7 @@
     - name: "SECTION6 | 6.3.4.5 | Ensure audit configuration files mode is configured | update *.rules"
       ansible.builtin.file:
         path: "{{ item.path }}"
-        mode: "0640"
+        mode: "0600"
       with_items: "{{ cis_ubuntu2204_audit_files_rules.files }}"
 
 - name: "SECTION6 | 6.3.4.6 | Ensure audit configuration files owner is configured"

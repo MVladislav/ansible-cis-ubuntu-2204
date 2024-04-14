@@ -112,6 +112,8 @@ cis_ubuntu2204_rule_2_1_19: true
 cis_ubuntu2204_rule_2_1_19_remove: true
 cis_ubuntu2204_rule_2_1_20: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 cis_ubuntu2204_rule_2_1_20_remove: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_2_1_21: true
+cis_ubuntu2204_rule_2_1_22: true
 cis_ubuntu2204_rule_2_2_1: true
 cis_ubuntu2204_rule_2_2_2: true
 cis_ubuntu2204_rule_2_2_3: true
@@ -357,7 +359,7 @@ cis_ubuntu2204_at_allow_users:
 # choose firewall (cis_ubuntu2204_rule_4_*)
 cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
 # define if outgoing traffic should be default deny or allow (cis_ubuntu2204_rule_4_1_7)
-cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
+cis_ubuntu2204_firewall_ufw_outgoing_policy: deny
 # defined nftable table name (cis_ubuntu2204_rule_4_2_4-9)
 cis_ubuntu2204_firewall_nftables_table_name: filter
 
@@ -596,28 +598,28 @@ cis_ubuntu2204_2_1_rule_set:
       - smbd.service
     apt:
       - samba
-    check: "{{ cis_ubuntu2204_rule_2_1_14 }}"
+    disable: "{{ cis_ubuntu2204_rule_2_1_14 }}"
     remove: "{{ cis_ubuntu2204_rule_2_1_14_remove }}"
   - title: SECTION2 | 2.1.15 | Ensure snmp services are not in use
     service:
       - snmpd.service
     apt:
       - snmpd
-    check: "{{ cis_ubuntu2204_rule_2_1_15 }}"
+    disable: "{{ cis_ubuntu2204_rule_2_1_15 }}"
     remove: "{{ cis_ubuntu2204_rule_2_1_15_remove }}"
   - title: SECTION2 | 2.1.16 | Ensure tftp server services are not in use
     service:
       - tftpd-hpa.service
     apt:
       - tftpd-hpa
-    check: "{{ cis_ubuntu2204_rule_2_1_16 }}"
+    disable: "{{ cis_ubuntu2204_rule_2_1_16 }}"
     remove: "{{ cis_ubuntu2204_rule_2_1_16_remove }}"
   - title: SECTION2 | 2.1.17 | Ensure web proxy server services are not in use
     service:
       - squid.service
     apt:
       - squid
-    check: "{{ cis_ubuntu2204_rule_2_1_17 }}"
+    disable: "{{ cis_ubuntu2204_rule_2_1_17 }}"
     remove: "{{ cis_ubuntu2204_rule_2_1_17_remove }}"
   - title: SECTION2 | 2.1.18 | Ensure web server services are not in use
     service:
@@ -627,14 +629,14 @@ cis_ubuntu2204_2_1_rule_set:
     apt:
       - apache2
       - nginx
-    check: "{{ cis_ubuntu2204_rule_2_1_18 }}"
+    disable: "{{ cis_ubuntu2204_rule_2_1_18 }}"
     remove: "{{ cis_ubuntu2204_rule_2_1_18_remove }}"
   - title: SECTION2 | 2.1.19 | Ensure xinetd services are not in use
     service:
       - xinetd.service
     apt:
       - xinetd
-    check: "{{ cis_ubuntu2204_rule_2_1_19 }}"
+    disable: "{{ cis_ubuntu2204_rule_2_1_19 }}"
     remove: "{{ cis_ubuntu2204_rule_2_1_19_remove }}"
   - title: 2.1.20 | Ensure X window server services are not in use
     apt:
@@ -642,7 +644,7 @@ cis_ubuntu2204_2_1_rule_set:
       - xserver-xorg
       - xorg
       - x11*
-    check: "{{ cis_ubuntu2204_rule_2_1_20 and not cis_ubuntu2204_allow_gdm_gui }}"
+    disable: "{{ cis_ubuntu2204_rule_2_1_20 and not cis_ubuntu2204_allow_gdm_gui }}"
     remove: "{{ cis_ubuntu2204_rule_2_1_20_remove and not cis_ubuntu2204_allow_gdm_gui }}"
 
 # SPECIAL multi similar CIS rules set for 2.2

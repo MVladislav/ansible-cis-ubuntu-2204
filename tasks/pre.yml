@@ -11,17 +11,17 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "PRE | 1.4.1 | check the grub.cfg configuration"
+- name: "PRE | 1.4.2 | check the grub.cfg configuration"
   ansible.builtin.stat:
     path: /boot/grub/grub.cfg
   register: cis_grub_cfg
 
-- name: "PRE | 1.4.1 | check the grub.conf configuration"
+- name: "PRE | 1.4.2 | check the grub.conf configuration"
   ansible.builtin.stat:
     path: /boot/grub/grub.conf
   register: cis_grub_conf
 
-- name: "PRE | 1.4.1 | check the menu.lst configuration"
+- name: "PRE | 1.4.2 | check the menu.lst configuration"
   ansible.builtin.stat:
     path: "/boot/grub/menu.lst"
   register: cis_menu_lst

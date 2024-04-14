@@ -342,6 +342,8 @@
         set -o pipefail &&
         getent passwd |
         awk -F: '$4 == 42 {print $1}'
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
       register: cis_ubuntu2204_users_with_shadow_primary_group
       changed_when: false
     - name: "SECTION7 | 7.2.4 | Ensure shadow group is empty | change primary group for users with shadow as group"

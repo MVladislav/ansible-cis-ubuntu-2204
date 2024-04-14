@@ -6,6 +6,7 @@
 - [CIS - Ubuntu 22.04](#cis---ubuntu-2204)
   - [IN WORK update to v2.0.0](#in-work-update-to-v200)
   - [TODO](#todo)
+  - [Notes](#notes)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
     - [run only setup per section](#run-only-setup-per-section)
@@ -67,6 +68,15 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0](https://downloads.cisec
   - <https://www.cyberciti.biz/security/how-to-protect-linux-against-rogue-usb-devices-using-usbguard/>
 - implement 'cis_ubuntu2204_regex_base_search_post'
 
+## Notes
+
+- section :: 6.2.1.2 **Configure systemd-journal-remote**
+  - is configured, but not in deep tested _(default not setup with remote logging)_
+- section :: 4.2 **Configure nftables**
+  - is configured, but not in deep tested _(default ufw is used from section 4.1)_
+- section :: 4.3 **Configure iptables**
+  - is configured, but not in deep tested _(default ufw is used from section 4.1)_
+
 ## Requirements
 
 You should **carefully read** through the tasks
@@ -116,7 +126,7 @@ cis_ubuntu2204_rule_6_3_4_0: true
 
 ### variables which are recommended by CIS, but disable in this role by default
 
-> _change 'false' below to 'true', to be CIS recommended if needed_
+> _change default configured values, to be CIS recommended if needed_
 
 ```yaml
 # Ensure all AppArmor Profiles are enforcing
@@ -126,13 +136,7 @@ cis_ubuntu2204_rule_1_3_1_4: false
 # Ensure bootloader password is set
 cis_ubuntu2204_rule_1_4_1: false
 cis_ubuntu2204_set_boot_pass: false
-# this one needs to set to 'false', to not disable boot password
 cis_ubuntu2204_disable_boot_pass: true
-
-# cis define to deny all outgoing traffic and whitelist all needed
-# default here is changed to allow all outgoing traffic,
-# if you need to be cis conform, set to 'deny'
-cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
 
 # active journal upload to remote log collection
 # do not forget set related variables 'cis_ubuntu2204_set_journal_upload_*'
@@ -151,6 +155,10 @@ cis_ubuntu2204_rule_5_4_2: false
 ```yaml
 # will disable USB storage, if USB storage is needed set to 'false'
 cis_ubuntu2204_rule_1_1_1_8: true
+
+# will remove bluetooth service, if bluetooth is needed set to 'false'
+cis_ubuntu2204_rule_3_1_3: true
+cis_ubuntu2204_rule_3_1_3_remove: true
 
 # will disable auto mount, if auto mount is needed set to 'true'
 cis_ubuntu2204_allow_autofs: false
@@ -302,6 +310,9 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       # -------------------------
       cis_ubuntu2204_rule_5_4_2: false # lockout for failed password attempts # NOTE: will fail to use password
       # -------------------------
+      cis_ubuntu2204_rule_3_1_3: false # bluetooth service
+      cis_ubuntu2204_rule_3_1_3_remove: false # bluetooth service
+      # -------------------------
       cis_ubuntu2204_allow_gdm_gui: true
       cis_ubuntu2204_allow_autofs: true # Disable auto mount, set to true to allow it and not disable
       cis_ubuntu2204_rule_1_1_1_8: false # Disable USB Storage, set to false to not disable
@@ -330,7 +341,6 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       # -------------------------
       cis_ubuntu2204_required_ipv6: "{{ cis_ipv6_required | default(false) | bool }}"
       cis_ubuntu2204_firewall: ufw
-      cis_ubuntu2204_firewall_ufw_outgoing_policy: allow
       # -------------------------
       cis_ubuntu2204_cron_allow_users:
         - root
@@ -372,6 +382,8 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 ## CIS - List of Recommendations
 
+`.*?\*\*.*?🟢`
+
 | Key                                                                  | Count       |
 | :------------------------------------------------------------------- | :---------- |
 | 🟢 Implemented _(TITLE/RULES)_                                       | 42/201      |
@@ -380,7 +392,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | Total                                                                | 55/237      |
 | Coverage (Implemented vs Total)                                      | 90.90/88.60 |
 
-| #         | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
+| ID        | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
 | :-------- | :---------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
 | 1         | **Initial Setup**                                                                               |     | 🟡  |     |
 | 1.1       | **Filesystem**                                                                                  |     | 🟡  |     |

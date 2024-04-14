@@ -98,8 +98,8 @@
   community.general.ufw:
     rule: allow
     direction: out
-    interface: all
-    log: true
+    to: any
+    log: false
   when:
     - cis_ubuntu2204_rule_4_1_5
     - cis_ubuntu2204_firewall == "ufw"

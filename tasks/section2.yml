@@ -4,11 +4,11 @@
 # ------------------------------------------------------------------------------
 
 - name: "SECTION2 | 2.1.1-20 | Multi server services check for stop and purge if rule is enabled"
-  ansible.builtin.include_tasks: section2_1.yml
+  ansible.builtin.include_tasks: sub-task-services-clean.yml
   loop: "{{ cis_ubuntu2204_2_1_rule_set | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: item.remove | bool or item.disable | bool
+  when: outer_item.remove | bool or outer_item.disable | bool
   tags:
     - rule_2_1
     - server_l1

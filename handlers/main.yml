@@ -95,7 +95,7 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "HANDLER | 1.4.1 | generate new grub config"
+- name: "HANDLER | 1.4.2 | generate new grub config"
   become: true
   ansible.builtin.command: >
     grub-mkconfig -o {{ cis_grub_cfg.stat.path }}
@@ -104,7 +104,7 @@
   notify: fix permissions after generate new grub config handler
   when: ansible_virtualization_type != "docker"
 
-- name: "HANDLER | 1.4.1 | fix permissions after generate new grub config handler"
+- name: "HANDLER | 1.4.2 | fix permissions after generate new grub config handler"
   become: true
   ansible.builtin.file:
     path: "/boot/grub/grub.cfg"

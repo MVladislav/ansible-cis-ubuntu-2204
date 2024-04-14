@@ -3,8 +3,6 @@
 
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-
 - name: "SECTION5 | 5.2.1 | Ensure permissions on /etc/ssh/sshd_config are configured"
   ansible.builtin.file:
     dest: /etc/ssh/sshd_config

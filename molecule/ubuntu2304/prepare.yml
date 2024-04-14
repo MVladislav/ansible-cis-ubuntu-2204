@@ -53,6 +53,6 @@
         # SECTION7 | 7.2.17 | Ensure local interactive user dot files are not group or world writable
         chmod 777 /root/.profile
       args:
-        executable: "{{ cis_ubuntu2204_shell_executable }}"
+        executable: "/bin/bash"
       changed_when: false
       check_mode: false

@@ -712,6 +712,7 @@
       ansible.builtin.apt:
         name: prelink
         state: absent
+        purge: true
 
 - name: "SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled"
   when:
@@ -827,6 +828,7 @@
   ansible.builtin.apt:
     name: gdm3
     state: absent
+    purge: true
   when:
     - not cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_1

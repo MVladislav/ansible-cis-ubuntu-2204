@@ -137,6 +137,7 @@ cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
 # active journal upload to remote log collection
 # do not forget set related variables 'cis_ubuntu2204_set_journal_upload_*'
 cis_ubuntu2204_set_journal_upload: false
+cis_ubuntu2204_set_journal_upload_url: <SET_REMOTE_URL>
 
 # Ensure lockout for failed password attempts is configured
 cis_ubuntu2204_rule_5_4_2: false
@@ -184,28 +185,8 @@ cis_ubuntu2204_cron_allow_users:
 cis_ubuntu2204_at_allow_users:
   - root
 
-# choose firewall (cis_ubuntu2204_rule_3_5_*)
+# choose firewall (cis_ubuntu2204_rule_4_*)
 cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
-
-# AIDE cron settings (cis_ubuntu2204_rule_6_1_2)
-cis_ubuntu2204_aide_cron:
-  cron_user: root
-  cron_file: aide
-  aide_job: "/usr/bin/aide.wrapper --config /etc/aide/aide.conf --check"
-  aide_minute: 0
-  aide_hour: 5
-  aide_day: "*"
-  aide_month: "*"
-  aide_weekday: "*"
-
-# journald log file rotation (cis_ubuntu2204_rule_6_2_1_1_3)
-cis_ubuntu2204_journald_system_max_use: 4G
-cis_ubuntu2204_journald_system_keep_free: 8G
-cis_ubuntu2204_journald_runtime_max_use: 256M
-cis_ubuntu2204_journald_runtime_keep_free: 512M
-cis_ubuntu2204_journald_max_file_sec: 1month
-
-# TODO: after update move cleanup above
 
 # allows/denies for users/groups (4 possible variables can be used/activated)
 # put 'null' or list of users (comma separated user list)
@@ -240,6 +221,24 @@ cis_ubuntu2204_remember_reuse: 5
 cis_ubuntu2204_encrypt_method: yescrypt # yescrypt | sha512
 cis_ubuntu2204_common_auth_success: 2
 cis_ubuntu2204_common_password_success: 2
+
+# AIDE cron settings (cis_ubuntu2204_rule_6_1_2)
+cis_ubuntu2204_aide_cron:
+  cron_user: root
+  cron_file: aide
+  aide_job: "/usr/bin/aide.wrapper --config /etc/aide/aide.conf --check"
+  aide_minute: 0
+  aide_hour: 5
+  aide_day: "*"
+  aide_month: "*"
+  aide_weekday: "*"
+
+# journald log file rotation (cis_ubuntu2204_rule_6_2_1_1_3)
+cis_ubuntu2204_journald_system_max_use: 4G
+cis_ubuntu2204_journald_system_keep_free: 8G
+cis_ubuntu2204_journald_runtime_max_use: 256M
+cis_ubuntu2204_journald_runtime_keep_free: 512M
+cis_ubuntu2204_journald_max_file_sec: 1month
 ```
 
 ### variable rules implemented, but only print information for manual check
@@ -294,13 +293,14 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_section6: true
       cis_ubuntu2204_section7: true
       # -------------------------
-      cis_ubuntu2204_rule_1_4_1: false # bootloader password
-      cis_ubuntu2204_set_boot_pass: false # bootloader password
+      cis_ubuntu2204_rule_1_3_1_3: true # AppArmor complain mode
+      cis_ubuntu2204_rule_1_3_1_4: false # AppArmor enforce mode
+      # -------------------------
+      cis_ubuntu2204_rule_1_4_1: false # bootloader password (disabled)
+      cis_ubuntu2204_set_boot_pass: false # bootloader password (disabled)
+      cis_ubuntu2204_disable_boot_pass: true # bootloader password (disabled)
       # -------------------------
       cis_ubuntu2204_rule_5_4_2: false # lockout for failed password attempts # NOTE: will fail to use password
-      # -------------------------
-      cis_ubuntu2204_rule_1_3_1_3: false # AppArmor complain mode
-      cis_ubuntu2204_rule_1_3_1_4: false # AppArmor enforce mode
       # -------------------------
       cis_ubuntu2204_allow_gdm_gui: true
       cis_ubuntu2204_allow_autofs: true # Disable auto mount, set to true to allow it and not disable
@@ -322,11 +322,16 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
         aide_month: "*"
         aide_weekday: "*"
       # -------------------------
+      cis_ubuntu2204_journald_system_max_use: 4G
+      cis_ubuntu2204_journald_system_keep_free: 8G
+      cis_ubuntu2204_journald_runtime_max_use: 256M
+      cis_ubuntu2204_journald_runtime_keep_free: 512M
+      cis_ubuntu2204_journald_max_file_sec: 1month
+      # -------------------------
       cis_ubuntu2204_required_ipv6: "{{ cis_ipv6_required | default(false) | bool }}"
       cis_ubuntu2204_firewall: ufw
       cis_ubuntu2204_firewall_ufw_outgoing_policy: allow
       # -------------------------
-      cis_ubuntu2204_ssh_allow_groups: null
       cis_ubuntu2204_cron_allow_users:
         - root
       cis_ubuntu2204_at_allow_users:
@@ -367,13 +372,13 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 ## CIS - List of Recommendations
 
-| Key                                                                  | Count |
-| :------------------------------------------------------------------- | :---- |
-| 🟢 Implemented                                                       | 142   |
-| 🟡 Partly Implemented or print info for manual check _(TITLE/RULES)_ | 8/10  |
-| 🔴 Not Implemented                                                   | 24    |
-| Total                                                                |       |
-| Coverage (Implemented vs Total)                                      |       |
+| Key                                                                  | Count       |
+| :------------------------------------------------------------------- | :---------- |
+| 🟢 Implemented _(TITLE/RULES)_                                       | 42/201      |
+| 🟡 Partly Implemented or print info for manual check _(TITLE/RULES)_ | 8/9         |
+| 🔴 Not Implemented _(TITLE/RULES)_                                   | 5/19        |
+| Total                                                                | 55/237      |
+| Coverage (Implemented vs Total)                                      | 90.90/88.60 |
 
 | #         | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
 | :-------- | :---------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
@@ -484,7 +489,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 2.1.19    | Ensure xinetd services are not in use (Automated)                                               | 🟢  |     |     |
 | 2.1.20    | Ensure X window server services are not in use (Automated)                                      | 🟢  |     |     |
 | 2.1.21    | Ensure mail transfer agent is configured for local-only mode (Automated)                        | 🟢  |     |     |
-| 2.1.22    | Ensure only approved services are listening on a network interface (Manual)                     |     | 🟡  |     |
+| 2.1.22    | Ensure only approved services are listening on a network interface (Manual)                     | 🟢  |     |     |
 | 2.2       | **Configure Client Services**                                                                   | 🟢  |     |     |
 | 2.2.1     | Ensure nis Client is not installed (Automated)                                                  | 🟢  |     |     |
 | 2.2.2     | Ensure rsh client is not installed (Automated)                                                  | 🟢  |     |     |
@@ -535,6 +540,41 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 3.3.9     | Ensure suspicious packets are logged (Automated)                                                | 🟢  |     |     |
 | 3.3.10    | Ensure TCP SYN Cookies is enabled (Automated)                                                   | 🟢  |     |     |
 | 3.3.11    | Ensure IPv6 router advertisements are not accepted (Automated)                                  | 🟢  |     |     |
+| 4         | **Host Based Firewall**                                                                         | 🟢  |     |     |
+| 4.1       | **Configure UncomplicatedFirewall**                                                             | 🟢  |     |     |
+| 4.1.1     | Ensure ufw is installed (Automated)                                                             | 🟢  |     |     |
+| 4.1.2     | Ensure iptables-persistent is not installed with ufw (Automated)                                | 🟢  |     |     |
+| 4.1.3     | Ensure ufw service is enabled (Automated)                                                       | 🟢  |     |     |
+| 4.1.4     | Ensure ufw loopback traffic is configured (Automated)                                           | 🟢  |     |     |
+| 4.1.5     | Ensure ufw outbound connections are configured (Manual)                                         | 🟢  |     |     |
+| 4.1.6     | Ensure ufw firewall rules exist for all open ports (Automated)                                  | 🟢  |     |     |
+| 4.1.7     | Ensure ufw default deny firewall policy (Automated)                                             | 🟢  |     |     |
+| 4.2       | **Configure nftables**                                                                          | 🟢  |     |     |
+| 4.2.1     | Ensure nftables is installed (Automated)                                                        | 🟢  |     |     |
+| 4.2.2     | Ensure ufw is uninstalled or disabled with nftables (Automated)                                 | 🟢  |     |     |
+| 4.2.3     | Ensure iptables are flushed with nftables (Manual)                                              | 🟢  |     |     |
+| 4.2.4     | Ensure a nftables table exists (Automated)                                                      | 🟢  |     |     |
+| 4.2.5     | Ensure nftables base chains exist (Automated)                                                   | 🟢  |     |     |
+| 4.2.6     | Ensure nftables loopback traffic is configured (Automated)                                      | 🟢  |     |     |
+| 4.2.7     | Ensure nftables outbound and established connections are configured (Manual)                    | 🟢  |     |     |
+| 4.2.8     | Ensure nftables default deny firewall policy (Automated)                                        | 🟢  |     |     |
+| 4.2.9     | Ensure nftables service is enabled (Automated)                                                  | 🟢  |     |     |
+| 4.2.10    | Ensure nftables rules are permanent (Automated)                                                 | 🟢  |     |     |
+| 4.3       | **Configure iptables**                                                                          | 🟢  |     |     |
+| 4.3.1     | **Configure iptables software**                                                                 | 🟢  |     |     |
+| 4.3.1.1   | Ensure iptables packages are installed (Automated)                                              | 🟢  |     |     |
+| 4.3.1.2   | Ensure nftables is not installed with iptables (Automated)                                      | 🟢  |     |     |
+| 4.3.1.3   | Ensure ufw is uninstalled or disabled with iptables (Automated)                                 | 🟢  |     |     |
+| 4.3.2     | **Configure IPv4 iptables**                                                                     | 🟢  |     |     |
+| 4.3.2.1   | Ensure iptables default deny firewall policy (Automated)                                        | 🟢  |     |     |
+| 4.3.2.2   | Ensure iptables loopback traffic is configured (Automated)                                      | 🟢  |     |     |
+| 4.3.2.3   | Ensure iptables outbound and established connections are configured (Manual)                    | 🟢  |     |     |
+| 4.3.2.4   | Ensure iptables firewall rules exist for all open ports (Automated)                             | 🟢  |     |     |
+| 4.3.3     | **Configure IPv6 ip6tables**                                                                    | 🟢  |     |     |
+| 4.3.3.1   | Ensure ip6tables default deny firewall policy (Automated)                                       | 🟢  |     |     |
+| 4.3.3.2   | Ensure ip6tables loopback traffic is configured (Automated)                                     | 🟢  |     |     |
+| 4.3.3.3   | Ensure ip6tables outbound and established connections are configured (Manual)                   | 🟢  |     |     |
+| 4.3.3.4   | Ensure ip6tables firewall rules exist for all open ports (Automated)                            | 🟢  |     |     |
 | 6         | **Logging and Auditing**                                                                        | 🟢  |     |     |
 | 6.1       | **Configure Filesystem Integrity Checking**                                                     | 🟢  |     |     |
 | 6.1.1     | Ensure AIDE is installed (Automated)                                                            | 🟢  |     |     |
@@ -627,8 +667,57 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 7.2.9     | Ensure local interactive user home directories are configured (Automated)                       | 🟢  |     |     |
 | 7.2.10    | Ensure local interactive user dot files access is configured (Automated)                        | 🟢  |     |     |
 
-| #   | CIS Benchmark Recommendation Set | Yes | Y/N | No  |
-| :-- | :------------------------------- | :-: | :-: | :-: |
+| #       | CIS Benchmark Recommendation Set                                                       | Yes | Y/N | No  |
+| :------ | :------------------------------------------------------------------------------------- | :-: | :-: | :-: |
+| 5       | **Access Control**                                                                     |     |     |     |
+| 5.1     | **Configure SSH Server**                                                               |  x  |     |     |
+| 5.1.1   | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                  |  x  |     |     |
+| 5.1.2   | Ensure permissions on SSH private host key files are configured (Automated)            |  x  |     |     |
+| 5.1.3   | Ensure permissions on SSH public host key files are configured (Automated)             |  x  |     |     |
+| 5.1.4   | Ensure SSH access is limited (Automated)                                               |  x  |     |     |
+| 5.1.5   | Ensure SSH LogLevel is appropriate (Automated)                                         |  x  |     |     |
+| 5.1.6   | Ensure SSH PAM is enabled (Automated)                                                  |  x  |     |     |
+| 5.1.7   | Ensure SSH root login is disabled (Automated)                                          |  x  |     |     |
+| 5.1.8   | Ensure SSH HostbasedAuthentication is disabled (Automated)                             |  x  |     |     |
+| 5.1.9   | Ensure SSH PermitEmptyPasswords is disabled (Automated)                                |  x  |     |     |
+| 5.1.10  | Ensure SSH PermitUserEnvironment is disabled (Automated)                               |  x  |     |     |
+| 5.1.11  | Ensure SSH IgnoreRhosts is enabled (Automated)                                         |  x  |     |     |
+| 5.1.12  | Ensure SSH X11 forwarding is disabled (Automated)                                      |  x  |     |     |
+| 5.1.13  | Ensure only strong Ciphers are used (Automated)                                        |  x  |     |     |
+| 5.1.14  | Ensure only strong MAC algorithms are used (Automated)                                 |  x  |     |     |
+| 5.1.15  | Ensure only strong Key Exchange algorithms are used (Automated)                        |  x  |     |     |
+| 5.1.16  | Ensure SSH AllowTcpForwarding is disabled (Automated)                                  |  x  |     |     |
+| 5.1.17  | Ensure SSH warning banner is configured (Automated)                                    |  x  |     |     |
+| 5.1.18  | Ensure SSH MaxAuthTries is set to 4 or less (Automated)                                |  x  |     |     |
+| 5.1.19  | Ensure SSH MaxStartups is configured (Automated)                                       |  x  |     |     |
+| 5.1.20  | Ensure SSH MaxSessions is set to 10 or less (Automated)                                |  x  |     |     |
+| 5.1.21  | Ensure SSH LoginGraceTime is set to one minute or less (Automated)                     |  x  |     |     |
+| 5.1.22  | Ensure SSH Idle Timeout Interval is configured (Automated)                             |  x  |     |     |
+| 5.2     | **Configure privilege escalation**                                                     |  x  |     |     |
+| 5.2.1   | Ensure sudo is installed (Automated)                                                   |  x  |     |     |
+| 5.2.2   | Ensure sudo commands use pty (Automated)                                               |  x  |     |     |
+| 5.2.3   | Ensure sudo log file exists (Automated)                                                |  x  |     |     |
+| 5.2.4   | Ensure users must provide password for privilege escalation (Automated)                |  x  |     |     |
+| 5.2.5   | Ensure re-authentication for privilege escalation is not disabled globally (Automated) |  x  |     |     |
+| 5.2.6   | Ensure sudo authentication timeout is configured correctly (Automated)                 |  x  |     |     |
+| 5.2.7   | Ensure access to the su command is restricted (Automated)                              |  x  |     |     |
+| 5.4     | **Configure PAM**                                                                      |     |  x  |     |
+| 5.4.1   | Ensure password creation requirements are configured (Automated)                       |  x  |     |     |
+| 5.4.2   | Ensure lockout for failed password attempts is configured (Automated)                  |  x  |     |     |
+| 5.4.3   | Ensure password reuse is limited (Automated)                                           |  x  |     |     |
+| 5.4.4   | Ensure password hashing algorithm is up to date with the latest standards (Automated)  |  x  |     |     |
+| 5.4.5   | Ensure all current passwords uses the configured hashing algorithm (Manual)            |     |     |  x  |
+| 5.5     | **User Accounts and Environment**                                                      |     |  x  |     |
+| 5.5.1   | **Set Shadow Password Suite Parameters**                                               |     |  x  |     |
+| 5.5.1.1 | Ensure minimum days between password changes is configured (Automated)                 |  x  |     |     |
+| 5.5.1.2 | Ensure password expiration is 365 days or less (Automated)                             |  x  |     |     |
+| 5.5.1.3 | Ensure password expiration warning days is 7 or more (Automated)                       |  x  |     |     |
+| 5.5.1.4 | Ensure inactive password lock is 30 days or less (Automated)                           |  x  |     |     |
+| 5.5.1.5 | Ensure all users last password change date is in the past (Automated)                  |     |     |  x  |
+| 5.5.2   | Ensure system accounts are secured (Automated)                                         |  x  |     |     |
+| 5.5.3   | Ensure default group for the root account is GID 0 (Automated)                         |  x  |     |     |
+| 5.5.4   | Ensure default user umask is 027 or more restrictive (Automated)                       |  x  |     |     |
+| 5.5.5   | Ensure default user shell timeout is 900 seconds or less (Automated)                   |  x  |     |     |
 
 | #       | CIS Benchmark Recommendation Set                                                  | Yes | Y/N | No  |
 | :------ | :-------------------------------------------------------------------------------- | :-: | :-: | :-: |
@@ -644,93 +733,6 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 4.2.2.4 | Ensure rsyslog default file permissions are configured (Automated)                |     |     | 🟣  |
 | 4.2.2.6 | Ensure rsyslog is configured to send logs to a remote log host (Manual)           |     |     | 🟣  |
 | 4.2.2.7 | Ensure rsyslog is not configured to receive logs from a remote client (Automated) |     |     | 🟣  |
-
-| #         | CIS Benchmark Recommendation Set                                                       | Yes | Y/N | No  |
-| :-------- | :------------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 3.5       | **Firewall Configuration**                                                             |     |  x  |     |
-| 3.5.1     | **Configure UncomplicatedFirewall**                                                    |     |  x  |     |
-| 3.5.1.1   | Ensure ufw is installed (Automated)                                                    |  x  |     |     |
-| 3.5.1.2   | Ensure iptables-persistent is not installed with ufw (Automated)                       |  x  |     |     |
-| 3.5.1.3   | Ensure ufw service is enabled (Automated)                                              |  x  |     |     |
-| 3.5.1.4   | Ensure ufw loopback traffic is configured (Automated)                                  |  x  |     |     |
-| 3.5.1.5   | Ensure ufw outbound connections are configured (Manual)                                |  x  |     |     |
-| 3.5.1.6   | Ensure ufw firewall rules exist for all open ports (Automated)                         |     |     |  x  |
-| 3.5.1.7   | Ensure ufw default deny firewall policy (Automated)                                    |  x  |     |     |
-| 3.5.2     | **Configure nftables**                                                                 |  x  |     |     |
-| 3.5.2.1   | Ensure nftables is installed (Automated)                                               |  x  |     |     |
-| 3.5.2.2   | Ensure ufw is uninstalled or disabled with nftables (Automated)                        |  x  |     |     |
-| 3.5.2.3   | Ensure iptables are flushed with nftables (Manual)                                     |  x  |     |     |
-| 3.5.2.4   | Ensure a nftables table exists (Automated)                                             |  x  |     |     |
-| 3.5.2.5   | Ensure nftables base chains exist (Automated)                                          |  x  |     |     |
-| 3.5.2.6   | Ensure nftables loopback traffic is configured (Automated)                             |  x  |     |     |
-| 3.5.2.7   | Ensure nftables outbound and established connections are configured (Manual)           |  x  |     |     |
-| 3.5.2.8   | Ensure nftables default deny firewall policy (Automated)                               |  x  |     |     |
-| 3.5.2.9   | Ensure nftables service is enabled (Automated)                                         |  x  |     |     |
-| 3.5.2.10  | Ensure nftables rules are permanent (Automated)                                        |  x  |     |     |
-| 3.5.3     | **Configure iptables**                                                                 |  x  |     |     |
-| 3.5.3.1   | **Configure iptables software**                                                        |  x  |     |     |
-| 3.5.3.1.1 | Ensure iptables packages are installed (Automated)                                     |  x  |     |     |
-| 3.5.3.1.2 | Ensure nftables is not installed with iptables (Automated)                             |  x  |     |     |
-| 3.5.3.1.3 | Ensure ufw is uninstalled or disabled with iptables (Automated)                        |  x  |     |     |
-| 3.5.3.2   | **Configure IPv4 iptables**                                                            |  x  |     |     |
-| 3.5.3.2.1 | Ensure iptables default deny firewall policy (Automated)                               |  x  |     |     |
-| 3.5.3.2.2 | Ensure iptables loopback traffic is configured (Automated)                             |  x  |     |     |
-| 3.5.3.2.3 | Ensure iptables outbound and established connections are configured (Manual)           |  x  |     |     |
-| 3.5.3.2.4 | Ensure iptables firewall rules exist for all open ports (Automated)                    |  x  |     |     |
-| 3.5.3.3   | **Configure IPv6 ip6tables**                                                           |  x  |     |     |
-| 3.5.3.3.1 | Ensure ip6tables default deny firewall policy (Automated)                              |  x  |     |     |
-| 3.5.3.3.2 | Ensure ip6tables loopback traffic is configured (Automated)                            |  x  |     |     |
-| 3.5.3.3.3 | Ensure ip6tables outbound and established connections are configured (Manual)          |  x  |     |     |
-| 3.5.3.3.4 | Ensure ip6tables firewall rules exist for all open ports (Automated)                   |  x  |     |     |
-| 5         | **Access, Authentication and Authorization**                                           |     |     |     |
-| 5.2       | **Configure SSH Server**                                                               |  x  |     |     |
-| 5.2.1     | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                  |  x  |     |     |
-| 5.2.2     | Ensure permissions on SSH private host key files are configured (Automated)            |  x  |     |     |
-| 5.2.3     | Ensure permissions on SSH public host key files are configured (Automated)             |  x  |     |     |
-| 5.2.4     | Ensure SSH access is limited (Automated)                                               |  x  |     |     |
-| 5.2.5     | Ensure SSH LogLevel is appropriate (Automated)                                         |  x  |     |     |
-| 5.2.6     | Ensure SSH PAM is enabled (Automated)                                                  |  x  |     |     |
-| 5.2.7     | Ensure SSH root login is disabled (Automated)                                          |  x  |     |     |
-| 5.2.8     | Ensure SSH HostbasedAuthentication is disabled (Automated)                             |  x  |     |     |
-| 5.2.9     | Ensure SSH PermitEmptyPasswords is disabled (Automated)                                |  x  |     |     |
-| 5.2.10    | Ensure SSH PermitUserEnvironment is disabled (Automated)                               |  x  |     |     |
-| 5.2.11    | Ensure SSH IgnoreRhosts is enabled (Automated)                                         |  x  |     |     |
-| 5.2.12    | Ensure SSH X11 forwarding is disabled (Automated)                                      |  x  |     |     |
-| 5.2.13    | Ensure only strong Ciphers are used (Automated)                                        |  x  |     |     |
-| 5.2.14    | Ensure only strong MAC algorithms are used (Automated)                                 |  x  |     |     |
-| 5.2.15    | Ensure only strong Key Exchange algorithms are used (Automated)                        |  x  |     |     |
-| 5.2.16    | Ensure SSH AllowTcpForwarding is disabled (Automated)                                  |  x  |     |     |
-| 5.2.17    | Ensure SSH warning banner is configured (Automated)                                    |  x  |     |     |
-| 5.2.18    | Ensure SSH MaxAuthTries is set to 4 or less (Automated)                                |  x  |     |     |
-| 5.2.19    | Ensure SSH MaxStartups is configured (Automated)                                       |  x  |     |     |
-| 5.2.20    | Ensure SSH MaxSessions is set to 10 or less (Automated)                                |  x  |     |     |
-| 5.2.21    | Ensure SSH LoginGraceTime is set to one minute or less (Automated)                     |  x  |     |     |
-| 5.2.22    | Ensure SSH Idle Timeout Interval is configured (Automated)                             |  x  |     |     |
-| 5.3       | **Configure privilege escalation**                                                     |  x  |     |     |
-| 5.3.1     | Ensure sudo is installed (Automated)                                                   |  x  |     |     |
-| 5.3.2     | Ensure sudo commands use pty (Automated)                                               |  x  |     |     |
-| 5.3.3     | Ensure sudo log file exists (Automated)                                                |  x  |     |     |
-| 5.3.4     | Ensure users must provide password for privilege escalation (Automated)                |  x  |     |     |
-| 5.3.5     | Ensure re-authentication for privilege escalation is not disabled globally (Automated) |  x  |     |     |
-| 5.3.6     | Ensure sudo authentication timeout is configured correctly (Automated)                 |  x  |     |     |
-| 5.3.7     | Ensure access to the su command is restricted (Automated)                              |  x  |     |     |
-| 5.4       | **Configure PAM**                                                                      |     |  x  |     |
-| 5.4.1     | Ensure password creation requirements are configured (Automated)                       |  x  |     |     |
-| 5.4.2     | Ensure lockout for failed password attempts is configured (Automated)                  |  x  |     |     |
-| 5.4.3     | Ensure password reuse is limited (Automated)                                           |  x  |     |     |
-| 5.4.4     | Ensure password hashing algorithm is up to date with the latest standards (Automated)  |  x  |     |     |
-| 5.4.5     | Ensure all current passwords uses the configured hashing algorithm (Manual)            |     |     |  x  |
-| 5.5       | **User Accounts and Environment**                                                      |     |  x  |     |
-| 5.5.1     | **Set Shadow Password Suite Parameters**                                               |     |  x  |     |
-| 5.5.1.1   | Ensure minimum days between password changes is configured (Automated)                 |  x  |     |     |
-| 5.5.1.2   | Ensure password expiration is 365 days or less (Automated)                             |  x  |     |     |
-| 5.5.1.3   | Ensure password expiration warning days is 7 or more (Automated)                       |  x  |     |     |
-| 5.5.1.4   | Ensure inactive password lock is 30 days or less (Automated)                           |  x  |     |     |
-| 5.5.1.5   | Ensure all users last password change date is in the past (Automated)                  |     |     |  x  |
-| 5.5.2     | Ensure system accounts are secured (Automated)                                         |  x  |     |     |
-| 5.5.3     | Ensure default group for the root account is GID 0 (Automated)                         |  x  |     |     |
-| 5.5.4     | Ensure default user umask is 027 or more restrictive (Automated)                       |  x  |     |     |
-| 5.5.5     | Ensure default user shell timeout is 900 seconds or less (Automated)                   |  x  |     |     |
 
 ## License
 

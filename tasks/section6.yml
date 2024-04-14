@@ -17,7 +17,6 @@
         name: nullmailer
         state: present
         force_apt_get: true
-        install_recommends: false
       when:
         - not package_installed_postfix.rc == 0
     - name: "SECTION6 | 6.1.1 | Ensure AIDE is installed | install AIDE"
@@ -27,7 +26,6 @@
           - aide-common
         state: present
         force_apt_get: true
-        install_recommends: false
     - name: "SECTION6 | 6.1.1 | Ensure AIDE is installed | stat AIDE DB"
       ansible.builtin.stat:
         path: /var/lib/aide/aide.db

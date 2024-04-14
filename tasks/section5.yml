@@ -480,7 +480,7 @@
   ansible.builtin.apt:
     name: sudo
     state: present
-    install_recommends: false
+    force_apt_get: true
   when:
     - cis_ubuntu2204_rule_5_3_1
   tags:
@@ -620,7 +620,7 @@
           - libpam-pwquality
           - cracklib-runtime
         state: present
-        install_recommends: false
+        force_apt_get: true
     - name: "SECTION5 | 5.4.1 | Ensure password creation requirements are configured | set policy"
       ansible.builtin.lineinfile:
         dest: /etc/security/pwquality.conf

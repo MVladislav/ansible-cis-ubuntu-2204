@@ -151,37 +151,35 @@ cis_ubuntu2204_rule_3_3_8: true
 cis_ubuntu2204_rule_3_3_9: true
 cis_ubuntu2204_rule_3_3_10: true
 cis_ubuntu2204_rule_3_3_11: true
-
-# cis_ubuntu2204_rule_3_5_1_1: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-# cis_ubuntu2204_rule_3_5_1_2: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-# cis_ubuntu2204_rule_3_5_1_3: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-# cis_ubuntu2204_rule_3_5_1_4: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-# cis_ubuntu2204_rule_3_5_1_5: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-# cis_ubuntu2204_rule_3_5_1_6: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-# cis_ubuntu2204_rule_3_5_1_7: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-# cis_ubuntu2204_rule_3_5_2_1: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_2_2: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_2_3: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_2_4: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_2_5: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_2_6: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_2_7: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_2_8: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_2_9: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_2_10: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-# cis_ubuntu2204_rule_3_5_3_1_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_1_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_1_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_2_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_2_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_2_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_2_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_3_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_3_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_3_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-# cis_ubuntu2204_rule_3_5_3_3_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 ## SECTION 4 rules
-# ...
+cis_ubuntu2204_rule_4_1_1: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_2: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_3: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_4: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_5: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_6: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_7: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_2_1: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_2: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_3: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_4: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_5: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_6: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_7: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_8: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_9: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_10: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_3_1_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_1_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_1_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_2_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_2_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_2_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_2_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_3_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_3_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_3_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_3_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 ## SECTION 5 rules
 cis_ubuntu2204_rule_5_2_1: true
 cis_ubuntu2204_rule_5_2_2: true
@@ -356,12 +354,21 @@ cis_ubuntu2204_cron_allow_users:
 cis_ubuntu2204_at_allow_users:
   - root
 
-# choose firewall (cis_ubuntu2204_rule_3_5_*)
+# choose firewall (cis_ubuntu2204_rule_4_*)
 cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
-# define if outgoing traffic should be default deny or allow (cis_ubuntu2204_rule_3_5_1_7)
+# define if outgoing traffic should be default deny or allow (cis_ubuntu2204_rule_4_1_7)
 cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
-# defined nftable table name (cis_ubuntu2204_rule_3_5_2_4)
+# defined nftable table name (cis_ubuntu2204_rule_4_2_4-9)
 cis_ubuntu2204_firewall_nftables_table_name: filter
+
+# (cis_ubuntu2204_rule_4_1_6)
+cis_ubuntu2204_firewall_rules_exist_open_ports:
+  []
+  # - rule: allow
+  #   port: 80
+  #   direction: in
+  #   protocol: any
+  #   comment: "allow http in"
 
 # ssh conf's
 # allows/denies for users/groups (cis_ubuntu2204_rule_5_2_4)

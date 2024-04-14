@@ -74,7 +74,7 @@
   changed_when: false
   check_mode: false
 
-- name: "PRE | 5.2 | check for 'ssh' service"
+- name: "PRE | 5.1 | check for 'ssh' service"
   ansible.builtin.shell: |
     set -o pipefail &&
     systemctl show ssh | grep LoadState | cut -d = -f 2

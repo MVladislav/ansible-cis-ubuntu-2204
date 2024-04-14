@@ -14,7 +14,7 @@ repos:
     hooks:
       - id: codespell
         args:
-          - --ignore-words-list=ihs,ro,fo,iif
+          - --ignore-words-list=ihs,ro,fo,iif,chage
           - --skip="./.*,*.csv,*.json"
           - --quiet-level=2
         exclude_types:
@@ -51,6 +51,9 @@ repos:
     rev: v1.4.0
     hooks:
       - id: detect-secrets
+        args:
+          - --exclude-files=templates/pam/pwquality
+          - --exclude-files=templates/pam/pwhistory.j2
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.2

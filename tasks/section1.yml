@@ -426,7 +426,7 @@
           #############################################################################################
           Ensure GPG keys are configured.
           #############################################################################################
-          {{ cis_ubuntu2204_apt_key_list.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_apt_key_list.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_apt_key_list.stdout_lines is defined
@@ -454,7 +454,7 @@
           #############################################################################################
           Ensure package manager repositories are configured.
           #############################################################################################
-          {{ cis_ubuntu2204_apt_key_list.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_apt_key_list.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_apt_key_list.stdout_lines is defined

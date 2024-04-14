@@ -63,7 +63,7 @@
             - Remove the package containing the service
             - -IF- the service's package is required for a dependency, stop and mask the service and/or socket
           #############################################################################################
-          {{ cis_ubuntu2204_services_listening_on_network_interface.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_services_listening_on_network_interface.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_services_listening_on_network_interface.stdout_lines is defined

@@ -183,6 +183,29 @@ cis_ubuntu2204_rule_4_3_3_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 cis_ubuntu2204_rule_4_3_3_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 cis_ubuntu2204_rule_4_3_3_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 ## SECTION 5 rules
+cis_ubuntu2204_rule_5_1_1: true
+cis_ubuntu2204_rule_5_1_2: true
+cis_ubuntu2204_rule_5_1_3: true
+cis_ubuntu2204_rule_5_1_4: true
+cis_ubuntu2204_rule_5_1_5: true
+cis_ubuntu2204_rule_5_1_6: true
+cis_ubuntu2204_rule_5_1_7: true
+cis_ubuntu2204_rule_5_1_8: true
+cis_ubuntu2204_rule_5_1_9: true
+cis_ubuntu2204_rule_5_1_10: true
+cis_ubuntu2204_rule_5_1_11: true
+cis_ubuntu2204_rule_5_1_12: true
+cis_ubuntu2204_rule_5_1_13: true
+cis_ubuntu2204_rule_5_1_14: true
+cis_ubuntu2204_rule_5_1_15: true
+cis_ubuntu2204_rule_5_1_16: true
+cis_ubuntu2204_rule_5_1_17: true
+cis_ubuntu2204_rule_5_1_18: true
+cis_ubuntu2204_rule_5_1_19: true
+cis_ubuntu2204_rule_5_1_20: true
+cis_ubuntu2204_rule_5_1_21: true
+cis_ubuntu2204_rule_5_1_22: true
+cis_ubuntu2204_rule_5_1_23: true # EXTENDED: own added, not included in CIS
 cis_ubuntu2204_rule_5_2_1: true
 cis_ubuntu2204_rule_5_2_2: true
 cis_ubuntu2204_rule_5_2_3: true
@@ -190,43 +213,47 @@ cis_ubuntu2204_rule_5_2_4: true
 cis_ubuntu2204_rule_5_2_5: true
 cis_ubuntu2204_rule_5_2_6: true
 cis_ubuntu2204_rule_5_2_7: true
-cis_ubuntu2204_rule_5_2_8: true
-cis_ubuntu2204_rule_5_2_9: true
-cis_ubuntu2204_rule_5_2_10: true
-cis_ubuntu2204_rule_5_2_11: true
-cis_ubuntu2204_rule_5_2_12: true
-cis_ubuntu2204_rule_5_2_13: true
-cis_ubuntu2204_rule_5_2_14: true
-cis_ubuntu2204_rule_5_2_15: true
-cis_ubuntu2204_rule_5_2_16: true
-cis_ubuntu2204_rule_5_2_17: true
-cis_ubuntu2204_rule_5_2_18: true
-cis_ubuntu2204_rule_5_2_19: true
-cis_ubuntu2204_rule_5_2_20: true
-cis_ubuntu2204_rule_5_2_21: true
-cis_ubuntu2204_rule_5_2_22: true
-cis_ubuntu2204_rule_5_2_23: true # EXTENDED: own added, not included in CIS
-cis_ubuntu2204_rule_5_3_1: true
-cis_ubuntu2204_rule_5_3_2: true
-cis_ubuntu2204_rule_5_3_3: true
-cis_ubuntu2204_rule_5_3_4: true
-cis_ubuntu2204_rule_5_3_5: true
-cis_ubuntu2204_rule_5_3_6: true
-cis_ubuntu2204_rule_5_3_7: true
-cis_ubuntu2204_rule_5_4_1: true
-cis_ubuntu2204_rule_5_4_2: false # NOTE: disabled
-cis_ubuntu2204_rule_5_4_3: true
-cis_ubuntu2204_rule_5_4_4: true
-cis_ubuntu2204_rule_5_4_5: true
-cis_ubuntu2204_rule_5_5_1_1: true
-cis_ubuntu2204_rule_5_5_1_2: true
-cis_ubuntu2204_rule_5_5_1_3: true
-cis_ubuntu2204_rule_5_5_1_4: true
-cis_ubuntu2204_rule_5_5_1_5: true
-cis_ubuntu2204_rule_5_5_2: true
-cis_ubuntu2204_rule_5_5_3: true
-cis_ubuntu2204_rule_5_5_4: true
-cis_ubuntu2204_rule_5_5_5: true
+cis_ubuntu2204_rule_5_3_1_1: true
+cis_ubuntu2204_rule_5_3_1_2: true
+cis_ubuntu2204_rule_5_3_1_3: true
+cis_ubuntu2204_rule_5_3_2_1: true
+cis_ubuntu2204_rule_5_3_2_2: true
+cis_ubuntu2204_rule_5_3_2_3: true
+cis_ubuntu2204_rule_5_3_2_4: true
+cis_ubuntu2204_rule_5_3_3_1_1: true
+cis_ubuntu2204_rule_5_3_3_1_2: true
+cis_ubuntu2204_rule_5_3_3_1_3: true
+cis_ubuntu2204_rule_5_3_3_2_1: true
+cis_ubuntu2204_rule_5_3_3_2_2: true
+cis_ubuntu2204_rule_5_3_3_2_3: true
+cis_ubuntu2204_rule_5_3_3_2_4: true
+cis_ubuntu2204_rule_5_3_3_2_5: true
+cis_ubuntu2204_rule_5_3_3_2_6: true
+cis_ubuntu2204_rule_5_3_3_2_7: true
+cis_ubuntu2204_rule_5_3_3_2_8: true
+cis_ubuntu2204_rule_5_3_3_3_1: true
+cis_ubuntu2204_rule_5_3_3_3_2: true
+cis_ubuntu2204_rule_5_3_3_3_3: true
+cis_ubuntu2204_rule_5_3_3_4_1: true
+cis_ubuntu2204_rule_5_3_3_4_2: true
+cis_ubuntu2204_rule_5_3_3_4_3: true
+cis_ubuntu2204_rule_5_3_3_4_4: true
+cis_ubuntu2204_rule_5_4_1_1: true
+cis_ubuntu2204_rule_5_4_1_2: true
+cis_ubuntu2204_rule_5_4_1_3: true
+cis_ubuntu2204_rule_5_4_1_4: true
+cis_ubuntu2204_rule_5_4_1_5: true
+cis_ubuntu2204_rule_5_4_1_6: true
+cis_ubuntu2204_rule_5_4_2_1: true
+cis_ubuntu2204_rule_5_4_2_2: true
+cis_ubuntu2204_rule_5_4_2_3: true
+cis_ubuntu2204_rule_5_4_2_5: true
+cis_ubuntu2204_rule_5_4_2_6: true
+cis_ubuntu2204_rule_5_4_2_7: true
+cis_ubuntu2204_rule_5_4_2_8: true
+cis_ubuntu2204_rule_5_4_3_1: true
+cis_ubuntu2204_rule_5_4_3_2: true
+cis_ubuntu2204_rule_5_4_3_3: true
 ## SECTION 6 rules
 cis_ubuntu2204_rule_6_1_1: true # NOTE: depends also on 'cis_ubuntu2204_install_aide|cis_ubuntu2204_config_aide'
 cis_ubuntu2204_rule_6_1_2: true # NOTE: depends also on 'cis_ubuntu2204_install_aide|cis_ubuntu2204_config_aide'
@@ -310,7 +337,9 @@ cis_ubuntu2204_rule_7_2_10: true
 # ------------------------------------------------------------------------------
 cis_ubuntu2204_regex_base_search: '^(#(\s)*)?'
 # cis_ubuntu2204_regex_base_search_post: '((.*)?=|\s|$)'
+cis_ubuntu2204_regex_base_search_equals: '\s*=.*$'
 cis_ubuntu2204_shell_executable: /bin/bash
+cis_ubuntu2204_print_info_join_by: ", "
 
 # SPECIAL options rule overview
 # ---------------------------------------
@@ -373,68 +402,62 @@ cis_ubuntu2204_firewall_rules_exist_open_ports:
   #   comment: "allow http in"
 
 # ssh conf's
-# allows/denies for users/groups (cis_ubuntu2204_rule_5_2_4)
+# allows/denies for users/groups (cis_ubuntu2204_rule_5_1_4)
 # 'optional:' cis_ubuntu2204_ssh_allow_users: root,user
 # 'optional:' cis_ubuntu2204_ssh_allow_groups: root,ssh
 # 'optional:' cis_ubuntu2204_ssh_deny_users: root,user
 # 'optional:' cis_ubuntu2204_ssh_deny_groups: root,ssh
-# log level (cis_ubuntu2204_rule_5_2_5)
-cis_ubuntu2204_ssh_log_level: VERBOSE # VERBOSE | INFO
-# (cis_ubuntu2204_rule_5_2_7)
-cis_ubuntu2204_ssh_permit_root_login: "no"
-# (cis_ubuntu2204_rule_5_2_18)
-cis_ubuntu2204_ssh_max_auth_tries: 3
-# (cis_ubuntu2204_rule_5_2_20)
-cis_ubuntu2204_ssh_max_sessions: 2
-# (cis_ubuntu2204_rule_5_2_22)
+# (cis_ubuntu2204_rule_5_1_7)
 cis_ubuntu2204_ssh_client_alive_interval: 15
-cis_ubuntu2204_ssh_client_alive_count_max: 2
-# (cis_ubuntu2204_rule_5_2_23)
+cis_ubuntu2204_ssh_client_alive_count_max: 3
+# log level (cis_ubuntu2204_rule_5_1_14)
+cis_ubuntu2204_ssh_log_level: VERBOSE # VERBOSE | INFO
+# (cis_ubuntu2204_rule_5_1_16)
+cis_ubuntu2204_ssh_max_auth_tries: 4
+# (cis_ubuntu2204_rule_5_1_17)
+cis_ubuntu2204_ssh_max_sessions: 10
+# (cis_ubuntu2204_rule_5_1_20)
+cis_ubuntu2204_ssh_permit_root_login: "no"
+# (cis_ubuntu2204_rule_5_1_23)
 cis_ubuntu2204_ssh_port: 22
+cis_ubuntu2204_ssh_address_family: "inet"
 cis_ubuntu2204_ssh_authentication_methods: "publickey"
 cis_ubuntu2204_ssh_password_authentication: "no"
-cis_ubuntu2204_ssh_tcp_keep_alive: "yes"
 cis_ubuntu2204_ssh_allow_agent_forwarding: "yes"
-# Ciphers (cis_ubuntu2204_rule_5_2_13)
+cis_ubuntu2204_ssh_tcp_keep_alive: "yes"
+cis_ubuntu2204_ssh_x11_forwarding: "no"
+cis_ubuntu2204_ssh_allow_tcp_forwarding: "no"
+# Ciphers (cis_ubuntu2204_rule_5_1_6)
 cis_ubuntu2204_ssh_ciphers:
-  - chacha20-poly1305@openssh.com
+  # - chacha20-poly1305@openssh.com # NOTE: (CVE-2023-48795)
   - aes256-gcm@openssh.com
   - aes128-gcm@openssh.com
   - aes256-ctr
   - aes192-ctr
   - aes128-ctr
-# MACs (cis_ubuntu2204_rule_5_2_14)
+# MACs (cis_ubuntu2204_rule_5_1_15)
 cis_ubuntu2204_ssh_macs:
-  - hmac-sha2-512-etm@openssh.com
-  - hmac-sha2-256-etm@openssh.com
+  # - hmac-sha2-512-etm@openssh.com # NOTE: (CVE-2023-48795)
+  # - hmac-sha2-256-etm@openssh.com # NOTE: (CVE-2023-48795)
   - hmac-sha2-512
   - hmac-sha2-256
-# KexAlgorithms (cis_ubuntu2204_rule_5_2_15)
+  - umac-128@openssh.com
+# KexAlgorithms (cis_ubuntu2204_rule_5_1_12)
 cis_ubuntu2204_ssh_kex_algorithms:
   - curve25519-sha256@libssh.org
   - ecdh-sha2-nistp521
   - ecdh-sha2-nistp384
   - ecdh-sha2-nistp256
   - diffie-hellman-group-exchange-sha256
-# address family, key alg, accept key types (cis_ubuntu2204_rule_5_2_23)
-cis_ubuntu2204_ssh_address_family: "inet"
-cis_ubuntu2204_ssh_host_key_algorithms:
-  - ssh-ed25519-cert-v01@openssh.com
-  - ssh-rsa-cert-v01@openssh.com
-  - ssh-ed25519
-  - ssh-rsa
-  - ecdsa-sha2-nistp521-cert-v01@openssh.com
-  - ecdsa-sha2-nistp384-cert-v01@openssh.com
-  - ecdsa-sha2-nistp256-cert-v01@openssh.com
-  - ecdsa-sha2-nistp521
-  - ecdsa-sha2-nistp384
-  - ecdsa-sha2-nistp256
-cis_ubuntu2204_ssh_pubkey_accepted_key_types:
-  - ssh-ed25519
-# pw quality policies (cis_ubuntu2204_rule_5_4_1)
-cis_ubuntu2204_pwquality:
-  - key: "minlen"
-    value: "14"
+
+# (cis_ubuntu2204_rule_5_3_*)
+cis_ubuntu2204_faillock_deny: 5
+cis_ubuntu2204_faillock_unlock_time: 900
+cis_ubuntu2204_faillock_difok: 2
+cis_ubuntu2204_faillock_minlen: 14
+cis_ubuntu2204_password_complexity:
+  - key: "minclass"
+    value: "3"
   - key: "dcredit"
     value: "-1"
   - key: "ucredit"
@@ -443,12 +466,22 @@ cis_ubuntu2204_pwquality:
     value: "-1"
   - key: "lcredit"
     value: "-1"
-# (cis_ubuntu2204_rule_5_4_2)
-cis_ubuntu2204_faillock_unlock_time: 600
-cis_ubuntu2204_remember_reuse: 5
-cis_ubuntu2204_encrypt_method: yescrypt # yescrypt | sha512
-cis_ubuntu2204_common_auth_success: 2
-cis_ubuntu2204_common_password_success: 2
+cis_ubuntu2204_faillock_maxrepeat: 3
+cis_ubuntu2204_faillock_maxsequence: 3
+
+# in file (pwhistory.j2)
+cis_ubuntu2204_pwhistory_remember: remember=24
+cis_ubuntu2204_pwhistory_enforce_for_root: enforce_for_root
+cis_ubuntu2204_pwhistory_use_authtok: use_authtok
+
+# in file (unix.j2) and (cis_ubuntu2204_rule_5_3_3_4_3|cis_ubuntu2204_rule_5_4_1_4)
+cis_ubuntu2204_unix_encrypt_method: yescrypt # yescrypt | sha512
+# in file (unix.j2) and (cis_ubuntu2204_rule_5_3_3_4_4)
+cis_ubuntu2204_unix_use_authtok: "{{ cis_ubuntu2204_pwhistory_use_authtok }}"
+
+cis_ubuntu2204_password_pass_max_days: 365
+cis_ubuntu2204_password_pass_min_days: 1
+cis_ubuntu2204_password_pass_warn_age: 7
 
 # AIDE cron settings (cis_ubuntu2204_rule_6_1_2)
 cis_ubuntu2204_aide_cron:
@@ -485,7 +518,7 @@ cis_ubuntu2204_audit_admin_space_left_action: single # single | halt
 cis_ubuntu2204_audit_log_path: /var/log/audit
 # auditd group (cis_ubuntu2204_rule_6_3_4_3)
 cis_ubuntu2204_audit_log_group: adm
-# in file (cis_6_3_3_3.rules.j2)
+# in file (cis_6_3_3_3.rules.j2) and (cis_ubuntu2204_rule_5_2_3)
 cis_ubuntu2204_audit_sudo_log_file: /var/log/sudo.log
 # in file (cis_6_3_3_6.rules.j2|cis_6_3_3_7.rules.j2|cis_6_3_3_9.rules.j2|cis_6_3_3_10.rules.j2|cis_6_3_3_13.rules.j2)
 # in file (cis_6_3_3_15.rules.j2|cis_6_3_3_16.rules.j2|cis_6_3_3_17.rules.j2|cis_6_3_3_18.rules.j2|cis_6_3_3_19.rules.j2)

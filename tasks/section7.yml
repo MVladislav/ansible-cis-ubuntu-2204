@@ -209,7 +209,7 @@
           #############################################################################################
           Remove or set ownership and group ownership of these files and/or directories to an active user on the system as appropriate.
           #############################################################################################
-          {{ cis_ubuntu2204_unowned_or_ungrouped_files_and_directories.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_unowned_or_ungrouped_files_and_directories.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_unowned_or_ungrouped_files_and_directories.stdout_lines is defined
@@ -244,7 +244,7 @@
           Ensure that no rogue SUID or SGID programs have been introduced into the system.
           Review the files returned by the action in the Audit section and confirm the integrity of these binaries.
           #############################################################################################
-          {{ cis_ubuntu2204_suid_executables.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_suid_executables.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_suid_executables.stdout_lines is defined
@@ -318,7 +318,7 @@
           Analyze the output of the Audit step above and
           perform the appropriate action to correct any discrepancies found.
           #############################################################################################
-          {{ cis_ubuntu2204_groups_for_passwd_exists_in_group.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_groups_for_passwd_exists_in_group.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_groups_for_passwd_exists_in_group.stdout_lines is defined
@@ -385,7 +385,7 @@
           Based on the results of the audit script, establish unique UIDs and
           review all files owned by the shared UIDs to determine which UID they are supposed to belong to.
           #############################################################################################
-          {{ cis_ubuntu2204_duplicate_uids.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_duplicate_uids.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_duplicate_uids.stdout_lines is defined
@@ -421,7 +421,7 @@
           Based on the results of the audit script, establish unique GIDs and
           review all files owned by the shared GID to determine which group they are supposed to belong to.
           #############################################################################################
-          {{ cis_ubuntu2204_duplicate_gids.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_duplicate_gids.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_duplicate_gids.stdout_lines is defined
@@ -457,7 +457,7 @@
           Based on the results of the audit script, establish unique user names for the users.
           File ownerships will automatically reflect the change as long as the users have unique UIDs.
           #############################################################################################
-          {{ cis_ubuntu2204_duplicate_user_names.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_duplicate_user_names.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_duplicate_user_names.stdout_lines is defined
@@ -493,7 +493,7 @@
           Based on the results of the audit script, establish unique names for the user groups.
           File group ownerships will automatically reflect the change as long as the groups have unique GIDs.
           #############################################################################################
-          {{ cis_ubuntu2204_duplicate_group_names.stdout_lines | join(', ') }}
+          {{ cis_ubuntu2204_duplicate_group_names.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
           #############################################################################################
       when:
         - cis_ubuntu2204_duplicate_group_names.stdout_lines is defined

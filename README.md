@@ -5,7 +5,6 @@
 
 - [CIS - Ubuntu 22.04](#cis---ubuntu-2204)
   - [IN WORK update to v2.0.0](#in-work-update-to-v200)
-  - [TODO](#todo)
   - [Notes](#notes)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
@@ -47,27 +46,6 @@ If you are **implementing to an existing system** please **review** this role fo
 
 Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0](https://downloads.cisecurity.org/#/)**.
 
-## TODO
-
-- improve grub changes
-  - make changes for lvm or zfs
-  - create checker and add for if grub exists with lines like, because we only check for replace in section
-    - `GRUB_CMDLINE_LINUX`
-  - make a copy from template if grub not exists
-    - <https://askubuntu.com/questions/406229/there-was-no-etc-default-grub-file-so-how-come-my-system-was-able-to-boot>
-    - `sudo cp /usr/share/grub/default/grub /etc/default/`
-- improve auditd for 32 or 64 system check to add rules
-- check ufw sysctl usage
-- improve with some variables for section5
-- extend cis_ubuntu2204_rule_5_3_4
-  - to also check in subfiles under '/etc/sudoers.d/'
-- rules under '5.4', should be more tested
-  - example for 'cis_ubuntu2204_rule_5_4_2' which fail to use password after performed
-  - seams error found, but need tests, CIS pdf define success=1 but default value in ubuntu is success=2
-- possible add 'usbguard' for rule 'cis_ubuntu2204_rule_1_1_1_8' when usb-storage should be loaded as alternative security
-  - <https://www.cyberciti.biz/security/how-to-protect-linux-against-rogue-usb-devices-using-usbguard/>
-- implement 'cis_ubuntu2204_regex_base_search_post'
-
 ## Notes
 
 - section :: 6.2.1.2 **Configure systemd-journal-remote**
@@ -76,6 +54,8 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0](https://downloads.cisec
   - is configured, but not in deep tested _(default ufw is used from section 4.1)_
 - section :: 4.3 **Configure iptables**
   - is configured, but not in deep tested _(default ufw is used from section 4.1)_
+- section :: 5.3 **Pluggable Authentication Modules** :: 5.4 **User Accounts and Environment**
+  - could be tested deeper, base tests are performed and for secure only used for fresh os install
 
 ## Requirements
 
@@ -118,7 +98,7 @@ cis_ubuntu2204_section7: true
 
 ```yaml
 # additional configs for ssh which not defined set by CIS
-cis_ubuntu2204_rule_5_2_23: true
+cis_ubuntu2204_rule_5_1_23: true
 
 # set auditd log_file as needed to be save in other configs
 cis_ubuntu2204_rule_6_3_4_0: true
@@ -142,9 +122,6 @@ cis_ubuntu2204_disable_boot_pass: true
 # do not forget set related variables 'cis_ubuntu2204_set_journal_upload_*'
 cis_ubuntu2204_set_journal_upload: false
 cis_ubuntu2204_set_journal_upload_url: <SET_REMOTE_URL>
-
-# Ensure lockout for failed password attempts is configured
-cis_ubuntu2204_rule_5_4_2: false
 ```
 
 ### variable special usable between server and client
@@ -210,9 +187,12 @@ cis_ubuntu2204_ssh_authentication_methods: "publickey"
 cis_ubuntu2204_ssh_password_authentication: "no"
 
 # pw quality policies
-cis_ubuntu2204_pwquality:
-  - key: "minlen"
-    value: "14"
+cis_ubuntu2204_faillock_deny: 5
+cis_ubuntu2204_faillock_unlock_time: 900
+cis_ubuntu2204_faillock_minlen: 14
+cis_ubuntu2204_password_complexity:
+  - key: "minclass"
+    value: "3"
   - key: "dcredit"
     value: "-1"
   - key: "ucredit"
@@ -221,14 +201,6 @@ cis_ubuntu2204_pwquality:
     value: "-1"
   - key: "lcredit"
     value: "-1"
-
-cis_ubuntu2204_faillock_unlock_time: 600
-# NOTE: check the two success values, in CIS-pdf they are defined with '1'
-#       but on ubuntu-23.04 it is set per default as '2'
-cis_ubuntu2204_remember_reuse: 5
-cis_ubuntu2204_encrypt_method: yescrypt # yescrypt | sha512
-cis_ubuntu2204_common_auth_success: 2
-cis_ubuntu2204_common_password_success: 2
 
 # AIDE cron settings (cis_ubuntu2204_rule_6_1_2)
 cis_ubuntu2204_aide_cron:
@@ -308,8 +280,6 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_set_boot_pass: false # bootloader password (disabled)
       cis_ubuntu2204_disable_boot_pass: true # bootloader password (disabled)
       # -------------------------
-      cis_ubuntu2204_rule_5_4_2: false # lockout for failed password attempts # NOTE: will fail to use password
-      # -------------------------
       cis_ubuntu2204_rule_3_1_3: false # bluetooth service
       cis_ubuntu2204_rule_3_1_3_remove: false # bluetooth service
       # -------------------------
@@ -346,9 +316,13 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
         - root
       cis_ubuntu2204_at_allow_users:
         - root
-      cis_ubuntu2204_pwquality:
-        - key: "minlen"
-          value: "8"
+      # -------------------------
+      cis_ubuntu2204_faillock_deny: 5
+      cis_ubuntu2204_faillock_unlock_time: 900
+      cis_ubuntu2204_faillock_minlen: 8
+      cis_ubuntu2204_password_complexity:
+        - key: "minclass"
+          value: "3"
         - key: "dcredit"
           value: "-1"
         - key: "ucredit"
@@ -587,6 +561,92 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 4.3.3.2   | Ensure ip6tables loopback traffic is configured (Automated)                                     | 🟢  |     |     |
 | 4.3.3.3   | Ensure ip6tables outbound and established connections are configured (Manual)                   | 🟢  |     |     |
 | 4.3.3.4   | Ensure ip6tables firewall rules exist for all open ports (Automated)                            | 🟢  |     |     |
+| 5         | **Access Control**                                                                              |     | 🟡  |     |
+| 5.1       | **Configure SSH Server**                                                                        | 🟢  |     |     |
+| 5.1.1     | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                           | 🟢  |     |     |
+| 5.1.2     | Ensure permissions on SSH private host key files are configured (Automated)                     | 🟢  |     |     |
+| 5.1.3     | Ensure permissions on SSH public host key files are configured (Automated)                      | 🟢  |     |     |
+| 5.1.4     | Ensure sshd access is configured (Automated)                                                    | 🟢  |     |     |
+| 5.1.5     | Ensure sshd Banner is configured (Automated)                                                    | 🟢  |     |     |
+| 5.1.6     | Ensure sshd Ciphers are configured (Automated)                                                  | 🟢  |     |     |
+| 5.1.7     | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured (Automated)              | 🟢  |     |     |
+| 5.1.8     | Ensure sshd DisableForwarding is enabled (Automated)                                            | 🟢  |     |     |
+| 5.1.9     | Ensure sshd GSSAPIAuthentication is disabled (Automated)                                        | 🟢  |     |     |
+| 5.1.10    | Ensure sshd HostbasedAuthentication is disabled (Automated)                                     | 🟢  |     |     |
+| 5.1.11    | Ensure sshd IgnoreRhosts is enabled (Automated)                                                 | 🟢  |     |     |
+| 5.1.12    | Ensure sshd KexAlgorithms is configured (Automated)                                             | 🟢  |     |     |
+| 5.1.13    | Ensure sshd LoginGraceTime is configured (Automated)                                            | 🟢  |     |     |
+| 5.1.14    | Ensure sshd LogLevel is configured (Automated)                                                  | 🟢  |     |     |
+| 5.1.15    | Ensure sshd MACs are configured (Automated)                                                     | 🟢  |     |     |
+| 5.1.16    | Ensure sshd MaxAuthTries is configured (Automated)                                              | 🟢  |     |     |
+| 5.1.17    | Ensure sshd MaxSessions is configured (Automated)                                               | 🟢  |     |     |
+| 5.1.18    | Ensure sshd MaxStartups is configured (Automated)                                               | 🟢  |     |     |
+| 5.1.19    | Ensure sshd PermitEmptyPasswords is disabled (Automated)                                        | 🟢  |     |     |
+| 5.1.20    | Ensure sshd PermitRootLogin is disabled (Automated)                                             | 🟢  |     |     |
+| 5.1.21    | Ensure sshd PermitUserEnvironment is disabled (Automated)                                       | 🟢  |     |     |
+| 5.1.22    | Ensure sshd UsePAM is enabled (Automated)                                                       | 🟢  |     |     |
+| 5.2       | **Configure privilege escalation**                                                              | 🟢  |     |     |
+| 5.2.1     | Ensure sudo is installed (Automated)                                                            | 🟢  |     |     |
+| 5.2.2     | Ensure sudo commands use pty (Automated)                                                        | 🟢  |     |     |
+| 5.2.3     | Ensure sudo log file exists (Automated)                                                         | 🟢  |     |     |
+| 5.2.4     | Ensure users must provide password for privilege escalation (Automated)                         | 🟢  |     |     |
+| 5.2.5     | Ensure re-authentication for privilege escalation is not disabled globally (Automated)          | 🟢  |     |     |
+| 5.2.6     | Ensure sudo authentication timeout is configured correctly (Automated)                          | 🟢  |     |     |
+| 5.2.7     | Ensure access to the su command is restricted (Automated)                                       | 🟢  |     |     |
+| 5.3       | **Pluggable Authentication Modules**                                                            | 🟢  |     |     |
+| 5.3.1     | **Configure PAM software packages**                                                             | 🟢  |     |     |
+| 5.3.1.1   | Ensure latest version of pam is installed (Automated)                                           | 🟢  |     |     |
+| 5.3.1.2   | Ensure libpam-modules is installed (Automated)                                                  | 🟢  |     |     |
+| 5.3.1.3   | Ensure libpam-pwquality is installed (Automated)                                                | 🟢  |     |     |
+| 5.3.2     | **Configure pam-auth-update profiles**                                                          | 🟢  |     |     |
+| 5.3.2.1   | Ensure pam_unix module is enabled (Automated)                                                   | 🟢  |     |     |
+| 5.3.2.2   | Ensure pam_faillock module is enabled (Automated)                                               | 🟢  |     |     |
+| 5.3.2.3   | Ensure pam_pwquality module is enabled (Automated)                                              | 🟢  |     |     |
+| 5.3.2.4   | Ensure pam_pwhistory module is enabled (Automated)                                              | 🟢  |     |     |
+| 5.3.3     | **Configure PAM Arguments**                                                                     | 🟢  |     |     |
+| 5.3.3.1   | **Configure pam_faillock module**                                                               | 🟢  |     |     |
+| 5.3.3.1.1 | Ensure password failed attempts lockout is configured (Automated)                               | 🟢  |     |     |
+| 5.3.3.1.2 | Ensure password unlock time is configured (Automated)                                           | 🟢  |     |     |
+| 5.3.3.1.3 | Ensure password failed attempts lockout includes root account (Automated)                       | 🟢  |     |     |
+| 5.3.3.2   | **Configure pam_pwquality module**                                                              | 🟢  |     |     |
+| 5.3.3.2.1 | Ensure password number of changed characters is configured (Automated)                          | 🟢  |     |     |
+| 5.3.3.2.2 | Ensure minimum password length is configured (Automated)                                        | 🟢  |     |     |
+| 5.3.3.2.3 | Ensure password complexity is configured (Automated)                                            | 🟢  |     |     |
+| 5.3.3.2.4 | Ensure password same consecutive characters is configured (Automated)                           | 🟢  |     |     |
+| 5.3.3.2.5 | Ensure password maximum sequential characters is configured (Automated)                         | 🟢  |     |     |
+| 5.3.3.2.6 | Ensure password dictionary check is enabled (Automated)                                         | 🟢  |     |     |
+| 5.3.3.2.7 | Ensure password quality checking is enforced (Automated)                                        | 🟢  |     |     |
+| 5.3.3.2.8 | Ensure password quality is enforced for the root user (Automated)                               | 🟢  |     |     |
+| 5.3.3.3   | **Configure pam_pwhistory module**                                                              | 🟢  |     |     |
+| 5.3.3.3.1 | Ensure password history remember is configured (Automated)                                      | 🟢  |     |     |
+| 5.3.3.3.2 | Ensure password history is enforced for the root user (Automated)                               | 🟢  |     |     |
+| 5.3.3.3.3 | Ensure pam_pwhistory includes use_authtok (Automated)                                           | 🟢  |     |     |
+| 5.3.3.4   | **Configure pam_unix module**                                                                   | 🟢  |     |     |
+| 5.3.3.4.1 | Ensure pam_unix does not include nullok (Automated)                                             | 🟢  |     |     |
+| 5.3.3.4.2 | Ensure pam_unix does not include remember (Automated)                                           | 🟢  |     |     |
+| 5.3.3.4.3 | Ensure pam_unix includes a strong password hashing algorithm (Automated)                        | 🟢  |     |     |
+| 5.3.3.4.4 | Ensure pam_unix includes use_authtok (Automated)                                                | 🟢  |     |     |
+| 5.4       | **User Accounts and Environment**                                                               |     | 🟡  |     |
+| 5.4.1     | **Configure shadow password suite parameters**                                                  | 🟢  |     |     |
+| 5.4.1.1   | Ensure password expiration is configured (Automated)                                            | 🟢  |     |     |
+| 5.4.1.2   | Ensure minimum password age is configured (Automated)                                           | 🟢  |     |     |
+| 5.4.1.3   | Ensure password expiration warning days is configured (Automated)                               | 🟢  |     |     |
+| 5.4.1.4   | Ensure strong password hashing algorithm is configured (Automated)                              | 🟢  |     |     |
+| 5.4.1.5   | Ensure inactive password lock is configured (Automated)                                         |     | 🟡  |     |
+| 5.4.1.6   | Ensure all users last password change date is in the past (Manual)                              |     | 🟡  |     |
+| 5.4.2     | **Configure root and system accounts and environment**                                          |     | 🟡  |     |
+| 5.4.2.1   | Ensure root is the only UID 0 account (Automated)                                               | 🟢  |     |     |
+| 5.4.2.2   | Ensure root is the only GID 0 account (Automated)                                               | 🟢  |     |     |
+| 5.4.2.3   | Ensure group root is the only GID 0 group (Automated)                                           | 🟢  |     |     |
+| 5.4.2.4   | Ensure root password is set (Automated)                                                         |     |     | 🔴  |
+| 5.4.2.5   | Ensure root path integrity (Automated)                                                          |     | 🟡  |     |
+| 5.4.2.6   | Ensure root user umask is configured (Automated)                                                | 🟢  |     |     |
+| 5.4.2.7   | Ensure system accounts do not have a valid login shell (Automated)                              |     | 🟡  |     |
+| 5.4.2.8   | Ensure accounts without a valid login shell are locked (Automated)                              | 🟢  |     |     |
+| 5.4.3     | **Configure user default environment**                                                          | 🟢  |     |     |
+| 5.4.3.1   | Ensure nologin is not listed in /etc/shells (Automated)                                         | 🟢  |     |     |
+| 5.4.3.2   | Ensure default user shell timeout is configured (Automated)                                     | 🟢  |     |     |
+| 5.4.3.3   | Ensure default user umask is configured (Automated)                                             | 🟢  |     |     |
 | 6         | **Logging and Auditing**                                                                        | 🟢  |     |     |
 | 6.1       | **Configure Filesystem Integrity Checking**                                                     | 🟢  |     |     |
 | 6.1.1     | Ensure AIDE is installed (Automated)                                                            | 🟢  |     |     |
@@ -679,62 +739,8 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 7.2.9     | Ensure local interactive user home directories are configured (Automated)                       | 🟢  |     |     |
 | 7.2.10    | Ensure local interactive user dot files access is configured (Automated)                        | 🟢  |     |     |
 
-| #       | CIS Benchmark Recommendation Set                                                       | Yes | Y/N | No  |
-| :------ | :------------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 5       | **Access Control**                                                                     |     |     |     |
-| 5.1     | **Configure SSH Server**                                                               |  x  |     |     |
-| 5.1.1   | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                  |  x  |     |     |
-| 5.1.2   | Ensure permissions on SSH private host key files are configured (Automated)            |  x  |     |     |
-| 5.1.3   | Ensure permissions on SSH public host key files are configured (Automated)             |  x  |     |     |
-| 5.1.4   | Ensure SSH access is limited (Automated)                                               |  x  |     |     |
-| 5.1.5   | Ensure SSH LogLevel is appropriate (Automated)                                         |  x  |     |     |
-| 5.1.6   | Ensure SSH PAM is enabled (Automated)                                                  |  x  |     |     |
-| 5.1.7   | Ensure SSH root login is disabled (Automated)                                          |  x  |     |     |
-| 5.1.8   | Ensure SSH HostbasedAuthentication is disabled (Automated)                             |  x  |     |     |
-| 5.1.9   | Ensure SSH PermitEmptyPasswords is disabled (Automated)                                |  x  |     |     |
-| 5.1.10  | Ensure SSH PermitUserEnvironment is disabled (Automated)                               |  x  |     |     |
-| 5.1.11  | Ensure SSH IgnoreRhosts is enabled (Automated)                                         |  x  |     |     |
-| 5.1.12  | Ensure SSH X11 forwarding is disabled (Automated)                                      |  x  |     |     |
-| 5.1.13  | Ensure only strong Ciphers are used (Automated)                                        |  x  |     |     |
-| 5.1.14  | Ensure only strong MAC algorithms are used (Automated)                                 |  x  |     |     |
-| 5.1.15  | Ensure only strong Key Exchange algorithms are used (Automated)                        |  x  |     |     |
-| 5.1.16  | Ensure SSH AllowTcpForwarding is disabled (Automated)                                  |  x  |     |     |
-| 5.1.17  | Ensure SSH warning banner is configured (Automated)                                    |  x  |     |     |
-| 5.1.18  | Ensure SSH MaxAuthTries is set to 4 or less (Automated)                                |  x  |     |     |
-| 5.1.19  | Ensure SSH MaxStartups is configured (Automated)                                       |  x  |     |     |
-| 5.1.20  | Ensure SSH MaxSessions is set to 10 or less (Automated)                                |  x  |     |     |
-| 5.1.21  | Ensure SSH LoginGraceTime is set to one minute or less (Automated)                     |  x  |     |     |
-| 5.1.22  | Ensure SSH Idle Timeout Interval is configured (Automated)                             |  x  |     |     |
-| 5.2     | **Configure privilege escalation**                                                     |  x  |     |     |
-| 5.2.1   | Ensure sudo is installed (Automated)                                                   |  x  |     |     |
-| 5.2.2   | Ensure sudo commands use pty (Automated)                                               |  x  |     |     |
-| 5.2.3   | Ensure sudo log file exists (Automated)                                                |  x  |     |     |
-| 5.2.4   | Ensure users must provide password for privilege escalation (Automated)                |  x  |     |     |
-| 5.2.5   | Ensure re-authentication for privilege escalation is not disabled globally (Automated) |  x  |     |     |
-| 5.2.6   | Ensure sudo authentication timeout is configured correctly (Automated)                 |  x  |     |     |
-| 5.2.7   | Ensure access to the su command is restricted (Automated)                              |  x  |     |     |
-| 5.4     | **Configure PAM**                                                                      |     |  x  |     |
-| 5.4.1   | Ensure password creation requirements are configured (Automated)                       |  x  |     |     |
-| 5.4.2   | Ensure lockout for failed password attempts is configured (Automated)                  |  x  |     |     |
-| 5.4.3   | Ensure password reuse is limited (Automated)                                           |  x  |     |     |
-| 5.4.4   | Ensure password hashing algorithm is up to date with the latest standards (Automated)  |  x  |     |     |
-| 5.4.5   | Ensure all current passwords uses the configured hashing algorithm (Manual)            |     |     |  x  |
-| 5.5     | **User Accounts and Environment**                                                      |     |  x  |     |
-| 5.5.1   | **Set Shadow Password Suite Parameters**                                               |     |  x  |     |
-| 5.5.1.1 | Ensure minimum days between password changes is configured (Automated)                 |  x  |     |     |
-| 5.5.1.2 | Ensure password expiration is 365 days or less (Automated)                             |  x  |     |     |
-| 5.5.1.3 | Ensure password expiration warning days is 7 or more (Automated)                       |  x  |     |     |
-| 5.5.1.4 | Ensure inactive password lock is 30 days or less (Automated)                           |  x  |     |     |
-| 5.5.1.5 | Ensure all users last password change date is in the past (Automated)                  |     |     |  x  |
-| 5.5.2   | Ensure system accounts are secured (Automated)                                         |  x  |     |     |
-| 5.5.3   | Ensure default group for the root account is GID 0 (Automated)                         |  x  |     |     |
-| 5.5.4   | Ensure default user umask is 027 or more restrictive (Automated)                       |  x  |     |     |
-| 5.5.5   | Ensure default user shell timeout is 900 seconds or less (Automated)                   |  x  |     |     |
-
 | #       | CIS Benchmark Recommendation Set                                                  | Yes | Y/N | No  |
 | :------ | :-------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 7.2.9   | Ensure root PATH Integrity (Automated)                                            |     |     | 🟣  |
-| 7.2.10  | Ensure root is the only UID 0 account (Automated)                                 |     |     | 🟣  |
 | 7.2.14  | Ensure no local interactive user has .netrc files (Automated)                     |     |     | 🟣  |
 | 7.2.15  | Ensure no local interactive user has .forward files (Automated)                   |     |     | 🟣  |
 | 7.2.16  | Ensure no local interactive user has .rhosts files (Automated)                    |     |     | 🟣  |

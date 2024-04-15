@@ -293,6 +293,7 @@
     - rule_6_2_2
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
   block:
     - name: "SECTION6 | 6.2.2.1 | Ensure access to all logfiles has been configured | find all files under '/var/log/'"
       ansible.builtin.find:

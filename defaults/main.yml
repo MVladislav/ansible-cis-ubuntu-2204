@@ -183,6 +183,7 @@ cis_ubuntu2204_rule_4_3_3_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 cis_ubuntu2204_rule_4_3_3_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 cis_ubuntu2204_rule_4_3_3_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 ## SECTION 5 rules
+cis_ubuntu2204_rule_5_1_0: true
 cis_ubuntu2204_rule_5_1_1: true
 cis_ubuntu2204_rule_5_1_2: true
 cis_ubuntu2204_rule_5_1_3: true
@@ -336,10 +337,9 @@ cis_ubuntu2204_rule_7_2_10: true
 
 # ------------------------------------------------------------------------------
 cis_ubuntu2204_regex_base_search: '^(#(\s)*)?'
-# cis_ubuntu2204_regex_base_search_post: '((.*)?=|\s|$)'
 cis_ubuntu2204_regex_base_search_equals: '\s*=.*$'
 cis_ubuntu2204_shell_executable: /bin/bash
-cis_ubuntu2204_print_info_join_by: ", "
+cis_ubuntu2204_print_info_join_by: "\n"
 
 # SPECIAL options rule overview
 # ---------------------------------------
@@ -712,22 +712,47 @@ cis_ubuntu2204_2_2_rule_set:
 # SPECIAL multi similar CIS rules set for 6.2.2.1
 cis_ubuntu2204_logfiles_access:
   - files: 'lastlog|lastlog\.*|wtmp|wtmp\.*|wtmp-*|btmp|btmp\.*|btmp-*|README'
-    mode: 664
+    mode: "0664"
     owner: root
-    group: utmp # root
+    group: utmp # root|utmp
   - files: 'secure|auth\.log|syslog|messages'
-    mode: 640
-    owner: syslog # root
-    group: "{{ cis_ubuntu2204_audit_log_group }}" # root
+    mode: "0640"
+    owner: syslog # root|syslog
+    group: "{{ cis_ubuntu2204_audit_log_group }}" # root|adm
   - files: "SSSD|sssd"
-    mode: 660
-    owner: sssd # root
-    group: sssd # root
+    mode: "0660"
+    owner: sssd # root|sssd
+    group: sssd # root|sssd
   - files: "gdm|gdm3"
-    mode: 660
+    mode: "0660"
     owner: root
-    group: gdm # root|gdm3
+    group: gdm # root|gdm|gdm3
   - files: '*\.journal|*\.journal~'
-    mode: 640
+    mode: "0640"
     owner: root
-    group: systemd-journal # root
+    group: systemd-journal # root|systemd-journal
+
+# SECTION based handled file access variable
+# ------------------------------------------------------------------------------
+
+# SECTION1
+cis_ubuntu2204_section1_owner_default: root
+cis_ubuntu2204_section1_group_default: root
+cis_ubuntu2204_section1_mode_default: "0644"
+cis_ubuntu2204_section1_mode_boot_grub: "0400"
+cis_ubuntu2204_section1_mode_etc_issue_motd: "0444"
+cis_ubuntu2204_section1_mode_etc_grub_d: "0755"
+cis_ubuntu2204_section1_mode_etc_dconf_folder: "0755"
+
+# SECTION2
+cis_ubuntu2204_section2_owner_default: root
+cis_ubuntu2204_section2_group_default: root
+cis_ubuntu2204_section2_group_etc_at_allow: daemon
+cis_ubuntu2204_section2_mode_default: "0644"
+cis_ubuntu2204_section2_mode_cron: "0600"
+cis_ubuntu2204_section2_mode_cron_folder: "0700"
+
+# SECTION3
+cis_ubuntu2204_section3_owner_default: root
+cis_ubuntu2204_section3_group_default: root
+cis_ubuntu2204_section3_mode_default: "0644"

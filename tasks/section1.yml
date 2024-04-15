@@ -19,9 +19,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install cramfs(\s|$)'
           line: "install cramfs /bin/false"
@@ -50,9 +50,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install freevxfs(\s|$)'
           line: "install freevxfs /bin/false"
@@ -81,9 +81,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install hfs(\s|$)'
           line: "install hfs /bin/false"
@@ -112,9 +112,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install hfsplus(\s|$)'
           line: "install hfsplus /bin/false"
@@ -143,9 +143,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install jffs2(\s|$)'
           line: "install jffs2 /bin/false"
@@ -174,9 +174,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install squashfs(\s|$)'
           line: "install squashfs /bin/false"
@@ -199,9 +199,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install udf(\s|$)'
           line: "install udf /bin/false"
@@ -230,9 +230,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install usb-storage(\s|$)'
           line: "install usb-storage /bin/false"
@@ -256,9 +256,9 @@
   ansible.builtin.template:
     src: system/tmp.mount.j2
     dest: /etc/systemd/system/tmp.mount
-    owner: root
-    group: root
-    mode: "0644"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   notify:
     - systemd restart and enable tmp.mount
   when:
@@ -299,9 +299,9 @@
 #   ansible.builtin.template:
 #     src: system/home.mount.j2
 #     dest: /etc/systemd/system/home.mount
-#     owner: root
-#     group: root
-#     mode: "0644"
+#     owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+#     group: "{{ cis_ubuntu2204_section1_group_default }}"
+#     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
 #   notify:
 #     - systemd restart and enable home.mount
 #   when:
@@ -321,9 +321,9 @@
 #   ansible.builtin.template:
 #     src: system/var.mount.j2
 #     dest: /etc/systemd/system/var.mount
-#     owner: root
-#     group: root
-#     mode: "0644"
+#     owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+#     group: "{{ cis_ubuntu2204_section1_group_default }}"
+#     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
 #   notify:
 #     - systemd restart and enable var.mount
 #   when:
@@ -344,9 +344,9 @@
 #   ansible.builtin.template:
 #     src: system/var.tmp.mount.j2
 #     dest: /etc/systemd/system/var.tmp.mount
-#     owner: root
-#     group: root
-#     mode: "0644"
+#     owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+#     group: "{{ cis_ubuntu2204_section1_group_default }}"
+#     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
 #   notify:
 #     - systemd restart and enable var.tmp.mount
 #   when:
@@ -367,9 +367,9 @@
 #   ansible.builtin.template:
 #     src: system/var.log.mount.j2
 #     dest: /etc/systemd/system/var.log.mount
-#     owner: root
-#     group: root
-#     mode: "0644"
+#     owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+#     group: "{{ cis_ubuntu2204_section1_group_default }}"
+#     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
 #   notify:
 #     - systemd restart and enable var.log.mount
 #   when:
@@ -390,9 +390,9 @@
 #   ansible.builtin.template:
 #     src: system/var.log.audit.mount.j2
 #     dest: /etc/systemd/system/var.log.audit.mount
-#     owner: root
-#     group: root
-#     mode: "0644"
+#     owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+#     group: "{{ cis_ubuntu2204_section1_group_default }}"
+#     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
 #   notify:
 #     - systemd restart and enable var.log.audit.mount
 #   when:
@@ -472,7 +472,6 @@
     - rule_1_2_2
     - server_l1
     - workstation_l1
-    - molecule-idempotence-notest
 
 # ------------------------------------------------------------------------------
 
@@ -548,6 +547,7 @@
     - rule_1_4
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
   block:
     - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate password"
       ansible.builtin.shell: |
@@ -562,15 +562,13 @@
       args:
         executable: "{{ cis_ubuntu2204_shell_executable }}"
       changed_when: false
-      tags:
-        - molecule-idempotence-notest
     - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate config"
       ansible.builtin.copy:
         dest: /etc/grub.d/00_password
         content: "cat << EOF\nexec tail -n +2 $0\nset superusers=\"root\"\npassword_pbkdf2 root {{ cis_grub_bootloader_password.stdout }}\nEOF"
-        owner: root
-        group: root
-        mode: "0755"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_etc_grub_d }}"
       notify: generate new grub config
       when:
         - cis_grub_bootloader_password is defined
@@ -588,9 +586,9 @@
 - name: "SECTION1 | 1.4.2 | Ensure access to bootloader config is configured"
   ansible.builtin.file:
     path: "{{ item.path }}"
-    owner: root
-    group: root
-    mode: "0400"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_boot_grub }}"
   with_items:
     - path: /boot/grub/grub.cfg
       check: "{{ cis_grub_cfg.stat.exists }}"
@@ -658,8 +656,6 @@
         state: present
         reload: true
         ignoreerrors: true
-      tags:
-        - molecule-idempotence-notest
     - name: >
         SECTION1 | 1.5.3 | Ensure core dumps are restricted | install systemd-coredump
       ansible.builtin.apt:
@@ -671,12 +667,14 @@
         SECTION1 | 1.5.3 | Ensure core dumps are restricted | ensure hard core 0 is set
       ansible.builtin.lineinfile:
         dest: /etc/security/limits.conf
-        regexp: '(^#)?\*\s+hard\s+core\s+[0-9]+'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}\*\s+hard\s+core\s+[0-9]+'
         line: "*                hard    core            0"
         state: present
         create: true
         insertbefore: "# End of file"
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       notify: restart systemd-coredump
     - name: >
         SECTION1 | 1.5.3 | Ensure core dumps are restricted | set coredump.conf
@@ -686,14 +684,14 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
       notify: restart systemd-coredump
       with_items:
-        - reg: '{{ cis_ubuntu2204_regex_base_search }}Storage((.*)?=|\s|$)'
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}Storage{{ cis_ubuntu2204_regex_base_search_equals }}"
           line: "Storage=none"
-        - reg: '{{ cis_ubuntu2204_regex_base_search }}ProcessSizeMax((.*)?=|\s|$)'
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}ProcessSizeMax{{ cis_ubuntu2204_regex_base_search_equals }}"
           line: "ProcessSizeMax=0"
 
 - name: "SECTION1 | 1.5.4 | Ensure prelink is not installed"
@@ -727,13 +725,13 @@
         SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled | add or edit the enabled parameter to equal 0
       ansible.builtin.lineinfile:
         dest: /etc/default/apport
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}enabled((.*)?=|\s|$)'
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}enabled{{ cis_ubuntu2204_regex_base_search_equals }}"
         line: "enabled=0"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
     - name: >
         SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled | stop and disable service
       ansible.builtin.systemd:
@@ -748,7 +746,7 @@
   ansible.builtin.copy:
     content: Authorized users only. All activity may be monitored and reported.
     dest: /etc/motd
-    mode: "0444"
+    mode: "{{ cis_ubuntu2204_section1_mode_etc_issue_motd }}"
   when:
     - cis_ubuntu2204_rule_1_6_1
   tags:
@@ -760,7 +758,7 @@
   ansible.builtin.copy:
     content: Authorized users only. All activity may be monitored and reported.
     dest: /etc/issue
-    mode: "0444"
+    mode: "{{ cis_ubuntu2204_section1_mode_etc_issue_motd }}"
   when:
     - cis_ubuntu2204_rule_1_6_2
   tags:
@@ -772,7 +770,7 @@
   ansible.builtin.copy:
     content: Authorized users only. All activity may be monitored and reported.
     dest: /etc/issue.net
-    mode: "0444"
+    mode: "{{ cis_ubuntu2204_section1_mode_etc_issue_motd }}"
   when:
     - cis_ubuntu2204_rule_1_6_3
   tags:
@@ -784,9 +782,9 @@
   ansible.builtin.file:
     dest: /etc/motd
     state: file
-    owner: root
-    group: root
-    mode: "0444"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_etc_issue_motd }}"
   when:
     - cis_ubuntu2204_rule_1_6_4
   tags:
@@ -798,9 +796,9 @@
   ansible.builtin.file:
     dest: /etc/issue
     state: file
-    owner: root
-    group: root
-    mode: "0444"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_etc_issue_motd }}"
   when:
     - cis_ubuntu2204_rule_1_6_5
   tags:
@@ -812,9 +810,9 @@
   ansible.builtin.file:
     dest: /etc/issue.net
     state: file
-    owner: root
-    group: root
-    mode: "0444"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_etc_issue_motd }}"
   when:
     - cis_ubuntu2204_rule_1_6_6
   tags:
@@ -849,22 +847,22 @@
       ansible.builtin.file:
         path: /etc/dconf/db/gdm.d
         state: directory
-        owner: root
-        group: root
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "0755"
     - name: "SECTION1 | 1.7.4/6/8 | create folder /etc/dconf/db/local.d"
       ansible.builtin.file:
         path: /etc/dconf/db/local.d
         state: directory
-        owner: root
-        group: root
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "0755"
     - name: "SECTION1 | 1.7.5/7/9 | create folder /etc/dconf/db/local.d/locks"
       ansible.builtin.file:
         path: /etc/dconf/db/local.d/locks
         state: directory
-        owner: root
-        group: root
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "0755"
 
 - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured"
@@ -881,24 +879,24 @@
       ansible.builtin.template:
         src: gdm/profile-gdm.j2
         dest: /etc/dconf/profile/gdm
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
     - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured | file 01-banner-message"
       ansible.builtin.template:
         src: gdm/01-banner-message.j2
         dest: /etc/dconf/db/gdm.d/01-banner-message
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
 
 - name: "SECTION1 | 1.7.3 | Ensure GDM disable-user-list option is enabled"
   ansible.builtin.template:
     src: gdm/00-login-screen.j2
     dest: /etc/dconf/db/gdm.d/00-login-screen
-    owner: root
-    group: root
-    mode: "0644"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
@@ -922,24 +920,24 @@
       ansible.builtin.template:
         src: gdm/profile-user-j2
         dest: /etc/dconf/profile/user
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
     - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | file 00-screensaver"
       ansible.builtin.template:
         src: gdm/00-screensaver.j2
         dest: /etc/dconf/db/local.d/00-screensaver
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
 
 - name: "SECTION1 | 1.7.5 | Ensure GDM screen locks cannot be overridden"
   ansible.builtin.template:
     src: gdm/00-screensaver-locks.j2
     dest: /etc/dconf/db/local.d/locks/00-screensaver
-    owner: root
-    group: root
-    mode: "0644"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
@@ -953,9 +951,9 @@
   ansible.builtin.template:
     src: gdm/00-media-automount.j2
     dest: /etc/dconf/db/local.d/00-media-automount
-    owner: root
-    group: root
-    mode: "0644"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
     - not cis_ubuntu2204_allow_autofs
     - service_status_gdm3.stdout == "loaded"
@@ -970,9 +968,9 @@
   ansible.builtin.template:
     src: gdm/00-media-automount-locks.j2
     dest: /etc/dconf/db/local.d/locks/00-media-automount
-    owner: root
-    group: root
-    mode: "0644"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
     - not cis_ubuntu2204_allow_autofs
     - service_status_gdm3.stdout == "loaded"
@@ -987,9 +985,9 @@
   ansible.builtin.template:
     src: gdm/00-media-autorun.j2
     dest: /etc/dconf/db/local.d/00-media-autorun
-    owner: root
-    group: root
-    mode: "0644"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
@@ -1003,9 +1001,9 @@
   ansible.builtin.template:
     src: gdm/00-media-autorun-locks.j2
     dest: /etc/dconf/db/local.d/locks/00-media-autorun
-    owner: root
-    group: root
-    mode: "0644"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
@@ -1019,9 +1017,9 @@
   ansible.builtin.template:
     src: gdm/custom.conf.j2
     dest: /etc/gdm3/custom.conf
-    owner: root
-    group: root
-    mode: "0644"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui

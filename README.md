@@ -97,6 +97,9 @@ cis_ubuntu2204_section7: true
 ### variables not included in CIS as additional extend
 
 ```yaml
+# additional configs for remove all comments in /etc/ssh/sshd_config
+cis_ubuntu2204_rule_5_1_0: true
+
 # additional configs for ssh which not defined set by CIS
 cis_ubuntu2204_rule_5_1_23: true
 

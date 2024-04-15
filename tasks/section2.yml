@@ -18,13 +18,13 @@
 - name: "SECTION2 | 2.1.21 | Ensure mail transfer agent is configured for local-only mode"
   ansible.builtin.lineinfile:
     dest: /etc/postfix/main.cf
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}inet_interfaces((.*)?=|\s|$)'
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}inet_interfaces{{ cis_ubuntu2204_regex_base_search_equals }}"
     line: "inet_interfaces = loopback-only"
     state: present
     create: true
-    owner: root
-    group: root
-    mode: "0644"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
+    mode: "{{ cis_ubuntu2204_section2_mode_default }}"
   when:
     - cis_ubuntu2204_rule_2_1_21
     - package_installed_postfix.rc == 0
@@ -124,9 +124,9 @@
   ansible.builtin.template:
     src: systemd-timesyncd.conf.j2
     dest: /etc/systemd/timesyncd.conf
-    mode: "0644"
-    owner: root
-    group: root
+    mode: "{{ cis_ubuntu2204_section2_mode_default }}"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
   notify: "restart {{ cis_ubuntu2204_time_synchronization_service }}"
   when:
     - cis_ubuntu2204_rule_2_3_2_1
@@ -143,9 +143,9 @@
   ansible.builtin.template:
     src: chrony.conf.j2
     dest: /etc/chrony/chrony.conf
-    mode: "0644"
-    owner: root
-    group: root
+    mode: "{{ cis_ubuntu2204_section2_mode_default }}"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
   notify: "restart {{ cis_ubuntu2204_time_synchronization_service }}"
   when:
     - cis_ubuntu2204_rule_2_3_3_1
@@ -159,9 +159,9 @@
   ansible.builtin.template:
     src: chrony.conf.j2
     dest: /etc/chrony/chrony.conf
-    mode: "0644"
-    owner: root
-    group: root
+    mode: "{{ cis_ubuntu2204_section2_mode_default }}"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
   notify: "restart {{ cis_ubuntu2204_time_synchronization_service }}"
   when:
     - cis_ubuntu2204_rule_2_3_3_2
@@ -194,9 +194,9 @@
 - name: "SECTION2 | 2.4.1.2 | Ensure permissions on /etc/crontab are configured"
   ansible.builtin.file:
     dest: /etc/crontab
-    owner: root
-    group: root
-    mode: "0600"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
+    mode: "{{ cis_ubuntu2204_section2_mode_cron }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_2
     - service_status_cron.stdout == "loaded"
@@ -209,9 +209,9 @@
   ansible.builtin.file:
     dest: /etc/cron.hourly
     state: directory
-    owner: root
-    group: root
-    mode: "0700"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
+    mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_3
     - service_status_cron.stdout == "loaded"
@@ -224,9 +224,9 @@
   ansible.builtin.file:
     dest: /etc/cron.daily
     state: directory
-    owner: root
-    group: root
-    mode: "0700"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
+    mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_4
     - service_status_cron.stdout == "loaded"
@@ -239,9 +239,9 @@
   ansible.builtin.file:
     dest: /etc/cron.weekly
     state: directory
-    owner: root
-    group: root
-    mode: "0700"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
+    mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_5
     - service_status_cron.stdout == "loaded"
@@ -254,9 +254,9 @@
   ansible.builtin.file:
     dest: /etc/cron.monthly
     state: directory
-    owner: root
-    group: root
-    mode: "0700"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
+    mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_6
     - service_status_cron.stdout == "loaded"
@@ -269,9 +269,9 @@
   ansible.builtin.file:
     dest: /etc/cron.d
     state: directory
-    owner: root
-    group: root
-    mode: "0700"
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
+    mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_7
     - service_status_cron.stdout == "loaded"
@@ -297,9 +297,9 @@
       ansible.builtin.template:
         src: cron.allow.j2
         dest: /etc/cron.allow
-        owner: root
-        group: root
-        mode: "0600"
+        owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+        group: "{{ cis_ubuntu2204_section2_group_default }}"
+        mode: "{{ cis_ubuntu2204_section2_mode_cron }}"
 
 # ------------------------------------------------------------------------------
 
@@ -320,6 +320,6 @@
       ansible.builtin.template:
         src: at.allow.j2
         dest: /etc/at.allow
-        owner: root
-        group: daemon
-        mode: "0600"
+        owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+        group: "{{ cis_ubuntu2204_section2_group_etc_at_allow }}"
+        mode: "{{ cis_ubuntu2204_section2_mode_cron }}"

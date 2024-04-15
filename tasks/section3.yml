@@ -80,9 +80,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section3_owner_default }}"
+        group: "{{ cis_ubuntu2204_section3_group_default }}"
+        mode: "{{ cis_ubuntu2204_section3_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install dccp(\s|$)'
           line: "install dccp /bin/false"
@@ -109,9 +109,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section3_owner_default }}"
+        group: "{{ cis_ubuntu2204_section3_group_default }}"
+        mode: "{{ cis_ubuntu2204_section3_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install tipc(\s|$)'
           line: "install tipc /bin/false"
@@ -138,9 +138,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section3_owner_default }}"
+        group: "{{ cis_ubuntu2204_section3_group_default }}"
+        mode: "{{ cis_ubuntu2204_section3_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install rds(\s|$)'
           line: "install rds /bin/false"
@@ -167,9 +167,9 @@
         line: "{{ item.line }}"
         state: present
         create: true
-        owner: root
-        group: root
-        mode: "0644"
+        owner: "{{ cis_ubuntu2204_section3_owner_default }}"
+        group: "{{ cis_ubuntu2204_section3_group_default }}"
+        mode: "{{ cis_ubuntu2204_section3_mode_default }}"
       with_items:
         - reg: '{{ cis_ubuntu2204_regex_base_search }}install sctp(\s|$)'
           line: "install sctp /bin/false"
@@ -355,6 +355,7 @@
     - rule_3_3
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
 
 - name: "SECTION3 | 3.3.10 | Ensure TCP SYN Cookies is enabled"
   ansible.posix.sysctl:

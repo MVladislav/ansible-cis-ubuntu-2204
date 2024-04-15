@@ -3,9 +3,9 @@ Default: yes
 Priority: 256
 Auth-Type: Primary
 Auth:
-        [success=end default=ignore]    pam_unix.so{{ ' nullok' if cis_ubuntu2204_rule_5_3_3_4_1 else '' }} try_first_pass
+        [success=end default=ignore]    pam_unix.so{{ ' nullok' if not cis_ubuntu2204_rule_5_3_3_4_1 else '' }} try_first_pass
 Auth-Initial:
-        [success=end default=ignore]    pam_unix.so{{ ' nullok' if cis_ubuntu2204_rule_5_3_3_4_1 else '' }}
+        [success=end default=ignore]    pam_unix.so{{ ' nullok' if not cis_ubuntu2204_rule_5_3_3_4_1 else '' }}
 Account-Type: Primary
 Account:
         [success=end new_authtok_reqd=done default=ignore]      pam_unix.so

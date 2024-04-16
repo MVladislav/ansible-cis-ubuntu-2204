@@ -35,7 +35,7 @@
 # - not-foundinactive
 
 - name: "PRE | 1.5.5 | check for 'apport' service"
-  ansible.builtin.shell: |
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show apport | grep LoadState | cut -d = -f 2
   args:
@@ -45,7 +45,7 @@
   check_mode: false
 
 - name: "PRE | 1.7 | check for 'gdm3' service"
-  ansible.builtin.shell: |
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show gdm3 | grep LoadState | cut -d = -f 2
   args:
@@ -55,7 +55,7 @@
   check_mode: false
 
 - name: "PRE | 2.3.1.1 | check for 'systemd-timesyncd' service"
-  ansible.builtin.shell: |
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show systemd-timesyncd | grep LoadState | cut -d = -f 2
   args:
@@ -65,7 +65,7 @@
   check_mode: false
 
 - name: "PRE | 2.4.1 | check for 'cron' service"
-  ansible.builtin.shell: |
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show cron | grep LoadState | cut -d = -f 2
   args:
@@ -75,7 +75,7 @@
   check_mode: false
 
 - name: "PRE | 5.1 | check for 'ssh' service"
-  ansible.builtin.shell: |
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show ssh | grep LoadState | cut -d = -f 2
   args:

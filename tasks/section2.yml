@@ -110,12 +110,13 @@
       when: cis_ubuntu2204_time_synchronization_service != "chrony"
 
     - name: "SECTION2 | 2.3.1.1 | Ensure a single time synchronization daemon is in use | mask systemd-timesyncd"
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: systemd-timesyncd.service
         daemon_reload: true
         enabled: false
         masked: true
         state: stopped
+      failed_when: false # NOTE: sometimes throws error
       when:
         - cis_ubuntu2204_time_synchronization_service != "systemd-timesyncd"
         - service_status_systemd_timesyncd.stdout == "loaded"
@@ -177,7 +178,7 @@
 # ------------------------------------------------------------------------------
 
 - name: "SECTION2 | 2.4.1.1 | Ensure cron daemon is enabled and active"
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: cron
     daemon_reload: true
     enabled: true

@@ -207,6 +207,7 @@ cis_ubuntu2204_rule_5_1_20: true
 cis_ubuntu2204_rule_5_1_21: true
 cis_ubuntu2204_rule_5_1_22: true
 cis_ubuntu2204_rule_5_1_23: true # EXTENDED: own added, not included in CIS
+cis_ubuntu2204_rule_5_1_24: true # NOTE: depends also on 'cis_ubuntu2204_rule_5_1_24_ssh_pub_key'
 cis_ubuntu2204_rule_5_2_1: true
 cis_ubuntu2204_rule_5_2_2: true
 cis_ubuntu2204_rule_5_2_3: true
@@ -368,7 +369,6 @@ cis_ubuntu2204_config_aide: true
 cis_ubuntu2204_bootloader_password: random # pragma: allowlist secret
 # grub default file path (cis_ubuntu2204_rule_1_3_1_2)
 cis_ubuntu2204_default_grub_file: /etc/default/grub
-# cis_ubuntu2204_default_grub_file_template: /usr/share/grub/default/grub # NOTE: current not used
 # gdm banner message (cis_ubuntu2204_rule_1_7_2)
 cis_ubuntu2204_gdm_warning_banner: Authorized uses only. All activity may be monitored and reported
 
@@ -407,11 +407,33 @@ cis_ubuntu2204_firewall_rules_exist_open_ports:
 # 'optional:' cis_ubuntu2204_ssh_allow_groups: root,ssh
 # 'optional:' cis_ubuntu2204_ssh_deny_users: root,user
 # 'optional:' cis_ubuntu2204_ssh_deny_groups: root,ssh
+# Ciphers (cis_ubuntu2204_rule_5_1_6)
+cis_ubuntu2204_ssh_ciphers:
+  # - chacha20-poly1305@openssh.com # NOTE: (CVE-2023-48795)
+  - aes256-gcm@openssh.com
+  - aes128-gcm@openssh.com
+  - aes256-ctr
+  - aes192-ctr
+  - aes128-ctr
 # (cis_ubuntu2204_rule_5_1_7)
 cis_ubuntu2204_ssh_client_alive_interval: 15
 cis_ubuntu2204_ssh_client_alive_count_max: 3
+# KexAlgorithms (cis_ubuntu2204_rule_5_1_12)
+cis_ubuntu2204_ssh_kex_algorithms:
+  - curve25519-sha256@libssh.org
+  - ecdh-sha2-nistp521
+  - ecdh-sha2-nistp384
+  - ecdh-sha2-nistp256
+  - diffie-hellman-group-exchange-sha256
 # log level (cis_ubuntu2204_rule_5_1_14)
 cis_ubuntu2204_ssh_log_level: VERBOSE # VERBOSE | INFO
+# MACs (cis_ubuntu2204_rule_5_1_15)
+cis_ubuntu2204_ssh_macs:
+  # - hmac-sha2-512-etm@openssh.com # NOTE: (CVE-2023-48795)
+  # - hmac-sha2-256-etm@openssh.com # NOTE: (CVE-2023-48795)
+  - hmac-sha2-512
+  - hmac-sha2-256
+  - umac-128@openssh.com
 # (cis_ubuntu2204_rule_5_1_16)
 cis_ubuntu2204_ssh_max_auth_tries: 4
 # (cis_ubuntu2204_rule_5_1_17)
@@ -427,28 +449,9 @@ cis_ubuntu2204_ssh_allow_agent_forwarding: "yes"
 cis_ubuntu2204_ssh_tcp_keep_alive: "yes"
 cis_ubuntu2204_ssh_x11_forwarding: "no"
 cis_ubuntu2204_ssh_allow_tcp_forwarding: "no"
-# Ciphers (cis_ubuntu2204_rule_5_1_6)
-cis_ubuntu2204_ssh_ciphers:
-  # - chacha20-poly1305@openssh.com # NOTE: (CVE-2023-48795)
-  - aes256-gcm@openssh.com
-  - aes128-gcm@openssh.com
-  - aes256-ctr
-  - aes192-ctr
-  - aes128-ctr
-# MACs (cis_ubuntu2204_rule_5_1_15)
-cis_ubuntu2204_ssh_macs:
-  # - hmac-sha2-512-etm@openssh.com # NOTE: (CVE-2023-48795)
-  # - hmac-sha2-256-etm@openssh.com # NOTE: (CVE-2023-48795)
-  - hmac-sha2-512
-  - hmac-sha2-256
-  - umac-128@openssh.com
-# KexAlgorithms (cis_ubuntu2204_rule_5_1_12)
-cis_ubuntu2204_ssh_kex_algorithms:
-  - curve25519-sha256@libssh.org
-  - ecdh-sha2-nistp521
-  - ecdh-sha2-nistp384
-  - ecdh-sha2-nistp256
-  - diffie-hellman-group-exchange-sha256
+# (cis_ubuntu2204_rule_5_1_24)
+cis_ubuntu2204_rule_5_1_24_ssh_user: "{{ ansible_user }}"
+# cis_ubuntu2204_rule_5_1_24_ssh_pub_key: "<ADD_PUB_KEY>"
 
 # (cis_ubuntu2204_rule_5_3_*)
 cis_ubuntu2204_faillock_deny: 5
@@ -482,6 +485,7 @@ cis_ubuntu2204_unix_use_authtok: "{{ cis_ubuntu2204_pwhistory_use_authtok }}"
 cis_ubuntu2204_password_pass_max_days: 365
 cis_ubuntu2204_password_pass_min_days: 1
 cis_ubuntu2204_password_pass_warn_age: 7
+cis_ubuntu2204_password_inactive: 45
 
 # AIDE cron settings (cis_ubuntu2204_rule_6_1_2)
 cis_ubuntu2204_aide_cron:

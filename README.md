@@ -4,7 +4,6 @@
 [![Ansible Molecule Test](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml/badge.svg)](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml)
 
 - [CIS - Ubuntu 22.04](#cis---ubuntu-2204)
-  - [IN WORK update to v2.0.0](#in-work-update-to-v200)
   - [Notes](#notes)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
@@ -24,8 +23,6 @@
 
 ---
 
-## IN WORK update to v2.0.0
-
 > <https://workbench.cisecurity.org/benchmarks/17074>
 
 ---
@@ -36,7 +33,6 @@ Tested with:
 
 - Ubuntu 22.04
 - Ubuntu 23.04
-- Ubuntu 23.10
 
 This role **will make changes to the system** that could break things. \
 This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
@@ -102,6 +98,13 @@ cis_ubuntu2204_rule_5_1_0: true
 
 # additional configs for ssh which not defined set by CIS
 cis_ubuntu2204_rule_5_1_23: true
+
+# the rules 'cis_ubuntu2204_rule_5_1_19', 'cis_ubuntu2204_rule_5_1_20', 'cis_ubuntu2204_rule_5_1_23'
+# disable ssh login by password, to avoid block login when no public key was added this rule is extended
+# it is 'false' by default
+cis_ubuntu2204_rule_5_1_24: true
+cis_ubuntu2204_rule_5_1_24_ssh_user: "{{ ansible_user }}"
+cis_ubuntu2204_rule_5_1_24_ssh_pub_key: "<ADD_PUB_KEY>"
 
 # set auditd log_file as needed to be save in other configs
 cis_ubuntu2204_rule_6_3_4_0: true
@@ -275,6 +278,10 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_section5: true
       cis_ubuntu2204_section6: true
       cis_ubuntu2204_section7: true
+      # -------------------------
+      cis_ubuntu2204_rule_5_1_24: true
+      cis_ubuntu2204_rule_5_1_24_ssh_user: "{{ ansible_user }}"
+      cis_ubuntu2204_rule_5_1_24_ssh_pub_key: "<ADD_PUB_KEY>"
       # -------------------------
       cis_ubuntu2204_rule_1_3_1_3: true # AppArmor complain mode
       cis_ubuntu2204_rule_1_3_1_4: false # AppArmor enforce mode
@@ -742,18 +749,20 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 7.2.9     | Ensure local interactive user home directories are configured (Automated)                       | 🟢  |     |     |
 | 7.2.10    | Ensure local interactive user dot files access is configured (Automated)                        | 🟢  |     |     |
 
-| #       | CIS Benchmark Recommendation Set                                                  | Yes | Y/N | No  |
-| :------ | :-------------------------------------------------------------------------------- | :-: | :-: | :-: |
-| 7.2.14  | Ensure no local interactive user has .netrc files (Automated)                     |     |     | 🟣  |
-| 7.2.15  | Ensure no local interactive user has .forward files (Automated)                   |     |     | 🟣  |
-| 7.2.16  | Ensure no local interactive user has .rhosts files (Automated)                    |     |     | 🟣  |
-| 4.2.2   | **Configure rsyslog**                                                             |     |     | 🟣  |
-| 4.2.2.1 | Ensure rsyslog is installed (Automated)                                           |     |     | 🟣  |
-| 4.2.2.2 | Ensure rsyslog service is enabled (Automated)                                     |     |     | 🟣  |
-| 4.2.2.3 | Ensure journald is configured to send logs to rsyslog (Manual)                    |     |     | 🟣  |
-| 4.2.2.4 | Ensure rsyslog default file permissions are configured (Automated)                |     |     | 🟣  |
-| 4.2.2.6 | Ensure rsyslog is configured to send logs to a remote log host (Manual)           |     |     | 🟣  |
-| 4.2.2.7 | Ensure rsyslog is not configured to receive logs from a remote client (Automated) |     |     | 🟣  |
+| #   | CIS Benchmark Recommendation Set                                                      | Yes | Y/N | No  |
+| :-- | :------------------------------------------------------------------------------------ | :-: | :-: | :-: |
+|     | Ensure password reuse is limited (Automated)                                          |     |     | 🟣  |
+|     | Ensure password hashing algorithm is up to date with the latest standards (Automated) |     |     | 🟣  |
+|     | Ensure no local interactive user has .netrc files (Automated)                         |     |     | 🟣  |
+|     | Ensure no local interactive user has .forward files (Automated)                       |     |     | 🟣  |
+|     | Ensure no local interactive user has .rhosts files (Automated)                        |     |     | 🟣  |
+|     | **Configure rsyslog**                                                                 |     |     | 🟣  |
+|     | Ensure rsyslog is installed (Automated)                                               |     |     | 🟣  |
+|     | Ensure rsyslog service is enabled (Automated)                                         |     |     | 🟣  |
+|     | Ensure journald is configured to send logs to rsyslog (Manual)                        |     |     | 🟣  |
+|     | Ensure rsyslog default file permissions are configured (Automated)                    |     |     | 🟣  |
+|     | Ensure rsyslog is configured to send logs to a remote log host (Manual)               |     |     | 🟣  |
+|     | Ensure rsyslog is not configured to receive logs from a remote client (Automated)     |     |     | 🟣  |
 
 ## License
 

@@ -366,15 +366,13 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 ## CIS - List of Recommendations
 
-`.*?\*\*.*?🟢`
-
-| Key                                                                  | Count       |
-| :------------------------------------------------------------------- | :---------- |
-| 🟢 Implemented _(TITLE/RULES)_                                       | 42/201      |
-| 🟡 Partly Implemented or print info for manual check _(TITLE/RULES)_ | 8/9         |
-| 🔴 Not Implemented _(TITLE/RULES)_                                   | 5/19        |
-| Total                                                                | 55/237      |
-| Coverage (Implemented vs Total)                                      | 90.90/88.60 |
+| Key                                                  | Count |
+| :--------------------------------------------------- | :---- |
+| 🟢 Implemented                                       | 268   |
+| 🟡 Partly Implemented or print info for manual check | 13    |
+| 🔴 Not Implemented                                   | 20    |
+| Total                                                | 301   |
+| Coverage (Implemented/Partly vs Total)               | 93.35 |
 
 | ID        | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
 | :-------- | :---------------------------------------------------------------------------------------------- | :-: | :-: | :-: |
@@ -748,21 +746,6 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 7.2.8     | Ensure no duplicate group names exist (Manual)                                                  |     | 🟡  |     |
 | 7.2.9     | Ensure local interactive user home directories are configured (Automated)                       | 🟢  |     |     |
 | 7.2.10    | Ensure local interactive user dot files access is configured (Automated)                        | 🟢  |     |     |
-
-| #   | CIS Benchmark Recommendation Set                                                      | Yes | Y/N | No  |
-| :-- | :------------------------------------------------------------------------------------ | :-: | :-: | :-: |
-|     | Ensure password reuse is limited (Automated)                                          |     |     | 🟣  |
-|     | Ensure password hashing algorithm is up to date with the latest standards (Automated) |     |     | 🟣  |
-|     | Ensure no local interactive user has .netrc files (Automated)                         |     |     | 🟣  |
-|     | Ensure no local interactive user has .forward files (Automated)                       |     |     | 🟣  |
-|     | Ensure no local interactive user has .rhosts files (Automated)                        |     |     | 🟣  |
-|     | **Configure rsyslog**                                                                 |     |     | 🟣  |
-|     | Ensure rsyslog is installed (Automated)                                               |     |     | 🟣  |
-|     | Ensure rsyslog service is enabled (Automated)                                         |     |     | 🟣  |
-|     | Ensure journald is configured to send logs to rsyslog (Manual)                        |     |     | 🟣  |
-|     | Ensure rsyslog default file permissions are configured (Automated)                    |     |     | 🟣  |
-|     | Ensure rsyslog is configured to send logs to a remote log host (Manual)               |     |     | 🟣  |
-|     | Ensure rsyslog is not configured to receive logs from a remote client (Automated)     |     |     | 🟣  |
 
 ## License
 

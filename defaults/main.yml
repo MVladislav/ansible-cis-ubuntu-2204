@@ -370,12 +370,15 @@ cis_ubuntu2204_bootloader_password: random # pragma: allowlist secret
 # grub default file path (cis_ubuntu2204_rule_1_3_1_2)
 cis_ubuntu2204_default_grub_file: /etc/default/grub
 # gdm banner message (cis_ubuntu2204_rule_1_7_2)
-cis_ubuntu2204_gdm_warning_banner: Authorized uses only. All activity may be monitored and reported
+cis_ubuntu2204_warning_banner: Authorized users only. All activity may be monitored and reported.
 
 # choose time synchronization (cis_ubuntu2204_rule_2_3_1_1)
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
-cis_ubuntu2204_time_synchronization_time_server: time.cloudflare.com
-cis_ubuntu2204_time_synchronization_time_fallback_server: ntp.ubuntu.com
+cis_ubuntu2204_time_synchronization_time_server:
+  - uri: time.cloudflare.com
+    config: iburst
+  - uri: ntp.ubuntu.com
+    config: iburst
 # general path for sysctl conf file
 cis_ubuntu2204_sysctl_file_path: /etc/sysctl.conf
 # cron allow users (cis_ubuntu2204_rule_2_4_1_8)
@@ -445,8 +448,8 @@ cis_ubuntu2204_ssh_port: 22
 cis_ubuntu2204_ssh_address_family: "inet"
 cis_ubuntu2204_ssh_authentication_methods: "publickey"
 cis_ubuntu2204_ssh_password_authentication: "no"
-cis_ubuntu2204_ssh_allow_agent_forwarding: "yes"
-cis_ubuntu2204_ssh_tcp_keep_alive: "yes"
+cis_ubuntu2204_ssh_allow_agent_forwarding: "no"
+cis_ubuntu2204_ssh_tcp_keep_alive: "no"
 cis_ubuntu2204_ssh_x11_forwarding: "no"
 cis_ubuntu2204_ssh_allow_tcp_forwarding: "no"
 # (cis_ubuntu2204_rule_5_1_24)

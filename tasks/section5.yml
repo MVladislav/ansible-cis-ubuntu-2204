@@ -1638,10 +1638,12 @@
       field: umask
     - dest: /etc/bash.bashrc
       field: umask
-    # dest: - /etc/pam.d/postlogin
+    - dest: /etc/bashrc
+      field: umask
+    # - dest: /etc/pam.d/postlogin
     - dest: /etc/login.defs
       field: UMASK
-    # dest: - /etc/default/login
+    # - dest: /etc/default/login
     - dest: /etc/profile.d/99-umask.sh
       field: umask
   when:

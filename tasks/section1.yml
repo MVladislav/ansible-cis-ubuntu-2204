@@ -757,7 +757,9 @@
 
 - name: "SECTION1 | 1.6.1 | Ensure message of the day is configured properly"
   ansible.builtin.copy:
-    content: Authorized users only. All activity may be monitored and reported.
+    content: |
+      {{ cis_ubuntu2204_warning_banner }}
+
     dest: /etc/motd
     mode: "{{ cis_ubuntu2204_section1_mode_etc_issue_motd }}"
   when:
@@ -769,7 +771,9 @@
 
 - name: "SECTION1 | 1.6.2 | Ensure local login warning banner is configured properly"
   ansible.builtin.copy:
-    content: Authorized users only. All activity may be monitored and reported.
+    content: |
+      {{ cis_ubuntu2204_warning_banner }}
+
     dest: /etc/issue
     mode: "{{ cis_ubuntu2204_section1_mode_etc_issue_motd }}"
   when:
@@ -781,7 +785,9 @@
 
 - name: "SECTION1 | 1.6.3 | Ensure remote login warning banner is configured properly"
   ansible.builtin.copy:
-    content: Authorized users only. All activity may be monitored and reported.
+    content: |
+      {{ cis_ubuntu2204_warning_banner }}
+
     dest: /etc/issue.net
     mode: "{{ cis_ubuntu2204_section1_mode_etc_issue_motd }}"
   when:

@@ -166,8 +166,11 @@ cis_ubuntu2204_config_aide: true
 ```yaml
 # choose time synchronization (cis_ubuntu2204_rule_2_3_1_1)
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
-cis_ubuntu2204_time_synchronization_time_server: time.cloudflare.com
-cis_ubuntu2204_time_synchronization_time_fallback_server: ntp.ubuntu.com
+cis_ubuntu2204_time_synchronization_time_server:
+  - uri: time.cloudflare.com
+    config: iburst
+  - uri: ntp.ubuntu.com
+    config: iburst
 
 # cron allow users  (cis_ubuntu2204_rule_2_4_1_8)
 cis_ubuntu2204_cron_allow_users:
@@ -297,8 +300,11 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_allow_autofs: true # Disable auto mount, set to true to allow it and not disable
       cis_ubuntu2204_rule_1_1_1_8: false # Disable USB Storage, set to false to not disable
       cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
-      cis_ubuntu2204_time_synchronization_time_server: '{{ ansible_host_default_ntp | default("time.cloudflare.com")}}'
-      cis_ubuntu2204_time_synchronization_time_fallback_server: ntp.ubuntu.com
+      cis_ubuntu2204_time_synchronization_time_server:
+        - uri: time.cloudflare.com
+          config: iburst
+        - uri: ntp.ubuntu.com
+          config: iburst
       cis_ubuntu2204_allow_cups: true
       # -------------------------
       cis_ubuntu2204_install_aide: "{{ cis_setup_aide | default(false) | bool }}"

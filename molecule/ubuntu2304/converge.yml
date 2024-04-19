@@ -29,8 +29,11 @@
     cis_ubuntu2204_allow_autofs: false # Disable auto mount, set to true to allow it and not disable
     cis_ubuntu2204_rule_1_1_1_8: true # Disable USB Storage, set to false to not disable
     cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
-    cis_ubuntu2204_time_synchronization_time_server: time.cloudflare.com
-    cis_ubuntu2204_time_synchronization_time_fallback_server: ntp.ubuntu.com
+    cis_ubuntu2204_time_synchronization_time_server:
+      - uri: time.cloudflare.com
+        config: iburst
+      - uri: ntp.ubuntu.com
+        config: iburst
     cis_ubuntu2204_allow_cups: false
     # -------------------------
     cis_ubuntu2204_install_aide: false
@@ -73,4 +76,3 @@
         value: "-1"
       - key: "lcredit"
         value: "-1"
-    # -------------------------

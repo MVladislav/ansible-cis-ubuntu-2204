@@ -49,4 +49,3 @@ tests/*
 *.retry
 
 tasks/pre_extra.yml
-templates/sshd_config.j2

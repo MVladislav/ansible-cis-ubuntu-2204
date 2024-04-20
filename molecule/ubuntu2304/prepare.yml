@@ -4,55 +4,54 @@
   gather_facts: false
   tasks:
     - name: "PREPARE | install openssh-server for testing under docker"
-      apt:
+      ansible.builtin.apt:
         name: openssh-server
         state: present
         update_cache: yes
     - name: "PREPARE | install grub files for testing under docker"
       block:
         - name: "PREPARE | install grub-common for grub-mkpasswd-pbkdf2 to testing under docker"
-          apt:
+          ansible.builtin.apt:
             name: grub-common
             state: present
             update_cache: yes
 
         - name: "PREPARE | create folder /boot/grub"
-          file:
+          ansible.builtin.file:
             name: /boot/grub
             state: directory
+            mode: "0755"
           changed_when: false
         - name: "PREPARE | touch /boot/grub/grub.cfg"
-          file:
+          ansible.builtin.file:
             name: /boot/grub/grub.cfg
             state: touch
+            mode: "0600"
           changed_when: false
 
         - name: "PREPARE | touch /etc/default/grub"
-          file:
+          ansible.builtin.file:
             name: /etc/default/grub
             state: touch
+            mode: "0644"
           changed_when: false
 
-    - name: "PREPARE | SECTION6 | prepare files to trigger some task"
+    - name: "PREPARE | SECTION7 | prepare files to trigger some task"
       ansible.builtin.shell: |
         set -o pipefail
-        # SECTION6 | 6.1.9 | Ensure no world writable files exist
+        # SECTION7 | 7.1.9 | Ensure no world writable files exist
         touch /abc && chmod 777 /abc
-        # SECTION6 | 6.2.1 | Ensure accounts in /etc/passwd use shadowed passwords
+        # SECTION7 | 7.2.1 | Ensure accounts in /etc/passwd use shadowed passwords
         sed -e 's|^ubuntu:[^:]*:|ubuntu:abc:|' -i /etc/passwd
-        # SECTION6 | 6.2.2 | Ensure /etc/shadow password fields are not empty
+        # SECTION7 | 7.2.2 | Ensure /etc/shadow password fields are not empty
         sed -e 's|^ubuntu:[^:]*:|ubuntu::|' -i /etc/shadow
-        # SECTION6 | 6.2.4 | Ensure shadow group is empty
+        # SECTION7 | 7.2.4 | Ensure shadow group is empty
         echo "shadow:x::666" >> /etc/group
-        # SECTION6 | 6.2.11 | Ensure local interactive user home directories exist
+        # SECTION7 | 7.2.11 | Ensure local interactive user home directories exist
         useradd abc
-        # SECTION6 | 6.2.14 | Ensure no local interactive user has .netrc files
-        # SECTION6 | 6.2.15 | Ensure no local interactive user has .forward files
-        # SECTION6 | 6.2.16 | Ensure no local interactive user has .rhosts files
-        touch /root/{.netrc,.forward,.rhosts}
-        # SECTION6 | 6.2.17 | Ensure local interactive user dot files are not group or world writable
+        # SECTION7 | 7.2.17 | Ensure local interactive user dot files are not group or world writable
         chmod 777 /root/.profile
       args:
-        executable: /bin/bash
+        executable: "/bin/bash"
       changed_when: false
       check_mode: false

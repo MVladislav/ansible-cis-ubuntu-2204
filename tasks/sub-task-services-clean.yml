@@ -1,0 +1,49 @@
+---
+# tasks file for ansible-cis-ubuntu-2204
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION-X | SUB-TASK | Ensure services are not in use or purged | service rule info"
+  ansible.builtin.debug:
+    msg: "{{ outer_item.title }}"
+
+- name: "SECTION-X | SUB-TASK | Ensure services are not in use or purged | check if service available"
+  ansible.builtin.shell: |
+    set -o pipefail &&
+    systemctl show {{ item }} | grep LoadState | cut -d = -f 2
+  args:
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
+  loop: "{{ outer_item.service | flatten(levels=1) }}"
+  register: service_status_check_loop_2_1
+  changed_when: false
+  check_mode: false
+  when:
+    - outer_item.service is defined
+    - outer_item.disable | bool
+
+- name: "SECTION-X | SUB-TASK | Ensure services are not in use or purged | disable and mask service"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    daemon_reload: true
+    enabled: false
+    masked: true
+    state: stopped
+  loop: "{{ outer_item.service | flatten(levels=1) }}"
+  when:
+    - outer_item.service is defined
+    - outer_item.disable | bool
+    - service_status_check_loop_2_1.results | selectattr('item', 'equalto', item) | map(attribute='stdout') | list | first == "loaded"
+
+- name: "SECTION-X | SUB-TASK | Ensure services are not in use or purged | purge task"
+  when:
+    - outer_item.apt is defined
+    - outer_item.remove | bool
+  block:
+    - name: "SECTION-X | SUB-TASK | Ensure services are not in use or purged | purge candidate info"
+      ansible.builtin.debug:
+        msg: "Packages to be removed: {{ outer_item.apt }}"
+    - name: "SECTION-X | SUB-TASK | Ensure services are not in use or purged | purge service"
+      ansible.builtin.apt:
+        name: "{{ outer_item.apt }}"
+        state: absent
+        purge: true

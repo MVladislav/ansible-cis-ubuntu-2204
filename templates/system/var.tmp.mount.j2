@@ -1,8 +1,11 @@
-{% set cis_ubuntu2204_rule_1_1_4_options = [] %}
-{% if cis_ubuntu2204_rule_1_1_4_2 %}{% set _ = cis_ubuntu2204_rule_1_1_4_options.append('noexec') %}{% endif %}
-{% if cis_ubuntu2204_rule_1_1_4_3 %}{% set _ = cis_ubuntu2204_rule_1_1_4_options.append('nosuid') %}{% endif %}
-{% if cis_ubuntu2204_rule_1_1_4_4 %}{% set _ = cis_ubuntu2204_rule_1_1_4_options.append('nodev') %}{% endif %}
-{% set cis_ubuntu2204_rule_1_1_4_options = cis_ubuntu2204_rule_1_1_4_options|join(',') %}
+{% set cis_ubuntu2204_rule_1_1_2_5_options = [] %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_5_options.append('rw') %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_5_options.append('relatime') %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_5_options.append('seclabel') %}
+{% if cis_ubuntu2204_rule_1_1_2_5_2 %}{% set _ = cis_ubuntu2204_rule_1_1_2_5_options.append('nodev') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_2_5_3 %}{% set _ = cis_ubuntu2204_rule_1_1_2_5_options.append('nosuid') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_2_5_4 %}{% set _ = cis_ubuntu2204_rule_1_1_2_5_options.append('noexec') %}{% endif %}
+{% set cis_ubuntu2204_rule_1_1_2_5_options = cis_ubuntu2204_rule_1_1_2_5_options|join(',') %}
 [Unit]
 Description=Temporary Directory /var/tmp
 ConditionPathIsSymbolicLink=!/var/tmp
@@ -12,11 +15,11 @@ Before=local-fs.target umount.target
 After=swap.target
 
 [Mount]
-What=ext4
 Where=/var/tmp
+What=/dev/sdb
 Type=ext4
-Options={{ cis_ubuntu2204_rule_1_1_4_options }}
+Options={{ cis_ubuntu2204_rule_1_1_2_5_options }}
 
-# Make 'systemctl enable tmp.mount' work:
+# Make 'systemctl enable var.tmp.mount' work:
 [Install]
 WantedBy=local-fs.target

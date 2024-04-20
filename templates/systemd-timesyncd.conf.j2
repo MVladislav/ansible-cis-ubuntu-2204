@@ -1,5 +1,11 @@
 {{ ansible_managed | comment }}
 
 [Time]
-NTP={{ cis_ubuntu2204_time_synchronization_ntp_server }}
-FallbackNTP={{ cis_ubuntu2204_time_synchronization_ntp_fallback_server }}
+{% if cis_ubuntu2204_time_synchronization_time_server is defined %}
+{%- if cis_ubuntu2204_time_synchronization_time_server[0] is defined and cis_ubuntu2204_time_synchronization_time_server[0].uri is defined %}
+NTP={{ cis_ubuntu2204_time_synchronization_time_server[0].uri }} {{ cis_ubuntu2204_time_synchronization_time_server[0].config | default('iburst') }}
+{% endif %}
+{%- if cis_ubuntu2204_time_synchronization_time_server[1] is defined and cis_ubuntu2204_time_synchronization_time_server[1].uri is defined -%}
+FallbackNTP={{ cis_ubuntu2204_time_synchronization_time_server[1].uri }} {{ cis_ubuntu2204_time_synchronization_time_server[1].config | default('iburst') }}
+{% endif %}
+{%- endif %}

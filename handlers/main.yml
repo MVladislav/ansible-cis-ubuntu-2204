@@ -5,7 +5,7 @@
 
 - name: "HANDLER | 1.1.2.1 | systemd restart and enable tmp.mount"
   become: true
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: tmp.mount
     daemon_reload: true
     enabled: true
@@ -13,74 +13,11 @@
     state: reloaded
   listen: systemd restart and enable tmp.mount
 
-# - name: "HANDLER | 1.1.3.1 | systemd restart and enable var.mount"
-#   become: true
-#   ansible.builtin.systemd:
-#     name: var.mount
-#     daemon_reload: true
-#     enabled: true
-#     masked: false
-#     state: reloaded
-#   listen: systemd restart and enable var.mount
-#   when: ansible_virtualization_type != "docker"
+# ------------------------------------------------------------------------------
 
-# - name: "HANDLER | 1.1.4.1 | systemd restart and enable var.tmp.mount"
-#   become: true
-#   ansible.builtin.systemd:
-#     name: var.tmp.mount
-#     daemon_reload: true
-#     enabled: true
-#     masked: false
-#     state: reloaded
-#   listen: systemd restart and enable var.tmp.mount
-#   when: ansible_virtualization_type != "docker"
-
-# - name: "HANDLER | 1.1.5.1 | systemd restart and enable var.log.mount"
-#   become: true
-#   ansible.builtin.systemd:
-#     name: var.log.mount
-#     daemon_reload: true
-#     enabled: true
-#     masked: false
-#     state: reloaded
-#   listen: systemd restart and enable var.log.mount
-#   when: ansible_virtualization_type != "docker"
-
-# - name: "HANDLER | 1.1.6.1 | systemd restart and enable var.log.audit.mount"
-#   become: true
-#   ansible.builtin.systemd:
-#     name: var.log.audit.mount
-#     daemon_reload: true
-#     enabled: true
-#     masked: false
-#     state: reloaded
-#   listen: systemd restart and enable var.log.audit.mount
-#   when: ansible_virtualization_type != "docker"
-
-# - name: "HANDLER | 1.1.7.1 | systemd restart and enable home.mount"
-#   become: true
-#   ansible.builtin.systemd:
-#     name: home.mount
-#     daemon_reload: true
-#     enabled: true
-#     masked: false
-#     state: reloaded
-#   listen: systemd restart and enable home.mount
-#   when: ansible_virtualization_type != "docker"
-
-- name: "HANDLER | 1.5.4 | systemd restart and enable systemd-coredump"
+- name: "HANDLER | 1.3.1 | systemd restart and enable apparmor"
   become: true
-  ansible.builtin.systemd:
-    name: systemd-coredump.socket
-    daemon_reload: true
-    enabled: true
-    masked: false
-    state: restarted
-  listen: restart systemd-coredump
-
-- name: "HANDLER | 1.6.1 | systemd restart and enable apparmor"
-  become: true
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: apparmor.service
     daemon_reload: true
     enabled: true
@@ -89,19 +26,21 @@
   listen: restart apparmor
   when: ansible_virtualization_type != "docker"
 
-- name: "HANDLER | 2.2.1.1 | systemd restart and enable chrony"
+- name: "HANDLER | 1.5.3 | systemd restart and enable systemd-coredump"
   become: true
-  ansible.builtin.systemd:
-    name: chrony
+  ansible.builtin.systemd_service:
+    name: systemd-coredump.socket
     daemon_reload: true
     enabled: true
     masked: false
     state: restarted
-  listen: "restart chrony"
+  listen: restart systemd-coredump
 
-- name: "HANDLER | 2.2.1.1 | systemd restart and enable systemd-timesyncd"
+# ------------------------------------------------------------------------------
+
+- name: "HANDLER | 2.3.2.1 | systemd restart and enable systemd-timesyncd"
   become: true
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: systemd-timesyncd
     daemon_reload: true
     enabled: true
@@ -109,19 +48,43 @@
     state: restarted
   listen: "restart systemd-timesyncd"
 
-- name: "HANDLER | 2.2.1.1 | systemd restart and enable ntp"
+- name: "HANDLER | 2.3.1.1, 2.3.3.1-2 | systemd restart and enable chrony"
   become: true
-  ansible.builtin.systemd:
-    name: ntp
+  ansible.builtin.systemd_service:
+    name: chrony
     daemon_reload: true
     enabled: true
     masked: false
     state: restarted
-  listen: "restart ntp"
+  listen: "restart chrony"
 
-- name: "HANDLER | 4 | systemd restart and enable auditd"
+# ------------------------------------------------------------------------------
+
+- name: "HANDLER | 6.2.1.1 | systemd restart and enable systemd-journald"
   become: true
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
+    name: systemd-journald
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: restarted
+  listen: "restart systemd-journald"
+  when: ansible_virtualization_type != "docker"
+
+- name: "HANDLER | 6.2.1.2 | systemd restart and enable systemd-journal-upload"
+  become: true
+  ansible.builtin.systemd_service:
+    name: systemd-journal-upload
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: restarted
+  listen: "restart systemd-journal-upload"
+  when: ansible_virtualization_type != "docker"
+
+- name: "HANDLER | 6.3.2 | systemd restart and enable auditd"
+  become: true
+  ansible.builtin.systemd_service:
     name: auditd
     daemon_reload: true
     enabled: true
@@ -130,48 +93,9 @@
   listen: "restart auditd"
   when: ansible_virtualization_type != "docker"
 
-- name: "HANDLER | 4.2.1.1.2 | systemd restart and enable systemd-journal-upload"
-  become: true
-  ansible.builtin.systemd:
-    name: systemd-journal-upload
-    daemon_reload: true
-    enabled: true
-    masked: false
-    state: restarted
-  listen: "restart systemd-journal-upload"
-
-- name: "HANDLER | 4.2.1.3-6 | systemd restart and enable systemd-journald"
-  become: true
-  ansible.builtin.systemd:
-    name: systemd-journald
-    daemon_reload: true
-    enabled: true
-    masked: false
-    state: restarted
-  listen: "restart systemd-journald"
-
-- name: "HANDLER | 4.2.2.3-7 | systemd restart and enable rsyslog"
-  become: true
-  ansible.builtin.systemd:
-    name: rsyslog
-    daemon_reload: true
-    enabled: true
-    masked: false
-    state: restarted
-  listen: "restart rsyslog"
-
 # ------------------------------------------------------------------------------
 
-- name: "HANDLER | EXTRA | systemd restart and enable xinetd"
-  become: true
-  ansible.builtin.systemd:
-    name: "xinetd"
-    state: restarted
-  listen: "restart xinetd"
-
-# ------------------------------------------------------------------------------
-
-- name: "HANDLER | 1.4.1 | generate new grub config"
+- name: "HANDLER | 1.4.2 | generate new grub config"
   become: true
   ansible.builtin.command: >
     grub-mkconfig -o {{ cis_grub_cfg.stat.path }}
@@ -180,7 +104,7 @@
   notify: fix permissions after generate new grub config handler
   when: ansible_virtualization_type != "docker"
 
-- name: "HANDLER | 1.4.1 | fix permissions after generate new grub config handler"
+- name: "HANDLER | 1.4.2 | fix permissions after generate new grub config handler"
   become: true
   ansible.builtin.file:
     path: "/boot/grub/grub.cfg"
@@ -191,14 +115,14 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "HANDLER | 1.6.1.2 | update-grub"
+- name: "HANDLER | 1.3.1.2, 3.1.1, 6.3.1 | update-grub"
   become: true
   ansible.builtin.command: /usr/sbin/update-grub
   changed_when: false
   listen: update-grub
   when: ansible_virtualization_type != "docker"
 
-- name: "HANDLER | 4 | merge and load the rules into active configuration"
+- name: "HANDLER | 6.3.3 | merge and load the rules into active configuration"
   become: true
   ansible.builtin.command: /sbin/augenrules --load
   changed_when: false

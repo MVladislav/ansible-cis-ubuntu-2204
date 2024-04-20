@@ -19,8 +19,11 @@
 # fails they will be discarded.  Thus under some circumstances it is
 # better to use IP numbers than host names.
 
-server {{ cis_ubuntu2204_time_synchronization_ntp_server }} iburst
-server {{ cis_ubuntu2204_time_synchronization_ntp_fallback_server }} iburst
+{% for server in cis_ubuntu2204_time_synchronization_time_server %}
+{%- if server.uri is defined -%}
+server {{ server.uri }} {{ server.config | default("iburst") }}
+{% endif %}
+{% endfor %}
 
 # Ensure chrony is running as user _chrony
 user _chrony

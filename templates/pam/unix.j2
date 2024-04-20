@@ -1,0 +1,23 @@
+Name: Unix authentication
+Default: yes
+Priority: 256
+Auth-Type: Primary
+Auth:
+        [success=end default=ignore]    pam_unix.so{{ ' nullok' if not cis_ubuntu2204_rule_5_3_3_4_1 else '' }} try_first_pass
+Auth-Initial:
+        [success=end default=ignore]    pam_unix.so{{ ' nullok' if not cis_ubuntu2204_rule_5_3_3_4_1 else '' }}
+Account-Type: Primary
+Account:
+        [success=end new_authtok_reqd=done default=ignore]      pam_unix.so
+Account-Initial:
+        [success=end new_authtok_reqd=done default=ignore]      pam_unix.so
+Session-Type: Additional
+Session:
+        required        pam_unix.so
+Session-Initial:
+        required        pam_unix.so
+Password-Type: Primary
+Password:
+        [success=end default=ignore]    pam_unix.so obscure {{ cis_ubuntu2204_unix_use_authtok }} try_first_pass {{ cis_ubuntu2204_unix_encrypt_method | lower }}
+Password-Initial:
+        [success=end default=ignore]    pam_unix.so obscure {{ cis_ubuntu2204_unix_encrypt_method | lower }}

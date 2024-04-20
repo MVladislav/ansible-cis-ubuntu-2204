@@ -3,1069 +3,560 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION4 | 4.1.1.1 | Ensure auditd is installed"
+- name: "SECTION4 | 4.1.1 | Ensure ufw is installed"
   ansible.builtin.apt:
-    name:
-      - auditd
-      - audispd-plugins
+    name: ufw
     state: present
-    install_recommends: false
+    force_apt_get: true
   when:
-    - cis_ubuntu2204_rule_4_1_1_1
+    - cis_ubuntu2204_rule_4_1_1
+    - cis_ubuntu2204_firewall == "ufw"
   tags:
-    - rule_4_1_1
-    - server_l2
-    - workstation_l2
+    - rule_4_1
+    - server_l1
+    - workstation_l1
 
-- name: "SECTION4 | 4.1.1.2 | Ensure auditd service is enabled and active"
-  ansible.builtin.systemd:
-    name: auditd
+- name: "SECTION4 | 4.1.2 | Ensure iptables-persistent is not installed with ufw"
+  ansible.builtin.apt:
+    name: iptables-persistent
+    state: absent
+    purge: true
+  when:
+    - cis_ubuntu2204_rule_4_1_2
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_4_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.1.3 | Ensure ufw service is enabled"
+  when:
+    - cis_ubuntu2204_rule_4_1_3
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_4_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION4 | 4.1.3 | Ensure ufw service is enabled | allow ssh"
+      community.general.ufw:
+        rule: allow
+        direction: in
+        from_ip: any
+        to_ip: any
+        to_port: 22
+        protocol: tcp
+        interface: "{{ ansible_default_ipv4['interface'] }}"
+        log: true
+        comment: "allow incoming connection on standard ssh port for interface {{ ansible_default_ipv4['interface'] }}"
+    - name: "SECTION4 | 4.1.3 | Ensure ufw service is enabled | enable service"
+      ansible.builtin.systemd_service:
+        name: ufw.service
+        daemon_reload: true
+        enabled: true
+        masked: false
+        state: started
+    - name: "SECTION4 | 4.1.3 | Ensure ufw service is enabled | enable ufw"
+      community.general.ufw:
+        state: enabled
+
+- name: "SECTION4 | 4.1.4 | Ensure ufw loopback traffic is configured"
+  when:
+    - cis_ubuntu2204_rule_4_1_4
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_4_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION4 | 4.1.4 | Ensure ufw loopback traffic is configured | ingress allow in on lo"
+      community.general.ufw:
+        rule: allow
+        direction: in
+        interface: lo
+        log: false
+    - name: "SECTION4 | 4.1.4 | Ensure ufw loopback traffic is configured | egress allow out on lo"
+      community.general.ufw:
+        rule: allow
+        direction: out
+        interface: lo
+        log: false
+    - name: "SECTION4 | 4.1.4 | Ensure ufw loopback traffic is configured | ingress deny in from 127.0.0.0/8"
+      community.general.ufw:
+        rule: deny
+        direction: in
+        from: "127.0.0.0/8"
+        log: false
+    - name: "SECTION4 | 4.1.4 | Ensure ufw loopback traffic is configured | ingress deny in from ::1"
+      community.general.ufw:
+        rule: deny
+        direction: in
+        from: "::1"
+        log: false
+      when:
+        - not cis_ubuntu2204_rule_3_1_1 and cis_ubuntu2204_required_ipv6
+
+- name: "SECTION4 | 4.1.5 | Ensure ufw outbound connections are configured"
+  community.general.ufw:
+    rule: allow
+    direction: out
+    to: any
+    log: false
+  when:
+    - cis_ubuntu2204_rule_4_1_5
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_4_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.1.6 | Ensure ufw firewall rules exist for all open ports"
+  community.general.ufw:
+    rule: "{{ item.rule }}"
+    direction: "{{ item.direction }}"
+    port: "{{ item.port }}"
+    protocol: "{{ item.protocol }}"
+    log: "{{ item.log | default(true) }}"
+    comment: "{{ item.comment }}"
+  loop: "{{ cis_ubuntu2204_firewall_rules_exist_open_ports | flatten(levels=1) }}"
+  when:
+    - cis_ubuntu2204_rule_4_1_6
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_4_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.1.7 | Ensure ufw default deny firewall policy"
+  when:
+    - cis_ubuntu2204_rule_4_1_7
+    - cis_ubuntu2204_firewall == "ufw"
+  tags:
+    - rule_4_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION4 | 4.1.7 | Ensure ufw default deny firewall policy | in deny"
+      community.general.ufw:
+        policy: deny
+        direction: incoming
+        log: true
+    - name: "SECTION4 | 4.1.7 | Ensure ufw default deny firewall policy | out deny"
+      community.general.ufw:
+        policy: "{{ cis_ubuntu2204_firewall_ufw_outgoing_policy | default('deny') }}"
+        direction: outgoing
+        log: true
+    - name: "SECTION4 | 4.1.7 | Ensure ufw default deny firewall policy | routed deny"
+      community.general.ufw:
+        policy: deny
+        direction: routed
+        route: true
+        log: true
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION4 | 4.2.1 | Ensure nftables is installed"
+  ansible.builtin.apt:
+    name: nftables
+    state: present
+    force_apt_get: true
+  when:
+    - cis_ubuntu2204_rule_4_2_1
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_4_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.2.2 | Ensure ufw is uninstalled or disabled with nftables"
+  ansible.builtin.apt:
+    name: ufw
+    state: absent
+    purge: true
+  when:
+    - cis_ubuntu2204_rule_4_2_2
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_4_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.2.3 | Ensure iptables are flushed with nftables"
+  when:
+    - cis_ubuntu2204_rule_4_2_3
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_4_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION4 | 4.2.3 | Ensure iptables are flushed with nftables | ipv4"
+      ansible.builtin.iptables:
+        flush: true
+        ip_version: ipv4
+    - name: "SECTION4 | 4.2.3 | Ensure iptables are flushed with nftables | ipv6"
+      ansible.builtin.iptables:
+        flush: true
+        ip_version: ipv6
+
+- name: "SECTION4 | 4.2.4 | Ensure a nftables table exists"
+  ansible.builtin.command: >
+    nft create table inet {{ cis_ubuntu2204_firewall_nftables_table_name }}
+  changed_when: false
+  failed_when: false
+  when:
+    - cis_ubuntu2204_rule_4_2_4
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_4_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.2.5 | Ensure nftables base chains exist"
+  ansible.builtin.command: >
+    nft create chain inet {{ cis_ubuntu2204_firewall_nftables_table_name }} {{ item }} { type filter hook {{ item }} priority 0 \; }
+  changed_when: false
+  failed_when: false
+  with_items:
+    - input
+    - forward
+    - output
+  when:
+    - cis_ubuntu2204_rule_4_2_5
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_4_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.2.6 | Ensure nftables loopback traffic is configured"
+  when:
+    - cis_ubuntu2204_rule_4_2_6
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_4_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION4 | 4.2.6 | Ensure nftables loopback traffic is configured | ingress lo accept"
+      ansible.builtin.command: >
+        nft add rule inet {{ cis_ubuntu2204_firewall_nftables_table_name }} input iif lo accept
+      changed_when: false
+      failed_when: false
+    - name: "SECTION4 | 4.2.6 | Ensure nftables loopback traffic is configured | ingress 127.0.0.0/8 counter drop"
+      ansible.builtin.command: >
+        nft create rule inet {{ cis_ubuntu2204_firewall_nftables_table_name }} input ip saddr 127.0.0.0/8 counter drop
+      changed_when: false
+      failed_when: false
+    - name: "SECTION4 | 4.2.6 | Ensure nftables loopback traffic is configured | ingress ::1 counter drop"
+      ansible.builtin.command: >
+        nft add rule inet {{ cis_ubuntu2204_firewall_nftables_table_name }} input ip6 saddr ::1 counter drop
+      changed_when: false
+      failed_when: false
+
+- name: "SECTION4 | 4.2.7 | Ensure nftables outbound and established connections are configured"
+  ansible.builtin.command: >
+    nft add rule inet {{ cis_ubuntu2204_firewall_nftables_table_name }} {{ item.dir }} ip protocol {{ item.protocol }} ct state {{ item.state }} accept
+  changed_when: false
+  failed_when: false
+  with_items:
+    - dir: input
+      protocol: tcp
+      state: established
+    - dir: input
+      protocol: udp
+      state: established
+    - dir: input
+      protocol: icmp
+      state: established
+    - dir: output
+      protocol: tcp
+      state: new,related,established
+    - dir: output
+      protocol: udp
+      state: new,related,established
+    - dir: output
+      protocol: icmp
+      state: new,related,established
+  when:
+    - cis_ubuntu2204_rule_4_2_7
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_4_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.2.8 | Ensure nftables default deny firewall policy"
+  ansible.builtin.command: >
+    nft chain inet {{ cis_ubuntu2204_firewall_nftables_table_name }} {{ item }} { policy drop \; }
+  changed_when: false
+  failed_when: false
+  with_items:
+    - input
+    - forward
+    - output
+  when:
+    - cis_ubuntu2204_rule_4_2_8
+    - cis_ubuntu2204_firewall == "nftables"
+  tags:
+    - rule_4_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.2.9 | Ensure nftables service is enabled"
+  ansible.builtin.systemd_service:
+    name: nftables
     daemon_reload: true
     enabled: true
     masked: false
     state: started
   when:
-    - cis_ubuntu2204_rule_4_1_1_2
-    - ansible_virtualization_type != "docker"
+    - cis_ubuntu2204_rule_4_2_9
+    - cis_ubuntu2204_firewall == "nftables"
   tags:
-    - rule_4_1_1
-    - server_l2
-    - workstation_l2
-
-- name: "SECTION4 | 4.1.1.3 | Ensure auditing for processes that start prior to auditd is enabled"
-  ansible.builtin.replace:
-    dest: "{{ cis_ubuntu2204_default_grub_file }}"
-    regexp: '^(GRUB_CMDLINE_LINUX=(?!.*audit)\"[^\"]*)(\".*)'
-    replace: '\1 audit=1\2'
-  notify: update-grub
-  when:
-    - cis_ubuntu2204_rule_4_1_1_3
-  tags:
-    - rule_4_1_1
-    - server_l2
-    - workstation_l2
-
-- name: "SECTION4 | 4.1.1.4 | Ensure audit_backlog_limit is sufficient"
-  ansible.builtin.replace:
-    dest: "{{ cis_ubuntu2204_default_grub_file }}"
-    regexp: '^(GRUB_CMDLINE_LINUX=(?!.*audit_backlog_limit)\"[^\"]*)(\".*)'
-    replace: '\1 audit_backlog_limit={{ cis_ubuntu2204_audit_backlog_limit }}\2'
-  notify: update-grub
-  when:
-    - cis_ubuntu2204_rule_4_1_1_4
-  tags:
-    - rule_4_1_1
-    - server_l2
-    - workstation_l2
-
-# ------------------------------------------------------------------------------
-
-- name: "SECTION4 | 4.1.2.1 | Ensure audit log storage size is configured"
-  ansible.builtin.lineinfile:
-    dest: /etc/audit/auditd.conf
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}max_log_file((.*)?=|\s|$)'
-    line: "max_log_file = {{ cis_ubuntu2204_audit_max_log_file }}"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0640"
-  notify: restart auditd
-  when:
-    - cis_ubuntu2204_rule_4_1_2_1
-  tags:
-    - rule_4_1_2
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.2.2 | Ensure audit logs are not automatically deleted"
-  ansible.builtin.lineinfile:
-    dest: /etc/audit/auditd.conf
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}max_log_file_action((.*)?=|\s|$)'
-    line: "max_log_file_action = {{ cis_ubuntu2204_audit_max_log_file_action }}"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0640"
-  notify: restart auditd
-  when:
-    - cis_ubuntu2204_rule_4_1_2_2
-  tags:
-    - rule_4_1_2
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.2.3 | Ensure system is disabled when audit logs are full"
-  when:
-    - cis_ubuntu2204_rule_4_1_2_3
-  tags:
-    - rule_4_1_2
-    - server_l2
-    - workstation_l2
-  block:
-    - name: "SECTION4 | 4.1.2.3 | Ensure system is disabled when audit logs are full | space_left_action"
-      ansible.builtin.lineinfile:
-        dest: /etc/audit/auditd.conf
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}space_left_action((.*)?=|\s|$)'
-        line: "space_left_action = {{ cis_ubuntu2204_audit_space_left_action }}"
-        state: present
-        create: true
-        owner: root
-        group: root
-        mode: "0640"
-      notify: restart auditd
-    - name: "SECTION4 | 4.1.2.3 | Ensure system is disabled when audit logs are full | action_mail_acct"
-      ansible.builtin.lineinfile:
-        dest: /etc/audit/auditd.conf
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}action_mail_acct((.*)?=|\s|$)'
-        line: "action_mail_acct = {{ cis_ubuntu2204_audit_action_mail_acct }}"
-        state: present
-        create: true
-        owner: root
-        group: root
-        mode: "0640"
-      notify: restart auditd
-    - name: "SECTION4 | 4.1.2.3 | Ensure system is disabled when audit logs are full | admin_space_left_action"
-      ansible.builtin.lineinfile:
-        dest: /etc/audit/auditd.conf
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}admin_space_left_action((.*)?=|\s|$)'
-        line: "admin_space_left_action = {{ cis_ubuntu2204_audit_admin_space_left_action }}"
-        state: present
-        create: true
-        owner: root
-        group: root
-        mode: "0640"
-      notify: restart auditd
-
-# ------------------------------------------------------------------------------
-
-- name: "SECTION4 | 4.1.3.1 | Ensure changes to system administration scope (sudoers) is collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_1.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_1.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_1
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.2 | Ensure actions as another user are always logged"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_2.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_2.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_2
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.3 | Ensure events that modify the sudo log file are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_3.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_3.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_3
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.4 | Ensure events that modify date and time information are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_4.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_4.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_4
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.5 | Ensure events that modify the system's network environment are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_5.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_5.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_5
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-# TODO: check if findmnt us used correct (zfs)
-- name: "SECTION4 | 4.1.3.6 | Ensure use of privileged commands are collected"
-  when:
-    - cis_ubuntu2204_rule_4_1_3_6
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-  block:
-    - name: "SECTION4 | 4.1.3.6 | Ensure use of privileged commands are collected | get list of setuid/setguid binaries"
-      ansible.builtin.shell: >
-        set -o pipefail &&
-        for PARTITION in $(findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)
-        | grep -Pv "noexec|nosuid" | awk '{print $1}'); do
-        find "${PARTITION}" -xdev -perm /6000 -type f 2>/dev/null; done
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_audit_proc_paths
-      changed_when: false
-      check_mode: false
-    - name: "SECTION4 | 4.1.3.6 | Ensure use of privileged commands are collected | set rule"
-      ansible.builtin.template:
-        src: audit/cis_4_1_3_6.rules.j2
-        dest: /etc/audit/rules.d/cis_4_1_3_6.rules
-        owner: root
-        group: root
-        mode: "0600"
-      notify: load audit rules
-
-- name: "SECTION4 | 4.1.3.7 | Ensure unsuccessful file access attempts are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_7.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_7.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_7
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.8 | Ensure events that modify user/group information are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_8.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_8.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_8
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.9 | Ensure discretionary access control permission modification events are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_9.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_9.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_9
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.10 | Ensure successful file system mounts are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_10.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_10.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_10
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.11 | Ensure session initiation information is collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_11.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_11.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_11
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.12 | Ensure login and logout events are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_12.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_12.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_12
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.13 | Ensure file deletion events by users are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_13.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_13.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_13
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.14 | Ensure events that modify the system's Mandatory Access Controls are collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_14.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_14.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_14
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.15 | Ensure successful and unsuccessful attempts to use the chcon command are recorded"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_15.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_15.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_15
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.16 | Ensure successful and unsuccessful attempts to use the setfacl command are recorded"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_16.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_16.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_16
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.17 | Ensure successful and unsuccessful attempts to use the chacl command are recorded"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_17.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_17.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_17
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.18 | Ensure successful and unsuccessful attempts to use the usermod command are recorded"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_18.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_18.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_18
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.19 | Ensure kernel module loading unloading and modification is collected"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_19.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_19.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_19
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.3.20 | Ensure the audit configuration is immutable"
-  ansible.builtin.template:
-    src: audit/cis_4_1_3_20.rules.j2
-    dest: /etc/audit/rules.d/cis_4_1_3_20.rules
-    owner: root
-    group: root
-    mode: "0600"
-  notify: load audit rules
-  when:
-    - cis_ubuntu2204_rule_4_1_3_20
-  tags:
-    - rule_4_1_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-# - name: "SECTION4 | 4.1.3.21 | Ensure the running and on disk configuration is the same"
-#   when:
-#     - cis_ubuntu2204_rule_4_1_3_21
-#   tags:
-#     - rule_4_1_3
-#     - server_l2
-#     - workstation_l2
-
-# ------------------------------------------------------------------------------
-
-- name: "SECTION4 | 4.1.4.1 | Ensure audit log files are mode 0640 or less permissive"
-  ansible.builtin.file:
-    path: "{{ cis_ubuntu2204_audit_log_path }}/audit.log"
-    state: touch
-    mode: "0640"
-  when:
-    - cis_ubuntu2204_rule_4_1_4_1
-  tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-    - molecule-idempotence-notest
-
-- name: "SECTION4 | 4.1.4.2 | Ensure only authorized users own audit log files"
-  ansible.builtin.file:
-    path: "{{ cis_ubuntu2204_audit_log_path }}/audit.log"
-    owner: root
-  when:
-    - cis_ubuntu2204_rule_4_1_4_2
-  tags:
-    - rule_4_1_4
+    - rule_4_2
     - server_l1
     - workstation_l1
 
-- name: "SECTION4 | 4.1.4.3 | Ensure only authorized groups are assigned ownership of audit log files"
+- name: "SECTION4 | 4.2.10 | Ensure nftables rules are permanent"
+  ansible.builtin.command: >
+    nft list table inet {{ cis_ubuntu2204_firewall_nftables_table_name }} > /etc/nftables.conf
+  changed_when: false
+  failed_when: false
   when:
-    - cis_ubuntu2204_rule_4_1_4_3
+    - cis_ubuntu2204_rule_4_2_10
+    - cis_ubuntu2204_firewall == "nftables"
   tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION4 | 4.1.4.3 | Ensure only authorized groups are assigned ownership of audit log files | auditd.conf log_group"
-      ansible.builtin.lineinfile:
-        dest: /etc/audit/auditd.conf
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}log_group((.*)?=|\s|$)'
-        line: "log_group = {{ cis_ubuntu2204_audit_log_group }}"
-        state: present
-        create: true
-        owner: root
-        group: root
-        mode: "0640"
-    - name: "SECTION4 | 4.1.4.3 | Ensure only authorized groups are assigned ownership of audit log files | set folder group"
-      ansible.builtin.file:
-        path: "{{ cis_ubuntu2204_audit_log_path }}"
-        group: "{{ cis_ubuntu2204_audit_log_group }}"
-        state: directory
-        mode: "0750"
-    - name: "SECTION4 | 4.1.4.3 | Ensure only authorized groups are assigned ownership of audit log files | set file group"
-      ansible.builtin.file:
-        path: "{{ cis_ubuntu2204_audit_log_path }}/audit.log"
-        group: "{{ cis_ubuntu2204_audit_log_group }}"
-
-- name: "SECTION4 | 4.1.4.4 | Ensure the audit log directory is 0750 or more restrictive"
-  ansible.builtin.file:
-    path: "{{ cis_ubuntu2204_audit_log_path }}"
-    state: directory
-    mode: "0750"
-  when:
-    - cis_ubuntu2204_rule_4_1_4_4
-  tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION4 | 4.1.4.5 | Ensure audit configuration files are 640 or more restrictive"
-  when:
-    - cis_ubuntu2204_rule_4_1_4_5
-  tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-    - molecule-idempotence-notest
-  block:
-    - name: "SECTION4 | 4.1.4.5 | Ensure audit configuration files are 640 or more restrictive | find *.conf"
-      ansible.builtin.find:
-        paths: /etc/audit/
-        file_type: file
-        patterns: "*.conf"
-        recurse: true
-      register: cis_ubuntu2204_audit_files_conf
-    - name: "SECTION4 | 4.1.4.5 | Ensure audit configuration files are 640 or more restrictive | update *.conf"
-      ansible.builtin.file:
-        path: "{{ item.path }}"
-        mode: "0640"
-      with_items: "{{ cis_ubuntu2204_audit_files_conf.files }}"
-    - name: "SECTION4 | 4.1.4.5 | Ensure audit configuration files are 640 or more restrictive | find *.rules"
-      ansible.builtin.find:
-        paths: /etc/audit/
-        file_type: file
-        patterns: "*.rules"
-        recurse: true
-      register: cis_ubuntu2204_audit_files_rules
-    - name: "SECTION4 | 4.1.4.5 | Ensure audit configuration files are 640 or more restrictive | update *.rules"
-      ansible.builtin.file:
-        path: "{{ item.path }}"
-        mode: "0640"
-      with_items: "{{ cis_ubuntu2204_audit_files_rules.files }}"
-
-- name: "SECTION4 | 4.1.4.6 | Ensure audit configuration files are owned by root"
-  when:
-    - cis_ubuntu2204_rule_4_1_4_6
-  tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION4 | 4.1.4.6 | Ensure audit configuration files are owned by root | find *.conf"
-      ansible.builtin.find:
-        paths: /etc/audit/
-        file_type: file
-        patterns: "*.conf"
-        recurse: true
-      register: cis_ubuntu2204_audit_files_conf
-    - name: "SECTION4 | 4.1.4.6 | Ensure audit configuration files are owned by root | update *.conf"
-      ansible.builtin.file:
-        path: "{{ item.path }}"
-        owner: root
-      with_items: "{{ cis_ubuntu2204_audit_files_conf.files }}"
-    - name: "SECTION4 | 4.1.4.6 | Ensure audit configuration files are owned by root | find *.rules"
-      ansible.builtin.find:
-        paths: /etc/audit/
-        file_type: file
-        patterns: "*.rules"
-        recurse: true
-      register: cis_ubuntu2204_audit_files_rules
-    - name: "SECTION4 | 4.1.4.6 | Ensure audit configuration files are owned by root | update *.rules"
-      ansible.builtin.file:
-        path: "{{ item.path }}"
-        owner: root
-      with_items: "{{ cis_ubuntu2204_audit_files_rules.files }}"
-
-- name: "SECTION4 | 4.1.4.7 | Ensure audit configuration files belong to group root"
-  when:
-    - cis_ubuntu2204_rule_4_1_4_7
-  tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION4 | 4.1.4.7 | Ensure audit configuration files belong to group root | find *.conf"
-      ansible.builtin.find:
-        paths: /etc/audit/
-        file_type: file
-        patterns: "*.conf"
-        recurse: true
-      register: cis_ubuntu2204_audit_files_conf
-    - name: "SECTION4 | 4.1.4.7 | Ensure audit configuration files belong to group root | update *.conf"
-      ansible.builtin.file:
-        path: "{{ item.path }}"
-        group: root
-      with_items: "{{ cis_ubuntu2204_audit_files_conf.files }}"
-    - name: "SECTION4 | 4.1.4.7 | Ensure audit configuration files belong to group root | find *.rules"
-      ansible.builtin.find:
-        paths: /etc/audit/
-        file_type: file
-        patterns: "*.rules"
-        recurse: true
-      register: cis_ubuntu2204_audit_files_rules
-    - name: "SECTION4 | 4.1.4.7 | Ensure audit configuration files belong to group root | update *.rules"
-      ansible.builtin.file:
-        path: "{{ item.path }}"
-        group: root
-      with_items: "{{ cis_ubuntu2204_audit_files_rules.files }}"
-
-- name: "SECTION4 | 4.1.4.8 | Ensure audit tools are 755 or more restrictive"
-  ansible.builtin.file:
-    path: "{{ item }}"
-    mode: "0755"
-  with_items:
-    - /sbin/auditctl
-    - /sbin/aureport
-    - /sbin/ausearch
-    - /sbin/autrace
-    - /sbin/auditd
-    - /sbin/augenrules
-  when:
-    - cis_ubuntu2204_rule_4_1_4_8
-  tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION4 | 4.1.4.9 | Ensure audit tools are owned by root"
-  ansible.builtin.file:
-    path: "{{ item }}"
-    owner: root
-  with_items:
-    - /sbin/auditctl
-    - /sbin/aureport
-    - /sbin/ausearch
-    - /sbin/autrace
-    - /sbin/auditd
-    - /sbin/augenrules
-  when:
-    - cis_ubuntu2204_rule_4_1_4_9
-  tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION4 | 4.1.4.10 | Ensure audit tools belong to group root"
-  ansible.builtin.file:
-    path: "{{ item }}"
-    group: root
-  with_items:
-    - /sbin/auditctl
-    - /sbin/aureport
-    - /sbin/ausearch
-    - /sbin/autrace
-    - /sbin/auditd
-    - /sbin/augenrules
-  when:
-    - cis_ubuntu2204_rule_4_1_4_10
-  tags:
-    - rule_4_1_4
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION4 | 4.1.4.11 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
-  ansible.builtin.lineinfile:
-    dest: /etc/aide/aide.conf
-    regexp: "{{ item.reg }}"
-    line: "{{ item.line }}"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0644"
-  with_items:
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/auditctl"
-      line: "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/auditd"
-      line: "/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/ausearch"
-      line: "/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/aureport"
-      line: "/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/autrace"
-      line: "/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}/sbin/augenrules"
-      line: "/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512"
-  when:
-    - cis_ubuntu2204_rule_4_1_4_11
-    - cis_ubuntu2204_config_aide
-  tags:
-    - rule_4_1_4
+    - rule_4_2
     - server_l1
     - workstation_l1
 
 # ------------------------------------------------------------------------------
 
-# TODO: improve and fix to work proper, setup current only less correct
-
-- name: "SECTION4 | 4.2.1.1.1 | Ensure systemd-journal-remote is installed"
+- name: "SECTION4 | 4.3.1.1 | Ensure iptables packages are installed"
   ansible.builtin.apt:
-    name: systemd-journal-remote
+    name:
+      - iptables
+      - iptables-persistent
     state: present
-    install_recommends: false
+    force_apt_get: true
   when:
-    - cis_ubuntu2204_rule_4_2_1_1_1
-    - cis_ubuntu2204_set_journal_upload
+    - cis_ubuntu2204_rule_4_3_1_1
+    - cis_ubuntu2204_firewall == "iptables"
   tags:
-    - rule_4_2_1_1
+    - rule_4_3_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION4 | 4.2.1.1.2 | Ensure systemd-journal-remote is configured"
-  ansible.builtin.lineinfile:
-    dest: /etc/systemd/journal-upload.conf
-    regexp: "{{ item.reg }}"
-    line: "{{ item.line }}"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0644"
-  with_items:
-    - reg: '{{ cis_ubuntu2204_regex_base_search }}URL((.*)?=|\s|$)'
-      line: "URL={{ cis_ubuntu2204_set_journal_upload_url }}"
-    - reg: '{{ cis_ubuntu2204_regex_base_search }}ServerKeyFile((.*)?=|\s|$)'
-      line: "ServerKeyFile=/etc/ssl/private/journal-upload.pem"
-    - reg: '{{ cis_ubuntu2204_regex_base_search }}ServerCertificateFile((.*)?=|\s|$)'
-      line: "ServerCertificateFile=/etc/ssl/certs/journal-upload.pem"
-    - reg: '{{ cis_ubuntu2204_regex_base_search }}TrustedCertificateFile((.*)?=|\s|$)'
-      line: "TrustedCertificateFile=/etc/ssl/ca/trusted.pem"
-  notify: restart systemd-journal-upload
+- name: "SECTION4 | 4.3.1.2 | Ensure nftables is not installed with iptables"
+  ansible.builtin.apt:
+    name: nftables
+    state: absent
+    purge: true
   when:
-    - cis_ubuntu2204_rule_4_2_1_1_2
-    - cis_ubuntu2204_set_journal_upload
+    - cis_ubuntu2204_rule_4_3_1_2
+    - cis_ubuntu2204_firewall == "iptables"
   tags:
-    - rule_4_2_1_1
+    - rule_4_3_1
     - server_l1
     - workstation_l1
 
-# NOTE: done in step before by notify
-# - name: "SECTION4 | 4.2.1.1.3 | Ensure systemd-journal-remote is enabled"
-#   when:
-#     - cis_ubuntu2204_rule_4_2_1_1_3
-#     - cis_ubuntu2204_set_journal_upload
-#   tags:
-#     - rule_4_2_1_1
-#     - server_l1
-#     - workstation_l1
-
-- name: "SECTION4 | 4.2.1.1.4 | Ensure journald is not configured to receive logs from a remote client"
-  ansible.builtin.systemd:
-    name: systemd-journal-remote.socket
-    daemon_reload: true
-    enabled: false
-    masked: true
-    state: stopped
+- name: "SECTION4 | 4.3.1.3 | Ensure ufw is uninstalled or disabled with iptables"
+  ansible.builtin.apt:
+    name: ufw
+    state: absent
+    purge: true
   when:
-    - cis_ubuntu2204_rule_4_2_1_1_4
-    - cis_ubuntu2204_set_journal_upload
+    - cis_ubuntu2204_rule_4_3_1_3
+    - cis_ubuntu2204_firewall == "iptables"
   tags:
-    - rule_4_2_1_1
+    - rule_4_3_1
     - server_l1
     - workstation_l1
-
-# NOTE: systemd-journald.service cannot be enabled / disabled
-# - name: "SECTION4 | 4.2.1.2 | Ensure journald service is enabled"
-#   when:
-#     - cis_ubuntu2204_rule_4_2_1_2
-#   tags:
-#     - rule_4_2_1
-#     - server_l1
-#     - workstation_l1
-
-- name: "SECTION4 | 4.2.1.3 | Ensure journald is configured to compress large log files"
-  ansible.builtin.lineinfile:
-    dest: /etc/systemd/journald.conf
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}Compress((.*)?=|\s|$)'
-    line: "Compress=yes"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0644"
-  notify: restart systemd-journald
-  when:
-    - cis_ubuntu2204_rule_4_2_1_3
-  tags:
-    - rule_4_2_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION4 | 4.2.1.4 | Ensure journald is configured to write logfiles to persistent disk"
-  ansible.builtin.lineinfile:
-    dest: /etc/systemd/journald.conf
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}Storage((.*)?=|\s|$)'
-    line: "Storage=persistent"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0644"
-  notify: restart systemd-journald
-  when:
-    - cis_ubuntu2204_rule_4_2_1_4
-  tags:
-    - rule_4_2_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION4 | 4.2.1.5 | Ensure journald is not configured to send logs to rsyslog"
-  ansible.builtin.lineinfile:
-    dest: /etc/systemd/journald.conf
-    regexp: "^ForwardToSyslog=yes"
-    line: "#ForwardToSyslog=yes"
-    state: present
-    owner: root
-    group: root
-    mode: "0644"
-  notify: restart systemd-journald
-  when:
-    - cis_ubuntu2204_rule_4_2_1_5
-  tags:
-    - rule_4_2_1
-    - server_l1
-    - workstation_l1
-    - molecule-idempotence-notest
-
-# TODO: define values
-# - name: "SECTION4 | 4.2.1.6 | Ensure journald log rotation is configured per site policy"
-#   ansible.builtin.lineinfile:
-#     dest: /etc/systemd/journald.conf
-#     regexp: "{{ item.reg }}"
-#     line: "{{ item.line }}"
-#     state: present
-#     create: true
-#     owner: root
-#     group: root
-#     mode: "0644"
-#   with_items:
-#     - reg: '{{ cis_ubuntu2204_regex_base_search }}SystemMaxUse((.*)?=|\s|$)'
-#       line: "SystemMaxUse="
-#     - reg: '{{ cis_ubuntu2204_regex_base_search }}SystemKeepFree((.*)?=|\s|$)'
-#       line: "SystemKeepFree="
-#     - reg: '{{ cis_ubuntu2204_regex_base_search }}RuntimeMaxUse((.*)?=|\s|$)'
-#       line: "RuntimeMaxUse="
-#     - reg: '{{ cis_ubuntu2204_regex_base_search }}RuntimeKeepFree((.*)?=|\s|$)'
-#       line: "RuntimeKeepFree="
-#     - reg: '{{ cis_ubuntu2204_regex_base_search }}MaxFileSec((.*)?=|\s|$)'
-#       line: "MaxFileSec="
-#   notify: restart systemd-journald
-#   when:
-#     - cis_ubuntu2204_rule_4_2_1_6
-#   tags:
-#     - rule_4_2_1
-#     - server_l1
-#     - workstation_l1
-
-# - name: "SECTION4 | 4.2.1.7 | Ensure journald default file permissions configured"
-#   when:
-#     - cis_ubuntu2204_rule_4_2_1_7
-#   tags:
-#     - rule_4_2_1
-#     - server_l1
-#     - workstation_l1
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION4 | 4.2.2.1 | Ensure rsyslog is installed"
-  ansible.builtin.apt:
-    name: rsyslog
-    state: present
-    install_recommends: false
+- name: "SECTION4 | 4.3.2.1 | Ensure iptables default deny firewall policy"
+  ansible.builtin.iptables:
+    chain: "{{ item }}"
+    policy: DROP
+  loop:
+    - INPUT
+    - OUTPUT
+    - FORWARD
   when:
-    - cis_ubuntu2204_rule_4_2_2_1
-    - cis_ubuntu2204_syslog == "rsyslog"
+    - cis_ubuntu2204_rule_4_3_2_1
+    - cis_ubuntu2204_firewall == "iptables"
   tags:
-    - rule_4_2_2
+    - rule_4_3_2
     - server_l1
     - workstation_l1
 
-- name: "SECTION4 | 4.2.2.2 | Ensure rsyslog service is enabled"
-  ansible.builtin.systemd:
-    name: rsyslog
-    daemon_reload: true
-    enabled: true
-    masked: false
+- name: "SECTION4 | 4.3.2.2 | Ensure iptables loopback traffic is configured"
   when:
-    - cis_ubuntu2204_rule_4_2_2_2
-    - cis_ubuntu2204_syslog == "rsyslog"
+    - cis_ubuntu2204_rule_4_3_2_2
+    - cis_ubuntu2204_firewall == "iptables"
   tags:
-    - rule_4_2_2
+    - rule_4_3_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION4 | 4.3.2.2 | Ensure iptables loopback traffic is configured | ingress lo allow"
+      ansible.builtin.iptables:
+        chain: INPUT
+        in_interface: lo
+        jump: ACCEPT
+    - name: "SECTION4 | 4.3.2.2 | Ensure iptables loopback traffic is configured | egress lo allow"
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        out_interface: lo
+        jump: ACCEPT
+    - name: "SECTION4 | 4.3.2.2 | Ensure iptables loopback traffic is configured | ingress 127.0.0.0/8 deny"
+      ansible.builtin.iptables:
+        chain: INPUT
+        source: 127.0.0.0/8
+        jump: DROP
+
+- name: "SECTION4 | 4.3.2.3 | Ensure iptables outbound and established connections are configured"
+  when:
+    - cis_ubuntu2204_rule_4_3_2_3
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_4_3_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION4 | 4.3.2.3 | Ensure iptables outbound and established connections are configured | output"
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        protocol: "{{ item }}"
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+      with_items:
+        - tcp
+        - udp
+        - icmp
+    - name: "SECTION4 | 4.3.2.3 | Ensure iptables outbound and established connections are configured | input "
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: "{{ item }}"
+        ctstate: ESTABLISHED
+        jump: ACCEPT
+      with_items:
+        - tcp
+        - udp
+        - icmp
+
+- name: "SECTION4 | 4.3.2.4 | Ensure iptables firewall rules exist for all open ports"
+  when:
+    - cis_ubuntu2204_rule_4_3_2_4
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_4_3_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION4 | 4.3.2.4 | Ensure iptables firewall rules exist for all open ports | ssh"
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 22
+        ctstate: NEW
+        jump: ACCEPT
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION4 | 4.3.3.1 | Ensure ip6tables default deny firewall policy"
+  ansible.builtin.iptables:
+    chain: "{{ item }}"
+    policy: DROP
+    ip_version: ipv6
+  loop:
+    - INPUT
+    - OUTPUT
+    - FORWARD
+  when:
+    - cis_ubuntu2204_rule_4_3_3_1
+    - cis_ubuntu2204_firewall == "iptables"
+  tags:
+    - rule_4_3_3
     - server_l1
     - workstation_l1
 
-- name: "SECTION4 | 4.2.2.3 | Ensure journald is configured to send logs to rsyslog"
-  ansible.builtin.lineinfile:
-    dest: /etc/systemd/journald.conf
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}ForwardToSyslog((.*)?=|\s|$)'
-    line: "ForwardToSyslog=yes"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - restart systemd-journald
-    - restart rsyslog
+- name: "SECTION4 | 4.3.3.2 | Ensure ip6tables loopback traffic is configured"
   when:
-    - cis_ubuntu2204_rule_4_2_2_3
-    - cis_ubuntu2204_syslog == "rsyslog"
+    - cis_ubuntu2204_rule_4_3_3_2
+    - cis_ubuntu2204_firewall == "iptables"
   tags:
-    - rule_4_2_2
+    - rule_4_3_3
     - server_l1
     - workstation_l1
-    - molecule-idempotence-notest
+  block:
+    - name: "SECTION4 | 4.3.3.2 | Ensure ip6tables loopback traffic is configured | ingress lo allow"
+      ansible.builtin.iptables:
+        chain: INPUT
+        in_interface: lo
+        jump: ACCEPT
+        ip_version: ipv6
+    - name: "SECTION4 | 4.3.3.2 | Ensure ip6tables loopback traffic is configured | egress lo allow"
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        out_interface: lo
+        jump: ACCEPT
+        ip_version: ipv6
+    - name: "SECTION4 | 4.3.3.2 | Ensure ip6tables loopback traffic is configured | ingress ::1 deny"
+      ansible.builtin.iptables:
+        chain: INPUT
+        source: ::1
+        jump: DROP
+        ip_version: ipv6
 
-- name: "SECTION4 | 4.2.2.4 | Ensure rsyslog default file permissions are configured"
-  ansible.builtin.lineinfile:
-    dest: /etc/rsyslog.conf
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}$FileCreateMode "
-    line: "$FileCreateMode 0640"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0644"
-  notify: restart rsyslog
+- name: "SECTION4 | 4.3.3.3 | Ensure ip6tables outbound and established connections are configured"
   when:
-    - cis_ubuntu2204_rule_4_2_2_4
-    - cis_ubuntu2204_syslog == "rsyslog"
+    - cis_ubuntu2204_rule_4_3_3_3
+    - cis_ubuntu2204_firewall == "iptables"
   tags:
-    - rule_4_2_2
+    - rule_4_3_3
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION4 | 4.3.3.3 | Ensure ip6tables outbound and established connections are configured | output"
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        protocol: "{{ item }}"
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv6
+      with_items:
+        - tcp
+        - udp
+        - icmp
+    - name: "SECTION4 | 4.3.3.3 | Ensure ip6tables outbound and established connections are configured | input "
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: "{{ item }}"
+        ctstate: ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv6
+      with_items:
+        - tcp
+        - udp
+        - icmp
 
-# - name: "SECTION4 | 4.2.2.5 | Ensure logging is configured"
-#   notify: restart rsyslog
-#   when:
-#     - cis_ubuntu2204_rule_4_2_2_5
-#     - cis_ubuntu2204_syslog == "rsyslog"
-#   tags:
-#     - rule_4_2_2
-#     - server_l1
-#     - workstation_l1
-
-# - name: "SECTION4 | 4.2.2.6 | Ensure rsyslog is configured to send logs to a remote log host"
-#   notify: restart rsyslog
-#   when:
-#     - cis_ubuntu2204_rule_4_2_2_6
-#     - cis_ubuntu2204_syslog == "rsyslog"
-#   tags:
-#     - rule_4_2_2
-#     - server_l1
-#     - workstation_l1
-
-- name: "SECTION4 | 4.2.2.7 | Ensure rsyslog is not configured to receive logs from a remote client"
-  ansible.builtin.lineinfile:
-    dest: /etc/rsyslog.conf
-    regexp: "{{ item.reg }}"
-    line: "{{ item.line }}"
-    state: present
-    create: true
-    owner: root
-    group: root
-    mode: "0644"
-  with_items:
-    - reg: '^module\(load="imtcp"\)'
-      line: '#module(load="imtcp")'
-    - reg: '^input\(type="imtcp" port="514"\)'
-      line: '#input(type="imtcp" port="514")'
-  notify: restart rsyslog
+- name: "SECTION4 | 4.3.3.4 | Ensure ip6tables firewall rules exist for all open ports"
   when:
-    - cis_ubuntu2204_rule_4_2_2_7
-    - cis_ubuntu2204_syslog == "rsyslog"
+    - cis_ubuntu2204_rule_4_3_3_4
+    - cis_ubuntu2204_firewall == "iptables"
   tags:
-    - rule_4_2_2
+    - rule_4_3_3
     - server_l1
     - workstation_l1
-#
-# # TODO: set permission, see script below
-# - name: "SECTION4 | 4.2.3 | Ensure all logfiles have appropriate permissions and ownership"
-#   when:
-#     - cis_ubuntu2204_rule_4_2_3
-#   tags:
-#     - rule_4_2_2
-#     - server_l1
-#     - workstation_l1
-#
-#
-# #!/usr/bin/env bash
-# {
-#   find /var/log -type f | while read -r fname; do
-#     bname="$(basename "$fname")"
-#     case "$bname" in
-#     lastlog | lastlog.* | wtmp | wtmp.* | btmp | btmp.*)
-#       ! stat -Lc "%a" "$fname" | grep -Pq -- '^\h*[0,2,4,6][0,2,4,6][0,4]\h*$' && echo -e "- changing mode on \"$fname\"" && chmod 664 "$fname"
-#       ! stat -Lc "%U" "$fname" | grep -Pq -- '^\h*root\h*$' && echo -e "- changing owner on \"$fname\"" && chown root "$fname"
-#       ! stat -Lc "%G" "$fname" | grep -Pq -- '^\h*(utmp|root)\h*$' && echo -e "- changing group on \"$fname\"" && chgrp root "$fname"
-#       ;;
-#     secure | auth.log)
-#       ! stat -Lc "%a" "$fname" | grep -Pq -- '^\h*[0,2,4,6][0,4]0\h*$' && echo -e "- changing mode on \"$fname\"" && chmod 640 "$fname"
-#       ! stat -Lc "%U" "$fname" | grep -Pq -- '^\h*(syslog|root)\h*$' && echo -e "- changing owner on \"$fname\"" && chown root "$fname"
-#       ! stat -Lc "%G" "$fname" | grep -Pq -- '^\h*(adm|root)\h*$' && echo -e "- changing group on \"$fname\"" && chgrp root "$fname"
-#       ;;
-#     SSSD | sssd)
-#       ! stat -Lc "%a" "$fname" | grep -Pq -- '^\h*[0,2,4,6][0,2,4,6]0\h*$' && echo -e "- changing mode on \"$fname\"" && chmod 660 "$fname"
-#       ! stat -Lc "%U" "$fname" | grep -Piq -- '^\h*(SSSD|root)\h*$' && echo -e "- changing owner on \"$fname\"" && chown root "$fname"
-#       ! stat -Lc "%G" "$fname" | grep -Piq -- '^\h*(SSSD|root)\h*$' && echo -e "- changing group on \"$fname\"" && chgrp root "$fname"
-#       ;;
-#     gdm | gdm3)
-#       ! stat -Lc "%a" "$fname" | grep -Pq -- '^\h*[0,2,4,6][0,2,4,6]0\h*$' && echo -e "- changing mode on \"$fname\"" && chmod 660 "$fname"
-#       ! stat -Lc "%U" "$fname" | grep -Pq -- '^\h*root\h*$' && echo -e "- changing owner on \"$fname\"" && chown root "$fname"
-#       ! stat -Lc "%G" "$fname" | grep -Pq -- '^\h*(gdm3?|root)\h*$' && echo -e "- changing group on \"$fname\"" && chgrp root "$fname"
-#       ;;
-#     *.journal)
-#       ! stat -Lc "%a" "$fname" | grep -Pq -- '^\h*[0,2,4,6][0,4]0\h*$' && echo -e "- changing mode on \"$fname\"" && chmod 640 "$fname"
-#       ! stat -Lc "%U" "$fname" | grep -Pq -- '^\h*root\h*$' && echo -e "- changing owner on \"$fname\"" && chown root "$fname"
-#       ! stat -Lc "%G" "$fname" | grep -Pq -- '^\h*(systemd-journal|root)\h*$' && echo -e "- changing group on \"$fname\"" && chgrp root "$fname"
-#       ;;
-#     *)
-#       ! stat -Lc "%a" "$fname" | grep -Pq -- '^\h*[0,2,4,6][0,4]0\h*$' && echo -e "- changing mode on \"$fname\"" && chmod 640 "$fname"
-#       ! stat -Lc "%U" "$fname" | grep -Pq -- '^\h*(syslog|root)\h*$' && echo -e "- changing owner on \"$fname\"" && chown root "$fname"
-#       ! stat -Lc "%G" "$fname" | grep -Pq -- '^\h*(adm|root)\h*$' && echo -e "- changing group on \"$fname\"" && chgrp root "$fname"
-#       ;;
-#     esac
-#   done
-# }
+  block:
+    - name: "SECTION4 | 4.3.3.4 | Ensure ip6tables firewall rules exist for all open ports | ssh"
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 22
+        ctstate: NEW
+        jump: ACCEPT
+        ip_version: ipv6

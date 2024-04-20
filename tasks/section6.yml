@@ -3,722 +3,1032 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION6 | 6.1.1 | Ensure permissions on /etc/passwd are configured"
-  ansible.builtin.file:
-    dest: /etc/passwd
-    owner: root
-    group: root
-    mode: "0644"
+- name: "SECTION6 | 6.1.1 | Ensure AIDE is installed"
   when:
+    - cis_ubuntu2204_install_aide | bool
     - cis_ubuntu2204_rule_6_1_1
   tags:
     - rule_6_1
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION6 | 6.1.1 | Ensure AIDE is installed | use nullmailer instead of postfix if not installed"
+      ansible.builtin.apt:
+        name: nullmailer
+        state: present
+        force_apt_get: true
+      when:
+        - not package_installed_postfix.rc == 0
+    - name: "SECTION6 | 6.1.1 | Ensure AIDE is installed | install AIDE"
+      ansible.builtin.apt:
+        name:
+          - aide
+          - aide-common
+        state: present
+        force_apt_get: true
+    - name: "SECTION6 | 6.1.1 | Ensure AIDE is installed | stat AIDE DB"
+      ansible.builtin.stat:
+        path: /var/lib/aide/aide.db
+      register: cis_stat_aide_db
+      when:
+        - cis_ubuntu2204_config_aide
+    - name: "SECTION6 | 6.1.1 | Ensure AIDE is installed | iniz AIDE | could take time ..."
+      ansible.builtin.command: /usr/sbin/aideinit
+      args:
+        creates: /var/lib/aide/aide.db
+      when:
+        - cis_ubuntu2204_config_aide
+        - not cis_stat_aide_db.stat.exists
+    - name: "SECTION6 | 6.1.1 | Ensure AIDE is installed | stat AIDE daily cron"
+      ansible.builtin.stat:
+        path: /etc/cron.daily/aide
+      register: cis_stat_aide_cron
+      when:
+        - cis_ubuntu2204_config_aide
 
-- name: "SECTION6 | 6.1.2 | Ensure permissions on /etc/passwd- are configured"
-  ansible.builtin.file:
-    dest: /etc/passwd-
-    owner: root
-    group: root
-    mode: "0644"
+- name: "SECTION6 | 6.1.2 | Ensure filesystem integrity is regularly checked"
+  ansible.builtin.cron:
+    name: Run AIDE integrity check weekly
+    cron_file: "{{ cis_ubuntu2204_aide_cron.cron_file | default('aide') }}"
+    user: "{{ cis_ubuntu2204_aide_cron.cron_user | default('root') }}"
+    minute: "{{ cis_ubuntu2204_aide_cron.aide_minute | default('0') }}"
+    hour: "{{ cis_ubuntu2204_aide_cron.aide_hour | default('5') }}"
+    day: "{{ cis_ubuntu2204_aide_cron.aide_day | default('*') }}"
+    month: "{{ cis_ubuntu2204_aide_cron.aide_month | default('*') }}"
+    weekday: "{{ cis_ubuntu2204_aide_cron.aide_weekday | default('0') }}"
+    job: "{{ cis_ubuntu2204_aide_cron.aide_job }}"
   when:
+    - cis_ubuntu2204_install_aide | bool
+    - cis_ubuntu2204_config_aide | bool
     - cis_ubuntu2204_rule_6_1_2
+    - not cis_stat_aide_cron.stat.exists
   tags:
     - rule_6_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION6 | 6.1.3 | Ensure permissions on /etc/group are configured"
-  ansible.builtin.file:
-    dest: /etc/group
+- name: "SECTION6 | 6.1.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
+  ansible.builtin.lineinfile:
+    dest: /etc/aide/aide.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
     owner: root
     group: root
     mode: "0644"
+  with_items:
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}\/sbin\/auditctl"
+      line: "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}\/sbin\/auditd"
+      line: "/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}\/sbin\/ausearch"
+      line: "/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}\/sbin\/aureport"
+      line: "/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}\/sbin\/autrace"
+      line: "/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}\/sbin\/augenrules"
+      line: "/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512"
   when:
+    - cis_ubuntu2204_install_aide | bool
+    - cis_ubuntu2204_config_aide | bool
     - cis_ubuntu2204_rule_6_1_3
   tags:
     - rule_6_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION6 | 6.1.4 | Ensure permissions on /etc/group- are configured"
+# ------------------------------------------------------------------------------
+
+- name: "SECTION6 | 6.2.1.1.1 | Ensure journald service is enabled and active"
+  ansible.builtin.systemd_service:
+    name: systemd-journald.service
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: started
+  when:
+    - cis_ubuntu2204_rule_6_2_1_1_1
+  tags:
+    - rule_6_2_1_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION6 | 6.2.1.1.2 | Ensure journald log file access is configured"
   ansible.builtin.file:
-    dest: /etc/group-
+    path: /usr/lib/tmpfiles.d/systemd.conf
+    state: file
     owner: root
     group: root
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_6_1_4
-  tags:
-    - rule_6_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION6 | 6.1.5 | Ensure permissions on /etc/shadow are configured"
-  ansible.builtin.file:
-    dest: /etc/shadow
-    owner: root
-    group: shadow
     mode: "0640"
   when:
-    - cis_ubuntu2204_rule_6_1_5
+    - cis_ubuntu2204_rule_6_2_1_1_2
   tags:
-    - rule_6_1
+    - rule_6_2_1_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION6 | 6.1.6 | Ensure permissions on /etc/shadow- are configured"
-  ansible.builtin.file:
-    dest: /etc/shadow-
+- name: "SECTION6 | 6.2.1.1.3 | Ensure journald log file rotation is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/systemd/journald.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
     owner: root
-    group: shadow
+    group: root
     mode: "0640"
+  with_items:
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}SystemMaxUse{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "SystemMaxUse={{ cis_ubuntu2204_journald_system_max_use }}"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}SystemKeepFree{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "SystemKeepFree={{ cis_ubuntu2204_journald_system_keep_free }}"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}RuntimeMaxUse{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "RuntimeMaxUse={{ cis_ubuntu2204_journald_runtime_max_use }}"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}RuntimeKeepFree{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "RuntimeKeepFree={{ cis_ubuntu2204_journald_runtime_keep_free }}"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}MaxFileSec{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "MaxFileSec={{ cis_ubuntu2204_journald_max_file_sec }}"
+  notify: restart systemd-journald
   when:
-    - cis_ubuntu2204_rule_6_1_6
+    - cis_ubuntu2204_rule_6_2_1_1_3
   tags:
-    - rule_6_1
+    - rule_6_2_1_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION6 | 6.1.7 | Ensure permissions on /etc/gshadow are configured"
-  ansible.builtin.file:
-    dest: /etc/gshadow
+- name: "SECTION6 | 6.2.1.1.4 | Ensure journald ForwardToSyslog is disabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/systemd/journald.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}ForwardToSyslog{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "#ForwardToSyslog=no"
+    state: present
     owner: root
-    group: shadow
+    group: root
     mode: "0640"
+  notify: restart systemd-journald
   when:
-    - cis_ubuntu2204_rule_6_1_7
+    - cis_ubuntu2204_rule_6_2_1_1_4
   tags:
-    - rule_6_1
+    - rule_6_2_1_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION6 | 6.1.8 | Ensure permissions on /etc/gshadow- are configured"
-  ansible.builtin.file:
-    dest: /etc/gshadow-
+- name: "SECTION6 | 6.2.1.1.5 | Ensure journald Storage is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/systemd/journald.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}Storage{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "Storage=persistent"
+    state: present
+    create: true
     owner: root
-    group: shadow
+    group: root
     mode: "0640"
+  notify: restart systemd-journald
   when:
-    - cis_ubuntu2204_rule_6_1_8
+    - cis_ubuntu2204_rule_6_2_1_1_5
   tags:
-    - rule_6_1
+    - rule_6_2_1_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION6 | 6.1.9 | Ensure no world writable files exist"
+- name: "SECTION6 | 6.2.1.1.6 | Ensure journald Compress is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/systemd/journald.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}Compress{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "Compress=yes"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0640"
+  notify: restart systemd-journald
   when:
-    - cis_ubuntu2204_rule_6_1_9
+    - cis_ubuntu2204_rule_6_2_1_1_6
   tags:
-    - rule_6_1
+    - rule_6_2_1_1
     - server_l1
     - workstation_l1
-  block:
-    - name: "SECTION6 | 6.1.9 | Ensure no world writable files exist | get list of no world writable files"
-      ansible.builtin.shell: >
-        set -o pipefail &&
-        df --local -P
-        | awk '{if (NR!=1) print $6}'
-        | xargs -I '{}' find '{}' -xdev -type f -perm -0002 2>/dev/null
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_no_world_writable_files
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.1.9 | Ensure no world writable files exist | removing write access"
-      ansible.builtin.file:
-        dest: "{{ item }}"
-        mode: o-w
-      with_items: "{{ cis_ubuntu2204_no_world_writable_files.stdout_lines }}"
-
-- name: "SECTION6 | 6.1.10 | Ensure no unowned files or directories exist"
-  when:
-    - cis_ubuntu2204_rule_6_1_10
-  tags:
-    - rule_6_1
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.1.10 | Ensure no unowned files or directories exist | get list of no unowned files or directories"
-      ansible.builtin.shell: >
-        set -o pipefail &&
-        df --local -P
-        | awk {'if (NR!=1) print $6'}
-        | xargs -I '{}' find '{}' -xdev -nouser 2>/dev/null
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_no_unowned_files_or_directories
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.1.10 | Ensure no unowned files or directories exist | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Locate files that are owned by users or groups not listed in the system configuration
-          files, and reset the ownership of these files to some active user on the system as appropriate
-          #############################################################################################
-          {{ cis_ubuntu2204_no_unowned_files_or_directories.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_no_unowned_files_or_directories.stdout_lines is defined
-        - cis_ubuntu2204_no_unowned_files_or_directories.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.1.11 | Ensure no ungrouped files or directories exist"
-  when:
-    - cis_ubuntu2204_rule_6_1_11
-  tags:
-    - rule_6_1
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.1.11 | Ensure no ungrouped files or directories exist | get list of no ungrouped files or directories"
-      ansible.builtin.shell: >
-        set -o pipefail &&
-        df --local -P
-        | awk '{if (NR!=1) print $6}'
-        | xargs -I '{}' find '{}' -xdev -nogroup 2>/dev/null
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_no_ungrouped_files_or_directories
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.1.11 | Ensure no ungrouped files or directories exist | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Locate files that are owned by users or groups not listed in the system configuration
-          files, and reset the ownership of these files to some active user on the system as appropriate
-          #############################################################################################
-          {{ cis_ubuntu2204_no_ungrouped_files_or_directories.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_no_ungrouped_files_or_directories.stdout_lines is defined
-        - cis_ubuntu2204_no_ungrouped_files_or_directories.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.1.12 | Audit SUID executables"
-  when:
-    - cis_ubuntu2204_rule_6_1_12
-  tags:
-    - rule_6_1
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.1.12 | Audit SUID executables | get list of SUID executables"
-      ansible.builtin.shell: >
-        set -o pipefail &&
-        df --local -P
-        | awk '{if (NR!=1) print $6}'
-        | xargs -I '{}' find '{}' -xdev -type f -perm -4000 2>/dev/null
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_suid_executables
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.1.12 | Audit SUID executables | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Ensure that no rogue SUID programs have been introduced into the system. Review the
-          files returned by the action in the Audit section and confirm the integrity of these binaries
-          #############################################################################################
-          {{ cis_ubuntu2204_suid_executables.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_suid_executables.stdout_lines is defined
-        - cis_ubuntu2204_suid_executables.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.1.13 | Audit SGID executables"
-  when:
-    - cis_ubuntu2204_rule_6_1_13
-  tags:
-    - rule_6_1
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.1.13 | Audit SGID executables | get list of SGID executables"
-      ansible.builtin.shell: >
-        set -o pipefail &&
-        df --local -P
-        | awk '{if (NR!=1) print $6}'
-        | xargs -I '{}' find '{}' -xdev -type f -perm -2000 2>/dev/null
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_sgid_executables
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.1.13 | Audit SGID executables | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Ensure that no rogue SGID programs have been introduced into the system. Review the
-          files returned by the action in the Audit section and confirm the integrity of these binaries
-          #############################################################################################
-          {{ cis_ubuntu2204_sgid_executables.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_sgid_executables.stdout_lines is defined
-        - cis_ubuntu2204_sgid_executables.stdout_lines | length > 0
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION6 | 6.2.1 | Ensure accounts in /etc/passwd use shadowed passwords"
-  ansible.builtin.replace:
-    dest: /etc/passwd
-    regexp: "^([a-zA-Z0-9_-]*):[^:]*:"
-    replace: '\1:x:'
+- name: "SECTION6 | 6.2.1.2.1 | Ensure systemd-journal-remote is installed"
+  ansible.builtin.apt:
+    name: systemd-journal-remote
+    state: present
+    force_apt_get: true
   when:
-    - cis_ubuntu2204_rule_6_2_1
+    - cis_ubuntu2204_rule_6_2_1_2_1
+    - cis_ubuntu2204_set_journal_upload | bool
   tags:
-    - rule_6_2
+    - rule_6_2_1_2
     - server_l1
     - workstation_l1
 
-- name: "SECTION6 | 6.2.2 | Ensure /etc/shadow password fields are not empty"
+- name: "SECTION6 | 6.2.1.2.2 | Ensure systemd-journal-remote authentication is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/systemd/journal-upload.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0640"
+    insertafter: "{{ item.insertafter }}"
+  with_items:
+    - reg: '\[Upload\]'
+      line: "[Upload]"
+      insertafter: "EOF"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}URL{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "URL={{ cis_ubuntu2204_set_journal_upload_url }}"
+      insertafter: '\[Upload\]'
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}ServerKeyFile{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "ServerKeyFile={{ cis_ubuntu2204_set_journal_upload_server_key_file }}"
+      insertafter: '\[Upload\]'
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}ServerCertificateFile{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "ServerCertificateFile={{ cis_ubuntu2204_set_journal_upload_server_certificate_file }}"
+      insertafter: '\[Upload\]'
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}TrustedCertificateFile{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "TrustedCertificateFile={{ cis_ubuntu2204_set_journal_upload_trusted_certificate_file }}"
+      insertafter: '\[Upload\]'
+  notify: restart systemd-journal-upload
   when:
-    - cis_ubuntu2204_rule_6_2_2
+    - cis_ubuntu2204_rule_6_2_1_2_2
+    - cis_ubuntu2204_set_journal_upload | bool
+    - cis_ubuntu2204_set_journal_upload_url is defined
   tags:
-    - rule_6_2
+    - rule_6_2_1_2
     - server_l1
     - workstation_l1
+
+# NOTE: done in step before, by call notify
+# - name: "SECTION6 | 6.2.1.2.3 | Ensure systemd-journal-upload is enabled and active"
+
+- name: "SECTION6 | 6.2.1.2.4 | Ensure systemd-journal-remote service is not in use"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    daemon_reload: true
+    enabled: false
+    masked: true
+    state: stopped
+  with_items:
+    - systemd-journal-remote.socket
+    - systemd-journal-remote.service
+  when:
+    - cis_ubuntu2204_rule_6_2_1_2_4
+    - cis_ubuntu2204_set_journal_upload | bool
+  tags:
+    - rule_6_2_1_2
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION6 | 6.2.2.1 | Ensure access to all logfiles has been configured"
+  when:
+    - cis_ubuntu2204_rule_6_2_2_1
+  tags:
+    - rule_6_2_2
+    - server_l1
+    - workstation_l1
+    - molecule-idempotence-notest
   block:
-    - name: "SECTION6 | 6.2.2 | Ensure /etc/shadow password fields are not empty | get list of empty password fields"
-      ansible.builtin.shell: >
-        set -o pipefail &&
-        awk -F: '($2 == "" ) { print $1 }' /etc/shadow 2>/dev/null
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_empty_password_fields
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.2 | Ensure /etc/shadow password fields are not empty | lock user"
-      ansible.builtin.user:
-        name: "{{ item }}"
-        password_lock: true
-      # ansible.builtin.command: "passwd -l {{ item }}"
-      # changed_when: cis_ubuntu2204_empty_password_fields_changed.rc == 0
-      # failed_when: cis_ubuntu2204_empty_password_fields_changed.rc == 1
-      # check_mode: false
-      # register: cis_ubuntu2204_empty_password_fields_changed
-      with_items: "{{ cis_ubuntu2204_empty_password_fields.stdout_lines }}"
-
-- name: "SECTION6 | 6.2.3 | Ensure all groups in /etc/passwd exist in /etc/group"
-  when:
-    - cis_ubuntu2204_rule_6_2_3
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.3 | Ensure all groups in /etc/passwd exist in /etc/group | get list of groups for passwd exists in group"
-      ansible.builtin.shell: |
-        set -o pipefail
-        for i in $(cut -s -d: -f4 /etc/passwd | sort -u ); do
-          grep -q -P "^.*?:[^:]*:$i:" /etc/group
-          if [ $? -ne 0 ]; then
-            echo "Group $i is referenced by /etc/passwd but does not exist in /etc/group"
-          fi
-        done
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_groups_for_passwd_exists_in_group
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.3 | Ensure all groups in /etc/passwd exist in /etc/group | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Analyze the output of the Audit step above and
-          perform the appropriate action to correct any discrepancies found
-          #############################################################################################
-          {{ cis_ubuntu2204_groups_for_passwd_exists_in_group.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_groups_for_passwd_exists_in_group.stdout_lines is defined
-        - cis_ubuntu2204_groups_for_passwd_exists_in_group.stdout_lines | length > 0
-
-# TODO: add also set prime group
-#       awk -F: -v GID="$(awk -F: '($1=="shadow") {print $3}' /etc/group)" '($4==GID) {print $1}' /etc/passwd
-#       usermod -g <primary group> <user>
-- name: "SECTION6 | 6.2.4 | Ensure shadow group is empty"
-  ansible.builtin.replace:
-    dest: /etc/group
-    regexp: "(^shadow:[^:]*:[^:]*:)([^:]+$)"
-    replace: '\1'
-  when:
-    - cis_ubuntu2204_rule_6_2_4
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION6 | 6.2.5 | Ensure no duplicate UIDs exist"
-  when:
-    - cis_ubuntu2204_rule_6_2_5
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.5 | Ensure no duplicate UIDs exist | get list of duplicate UIDs"
-      ansible.builtin.shell: |
-        set -o pipefail
-        cut -f3 -d":" /etc/passwd | sort -n | uniq -c | while read x ; do
-          [ -z "$x" ] && break
-          set - $x
-          if [ $1 -gt 1 ]; then
-            users=$(awk -F: '($3 == n) { print $1 }' n=$2 /etc/passwd | xargs)
-            echo "Duplicate UID ($2): $users"
-          fi
-        done
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_duplicate_uids
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.5 | Ensure no duplicate UIDs exist | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Based on the results of the audit script, establish unique UIDs and review all files owned
-          by the shared UIDs to determine which UID they are supposed to belong to
-          #############################################################################################
-          {{ cis_ubuntu2204_duplicate_uids.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_duplicate_uids.stdout_lines is defined
-        - cis_ubuntu2204_duplicate_uids.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.2.6 | Ensure no duplicate GIDs exist"
-  when:
-    - cis_ubuntu2204_rule_6_2_6
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.6 | Ensure no duplicate GIDs exist | get list of duplicate GIDs"
-      ansible.builtin.shell: |
-        set -o pipefail
-        cut -d: -f3 /etc/group | sort | uniq -d | while read x ; do
-          echo "Duplicate GID ($x) in /etc/group"
-        done
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_duplicate_gids
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.6 | Ensure no duplicate GIDs exist | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Based on the results of the audit script, establish unique GIDs and review all files
-          owned by the shared GID to determine which group they are supposed to belong to
-          #############################################################################################
-          {{ cis_ubuntu2204_duplicate_gids.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_duplicate_gids.stdout_lines is defined
-        - cis_ubuntu2204_duplicate_gids.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.2.7 | Ensure no duplicate user names exist"
-  when:
-    - cis_ubuntu2204_rule_6_2_7
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.7 | Ensure no duplicate user names exist | get list of duplicate user names"
-      ansible.builtin.shell: |
-        set -o pipefail
-        cut -d: -f1 /etc/passwd | sort | uniq -d | while read -r x; do
-          echo "Duplicate login name $x in /etc/passwd"
-        done
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_duplicate_user_names
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.7 | Ensure no duplicate user names exist | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Based on the results of the audit script, establish unique user names for the users. File
-          ownerships will automatically reflect the change as long as the users have unique UIDs
-          #############################################################################################
-          {{ cis_ubuntu2204_duplicate_user_names.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_duplicate_user_names.stdout_lines is defined
-        - cis_ubuntu2204_duplicate_user_names.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.2.8 | Ensure no duplicate group names exist"
-  when:
-    - cis_ubuntu2204_rule_6_2_8
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.8 | Ensure no duplicate group names exist | get list of duplicate group names"
-      ansible.builtin.shell: |
-        set -o pipefail
-        cut -d: -f1 /etc/group | sort | uniq -d | while read -r x; do
-          echo "Duplicate group name $x in /etc/group"
-        done
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_duplicate_group_names
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.8 | Ensure no duplicate group names exist | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Based on the results of the audit script, establish unique names for the user groups. File
-          group ownerships will automatically reflect the change as long as the groups have unique GIDs
-          #############################################################################################
-          {{ cis_ubuntu2204_duplicate_group_names.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_duplicate_group_names.stdout_lines is defined
-        - cis_ubuntu2204_duplicate_group_names.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.2.9 | Ensure root PATH Integrity"
-  when:
-    - cis_ubuntu2204_rule_6_2_9
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.9 | Ensure root PATH Integrity | get list of root PATH Integrity"
-      ansible.builtin.shell: |
-        set -o pipefail
-        RPCV="$(sudo -Hiu root env | grep '^PATH' | cut -d= -f2)"
-        echo "$RPCV" | grep -q "::" && echo "root's path contains a empty directory (::)"
-        echo "$RPCV" | grep -q ":$" && echo "root's path contains a trailing (:)"
-        for x in $(echo "$RPCV" | tr ":" " "); do
-          if [ -d "$x" ]; then
-            ls -ldH "$x" | awk '$9 == "." {print "PATH contains current working directory (.)"}
-            $3 != "root" {print $9, "is not owned by root"}
-            substr($1,6,1) != "-" {print $9, "is group writable"}
-            substr($1,9,1) != "-" {print $9, "is world writable"}'
-          else
-            echo "$x is not a directory"
-          fi
-        done
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_root_path_integrity
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.9 | Ensure root PATH Integrity | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Correct or justify any items discovered in the Audit step
-          #############################################################################################
-          {{ cis_ubuntu2204_root_path_integrity.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_root_path_integrity.stdout_lines is defined
-        - cis_ubuntu2204_root_path_integrity.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.2.10 | Ensure root is the only UID 0 account"
-  when:
-    - cis_ubuntu2204_rule_6_2_10
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.10 | Ensure root is the only UID 0 account | get root is the only UID 0 account"
-      ansible.builtin.command: "awk -F: '($3 == 0) { print $1 }' /etc/passwd"
-      register: cis_ubuntu2204_root_is_the_only_uid_0_account
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.10 | Ensure root is the only UID 0 account | print info"
-      ansible.builtin.debug:
-        msg: |
-          #############################################################################################
-          Remove any users other than 'root' with UID '0' or assign them a new UID if appropriate
-          #############################################################################################
-          {{ cis_ubuntu2204_root_is_the_only_uid_0_account.stdout_lines | join(', ') }}
-          #############################################################################################
-      when:
-        - cis_ubuntu2204_root_is_the_only_uid_0_account.stdout_lines is defined
-        - cis_ubuntu2204_root_is_the_only_uid_0_account.stdout_lines | length > 0
-
-- name: |
-
-    SECTION6 | 6.2.11 | Ensure local interactive user home directories exist
-    SECTION6 | 6.2.12 | Ensure local interactive users own their home directories
-    SECTION6 | 6.2.13 | Ensure local interactive user home directories are mode 750 or more restrictive
-  when:
-    - cis_ubuntu2204_rule_6_2_11
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.11 | Ensure local interactive user home directories exist | get list of user home"
-      ansible.builtin.shell: |
-        set -o pipefail
-        valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
-        awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_list_of_user_home
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.11 | Ensure local interactive user home directories exist | create home dir"
-      ansible.builtin.file:
-        path: "{{ item.split()[1] }}"
-        state: directory
-        mode: "0700"
-        owner: "{{ item.split()[0] }}"
-        group: "{{ item.split()[0] }}"
-      with_items: "{{ cis_ubuntu2204_list_of_user_home.stdout_lines }}"
-      # when:
-      #   - cis_ubuntu2204_list_of_user_home.stdout_lines is defined
-      #   - cis_ubuntu2204_list_of_user_home.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.2.14 | Ensure no local interactive user has .netrc files"
-  when:
-    - cis_ubuntu2204_rule_6_2_14
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.14 | Ensure no local interactive user has .netrc files | get list of local interactive user netrc"
-      ansible.builtin.shell: |
-        set -o pipefail
-        valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
-        awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_local_interactive_user_netrc
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.14 | Ensure no local interactive user has .netrc files | create home dir"
-      ansible.builtin.file:
-        path: "{{ item.split()[1] }}/.netrc"
-        state: absent
-      with_items: "{{ cis_ubuntu2204_local_interactive_user_netrc.stdout_lines }}"
-      # when:
-      #   - cis_ubuntu2204_local_interactive_user_netrc.stdout_lines is defined
-      #   - cis_ubuntu2204_local_interactive_user_netrc.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.2.15 | Ensure no local interactive user has .forward files"
-  when:
-    - cis_ubuntu2204_rule_6_2_15
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.15 | Ensure no local interactive user has .forward files | get list of local interactive user forward"
-      ansible.builtin.shell: |
-        set -o pipefail
-        valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
-        awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_local_interactive_user_forward
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.15 | Ensure no local interactive user has .forward files | create home dir"
-      ansible.builtin.file:
-        path: "{{ item.split()[1] }}/.forward"
-        state: absent
-      with_items: "{{ cis_ubuntu2204_local_interactive_user_forward.stdout_lines }}"
-      # when:
-      #   - cis_ubuntu2204_local_interactive_user_forward.stdout_lines is defined
-      #   - cis_ubuntu2204_local_interactive_user_forward.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.2.16 | Ensure no local interactive user has .rhosts files"
-  when:
-    - cis_ubuntu2204_rule_6_2_16
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.16 | Ensure no local interactive user has .rhosts files | get list of local interactive user rhosts"
-      ansible.builtin.shell: |
-        set -o pipefail
-        valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
-        awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_local_interactive_user_rhosts
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.16 | Ensure no local interactive user has .rhosts files | create home dir"
-      ansible.builtin.file:
-        path: "{{ item.split()[1] }}/.rhosts"
-        state: absent
-      with_items: "{{ cis_ubuntu2204_local_interactive_user_rhosts.stdout_lines }}"
-      # when:
-      #   - cis_ubuntu2204_local_interactive_user_rhosts.stdout_lines is defined
-      #   - cis_ubuntu2204_local_interactive_user_rhosts.stdout_lines | length > 0
-
-- name: "SECTION6 | 6.2.17 | Ensure local interactive user dot files are not group or world writable"
-  when:
-    - cis_ubuntu2204_rule_6_2_17
-  tags:
-    - rule_6_2
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION6 | 6.2.17 | Ensure local interactive user dot files are not group or world writable | get list of local interactive user dot files"
-      ansible.builtin.shell: |
-        set -o pipefail
-        valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
-        awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
-      args:
-        executable: /bin/bash
-      register: cis_ubuntu2204_local_interactive_user_dot_files
-      changed_when: false
-      failed_when: false
-      check_mode: false
-    - name: "SECTION6 | 6.2.17 | Ensure local interactive user dot files are not group or world writable | find dot files"
+    - name: "SECTION6 | 6.2.2.1 | Ensure access to all logfiles has been configured | find all files under '/var/log/'"
       ansible.builtin.find:
-        paths: "{{ item.split()[1] }}"
-        patterns: ".??*"
+        paths: /var/log/
         file_type: file
-        hidden: true
         recurse: true
-      loop: "{{ cis_ubuntu2204_local_interactive_user_dot_files.stdout_lines }}"
-      register: cis_ubuntu2204_local_interactive_user_dot_files_found
-    - name: "SECTION6 | 6.2.17 | Ensure local interactive user dot files are not group or world writable | set permission"
+      register: cis_ubuntu2204_logfiles
+    - name: "SECTION6 | 6.2.2.1 | Ensure access to all logfiles has been configured | set logfile access"
+      ansible.builtin.file:
+        dest: "{{ item.path }}"
+        state: file
+        owner: "{{ logfiles_item_owner | default('root') }}"
+        group: "{{ logfiles_item_group | default('adm') }}"
+        mode: "{{ logfiles_item_mode | default('0640') }}"
+      loop: "{{ cis_ubuntu2204_logfiles.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+      vars:
+        logfiles_item_owner: "{{ cis_ubuntu2204_logfiles_access | selectattr('files', 'search', item.path | basename) | map(attribute='owner') | first }}"
+        logfiles_item_group: "{{ cis_ubuntu2204_logfiles_access | selectattr('files', 'search', item.path | basename) | map(attribute='group') | first }}"
+        logfiles_item_mode: "{{ cis_ubuntu2204_logfiles_access | selectattr('files', 'search', item.path | basename) | map(attribute='mode') | first }}"
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION6 | 6.3.1.1 | Ensure auditd packages are installed"
+  ansible.builtin.apt:
+    name:
+      - auditd
+      - audispd-plugins
+    state: present
+    force_apt_get: true
+  when:
+    - cis_ubuntu2204_rule_6_3_1_1
+  tags:
+    - rule_6_3_1
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.1.2 | Ensure auditd service is enabled and active"
+  ansible.builtin.systemd_service:
+    name: auditd
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: started
+  when:
+    - cis_ubuntu2204_rule_6_3_1_2
+    - ansible_virtualization_type != "docker"
+  tags:
+    - rule_6_3_1
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.1.3 | Ensure auditing for processes that start prior to auditd is enabled"
+  when:
+    - cis_ubuntu2204_rule_6_3_1_3
+  tags:
+    - rule_6_3_1
+    - server_l2
+    - workstation_l2
+  block:
+    - name: "SECTION6 | 6.3.1.3 | Ensure auditing for processes that start prior to auditd is enabled | grub add"
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*audit=)[^\"]*)(\".*)'
+        replace: '\1 audit=1\2'
+      notify: update-grub
+    - name: "SECTION6 | 6.3.1.3 | Ensure auditing for processes that start prior to auditd is enabled | grub replace"
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: "audit=0"
+        replace: "audit=1"
+      notify: update-grub
+
+- name: "SECTION6 | 6.3.1.4 | Ensure audit_backlog_limit is sufficient"
+  when:
+    - cis_ubuntu2204_rule_6_3_1_4
+  tags:
+    - rule_6_3_1
+    - server_l2
+    - workstation_l2
+  block:
+    - name: "SECTION6 | 6.3.1.4 | Ensure audit_backlog_limit is sufficient | grub add"
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*audit_backlog_limit=)[^\"]*)(\".*)'
+        replace: '\1 audit_backlog_limit={{ cis_ubuntu2204_audit_backlog_limit }}\2'
+      notify: update-grub
+    - name: "SECTION6 | 6.3.1.4 | Ensure audit_backlog_limit is sufficient | grub replace"
+      ansible.builtin.replace:
+        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        regexp: 'audit_backlog_limit=\d+'
+        replace: "audit_backlog_limit={{ cis_ubuntu2204_audit_backlog_limit }}"
+      notify: update-grub
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION6 | 6.3.2.1 | Ensure audit log storage size is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}max_log_file{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "max_log_file = {{ cis_ubuntu2204_audit_max_log_file }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0640"
+  notify: restart auditd
+  when:
+    - cis_ubuntu2204_rule_6_3_2_1
+  tags:
+    - rule_6_3_2
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.2.2 | Ensure audit logs are not automatically deleted"
+  ansible.builtin.lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}max_log_file_action{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "max_log_file_action = {{ cis_ubuntu2204_audit_max_log_file_action }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0640"
+  notify: restart auditd
+  when:
+    - cis_ubuntu2204_rule_6_3_2_2
+  tags:
+    - rule_6_3_2
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.2.3 | Ensure system is disabled when audit logs are full"
+  ansible.builtin.lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0640"
+  with_items:
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}disk_full_action{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "disk_full_action = {{ cis_ubuntu2204_audit_disk_full_action }}"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}disk_error_action{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "disk_error_action = {{ cis_ubuntu2204_audit_disk_error_action }}"
+  notify: restart auditd
+  when:
+    - cis_ubuntu2204_rule_6_3_2_3
+  tags:
+    - rule_6_3_2
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.2.4 | Ensure system warns when audit logs are low on space"
+  ansible.builtin.lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0640"
+  with_items:
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}space_left_action{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "space_left_action = {{ cis_ubuntu2204_audit_space_left_action }}"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}admin_space_left_action{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "admin_space_left_action = {{ cis_ubuntu2204_audit_admin_space_left_action }}"
+  notify: restart auditd
+  when:
+    - cis_ubuntu2204_rule_6_3_2_4
+  tags:
+    - rule_6_3_2
+    - server_l2
+    - workstation_l2
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION6 | 6.3.3.1 | Ensure changes to system administration scope (sudoers) is collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_1.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_1.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_1
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.2 | Ensure actions as another user are always logged"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_2.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_2.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_2
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.3 | Ensure events that modify the sudo log file are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_3.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_3.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_3
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.4 | Ensure events that modify date and time information are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_4.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_4.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_4
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.5 | Ensure events that modify the system's network environment are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_5.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_5.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_5
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.6 | Ensure use of privileged commands are collected"
+  when:
+    - cis_ubuntu2204_rule_6_3_3_6
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+    - molecule-idempotence-notest
+  block:
+    - name: "SECTION6 | 6.3.3.6 | Ensure use of privileged commands are collected | get list of setuid/setguid binaries"
+      ansible.builtin.shell: |
+        set -o pipefail
+        for PARTITION in $(findmnt -n -l -k -it "$(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)" | grep -Pv "noexec|nosuid" | awk '{print $1}'); do
+          find "${PARTITION}" -xdev -perm /6000 -type f 2>/dev/null
+        done
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_audit_proc_paths
+      changed_when: false
+      check_mode: false
+    - name: "SECTION6 | 6.3.3.6 | Ensure use of privileged commands are collected | set rule"
+      ansible.builtin.template:
+        src: audit/cis_6_3_3_6.rules.j2
+        dest: /etc/audit/rules.d/cis_6_3_3_6.rules
+        owner: root
+        group: root
+        mode: "0640"
+      notify: load audit rules
+
+- name: "SECTION6 | 6.3.3.7 | Ensure unsuccessful file access attempts are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_7.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_7.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_7
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.8 | Ensure events that modify user/group information are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_8.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_8.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_8
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.9 | Ensure discretionary access control permission modification events are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_9.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_9.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_9
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.10 | Ensure successful file system mounts are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_10.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_10.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_10
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.11 | Ensure session initiation information is collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_11.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_11.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_11
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.12 | Ensure login and logout events are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_12.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_12.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_12
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.13 | Ensure file deletion events by users are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_13.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_13.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_13
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.14 | Ensure events that modify the system's Mandatory Access Controls are collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_14.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_14.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_14
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.15 | Ensure successful and unsuccessful attempts to use the chcon command are recorded"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_15.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_15.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_15
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.16 | Ensure successful and unsuccessful attempts to use the setfacl command are recorded"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_16.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_16.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_16
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.17 | Ensure successful and unsuccessful attempts to use the chacl command are recorded"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_17.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_17.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_17
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.18 | Ensure successful and unsuccessful attempts to use the usermod command are recorded"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_18.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_18.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_18
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.19 | Ensure kernel module loading unloading and modification is collected"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_19.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_19.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_19
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.3.20 | Ensure the audit configuration is immutable"
+  ansible.builtin.template:
+    src: audit/cis_6_3_3_20.rules.j2
+    dest: /etc/audit/rules.d/cis_6_3_3_20.rules
+    owner: root
+    group: root
+    mode: "0640"
+  notify: load audit rules
+  when:
+    - cis_ubuntu2204_rule_6_3_3_20
+  tags:
+    - rule_6_3_3
+    - server_l2
+    - workstation_l2
+
+# NOTE: done in steps before, by call notify
+# - name: "SECTION6 | 6.3.3.21 | Ensure the running and on disk configuration is the same"
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION6 | 6.3.4.0 | Ensure audit log_file is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0640"
+  with_items:
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}log_file{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "log_file = {{ cis_ubuntu2204_audit_log_path }}/audit.log"
+  notify: restart auditd
+  when:
+    - cis_ubuntu2204_rule_6_3_4_0
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.4.1 | Ensure audit log files mode is configured"
+  ansible.builtin.file:
+    path: "{{ cis_ubuntu2204_audit_log_path }}/audit.log"
+    state: touch
+    mode: "0640"
+  when:
+    - cis_ubuntu2204_rule_6_3_4_1
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+    - molecule-idempotence-notest
+
+- name: "SECTION6 | 6.3.4.2 | Ensure audit log files owner is configured"
+  ansible.builtin.file:
+    path: "{{ cis_ubuntu2204_audit_log_path }}/audit.log"
+    owner: root
+  when:
+    - cis_ubuntu2204_rule_6_3_4_2
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.4.3 | Ensure audit log files group owner is configured"
+  when:
+    - cis_ubuntu2204_rule_6_3_4_3
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+  block:
+    - name: "SECTION6 | 6.3.4.3 | Ensure audit log files group owner is configured | auditd.conf log_group"
+      ansible.builtin.lineinfile:
+        dest: /etc/audit/auditd.conf
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}log_group{{ cis_ubuntu2204_regex_base_search_equals }}"
+        line: "log_group = {{ cis_ubuntu2204_audit_log_group }}"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0640"
+    - name: "SECTION6 | 6.3.4.3 | Ensure audit log files group owner is configured | set folder group"
+      ansible.builtin.file:
+        path: "{{ cis_ubuntu2204_audit_log_path }}"
+        group: "{{ cis_ubuntu2204_audit_log_group }}"
+        state: directory
+        mode: "0750"
+    - name: "SECTION6 | 6.3.4.3 | Ensure audit log files group owner is configured | set file group"
+      ansible.builtin.file:
+        path: "{{ cis_ubuntu2204_audit_log_path }}/audit.log"
+        group: "{{ cis_ubuntu2204_audit_log_group }}"
+
+- name: "SECTION6 | 6.3.4.4 | Ensure the audit log file directory mode is configured"
+  ansible.builtin.file:
+    path: "{{ cis_ubuntu2204_audit_log_path }}"
+    state: directory
+    mode: "0750"
+  when:
+    - cis_ubuntu2204_rule_6_3_4_4
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.4.5 | Ensure audit configuration files mode is configured"
+  when:
+    - cis_ubuntu2204_rule_6_3_4_5
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+  block:
+    - name: "SECTION6 | 6.3.4.5 | Ensure audit configuration files mode is configured | find *.conf"
+      ansible.builtin.find:
+        paths: /etc/audit/
+        file_type: file
+        patterns: "*.conf"
+        recurse: true
+      register: cis_ubuntu2204_audit_files_conf
+    - name: "SECTION6 | 6.3.4.5 | Ensure audit configuration files mode is configured | update *.conf"
       ansible.builtin.file:
         path: "{{ item.path }}"
-        mode: go-w
-        owner: "{{ item.uid }}"
-        group: "{{ item.gid }}"
-      with_items: "{{ cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten }}"
-      when:
-        - cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten | selectattr('path', 'defined')
-        - cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten | selectattr('uid', 'defined')
-        - cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten | selectattr('gid', 'defined')
+        mode: "0640"
+      with_items: "{{ cis_ubuntu2204_audit_files_conf.files }}"
+    - name: "SECTION6 | 6.3.4.5 | Ensure audit configuration files mode is configured | find *.rules"
+      ansible.builtin.find:
+        paths: /etc/audit/
+        file_type: file
+        patterns: "*.rules"
+        recurse: true
+      register: cis_ubuntu2204_audit_files_rules
+    - name: "SECTION6 | 6.3.4.5 | Ensure audit configuration files mode is configured | update *.rules"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        mode: "0640"
+      with_items: "{{ cis_ubuntu2204_audit_files_rules.files }}"
+
+- name: "SECTION6 | 6.3.4.6 | Ensure audit configuration files owner is configured"
+  when:
+    - cis_ubuntu2204_rule_6_3_4_6
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+  block:
+    - name: "SECTION6 | 6.3.4.6 | Ensure audit configuration files owner is configured | find *.conf"
+      ansible.builtin.find:
+        paths: /etc/audit/
+        file_type: file
+        patterns: "*.conf"
+        recurse: true
+      register: cis_ubuntu2204_audit_files_conf
+    - name: "SECTION6 | 6.3.4.6 | Ensure audit configuration files owner is configured | update *.conf"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        owner: root
+      with_items: "{{ cis_ubuntu2204_audit_files_conf.files }}"
+    - name: "SECTION6 | 6.3.4.6 | Ensure audit configuration files owner is configured | find *.rules"
+      ansible.builtin.find:
+        paths: /etc/audit/
+        file_type: file
+        patterns: "*.rules"
+        recurse: true
+      register: cis_ubuntu2204_audit_files_rules
+    - name: "SECTION6 | 6.3.4.6 | Ensure audit configuration files owner is configured | update *.rules"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        owner: root
+      with_items: "{{ cis_ubuntu2204_audit_files_rules.files }}"
+
+- name: "SECTION6 | 6.3.4.7 | Ensure audit configuration files group owner is configured"
+  when:
+    - cis_ubuntu2204_rule_6_3_4_7
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+  block:
+    - name: "SECTION6 | 6.3.4.7 | Ensure audit configuration files group owner is configured | find *.conf"
+      ansible.builtin.find:
+        paths: /etc/audit/
+        file_type: file
+        patterns: "*.conf"
+        recurse: true
+      register: cis_ubuntu2204_audit_files_conf
+    - name: "SECTION6 | 6.3.4.7 | Ensure audit configuration files group owner is configured | update *.conf"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        group: root
+      with_items: "{{ cis_ubuntu2204_audit_files_conf.files }}"
+    - name: "SECTION6 | 6.3.4.7 | Ensure audit configuration files group owner is configured | find *.rules"
+      ansible.builtin.find:
+        paths: /etc/audit/
+        file_type: file
+        patterns: "*.rules"
+        recurse: true
+      register: cis_ubuntu2204_audit_files_rules
+    - name: "SECTION6 | 6.3.4.7 | Ensure audit configuration files group owner is configured | update *.rules"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        group: root
+      with_items: "{{ cis_ubuntu2204_audit_files_rules.files }}"
+
+- name: "SECTION6 | 6.3.4.8 | Ensure audit tools mode is configured"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: "0755"
+  with_items:
+    - /sbin/auditctl
+    - /sbin/aureport
+    - /sbin/ausearch
+    - /sbin/autrace
+    - /sbin/auditd
+    - /sbin/augenrules
+  when:
+    - cis_ubuntu2204_rule_6_3_4_8
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.4.9 | Ensure audit tools owner is configured"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: root
+  with_items:
+    - /sbin/auditctl
+    - /sbin/aureport
+    - /sbin/ausearch
+    - /sbin/autrace
+    - /sbin/auditd
+    - /sbin/augenrules
+  when:
+    - cis_ubuntu2204_rule_6_3_4_9
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION6 | 6.3.4.10 | Ensure audit tools group owner is configured"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    group: root
+  with_items:
+    - /sbin/auditctl
+    - /sbin/aureport
+    - /sbin/ausearch
+    - /sbin/autrace
+    - /sbin/auditd
+    - /sbin/augenrules
+  when:
+    - cis_ubuntu2204_rule_6_3_4_10
+  tags:
+    - rule_6_3_4
+    - server_l2
+    - workstation_l2

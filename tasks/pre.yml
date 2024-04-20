@@ -5,112 +5,96 @@
 
 - name: "PRE | run apt cache update"
   ansible.builtin.apt:
-    force_apt_get: true
     update_cache: true
+    force_apt_get: true
   changed_when: false
 
 # ------------------------------------------------------------------------------
 
-- name: "PRE | 1.4.1 | check the grub.cfg configuration"
+- name: "PRE | 1.4.2 | check the grub.cfg configuration"
   ansible.builtin.stat:
     path: /boot/grub/grub.cfg
   register: cis_grub_cfg
 
-- name: "PRE | 1.4.1 | check the grub.conf configuration"
+- name: "PRE | 1.4.2 | check the grub.conf configuration"
   ansible.builtin.stat:
     path: /boot/grub/grub.conf
   register: cis_grub_conf
 
-- name: "PRE | 1.4.1 | check the menu.lst configuration"
+- name: "PRE | 1.4.2 | check the menu.lst configuration"
   ansible.builtin.stat:
     path: "/boot/grub/menu.lst"
   register: cis_menu_lst
 
 # ------------------------------------------------------------------------------
+# systemctl show <SERVICE> | grep -E "LoadState|ActiveState" | cut -d = -f 2 | tr -d '\n'
+# check with for disable and mask with: <REGISTER>.stdout in ("loadedactive","loadedinactive")
+# - loadedactive
+# - loadedinactive
+# - maskedinactive
+# - not-foundinactive
 
-- name: "PRE | 1.4.3 | check if root has password"
-  ansible.builtin.shell: |
-    set -o pipefail &&
-    getent shadow | grep root | awk -F: '($2 == "*" || $2 == "!" ) { printf $2; }'
-  args:
-    executable: /bin/bash
-  register: cis_current_root_password
-  changed_when: false
-  check_mode: false
-
-# ------------------------------------------------------------------------------
-
-- name: "PRE | 1.1.9 | check for 'autofs' service"
-  ansible.builtin.shell: |
-    set -o pipefail &&
-    systemctl show autofs | grep LoadState | cut -d = -f 2
-  args:
-    executable: /bin/bash
-  register: service_status_autofs
-  changed_when: false
-  check_mode: false
-
-- name: "PRE | 1.5.3 | check for 'apport' service"
-  ansible.builtin.shell: |
+- name: "PRE | 1.5.5 | check for 'apport' service"
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show apport | grep LoadState | cut -d = -f 2
   args:
-    executable: /bin/bash
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_apport
   changed_when: false
   check_mode: false
 
-- name: "PRE | 1.8 | check for 'gdm3' service"
-  ansible.builtin.shell: |
+- name: "PRE | 1.7 | check for 'gdm3' service"
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show gdm3 | grep LoadState | cut -d = -f 2
   args:
-    executable: /bin/bash
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_gdm3
   changed_when: false
   check_mode: false
 
-- name: "PRE | 2.1.1.1 | check for 'systemd-timesyncd' service"
-  ansible.builtin.shell: |
+- name: "PRE | 2.3.1.1 | check for 'systemd-timesyncd' service"
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show systemd-timesyncd | grep LoadState | cut -d = -f 2
   args:
-    executable: /bin/bash
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_systemd_timesyncd
   changed_when: false
   check_mode: false
 
-- name: "PRE | 5.1 | check for 'cron' service"
-  ansible.builtin.shell: |
+- name: "PRE | 2.4.1 | check for 'cron' service"
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show cron | grep LoadState | cut -d = -f 2
   args:
-    executable: /bin/bash
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_cron
   changed_when: false
   check_mode: false
 
-- name: "PRE | 5.2 | check for 'ssh' service"
-  ansible.builtin.shell: |
+- name: "PRE | 5.1 | check for 'ssh' service"
+  ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show ssh | grep LoadState | cut -d = -f 2
   args:
-    executable: /bin/bash
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_ssh
   changed_when: false
   check_mode: false
 
 # ------------------------------------------------------------------------------
 
-- name: "PRE | 1.3.1, 2.2.15 | check if 'postfix' package is installed"
-  ansible.builtin.command: "dpkg -V postfix"
+- name: "PRE | 2.1.21, 6.1.1 | check if 'postfix' package is installed"
+  ansible.builtin.command: dpkg -V postfix
   register: package_installed_postfix
   changed_when: false
   failed_when: false
   check_mode: false
 
-- name: "PRE | 1.5.2 | check if 'prelink' package is installed"
-  ansible.builtin.command: "dpkg -V prelink"
+- name: "PRE | 1.5.4 | check if 'prelink' package is installed"
+  ansible.builtin.command: dpkg -V prelink
   register: package_installed_prelink
   changed_when: false
   failed_when: false

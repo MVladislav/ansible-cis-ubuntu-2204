@@ -11,116 +11,137 @@ cis_ubuntu2204_section3: true
 cis_ubuntu2204_section4: true
 cis_ubuntu2204_section5: true
 cis_ubuntu2204_section6: true
+cis_ubuntu2204_section7: true
 
 # CIS rules
 # ---------------------------------------
 # NOTE: relates to 'CIS sections' above.
 #       Section needs to be enabled to also take effect related rules
 ## SECTION 1 rules
-cis_ubuntu2204_rule_1_1_1_1: true
-# IMPACT: Snap packages utilizes squashfs as a compressed filesystem,
-#       disabling squashfs will cause Snap packages to fail.
-cis_ubuntu2204_rule_1_1_1_2: true
-# IMPACT: Microsoft Azure requires the usage of udf.
-cis_ubuntu2204_rule_1_1_1_3: true
-cis_ubuntu2204_rule_1_1_2_1: true
-cis_ubuntu2204_rule_1_1_2_2: true
-cis_ubuntu2204_rule_1_1_2_3: true
-cis_ubuntu2204_rule_1_1_2_4: true
-cis_ubuntu2204_rule_1_1_3_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_3_2: true
-cis_ubuntu2204_rule_1_1_3_3: true
-cis_ubuntu2204_rule_1_1_4_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_4_2: true
-cis_ubuntu2204_rule_1_1_4_3: true
-cis_ubuntu2204_rule_1_1_4_4: true
-cis_ubuntu2204_rule_1_1_5_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_5_2: true
-cis_ubuntu2204_rule_1_1_5_3: true
-cis_ubuntu2204_rule_1_1_5_4: true
-cis_ubuntu2204_rule_1_1_6_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_6_2: true
-cis_ubuntu2204_rule_1_1_6_3: true
-cis_ubuntu2204_rule_1_1_6_4: true
-cis_ubuntu2204_rule_1_1_7_1: false # NOTE: not implemented full, separate partition not created
-cis_ubuntu2204_rule_1_1_7_2: true
-cis_ubuntu2204_rule_1_1_7_3: true
-cis_ubuntu2204_rule_1_1_8_1: true
-cis_ubuntu2204_rule_1_1_8_2: true
-cis_ubuntu2204_rule_1_1_8_3: true
-cis_ubuntu2204_rule_1_1_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
-cis_ubuntu2204_rule_1_1_10: true
-cis_ubuntu2204_rule_1_2_1: true
-cis_ubuntu2204_rule_1_2_2: true
-cis_ubuntu2204_rule_1_3_1: true # NOTE: depends also on 'cis_ubuntu2204_config_aide|cis_ubuntu2204_install_aide'
-cis_ubuntu2204_rule_1_3_2: true # NOTE: depends also on 'cis_ubuntu2204_config_aide|cis_ubuntu2204_install_aide'
-cis_ubuntu2204_rule_1_4_1: false # NOTE: depends also on 'cis_ubuntu2204_set_boot_pass'
+cis_ubuntu2204_rule_1_1_1_1: true # cramfs
+cis_ubuntu2204_rule_1_1_1_2: true # freevxfs
+cis_ubuntu2204_rule_1_1_1_3: true # hfs
+cis_ubuntu2204_rule_1_1_1_4: true # hfsplus
+cis_ubuntu2204_rule_1_1_1_5: true # jffs2
+cis_ubuntu2204_rule_1_1_1_6: true # squashfs - IMPACT: Snap packages utilizes squashfs as a compressed filesystem, disabling squashfs will cause Snap packages to fail.
+cis_ubuntu2204_rule_1_1_1_7: true # udf - IMPACT: Microsoft Azure requires the usage of udf.
+cis_ubuntu2204_rule_1_1_1_8: true # usb-storage - IMPACT: Disabling the usb-storage module will disable any usage of USB storage devices.
+cis_ubuntu2204_rule_1_1_2_1: true # /tmp
+# cis_ubuntu2204_rule_1_1_2_1_1: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_1'
+cis_ubuntu2204_rule_1_1_2_1_2: true
+cis_ubuntu2204_rule_1_1_2_1_3: true
+cis_ubuntu2204_rule_1_1_2_1_4: true
+cis_ubuntu2204_rule_1_1_2_2: true # /dev/shm
+# cis_ubuntu2204_rule_1_1_2_2_1: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
+# cis_ubuntu2204_rule_1_1_2_2_2: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
+# cis_ubuntu2204_rule_1_1_2_2_3: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
+# cis_ubuntu2204_rule_1_1_2_2_4: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
+# cis_ubuntu2204_rule_1_1_2_3: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_4: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_5: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_6: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_7: false # NOTE: not implemented, separate partition not created
+cis_ubuntu2204_rule_1_2_1_1: true
+cis_ubuntu2204_rule_1_2_1_2: true
+cis_ubuntu2204_rule_1_2_2_1: true
+cis_ubuntu2204_rule_1_3_1_1: true
+cis_ubuntu2204_rule_1_3_1_2: true
+cis_ubuntu2204_rule_1_3_1_3: true # NOTE: will run to have all in complain-mode, for enforce use 'cis_ubuntu2204_rule_1_3_1_4'
+cis_ubuntu2204_rule_1_3_1_4: false # NOTE: disabled
+cis_ubuntu2204_rule_1_4_1: false # NOTE: depends also on 'cis_ubuntu2204_set_boot_pass' and 'cis_ubuntu2204_disable_boot_pass'
 cis_ubuntu2204_rule_1_4_2: true
-cis_ubuntu2204_rule_1_4_3: false
 cis_ubuntu2204_rule_1_5_1: true
 cis_ubuntu2204_rule_1_5_2: true
 cis_ubuntu2204_rule_1_5_3: true
 cis_ubuntu2204_rule_1_5_4: true
-cis_ubuntu2204_rule_1_6_1_1: true
-cis_ubuntu2204_rule_1_6_1_2: true
-cis_ubuntu2204_rule_1_6_1_3: false
-cis_ubuntu2204_rule_1_6_1_4: false
+cis_ubuntu2204_rule_1_5_5: true
+cis_ubuntu2204_rule_1_6_1: true
+cis_ubuntu2204_rule_1_6_2: true
+cis_ubuntu2204_rule_1_6_3: true
+cis_ubuntu2204_rule_1_6_4: true
+cis_ubuntu2204_rule_1_6_5: true
+cis_ubuntu2204_rule_1_6_6: true
 cis_ubuntu2204_rule_1_7_1: true
-cis_ubuntu2204_rule_1_7_2: true
-cis_ubuntu2204_rule_1_7_3: true
-cis_ubuntu2204_rule_1_7_4: true
-cis_ubuntu2204_rule_1_7_5: true
-cis_ubuntu2204_rule_1_7_6: true
-cis_ubuntu2204_rule_1_8_1: true
-cis_ubuntu2204_rule_1_8_2: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_3: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_4: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_5: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_6: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_7: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_8: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_8_10: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
-cis_ubuntu2204_rule_1_9: true
+cis_ubuntu2204_rule_1_7_2: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_3: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_4: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_5: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_6: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui' and 'cis_ubuntu2204_allow_autofs'
+cis_ubuntu2204_rule_1_7_7: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui' and 'cis_ubuntu2204_allow_autofs'
+cis_ubuntu2204_rule_1_7_8: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_10: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 ## SECTION 2 rules
-cis_ubuntu2204_rule_2_1_1_1: true
-cis_ubuntu2204_rule_2_1_2_1: true
-cis_ubuntu2204_rule_2_1_2_2: true
-cis_ubuntu2204_rule_2_1_2_3: true
-cis_ubuntu2204_rule_2_1_3_1: true
-cis_ubuntu2204_rule_2_1_3_2: true
-cis_ubuntu2204_rule_2_1_4_1: true
-cis_ubuntu2204_rule_2_1_4_2: true
-cis_ubuntu2204_rule_2_1_4_3: true
-cis_ubuntu2204_rule_2_1_4_4: true
+cis_ubuntu2204_rule_2_1_1: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
+cis_ubuntu2204_rule_2_1_1_remove: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
+cis_ubuntu2204_rule_2_1_2: true
+cis_ubuntu2204_rule_2_1_2_remove: true
+cis_ubuntu2204_rule_2_1_3: true
+cis_ubuntu2204_rule_2_1_3_remove: true
+cis_ubuntu2204_rule_2_1_4: true
+cis_ubuntu2204_rule_2_1_4_remove: true
+cis_ubuntu2204_rule_2_1_5: true
+cis_ubuntu2204_rule_2_1_5_remove: true
+cis_ubuntu2204_rule_2_1_6: true
+cis_ubuntu2204_rule_2_1_6_remove: true
+cis_ubuntu2204_rule_2_1_7: true
+cis_ubuntu2204_rule_2_1_7_remove: true
+cis_ubuntu2204_rule_2_1_8: true
+cis_ubuntu2204_rule_2_1_8_remove: true
+cis_ubuntu2204_rule_2_1_9: true
+cis_ubuntu2204_rule_2_1_9_remove: true
+cis_ubuntu2204_rule_2_1_10: true
+cis_ubuntu2204_rule_2_1_10_remove: true
+cis_ubuntu2204_rule_2_1_11: true # NOTE: depends also on 'cis_ubuntu2204_allow_cups'
+cis_ubuntu2204_rule_2_1_11_remove: true # NOTE: depends also on 'cis_ubuntu2204_allow_cups'
+cis_ubuntu2204_rule_2_1_12: true
+cis_ubuntu2204_rule_2_1_12_remove: true
+cis_ubuntu2204_rule_2_1_13: true
+cis_ubuntu2204_rule_2_1_13_remove: true
+cis_ubuntu2204_rule_2_1_14: true
+cis_ubuntu2204_rule_2_1_14_remove: true
+cis_ubuntu2204_rule_2_1_15: true
+cis_ubuntu2204_rule_2_1_15_remove: true
+cis_ubuntu2204_rule_2_1_16: true
+cis_ubuntu2204_rule_2_1_16_remove: true
+cis_ubuntu2204_rule_2_1_17: true
+cis_ubuntu2204_rule_2_1_17_remove: true
+cis_ubuntu2204_rule_2_1_18: true
+cis_ubuntu2204_rule_2_1_18_remove: true
+cis_ubuntu2204_rule_2_1_19: true
+cis_ubuntu2204_rule_2_1_19_remove: true
+cis_ubuntu2204_rule_2_1_20: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_2_1_20_remove: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_2_1_21: true
+cis_ubuntu2204_rule_2_1_22: true
 cis_ubuntu2204_rule_2_2_1: true
 cis_ubuntu2204_rule_2_2_2: true
-cis_ubuntu2204_rule_2_2_3: true # NOTE: depends also on 'cis_ubuntu2204_allow_cups'
+cis_ubuntu2204_rule_2_2_3: true
 cis_ubuntu2204_rule_2_2_4: true
 cis_ubuntu2204_rule_2_2_5: true
 cis_ubuntu2204_rule_2_2_6: true
-cis_ubuntu2204_rule_2_2_7: true
-cis_ubuntu2204_rule_2_2_8: true
-cis_ubuntu2204_rule_2_2_9: true
-cis_ubuntu2204_rule_2_2_10: true
-cis_ubuntu2204_rule_2_2_11: true
-cis_ubuntu2204_rule_2_2_12: true
-cis_ubuntu2204_rule_2_2_13: true
-cis_ubuntu2204_rule_2_2_14: true
-cis_ubuntu2204_rule_2_2_15: true
-cis_ubuntu2204_rule_2_2_16: true
-cis_ubuntu2204_rule_2_3_1: true
-cis_ubuntu2204_rule_2_3_2: true
-cis_ubuntu2204_rule_2_3_3: true
-cis_ubuntu2204_rule_2_3_4: true
-cis_ubuntu2204_rule_2_3_5: true
-cis_ubuntu2204_rule_2_3_6: true
-cis_ubuntu2204_rule_2_4: true
+cis_ubuntu2204_rule_2_3_1_1: true
+cis_ubuntu2204_rule_2_3_2_1: true
+cis_ubuntu2204_rule_2_3_3_1: true
+cis_ubuntu2204_rule_2_3_3_2: true
+cis_ubuntu2204_rule_2_4_1_1: true
+cis_ubuntu2204_rule_2_4_1_2: true
+cis_ubuntu2204_rule_2_4_1_3: true
+cis_ubuntu2204_rule_2_4_1_4: true
+cis_ubuntu2204_rule_2_4_1_5: true
+cis_ubuntu2204_rule_2_4_1_6: true
+cis_ubuntu2204_rule_2_4_1_7: true
+cis_ubuntu2204_rule_2_4_1_8: true
+cis_ubuntu2204_rule_2_4_2_1: true
 ## SECTION 3 rules
 cis_ubuntu2204_rule_3_1_1: true # NOTE: depends also on 'cis_ubuntu2204_required_ipv6'
 cis_ubuntu2204_rule_3_1_2: true
+cis_ubuntu2204_rule_3_1_3: true
+cis_ubuntu2204_rule_3_1_3_remove: true
 cis_ubuntu2204_rule_3_2_1: true
 cis_ubuntu2204_rule_3_2_2: true
+cis_ubuntu2204_rule_3_2_3: true
+cis_ubuntu2204_rule_3_2_4: true
 cis_ubuntu2204_rule_3_3_1: true
 cis_ubuntu2204_rule_3_3_2: true
 cis_ubuntu2204_rule_3_3_3: true
@@ -130,97 +151,39 @@ cis_ubuntu2204_rule_3_3_6: true
 cis_ubuntu2204_rule_3_3_7: true
 cis_ubuntu2204_rule_3_3_8: true
 cis_ubuntu2204_rule_3_3_9: true
-cis_ubuntu2204_rule_3_4_1: true
-cis_ubuntu2204_rule_3_4_2: true
-cis_ubuntu2204_rule_3_4_3: true
-cis_ubuntu2204_rule_3_4_4: true
-cis_ubuntu2204_rule_3_5_1_1: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-cis_ubuntu2204_rule_3_5_1_2: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-cis_ubuntu2204_rule_3_5_1_3: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-cis_ubuntu2204_rule_3_5_1_4: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-cis_ubuntu2204_rule_3_5_1_5: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-cis_ubuntu2204_rule_3_5_1_6: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-cis_ubuntu2204_rule_3_5_1_7: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
-cis_ubuntu2204_rule_3_5_2_1: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_2_2: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_2_3: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_2_4: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_2_5: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_2_6: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_2_7: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_2_8: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_2_9: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_2_10: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
-cis_ubuntu2204_rule_3_5_3_1_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_1_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_1_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_2_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_2_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_2_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_2_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_3_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_3_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_3_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
-cis_ubuntu2204_rule_3_5_3_3_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_3_3_10: true
+cis_ubuntu2204_rule_3_3_11: true
 ## SECTION 4 rules
-cis_ubuntu2204_rule_4_1_1_1: true
-cis_ubuntu2204_rule_4_1_1_2: true
-cis_ubuntu2204_rule_4_1_1_3: true
-cis_ubuntu2204_rule_4_1_1_4: true
-cis_ubuntu2204_rule_4_1_2_1: true
-cis_ubuntu2204_rule_4_1_2_2: true
-cis_ubuntu2204_rule_4_1_2_3: true
-cis_ubuntu2204_rule_4_1_3_1: true
-cis_ubuntu2204_rule_4_1_3_2: true
-cis_ubuntu2204_rule_4_1_3_3: true
-cis_ubuntu2204_rule_4_1_3_4: true
-cis_ubuntu2204_rule_4_1_3_5: true
-cis_ubuntu2204_rule_4_1_3_6: true
-cis_ubuntu2204_rule_4_1_3_7: true
-cis_ubuntu2204_rule_4_1_3_8: true
-cis_ubuntu2204_rule_4_1_3_9: true
-cis_ubuntu2204_rule_4_1_3_10: true
-cis_ubuntu2204_rule_4_1_3_11: true
-cis_ubuntu2204_rule_4_1_3_12: true
-cis_ubuntu2204_rule_4_1_3_13: true
-cis_ubuntu2204_rule_4_1_3_14: true
-cis_ubuntu2204_rule_4_1_3_15: true
-cis_ubuntu2204_rule_4_1_3_16: true
-cis_ubuntu2204_rule_4_1_3_17: true
-cis_ubuntu2204_rule_4_1_3_18: true
-cis_ubuntu2204_rule_4_1_3_19: true
-cis_ubuntu2204_rule_4_1_3_20: true
-cis_ubuntu2204_rule_4_1_3_21: true
-cis_ubuntu2204_rule_4_1_4_1: true
-cis_ubuntu2204_rule_4_1_4_2: true
-cis_ubuntu2204_rule_4_1_4_3: true
-cis_ubuntu2204_rule_4_1_4_4: true
-cis_ubuntu2204_rule_4_1_4_5: true
-cis_ubuntu2204_rule_4_1_4_6: true
-cis_ubuntu2204_rule_4_1_4_7: true
-cis_ubuntu2204_rule_4_1_4_8: true
-cis_ubuntu2204_rule_4_1_4_9: true
-cis_ubuntu2204_rule_4_1_4_10: true
-cis_ubuntu2204_rule_4_1_4_11: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
-cis_ubuntu2204_rule_4_2_1_1_1: true
-cis_ubuntu2204_rule_4_2_1_1_2: true
-cis_ubuntu2204_rule_4_2_1_1_3: true
-cis_ubuntu2204_rule_4_2_1_1_4: true
-cis_ubuntu2204_rule_4_2_1_2: true
-cis_ubuntu2204_rule_4_2_1_3: true
-cis_ubuntu2204_rule_4_2_1_4: true
-cis_ubuntu2204_rule_4_2_1_5: true
-cis_ubuntu2204_rule_4_2_1_6: true
-cis_ubuntu2204_rule_4_2_1_7: true
-cis_ubuntu2204_rule_4_2_2_1: true
-cis_ubuntu2204_rule_4_2_2_2: true
-cis_ubuntu2204_rule_4_2_2_3: true
-cis_ubuntu2204_rule_4_2_2_4: true
-cis_ubuntu2204_rule_4_2_2_5: true
-cis_ubuntu2204_rule_4_2_2_6: true
-cis_ubuntu2204_rule_4_2_2_7: true
-cis_ubuntu2204_rule_4_2_3: true
+cis_ubuntu2204_rule_4_1_1: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_2: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_3: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_4: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_5: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_6: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_1_7: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
+cis_ubuntu2204_rule_4_2_1: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_2: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_3: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_4: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_5: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_6: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_7: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_8: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_9: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_2_10: true # NOTE: 'cis_ubuntu2204_firewall == nftables'
+cis_ubuntu2204_rule_4_3_1_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_1_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_1_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_2_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_2_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_2_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_2_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_3_1: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_3_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_3_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
+cis_ubuntu2204_rule_4_3_3_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 ## SECTION 5 rules
+cis_ubuntu2204_rule_5_1_0: true
 cis_ubuntu2204_rule_5_1_1: true
 cis_ubuntu2204_rule_5_1_2: true
 cis_ubuntu2204_rule_5_1_3: true
@@ -230,6 +193,21 @@ cis_ubuntu2204_rule_5_1_6: true
 cis_ubuntu2204_rule_5_1_7: true
 cis_ubuntu2204_rule_5_1_8: true
 cis_ubuntu2204_rule_5_1_9: true
+cis_ubuntu2204_rule_5_1_10: true
+cis_ubuntu2204_rule_5_1_11: true
+cis_ubuntu2204_rule_5_1_12: true
+cis_ubuntu2204_rule_5_1_13: true
+cis_ubuntu2204_rule_5_1_14: true
+cis_ubuntu2204_rule_5_1_15: true
+cis_ubuntu2204_rule_5_1_16: true
+cis_ubuntu2204_rule_5_1_17: true
+cis_ubuntu2204_rule_5_1_18: true
+cis_ubuntu2204_rule_5_1_19: true
+cis_ubuntu2204_rule_5_1_20: true
+cis_ubuntu2204_rule_5_1_21: true
+cis_ubuntu2204_rule_5_1_22: true
+cis_ubuntu2204_rule_5_1_23: true # EXTENDED: own added, not included in CIS
+cis_ubuntu2204_rule_5_1_24: true # NOTE: depends also on 'cis_ubuntu2204_rule_5_1_24_ssh_pub_key'
 cis_ubuntu2204_rule_5_2_1: true
 cis_ubuntu2204_rule_5_2_2: true
 cis_ubuntu2204_rule_5_2_3: true
@@ -237,102 +215,282 @@ cis_ubuntu2204_rule_5_2_4: true
 cis_ubuntu2204_rule_5_2_5: true
 cis_ubuntu2204_rule_5_2_6: true
 cis_ubuntu2204_rule_5_2_7: true
-cis_ubuntu2204_rule_5_2_8: true
-cis_ubuntu2204_rule_5_2_9: true
-cis_ubuntu2204_rule_5_2_10: true
-cis_ubuntu2204_rule_5_2_11: true
-cis_ubuntu2204_rule_5_2_12: true
-cis_ubuntu2204_rule_5_2_13: true
-cis_ubuntu2204_rule_5_2_14: true
-cis_ubuntu2204_rule_5_2_15: true
-cis_ubuntu2204_rule_5_2_16: true
-cis_ubuntu2204_rule_5_2_17: true
-cis_ubuntu2204_rule_5_2_18: true
-cis_ubuntu2204_rule_5_2_19: true
-cis_ubuntu2204_rule_5_2_20: true
-cis_ubuntu2204_rule_5_2_21: true
-cis_ubuntu2204_rule_5_2_22: true
-cis_ubuntu2204_rule_5_2_23: true # NOTE: own added, not included in CIS
-cis_ubuntu2204_rule_5_3_1: true
-cis_ubuntu2204_rule_5_3_2: true
-cis_ubuntu2204_rule_5_3_3: true
-cis_ubuntu2204_rule_5_3_4: true
-cis_ubuntu2204_rule_5_3_5: true
-cis_ubuntu2204_rule_5_3_6: true
-cis_ubuntu2204_rule_5_3_7: true
-cis_ubuntu2204_rule_5_4_1: true
-cis_ubuntu2204_rule_5_4_2: false
-cis_ubuntu2204_rule_5_4_3: true
-cis_ubuntu2204_rule_5_4_4: true
-cis_ubuntu2204_rule_5_4_5: true
-cis_ubuntu2204_rule_5_5_1_1: true
-cis_ubuntu2204_rule_5_5_1_2: true
-cis_ubuntu2204_rule_5_5_1_3: true
-cis_ubuntu2204_rule_5_5_1_4: true
-cis_ubuntu2204_rule_5_5_1_5: true
-cis_ubuntu2204_rule_5_5_2: true
-cis_ubuntu2204_rule_5_5_3: true
-cis_ubuntu2204_rule_5_5_4: true
-cis_ubuntu2204_rule_5_5_5: true
+cis_ubuntu2204_rule_5_3_1_1: true
+cis_ubuntu2204_rule_5_3_1_2: true
+cis_ubuntu2204_rule_5_3_1_3: true
+cis_ubuntu2204_rule_5_3_2_1: true
+cis_ubuntu2204_rule_5_3_2_2: true
+cis_ubuntu2204_rule_5_3_2_3: true
+cis_ubuntu2204_rule_5_3_2_4: true
+cis_ubuntu2204_rule_5_3_3_1_1: true
+cis_ubuntu2204_rule_5_3_3_1_2: true
+cis_ubuntu2204_rule_5_3_3_1_3: true
+cis_ubuntu2204_rule_5_3_3_2_1: true
+cis_ubuntu2204_rule_5_3_3_2_2: true
+cis_ubuntu2204_rule_5_3_3_2_3: true
+cis_ubuntu2204_rule_5_3_3_2_4: true
+cis_ubuntu2204_rule_5_3_3_2_5: true
+cis_ubuntu2204_rule_5_3_3_2_6: true
+cis_ubuntu2204_rule_5_3_3_2_7: true
+cis_ubuntu2204_rule_5_3_3_2_8: true
+cis_ubuntu2204_rule_5_3_3_3_1: true
+cis_ubuntu2204_rule_5_3_3_3_2: true
+cis_ubuntu2204_rule_5_3_3_3_3: true
+cis_ubuntu2204_rule_5_3_3_4_1: true
+cis_ubuntu2204_rule_5_3_3_4_2: true
+cis_ubuntu2204_rule_5_3_3_4_3: true
+cis_ubuntu2204_rule_5_3_3_4_4: true
+cis_ubuntu2204_rule_5_4_1_1: true
+cis_ubuntu2204_rule_5_4_1_2: true
+cis_ubuntu2204_rule_5_4_1_3: true
+cis_ubuntu2204_rule_5_4_1_4: true
+cis_ubuntu2204_rule_5_4_1_5: true
+cis_ubuntu2204_rule_5_4_1_6: true
+cis_ubuntu2204_rule_5_4_2_1: true
+cis_ubuntu2204_rule_5_4_2_2: true
+cis_ubuntu2204_rule_5_4_2_3: true
+cis_ubuntu2204_rule_5_4_2_5: true
+cis_ubuntu2204_rule_5_4_2_6: true
+cis_ubuntu2204_rule_5_4_2_7: true
+cis_ubuntu2204_rule_5_4_2_8: true
+cis_ubuntu2204_rule_5_4_3_1: true
+cis_ubuntu2204_rule_5_4_3_2: true
+cis_ubuntu2204_rule_5_4_3_3: true
 ## SECTION 6 rules
-cis_ubuntu2204_rule_6_1_1: true
-cis_ubuntu2204_rule_6_1_2: true
-cis_ubuntu2204_rule_6_1_3: true
-cis_ubuntu2204_rule_6_1_4: true
-cis_ubuntu2204_rule_6_1_5: true
-cis_ubuntu2204_rule_6_1_6: true
-cis_ubuntu2204_rule_6_1_7: true
-cis_ubuntu2204_rule_6_1_8: true
-cis_ubuntu2204_rule_6_1_9: true
-cis_ubuntu2204_rule_6_1_10: true
-cis_ubuntu2204_rule_6_1_11: true
-cis_ubuntu2204_rule_6_1_12: true
-cis_ubuntu2204_rule_6_1_13: true
-cis_ubuntu2204_rule_6_2_1: true
-cis_ubuntu2204_rule_6_2_2: true
-cis_ubuntu2204_rule_6_2_3: true
-cis_ubuntu2204_rule_6_2_4: true
-cis_ubuntu2204_rule_6_2_5: true
-cis_ubuntu2204_rule_6_2_6: true
-cis_ubuntu2204_rule_6_2_7: true
-cis_ubuntu2204_rule_6_2_8: true
-cis_ubuntu2204_rule_6_2_9: true
-cis_ubuntu2204_rule_6_2_10: true
-cis_ubuntu2204_rule_6_2_11: true
-# cis_ubuntu2204_rule_6_2_12: true # NOTE: combined/same as 'cis_ubuntu2204_rule_6_2_12'
-# cis_ubuntu2204_rule_6_2_13: true # NOTE: combined/same as 'cis_ubuntu2204_rule_6_2_12'
-cis_ubuntu2204_rule_6_2_14: true
-cis_ubuntu2204_rule_6_2_15: true
-cis_ubuntu2204_rule_6_2_16: true
-cis_ubuntu2204_rule_6_2_17: true
+cis_ubuntu2204_rule_6_1_1: true # NOTE: depends also on 'cis_ubuntu2204_install_aide|cis_ubuntu2204_config_aide'
+cis_ubuntu2204_rule_6_1_2: true # NOTE: depends also on 'cis_ubuntu2204_install_aide|cis_ubuntu2204_config_aide'
+cis_ubuntu2204_rule_6_1_3: true # NOTE: depends also on 'cis_ubuntu2204_install_aide|cis_ubuntu2204_config_aide'
+cis_ubuntu2204_rule_6_2_1_1_1: true
+cis_ubuntu2204_rule_6_2_1_1_2: true
+cis_ubuntu2204_rule_6_2_1_1_3: true
+cis_ubuntu2204_rule_6_2_1_1_4: true
+cis_ubuntu2204_rule_6_2_1_1_5: true
+cis_ubuntu2204_rule_6_2_1_1_6: true
+cis_ubuntu2204_rule_6_2_1_2_1: true # NOTE: depends also on 'cis_ubuntu2204_set_journal_upload'
+cis_ubuntu2204_rule_6_2_1_2_2: true # NOTE: depends also on 'cis_ubuntu2204_set_journal_upload'
+# cis_ubuntu2204_rule_6_2_1_2_3: true # NOTE: implicit in 'cis_ubuntu2204_rule_6_2_1_2_2'
+cis_ubuntu2204_rule_6_2_1_2_4: true # NOTE: depends also on 'cis_ubuntu2204_set_journal_upload'
+cis_ubuntu2204_rule_6_2_2_1: true
+cis_ubuntu2204_rule_6_3_1_1: true
+cis_ubuntu2204_rule_6_3_1_2: true
+cis_ubuntu2204_rule_6_3_1_3: true
+cis_ubuntu2204_rule_6_3_1_4: true
+cis_ubuntu2204_rule_6_3_2_1: true
+cis_ubuntu2204_rule_6_3_2_2: true
+cis_ubuntu2204_rule_6_3_2_3: true
+cis_ubuntu2204_rule_6_3_2_4: true
+cis_ubuntu2204_rule_6_3_3_1: true
+cis_ubuntu2204_rule_6_3_3_2: true
+cis_ubuntu2204_rule_6_3_3_3: true
+cis_ubuntu2204_rule_6_3_3_4: true
+cis_ubuntu2204_rule_6_3_3_5: true
+cis_ubuntu2204_rule_6_3_3_6: true
+cis_ubuntu2204_rule_6_3_3_7: true
+cis_ubuntu2204_rule_6_3_3_8: true
+cis_ubuntu2204_rule_6_3_3_9: true
+cis_ubuntu2204_rule_6_3_3_10: true
+cis_ubuntu2204_rule_6_3_3_11: true
+cis_ubuntu2204_rule_6_3_3_12: true
+cis_ubuntu2204_rule_6_3_3_13: true
+cis_ubuntu2204_rule_6_3_3_14: true
+cis_ubuntu2204_rule_6_3_3_15: true
+cis_ubuntu2204_rule_6_3_3_16: true
+cis_ubuntu2204_rule_6_3_3_17: true
+cis_ubuntu2204_rule_6_3_3_18: true
+cis_ubuntu2204_rule_6_3_3_19: true
+cis_ubuntu2204_rule_6_3_3_20: true
+# cis_ubuntu2204_rule_6_3_3_21: true # NOTE: implicit in 'cis_ubuntu2204_rule_6_3_3_1-20'
+cis_ubuntu2204_rule_6_3_4_0: true
+cis_ubuntu2204_rule_6_3_4_1: true
+cis_ubuntu2204_rule_6_3_4_2: true
+cis_ubuntu2204_rule_6_3_4_3: true
+cis_ubuntu2204_rule_6_3_4_4: true
+cis_ubuntu2204_rule_6_3_4_5: true
+cis_ubuntu2204_rule_6_3_4_6: true
+cis_ubuntu2204_rule_6_3_4_7: true
+cis_ubuntu2204_rule_6_3_4_8: true
+cis_ubuntu2204_rule_6_3_4_9: true
+cis_ubuntu2204_rule_6_3_4_10: true
+## SECTION 7 rules
+cis_ubuntu2204_rule_7_1_1: true
+cis_ubuntu2204_rule_7_1_2: true
+cis_ubuntu2204_rule_7_1_3: true
+cis_ubuntu2204_rule_7_1_4: true
+cis_ubuntu2204_rule_7_1_5: true
+cis_ubuntu2204_rule_7_1_6: true
+cis_ubuntu2204_rule_7_1_7: true
+cis_ubuntu2204_rule_7_1_8: true
+cis_ubuntu2204_rule_7_1_9: true
+cis_ubuntu2204_rule_7_1_10: true
+cis_ubuntu2204_rule_7_1_11: true
+cis_ubuntu2204_rule_7_1_12: true
+cis_ubuntu2204_rule_7_1_13: true
+cis_ubuntu2204_rule_7_2_1: true
+cis_ubuntu2204_rule_7_2_2: true
+cis_ubuntu2204_rule_7_2_3: true
+cis_ubuntu2204_rule_7_2_4: true
+cis_ubuntu2204_rule_7_2_5: true
+cis_ubuntu2204_rule_7_2_6: true
+cis_ubuntu2204_rule_7_2_7: true
+cis_ubuntu2204_rule_7_2_8: true
+cis_ubuntu2204_rule_7_2_9: true
+cis_ubuntu2204_rule_7_2_10: true
 
 # ------------------------------------------------------------------------------
 cis_ubuntu2204_regex_base_search: '^(#(\s)*)?'
+cis_ubuntu2204_regex_base_search_equals: '\s*=.*$'
+cis_ubuntu2204_shell_executable: /bin/bash
+cis_ubuntu2204_print_info_join_by: "\n"
 
 # SPECIAL options rule overview
 # ---------------------------------------
-# autofs allow auto mount (cis_ubuntu2204_rule_1_1_9)
-cis_ubuntu2204_allow_autofs: false
-# AIDE perform install/config (cis_ubuntu2204_rule_1_3_1|cis_ubuntu2204_rule_1_3_2|cis_ubuntu2204_rule_4_1_4_11)
-cis_ubuntu2204_install_aide: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
-cis_ubuntu2204_config_aide: true
 # BOOTLOADER set (cis_ubuntu2204_rule_1_4_1)
 cis_ubuntu2204_set_boot_pass: false
 cis_ubuntu2204_disable_boot_pass: true
-# gdm allow, else remove (cis_ubuntu2204_rule_1_8_*)
+# autofs allow auto mount (cis_ubuntu2204_rule_1_7_6|cis_ubuntu2204_rule_1_7_7|cis_ubuntu2204_rule_2_1_1)
+cis_ubuntu2204_allow_autofs: false
+# gdm allow, else remove (cis_ubuntu2204_rule_1_7_*,cis_ubuntu2204_rule_2_1_20)
 cis_ubuntu2204_allow_gdm_gui: false
 # cups allow printer service, else remove (cis_ubuntu2204_rule_2_2_3)
 cis_ubuntu2204_allow_cups: false
 # ipv6 is required (cis_ubuntu2204_rule_3_1_1)
 cis_ubuntu2204_required_ipv6: false
-# cis_ubuntu2204_journal_upload_url (cis_ubuntu2204_rule_4_2_1_1_1-4)
+# cis_ubuntu2204_journal_upload_url (cis_ubuntu2204_rule_6_2_1_2_1-4)
 cis_ubuntu2204_set_journal_upload: false
+# AIDE perform install/config (cis_ubuntu2204_rule_6_1_1-3)
+cis_ubuntu2204_install_aide: true # NOTE: depends also on 'cis_ubuntu2204_config_aide'
+cis_ubuntu2204_config_aide: true
 
 # ------------------------------------------------------------------------------
 
 # SPECIAL variables
 # ---------------------------------------
-# AIDE cron settings (cis_ubuntu2204_rule_1_3_2)
+# bootloader password. 'random' makes random password (cis_ubuntu2204_rule_1_4_1)
+cis_ubuntu2204_bootloader_password: random # pragma: allowlist secret
+# grub default file path (cis_ubuntu2204_rule_1_3_1_2)
+cis_ubuntu2204_default_grub_file: /etc/default/grub
+# gdm banner message (cis_ubuntu2204_rule_1_7_2)
+cis_ubuntu2204_warning_banner: Authorized users only. All activity may be monitored and reported.
+
+# choose time synchronization (cis_ubuntu2204_rule_2_3_1_1)
+cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
+cis_ubuntu2204_time_synchronization_time_server:
+  - uri: time.cloudflare.com
+    config: iburst
+  - uri: ntp.ubuntu.com
+    config: iburst
+# general path for sysctl conf file
+cis_ubuntu2204_sysctl_file_path: /etc/sysctl.conf
+# cron allow users (cis_ubuntu2204_rule_2_4_1_8)
+cis_ubuntu2204_cron_allow_users:
+  - root
+# at allow users (cis_ubuntu2204_rule_2_4_2_1)
+cis_ubuntu2204_at_allow_users:
+  - root
+
+# choose firewall (cis_ubuntu2204_rule_4_*)
+cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
+# define if outgoing traffic should be default deny or allow (cis_ubuntu2204_rule_4_1_7)
+cis_ubuntu2204_firewall_ufw_outgoing_policy: deny
+# defined nftable table name (cis_ubuntu2204_rule_4_2_4-9)
+cis_ubuntu2204_firewall_nftables_table_name: filter
+
+# (cis_ubuntu2204_rule_4_1_6)
+cis_ubuntu2204_firewall_rules_exist_open_ports:
+  []
+  # - rule: allow
+  #   port: 80
+  #   direction: in
+  #   protocol: any
+  #   comment: "allow http in"
+
+# ssh conf's
+# allows/denies for users/groups (cis_ubuntu2204_rule_5_1_4)
+# 'optional:' cis_ubuntu2204_ssh_allow_users: root,user
+# 'optional:' cis_ubuntu2204_ssh_allow_groups: root,ssh
+# 'optional:' cis_ubuntu2204_ssh_deny_users: root,user
+# 'optional:' cis_ubuntu2204_ssh_deny_groups: root,ssh
+# Ciphers (cis_ubuntu2204_rule_5_1_6)
+cis_ubuntu2204_ssh_ciphers:
+  # - chacha20-poly1305@openssh.com # NOTE: (CVE-2023-48795)
+  - aes256-gcm@openssh.com
+  - aes128-gcm@openssh.com
+  - aes256-ctr
+  - aes192-ctr
+  - aes128-ctr
+# (cis_ubuntu2204_rule_5_1_7)
+cis_ubuntu2204_ssh_client_alive_interval: 15
+cis_ubuntu2204_ssh_client_alive_count_max: 3
+# KexAlgorithms (cis_ubuntu2204_rule_5_1_12)
+cis_ubuntu2204_ssh_kex_algorithms:
+  - curve25519-sha256@libssh.org
+  - ecdh-sha2-nistp521
+  - ecdh-sha2-nistp384
+  - ecdh-sha2-nistp256
+  - diffie-hellman-group-exchange-sha256
+# log level (cis_ubuntu2204_rule_5_1_14)
+cis_ubuntu2204_ssh_log_level: VERBOSE # VERBOSE | INFO
+# MACs (cis_ubuntu2204_rule_5_1_15)
+cis_ubuntu2204_ssh_macs:
+  # - hmac-sha2-512-etm@openssh.com # NOTE: (CVE-2023-48795)
+  # - hmac-sha2-256-etm@openssh.com # NOTE: (CVE-2023-48795)
+  - hmac-sha2-512
+  - hmac-sha2-256
+  - umac-128@openssh.com
+# (cis_ubuntu2204_rule_5_1_16)
+cis_ubuntu2204_ssh_max_auth_tries: 4
+# (cis_ubuntu2204_rule_5_1_17)
+cis_ubuntu2204_ssh_max_sessions: 10
+# (cis_ubuntu2204_rule_5_1_20)
+cis_ubuntu2204_ssh_permit_root_login: "no"
+# (cis_ubuntu2204_rule_5_1_23)
+cis_ubuntu2204_ssh_port: 22
+cis_ubuntu2204_ssh_address_family: "inet"
+cis_ubuntu2204_ssh_authentication_methods: "publickey"
+cis_ubuntu2204_ssh_password_authentication: "no"
+cis_ubuntu2204_ssh_allow_agent_forwarding: "no"
+cis_ubuntu2204_ssh_tcp_keep_alive: "no"
+cis_ubuntu2204_ssh_x11_forwarding: "no"
+cis_ubuntu2204_ssh_allow_tcp_forwarding: "no"
+# (cis_ubuntu2204_rule_5_1_24)
+cis_ubuntu2204_rule_5_1_24_ssh_user: "{{ ansible_user }}"
+# cis_ubuntu2204_rule_5_1_24_ssh_pub_key: "<ADD_PUB_KEY>"
+
+# (cis_ubuntu2204_rule_5_3_*)
+cis_ubuntu2204_faillock_deny: 5
+cis_ubuntu2204_faillock_unlock_time: 900
+cis_ubuntu2204_faillock_difok: 2
+cis_ubuntu2204_faillock_minlen: 14
+cis_ubuntu2204_password_complexity:
+  - key: "minclass"
+    value: "3"
+  - key: "dcredit"
+    value: "-1"
+  - key: "ucredit"
+    value: "-1"
+  - key: "ocredit"
+    value: "-1"
+  - key: "lcredit"
+    value: "-1"
+cis_ubuntu2204_faillock_maxrepeat: 3
+cis_ubuntu2204_faillock_maxsequence: 3
+
+# in file (pwhistory.j2)
+cis_ubuntu2204_pwhistory_remember: remember=24
+cis_ubuntu2204_pwhistory_enforce_for_root: enforce_for_root
+cis_ubuntu2204_pwhistory_use_authtok: use_authtok
+
+# in file (unix.j2) and (cis_ubuntu2204_rule_5_3_3_4_3|cis_ubuntu2204_rule_5_4_1_4)
+cis_ubuntu2204_unix_encrypt_method: yescrypt # yescrypt | sha512
+# in file (unix.j2) and (cis_ubuntu2204_rule_5_3_3_4_4)
+cis_ubuntu2204_unix_use_authtok: "{{ cis_ubuntu2204_pwhistory_use_authtok }}"
+
+cis_ubuntu2204_password_pass_max_days: 365
+cis_ubuntu2204_password_pass_min_days: 1
+cis_ubuntu2204_password_pass_warn_age: 7
+cis_ubuntu2204_password_inactive: 45
+
+# AIDE cron settings (cis_ubuntu2204_rule_6_1_2)
 cis_ubuntu2204_aide_cron:
   cron_user: root
   cron_file: aide
@@ -342,210 +500,266 @@ cis_ubuntu2204_aide_cron:
   aide_day: "*"
   aide_month: "*"
   aide_weekday: "*"
-# bootloader password. 'random' makes random password (cis_ubuntu2204_rule_1_4_1)
-cis_ubuntu2204_bootloader_password: random # pragma: allowlist secret
-# root password. 'random' makes random password (cis_ubuntu2204_rule_1_4_3)
-cis_ubuntu2204_root_password: random # pragma: allowlist secret
-# grub default file path (cis_ubuntu2204_rule_1_6_1_2)
-cis_ubuntu2204_default_grub_file: /etc/default/grub
-# gdm banner message (cis_ubuntu2204_rule_1_8_2)
-cis_ubuntu2204_gdm_warning_banner: Authorized uses only. All activity may be monitored and reported
-# choose time synchronization (cis_ubuntu2204_rule_2_1_1_1)
-cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd | ntp
-cis_ubuntu2204_time_synchronization_ntp_server: time.cloudflare.com
-cis_ubuntu2204_time_synchronization_ntp_fallback_server: ntp.ubuntu.com
-# general path for sysctl conf file
-cis_ubuntu2204_sysctl_file_path: /etc/sysctl.conf
-# choose firewall (cis_ubuntu2204_rule_3_5_*)
-cis_ubuntu2204_firewall: ufw # ufw | nftables | iptables
-# define if outgoing traffic should be default deny or allow (cis_ubuntu2204_rule_3_5_1_7)
-cis_ubuntu2204_firewall_ufw_outgoing_policy: allow # deny | allow
-# defined nftable table name (cis_ubuntu2204_rule_3_5_2_4)
-cis_ubuntu2204_firewall_nftables_table_name: filter
-# audit backlog limit (cis_ubuntu2204_rule_4_1_1_4)
-cis_ubuntu2204_audit_backlog_limit: 8192
-# audit conf's
-cis_ubuntu2204_audit_max_log_file: 10
-cis_ubuntu2204_audit_max_log_file_action: keep_logs
-cis_ubuntu2204_audit_space_left_action: email
-cis_ubuntu2204_audit_action_mail_acct: root
-cis_ubuntu2204_audit_admin_space_left_action: halt # halt | single
-# (cis_4_1_3_3.rules.j2)
-cis_ubuntu2204_audit_sudo_log_file: /var/log/sudo.log
-# (cis_4_1_3_6.rules.j2|cis_4_1_3_7.rules.j2|cis_4_1_3_9.rules.j2|cis_4_1_3_10.rules.j2|cis_4_1_3_13.rules.j2)
-# (cis_4_1_3_15.rules.j2|cis_4_1_3_16.rules.j2|cis_4_1_3_17.rules.j2|cis_4_1_3_18.rules.j2|cis_4_1_3_19.rules.j2)
-cis_ubuntu2204_audit_uid_min: 1000
-cis_ubuntu2204_audit_log_path: /var/log/audit
-cis_ubuntu2204_audit_log_group: adm
-# systemd-journal-upload remote upload (4.2.1.1.*)
+# journald log file rotation (cis_ubuntu2204_rule_6_2_1_1_3)
+cis_ubuntu2204_journald_system_max_use: 4G
+cis_ubuntu2204_journald_system_keep_free: 8G
+cis_ubuntu2204_journald_runtime_max_use: 256M
+cis_ubuntu2204_journald_runtime_keep_free: 512M
+cis_ubuntu2204_journald_max_file_sec: 1month
+# systemd-journal-upload remote upload (cis_ubuntu2204_rule_6_2_1_2_2)
 cis_ubuntu2204_set_journal_upload_url: "{{ omit }}"
-# TODO: set and un-commit in task (cis_ubuntu2204_rule_4_2_1_6)
-cis_ubuntu2204_set_journal_system_max_use:
-cis_ubuntu2204_set_journal_system_keep_free:
-cis_ubuntu2204_set_journal_runtime_max_use:
-cis_ubuntu2204_set_journal_runtime_keep_free:
-cis_ubuntu2204_set_journal_max_file_sec:
-# syslog to be used, default only current 'rsyslog' only available (cis_ubuntu2204_rule_4_2_2_*)
-cis_ubuntu2204_syslog: rsyslog
-# cron allow users (cis_ubuntu2204_rule_5_1_9)
-cis_ubuntu2204_cron_allow_users:
-  - root
-# at allow users (cis_ubuntu2204_rule_5_1_9)
-cis_ubuntu2204_at_allow_users:
-  - root
-# ssh conf's
-# allows/denies for users/groups (cis_ubuntu2204_rule_5_2_4)
-# 'optional:' cis_ubuntu2204_ssh_allow_users: root,user
-cis_ubuntu2204_ssh_allow_groups: ssh
-# 'optional:' cis_ubuntu2204_ssh_deny_users: root,user
-# 'optional:' cis_ubuntu2204_ssh_deny_groups: root,ssh
-# log level (cis_ubuntu2204_rule_5_2_5)
-cis_ubuntu2204_ssh_log_level: VERBOSE # VERBOSE | INFO
-# Ciphers (cis_ubuntu2204_rule_5_2_13)
-cis_ubuntu2204_ssh_ciphers:
-  - chacha20-poly1305@openssh.com
-  - aes256-gcm@openssh.com
-  - aes128-gcm@openssh.com
-  - aes256-ctr
-  - aes192-ctr
-  - aes128-ctr
-# MACs (cis_ubuntu2204_rule_5_2_14)
-cis_ubuntu2204_ssh_macs:
-  - hmac-sha2-512-etm@openssh.com
-  - hmac-sha2-256-etm@openssh.com
-  - hmac-sha2-512
-  - hmac-sha2-256
-# KexAlgorithms (cis_ubuntu2204_rule_5_2_15)
-cis_ubuntu2204_ssh_kex_algorithms:
-  - curve25519-sha256@libssh.org
-  - ecdh-sha2-nistp521
-  - ecdh-sha2-nistp384
-  - ecdh-sha2-nistp256
-  - diffie-hellman-group-exchange-sha256
-# address family, key alg, accept key types (cis_ubuntu2204_rule_5_2_23)
-cis_ubuntu2204_ssh_address_family: "inet"
-cis_ubuntu2204_ssh_host_key_algorithms:
-  - ssh-ed25519-cert-v01@openssh.com
-  - ssh-rsa-cert-v01@openssh.com
-  - ssh-ed25519
-  - ssh-rsa
-  - ecdsa-sha2-nistp521-cert-v01@openssh.com
-  - ecdsa-sha2-nistp384-cert-v01@openssh.com
-  - ecdsa-sha2-nistp256-cert-v01@openssh.com
-  - ecdsa-sha2-nistp521
-  - ecdsa-sha2-nistp384
-  - ecdsa-sha2-nistp256
-cis_ubuntu2204_ssh_pubkey_accepted_key_types:
-  - ssh-ed25519
-# pw quality policies (cis_ubuntu2204_rule_5_4_1)
-cis_ubuntu2204_pwquality:
-  - key: "minlen"
-    value: "14"
-  - key: "dcredit"
-    value: "-1"
-  - key: "ucredit"
-    value: "-1"
-  - key: "ocredit"
-    value: "-1"
-  - key: "lcredit"
-    value: "-1"
-cis_ubuntu2204_remember_reuse: 5
-cis_ubuntu2204_encrypt_method: yescrypt # yescrypt | sha512
-cis_ubuntu2204_common_auth_success: 2
-cis_ubuntu2204_common_password_success: 2
+cis_ubuntu2204_set_journal_upload_server_key_file: /etc/ssl/private/journal-upload.pem
+cis_ubuntu2204_set_journal_upload_server_certificate_file: /etc/ssl/certs/journal-upload.pem
+cis_ubuntu2204_set_journal_upload_trusted_certificate_file: /etc/ssl/ca/trusted.pem
+
+# audit backlog limit (cis_ubuntu2204_rule_6_3_1_4)
+cis_ubuntu2204_audit_backlog_limit: 8192
+# audit conf's (cis_ubuntu2204_rule_6_3_2_*)
+cis_ubuntu2204_audit_max_log_file: 8
+cis_ubuntu2204_audit_max_log_file_action: keep_logs
+cis_ubuntu2204_audit_disk_full_action: halt # halt | single
+cis_ubuntu2204_audit_disk_error_action: halt # halt | syslog | single
+cis_ubuntu2204_audit_space_left_action: email # email | exec | single | halt
+cis_ubuntu2204_audit_admin_space_left_action: single # single | halt
+# (cis_ubuntu2204_rule_6_3_4_1-4)
+cis_ubuntu2204_audit_log_path: /var/log/audit
+# auditd group (cis_ubuntu2204_rule_6_3_4_3)
+cis_ubuntu2204_audit_log_group: adm
+# in file (cis_6_3_3_3.rules.j2) and (cis_ubuntu2204_rule_5_2_3)
+cis_ubuntu2204_audit_sudo_log_file: /var/log/sudo.log
+# in file (cis_6_3_3_6.rules.j2|cis_6_3_3_7.rules.j2|cis_6_3_3_9.rules.j2|cis_6_3_3_10.rules.j2|cis_6_3_3_13.rules.j2)
+# in file (cis_6_3_3_15.rules.j2|cis_6_3_3_16.rules.j2|cis_6_3_3_17.rules.j2|cis_6_3_3_18.rules.j2|cis_6_3_3_19.rules.j2)
+cis_ubuntu2204_audit_uid_min: 1000
 
 # ------------------------------------------------------------------------------
 
-# SPECIAL multi similar CIS rules set
-cis_ubuntu2204_2_2_rule_set:
-  - title: 2.2.1 | Ensure X Window System is not installed
+# SPECIAL multi similar CIS rules set for 2.1
+cis_ubuntu2204_2_1_rule_set:
+  - title: SECTION2 | 2.1.1 | Ensure autofs services are not in use
+    service:
+      - autofs.service
     apt:
-      - xserver-xorg
-      - xorg
-      - x11*
-    check: "{{ cis_ubuntu2204_rule_2_2_1 and not cis_ubuntu2204_allow_gdm_gui }}"
-  - title: 2.2.2 | Ensure Avahi Server is not installed
+      - autofs
+    disable: "{{ cis_ubuntu2204_rule_2_1_1 and not cis_ubuntu2204_allow_autofs }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_1_remove and not cis_ubuntu2204_allow_autofs }}"
+  - title: SECTION2 | 2.1.2 | Ensure avahi daemon services are not in use
+    service:
+      - avahi-daemon.socket
+      - avahi-daemon.service
     apt:
       - avahi-daemon
-    check: "{{ cis_ubuntu2204_rule_2_2_2 }}"
-  - title: 2.2.3 | Ensure CUPS is not installed
-    apt:
-      - cups
-    check: "{{ cis_ubuntu2204_rule_2_2_3 and not cis_ubuntu2204_allow_cups }}"
-  - title: 2.2.4 | Ensure DHCP Server is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_2 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_2_remove }}"
+  - title: SECTION2 | 2.1.3 | Ensure dhcp server services are not in use
+    service:
+      - isc-dhcp-server.service
+      - isc-dhcp-server6.service
     apt:
       - isc-dhcp-server
-    check: "{{ cis_ubuntu2204_rule_2_2_4 }}"
-  - title: 2.2.5 | Ensure LDAP server is not installed
-    apt:
-      - slapd
-    check: "{{ cis_ubuntu2204_rule_2_2_5 }}"
-  - title: 2.2.6 | Ensure NFS is not installed
-    apt:
-      - nfs-kernel-server
-    check: "{{ cis_ubuntu2204_rule_2_2_6 }}"
-  - title: 2.2.7 | Ensure DNS Server is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_3 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_3_remove }}"
+  - title: SECTION2 | 2.1.4 | Ensure dns server services are not in use
+    service:
+      - bind9.service
     apt:
       - bind9
-    check: "{{ cis_ubuntu2204_rule_2_2_7 }}"
-  - title: 2.2.8 | Ensure FTP Server is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_4 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_4_remove }}"
+  - title: SECTION2 | 2.1.5 | Ensure dnsmasq services are not in use
+    service:
+      - dnsmasq.service
+    apt:
+      - dnsmasq
+    disable: "{{ cis_ubuntu2204_rule_2_1_5 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_5_remove }}"
+  - title: SECTION2 | 2.1.6 | Ensure ftp server services are not in use
+    service:
+      - vsftpd.service
     apt:
       - vsftpd
-    check: "{{ cis_ubuntu2204_rule_2_2_8 }}"
-  - title: 2.2.9 | Ensure HTTP server is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_6 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_6_remove }}"
+  - title: SECTION2 | 2.1.7 | Ensure ldap server services are not in use
+    service:
+      - slapd.service
     apt:
-      - apache2
-    check: "{{ cis_ubuntu2204_rule_2_2_9 }}"
-  - title: 2.2.10 | Ensure IMAP and POP3 server are not installed
+      - slapd
+    disable: "{{ cis_ubuntu2204_rule_2_1_7 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_7_remove }}"
+  - title: SECTION2 | 2.1.8 | Ensure message access server services are not in use
+    service:
+      - dovecot.socket
+      - dovecot.service
     apt:
       - dovecot-imapd
       - dovecot-pop3d
-    check: "{{ cis_ubuntu2204_rule_2_2_10 }}"
-  - title: 2.2.11 | Ensure Samba is not installed
+    disable: "{{ cis_ubuntu2204_rule_2_1_8 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_8_remove }}"
+  - title: SECTION2 | 2.1.9 | Ensure network file system services are not in use
+    service:
+      - nfs-server.service
     apt:
-      - samba
-    check: "{{ cis_ubuntu2204_rule_2_2_11 }}"
-  - title: 2.2.12 | Ensure HTTP Proxy Server is not installed
-    apt:
-      - squid
-    check: "{{ cis_ubuntu2204_rule_2_2_12 }}"
-  - title: 2.2.13 | Ensure SNMP Server is not installed
-    apt:
-      - snmp
-    check: "{{ cis_ubuntu2204_rule_2_2_13 }}"
-  - title: 2.2.14 | Ensure NIS Server is not installed
+      - nfs-kernel-server
+    disable: "{{ cis_ubuntu2204_rule_2_1_9 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_9_remove }}"
+  - title: SECTION2 | 2.1.10 | Ensure nis server services are not in use
+    service:
+      - ypserv.service
     apt:
       - nis
-    check: "{{ cis_ubuntu2204_rule_2_2_14 }}"
-  - title: Ensure rsync service is either not installed or masked
+      - ypserv
+    disable: "{{ cis_ubuntu2204_rule_2_1_10 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_10_remove }}"
+  - title: SECTION2 | 2.1.11 | Ensure print server services are not in use
+    service:
+      - cups.socket
+      - cups.service
+    apt:
+      - cups
+    disable: "{{ cis_ubuntu2204_rule_2_1_11 and not cis_ubuntu2204_allow_cups }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_11_remove and not cis_ubuntu2204_allow_cups }}"
+  - title: SECTION2 | 2.1.12 | Ensure rpcbind services are not in use
+    service:
+      - rpcbind.socket
+      - rpcbind.service
+    apt:
+      - rpcbind
+    disable: "{{ cis_ubuntu2204_rule_2_1_12 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_12_remove }}"
+  - title: SECTION2 | 2.1.13 | Ensure rsync services are not in use
+    service:
+      - rsync.service
     apt:
       - rsync
-    check: "{{ cis_ubuntu2204_rule_2_2_16 }}"
+    disable: "{{ cis_ubuntu2204_rule_2_1_13 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_13_remove }}"
+  - title: SECTION2 | 2.1.14 | Ensure samba file server services are not in use
+    service:
+      - smbd.service
+    apt:
+      - samba
+    disable: "{{ cis_ubuntu2204_rule_2_1_14 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_14_remove }}"
+  - title: SECTION2 | 2.1.15 | Ensure snmp services are not in use
+    service:
+      - snmpd.service
+    apt:
+      - snmpd
+    disable: "{{ cis_ubuntu2204_rule_2_1_15 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_15_remove }}"
+  - title: SECTION2 | 2.1.16 | Ensure tftp server services are not in use
+    service:
+      - tftpd-hpa.service
+    apt:
+      - tftpd-hpa
+    disable: "{{ cis_ubuntu2204_rule_2_1_16 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_16_remove }}"
+  - title: SECTION2 | 2.1.17 | Ensure web proxy server services are not in use
+    service:
+      - squid.service
+    apt:
+      - squid
+    disable: "{{ cis_ubuntu2204_rule_2_1_17 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_17_remove }}"
+  - title: SECTION2 | 2.1.18 | Ensure web server services are not in use
+    service:
+      - apache2.socket
+      - httpd.service
+      - nginx.service
+    apt:
+      - apache2
+      - nginx
+    disable: "{{ cis_ubuntu2204_rule_2_1_18 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_18_remove }}"
+  - title: SECTION2 | 2.1.19 | Ensure xinetd services are not in use
+    service:
+      - xinetd.service
+    apt:
+      - xinetd
+    disable: "{{ cis_ubuntu2204_rule_2_1_19 }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_19_remove }}"
+  - title: 2.1.20 | Ensure X window server services are not in use
+    apt:
+      - xserver-common
+      - xserver-xorg
+      - xorg
+      - x11*
+    disable: "{{ cis_ubuntu2204_rule_2_1_20 and not cis_ubuntu2204_allow_gdm_gui }}"
+    remove: "{{ cis_ubuntu2204_rule_2_1_20_remove and not cis_ubuntu2204_allow_gdm_gui }}"
 
-cis_ubuntu2204_2_3_rule_set:
-  - title: 2.3.1 | Ensure NIS Client is not installed
+# SPECIAL multi similar CIS rules set for 2.2
+cis_ubuntu2204_2_2_rule_set:
+  - title: 2.2.1 | Ensure nis Client is not installed
     apt:
       - nis
       - yp-tools
-    check: "{{ cis_ubuntu2204_rule_2_3_1 }}"
-  - title: 2.3.2 | Ensure rsh client is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_1 }}"
+  - title: 2.2.2 | Ensure rsh client is not installed
     apt:
       - rsh-client
-    check: "{{ cis_ubuntu2204_rule_2_3_2 }}"
-  - title: 2.3.3 | Ensure talk client is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_2 }}"
+  - title: 2.2.3 | Ensure talk client is not installed
     apt:
       - talk
-    check: "{{ cis_ubuntu2204_rule_2_3_3 }}"
-  - title: 2.3.4 | Ensure telnet client is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_3 }}"
+  - title: 2.2.4 | Ensure telnet client is not installed
     apt:
       - telnet
       - inetutils-telnet
-    check: "{{ cis_ubuntu2204_rule_2_3_4 }}"
-  - title: 2.3.5 | Ensure LDAP client is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_4 }}"
+  - title: 2.2.5 | Ensure ldap client is not installed
     apt:
       - ldap-utils
-    check: "{{ cis_ubuntu2204_rule_2_3_5 }}"
-  - title: 2.3.6 | Ensure RPC is not installed
+    remove: "{{ cis_ubuntu2204_rule_2_2_5 }}"
+  - title: 2.2.6 | Ensure ftp client is not installed
     apt:
-      - rpcbind
-    check: "{{ cis_ubuntu2204_rule_2_3_6 }}"
+      - ftp
+    remove: "{{ cis_ubuntu2204_rule_2_2_6 }}"
+
+# SPECIAL multi similar CIS rules set for 6.2.2.1
+cis_ubuntu2204_logfiles_access:
+  - files: 'lastlog|lastlog\.*|wtmp|wtmp\.*|wtmp-*|btmp|btmp\.*|btmp-*|README'
+    mode: "0664"
+    owner: root
+    group: utmp # root|utmp
+  - files: 'secure|auth\.log|syslog|messages'
+    mode: "0640"
+    owner: syslog # root|syslog
+    group: "{{ cis_ubuntu2204_audit_log_group }}" # root|adm
+  - files: "SSSD|sssd"
+    mode: "0660"
+    owner: sssd # root|sssd
+    group: sssd # root|sssd
+  - files: "gdm|gdm3"
+    mode: "0660"
+    owner: root
+    group: gdm # root|gdm|gdm3
+  - files: '*\.journal|*\.journal~'
+    mode: "0640"
+    owner: root
+    group: systemd-journal # root|systemd-journal
+
+# SECTION based handled file access variable
+# ------------------------------------------------------------------------------
+
+# SECTION1
+cis_ubuntu2204_section1_owner_default: root
+cis_ubuntu2204_section1_group_default: root
+cis_ubuntu2204_section1_mode_default: "0644"
+cis_ubuntu2204_section1_mode_boot_grub: "0400"
+cis_ubuntu2204_section1_mode_etc_issue_motd: "0444"
+cis_ubuntu2204_section1_mode_etc_grub_d: "0755"
+cis_ubuntu2204_section1_mode_etc_dconf_folder: "0755"
+
+# SECTION2
+cis_ubuntu2204_section2_owner_default: root
+cis_ubuntu2204_section2_group_default: root
+cis_ubuntu2204_section2_group_etc_at_allow: daemon
+cis_ubuntu2204_section2_mode_default: "0644"
+cis_ubuntu2204_section2_mode_cron: "0600"
+cis_ubuntu2204_section2_mode_cron_folder: "0700"
+
+# SECTION3
+cis_ubuntu2204_section3_owner_default: root
+cis_ubuntu2204_section3_group_default: root
+cis_ubuntu2204_section3_mode_default: "0644"

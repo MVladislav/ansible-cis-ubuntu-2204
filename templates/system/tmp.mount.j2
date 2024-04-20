@@ -1,10 +1,12 @@
-{% set cis_ubuntu2204_rule_1_1_2_options = [] %}
-{% set _ = cis_ubuntu2204_rule_1_1_2_options.append('mode=1777') %}
-{% set _ = cis_ubuntu2204_rule_1_1_2_options.append('strictatime') %}
-{% if cis_ubuntu2204_rule_1_1_2_2 %}{% set _ = cis_ubuntu2204_rule_1_1_2_options.append('nodev') %}{% endif %}
-{% if cis_ubuntu2204_rule_1_1_2_3 %}{% set _ = cis_ubuntu2204_rule_1_1_2_options.append('noexec') %}{% endif %}
-{% if cis_ubuntu2204_rule_1_1_2_3 %}{% set _ = cis_ubuntu2204_rule_1_1_2_options.append('nosuid') %}{% endif %}
-{% set cis_ubuntu2204_rule_1_1_2_options = cis_ubuntu2204_rule_1_1_2_options|join(',') %}
+{% set cis_ubuntu2204_rule_1_1_2_1_options = [] %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('defaults') %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('rw') %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('relatime') %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('size=2G') %}
+{% if cis_ubuntu2204_rule_1_1_2_1_2 %}{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('nodev') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_2_1_3 %}{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('nosuid') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_2_1_4 %}{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('noexec') %}{% endif %}
+{% set cis_ubuntu2204_rule_1_1_2_1_options = cis_ubuntu2204_rule_1_1_2_1_options|join(',') %}
 [Unit]
 Description=Temporary Directory /tmp
 ConditionPathIsSymbolicLink=!/tmp
@@ -14,10 +16,10 @@ Before=local-fs.target umount.target
 After=swap.target
 
 [Mount]
-What=tmpfs
 Where=/tmp
+What=tmpfs
 Type=tmpfs
-Options={{ cis_ubuntu2204_rule_1_1_2_options }}
+Options={{ cis_ubuntu2204_rule_1_1_2_1_options }}
 
 # Make 'systemctl enable tmp.mount' work:
 [Install]

@@ -14,7 +14,7 @@ repos:
     hooks:
       - id: codespell
         args:
-          - --ignore-words-list=ihs,ro,fo,iif
+          - --ignore-words-list=ihs,ro,fo,iif,chage
           - --skip="./.*,*.csv,*.json"
           - --quiet-level=2
         exclude_types:
@@ -22,7 +22,7 @@ repos:
           - json
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       # Safety
       - id: detect-private-key
@@ -46,21 +46,14 @@ repos:
         args: [--allow-multiple-documents]
       - id: mixed-line-ending
 
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
-    hooks:
-      - id: prettier
-        additional_dependencies:
-          - prettier@3.0.3
-          - prettier-plugin-sort-json@3.0.1
-        exclude_types:
-          - python
-
   # Scan for passwords
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0
     hooks:
       - id: detect-secrets
+        args:
+          - --exclude-files=templates/pam/pwquality
+          - --exclude-files=templates/pam/pwhistory.j2
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.2
@@ -74,7 +67,7 @@ repos:
 
   # ANSIBLE --------------------------------------------------------------------
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v24.2.0
+    rev: v24.2.2
     hooks:
       - id: ansible-lint
         name: Ansible-lint
@@ -90,4 +83,4 @@ repos:
           # If you want to use specific version of ansible-core or ansible, feel
           # free to override `additional_dependencies` in your own hook config
           # file.
-          - ansible-core>=2.13.3
+          - ansible-core>=2.16.5

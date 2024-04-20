@@ -1,0 +1,568 @@
+---
+# tasks file for ansible-cis-ubuntu-2204
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION7 | 7.1.1 | Ensure permissions on /etc/passwd are configured"
+  ansible.builtin.file:
+    dest: /etc/passwd
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_7_1_1
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.2 | Ensure permissions on /etc/passwd- are configured"
+  ansible.builtin.file:
+    dest: /etc/passwd-
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_7_1_2
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.3 | Ensure permissions on /etc/group are configured"
+  ansible.builtin.file:
+    dest: /etc/group
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_7_1_3
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.4 | Ensure permissions on /etc/group- are configured"
+  ansible.builtin.file:
+    dest: /etc/group-
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_7_1_4
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.5 | Ensure permissions on /etc/shadow are configured"
+  ansible.builtin.file:
+    dest: /etc/shadow
+    owner: root
+    group: shadow
+    mode: "0640"
+  when:
+    - cis_ubuntu2204_rule_7_1_5
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.6 | Ensure permissions on /etc/shadow- are configured"
+  ansible.builtin.file:
+    dest: /etc/shadow-
+    owner: root
+    group: shadow
+    mode: "0640"
+  when:
+    - cis_ubuntu2204_rule_7_1_6
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.7 | Ensure permissions on /etc/gshadow are configured"
+  ansible.builtin.file:
+    dest: /etc/gshadow
+    owner: root
+    group: shadow
+    mode: "0640"
+  when:
+    - cis_ubuntu2204_rule_7_1_7
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.8 | Ensure permissions on /etc/gshadow- are configured"
+  ansible.builtin.file:
+    dest: /etc/gshadow-
+    owner: root
+    group: shadow
+    mode: "0640"
+  when:
+    - cis_ubuntu2204_rule_7_1_8
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.9 | Ensure permissions on /etc/shells are configured"
+  ansible.builtin.file:
+    dest: /etc/shells
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_7_1_9
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.10 | Ensure permissions on /etc/security/opasswd are configured"
+  ansible.builtin.file:
+    dest: /etc/security/opasswd
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_7_1_10
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.1.11 | Ensure world writable files and directories are secured"
+  when:
+    - cis_ubuntu2204_rule_7_1_11
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.1.11 | Ensure world writable files and directories are secured | get list of world writable files"
+      ansible.builtin.shell: >
+        set -o pipefail &&
+        findmnt -Dkerno fstype,target | awk '($1 !~ /^\s*(nfs|proc|smb|vfat|iso9660|efivarfs|selinuxfs)/ && $2 !~ /^(\/run\/user\/|\/tmp|\/var\/tmp)/){print $2}' |
+        xargs -I '{}' find '{}' -xdev
+        ! -path "/run/user/*" ! -path "/proc/*" ! -path "*/containerd/*" ! -path "*/kubelet/pods/*" ! -path "*/kubelet/plugins/*" ! -path "/sys/*" ! -path "/snap/*"
+        ! -path "/media/*" ! -path "/mnt/*"
+        -type f -perm -0002 2>/dev/null
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_no_world_writable_files
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.1.11 | Ensure world writable files and directories are secured | removing write access from world writeable directories"
+      ansible.builtin.file:
+        dest: "{{ item }}"
+        mode: o-w
+      with_items: "{{ cis_ubuntu2204_no_world_writable_files.stdout_lines }}"
+    - name: "SECTION7 | 7.1.11 | Ensure world writable files and directories are secured | get list of world writable directories"
+      ansible.builtin.shell: >
+        set -o pipefail &&
+        findmnt -Dkerno fstype,target | awk '($1 !~ /^\s*(nfs|proc|smb|vfat|iso9660|efivarfs|selinuxfs)/ && $2 !~ /^(\/run\/user\/|\/tmp|\/var\/tmp)/){print $2}' |
+        xargs -I '{}' find '{}' -xdev
+        ! -path "/run/user/*" ! -path "/proc/*" ! -path "*/containerd/*" ! -path "*/kubelet/pods/*" ! -path "*/kubelet/plugins/*" ! -path "/sys/*" ! -path "/snap/*"
+        ! -path "/media/*" ! -path "/mnt/*"
+        -type d -perm -0002 ! -perm -1000 2>/dev/null
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_no_world_writable_directories
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.1.11 | Ensure world writable files and directories are secured | add sticky bit to world writeable directories"
+      ansible.builtin.file:
+        dest: "{{ item }}"
+        mode: a+t
+      with_items: "{{ cis_ubuntu2204_no_world_writable_directories.stdout_lines }}"
+
+- name: "SECTION7 | 7.1.12 | Ensure no files or directories without an owner and a group exist"
+  when:
+    - cis_ubuntu2204_rule_7_1_12
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.1.12 | Ensure no files or directories without an owner and a group exist | get list of unowned or ungrouped files and directories"
+      ansible.builtin.shell: >
+        set -o pipefail &&
+        findmnt -Dkerno fstype,target | awk '($1 !~ /^\s*(nfs|proc|smb|vfat|iso9660|efivarfs|selinuxfs)/ && $2 !~ /^\/run\/user\//){print $2}' |
+        xargs -I '{}' find '{}' -xdev
+        ! -path "/run/user/*" ! -path "/proc/*" ! -path "*/containerd/*" ! -path "*/kubelet/pods/*"
+        ! -path "*/kubelet/plugins/*" ! -path "/sys/fs/cgroup/memory/*" ! -path "/var/*/private/*"
+        ! -path "/media/*" ! -path "/mnt/*"
+        \( -nouser -o -nogroup \) 2>/dev/null
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_unowned_or_ungrouped_files_and_directories
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.1.12 | Ensure no files or directories without an owner and a group exist | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Remove or set ownership and group ownership of these files and/or directories to an active user on the system as appropriate.
+          #############################################################################################
+          {{ cis_ubuntu2204_unowned_or_ungrouped_files_and_directories.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_unowned_or_ungrouped_files_and_directories.stdout_lines is defined
+        - cis_ubuntu2204_unowned_or_ungrouped_files_and_directories.stdout_lines | length > 0
+
+- name: "SECTION7 | 7.1.13 | Ensure SUID and SGID files are reviewed"
+  when:
+    - cis_ubuntu2204_rule_7_1_13
+  tags:
+    - rule_7_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.1.13 | Ensure SUID and SGID files are reviewed | get list of SUID and SGID executables"
+      ansible.builtin.shell: >
+        set -o pipefail &&
+        df --local -P |
+        awk '{if (NR!=1) print $6}' |
+        xargs -I '{}' find '{}' -xdev
+        ! -path "/media/*" ! -path "/mnt/*"
+        -type f \( -perm -2000 -o -perm -4000 \) 2>/dev/null
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_suid_executables
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.1.13 | Ensure SUID and SGID files are reviewed | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Ensure that no rogue SUID or SGID programs have been introduced into the system.
+          Review the files returned by the action in the Audit section and confirm the integrity of these binaries.
+          #############################################################################################
+          {{ cis_ubuntu2204_suid_executables.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_suid_executables.stdout_lines is defined
+        - cis_ubuntu2204_suid_executables.stdout_lines | length > 0
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION7 | 7.2.1 | Ensure accounts in /etc/passwd use shadowed passwords"
+  ansible.builtin.replace:
+    dest: /etc/passwd
+    regexp: "^([a-zA-Z0-9_-]*):[^:]*:"
+    replace: '\1:x:'
+  when:
+    - cis_ubuntu2204_rule_7_2_1
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION7 | 7.2.2 | Ensure /etc/shadow password fields are not empty"
+  when:
+    - cis_ubuntu2204_rule_7_2_2
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.2.2 | Ensure /etc/shadow password fields are not empty | get list of empty password fields"
+      ansible.builtin.shell: >
+        set -o pipefail &&
+        awk -F: '($2 == "" ) { print $1 }' /etc/shadow 2>/dev/null
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_empty_password_fields
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.2.2 | Ensure /etc/shadow password fields are not empty | lock user"
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password_lock: true
+      with_items: "{{ cis_ubuntu2204_empty_password_fields.stdout_lines }}"
+
+- name: "SECTION7 | 7.2.3 | Ensure all groups in /etc/passwd exist in /etc/group"
+  when:
+    - cis_ubuntu2204_rule_7_2_3
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.2.3 | Ensure all groups in /etc/passwd exist in /etc/group | get list of groups for passwd exists in /etc/group"
+      ansible.builtin.shell: |
+        set -o pipefail
+        for i in $(cut -s -d: -f4 /etc/passwd | sort -u ); do
+          grep -q -P "^.*?:[^:]*:$i:" /etc/group
+          if [ $? -ne 0 ]; then
+            echo "Group $i is referenced by /etc/passwd but does not exist in /etc/group"
+          fi
+        done
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_groups_for_passwd_exists_in_group
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.2.3 | Ensure all groups in /etc/passwd exist in /etc/group | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Analyze the output of the Audit step above and
+          perform the appropriate action to correct any discrepancies found.
+          #############################################################################################
+          {{ cis_ubuntu2204_groups_for_passwd_exists_in_group.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_groups_for_passwd_exists_in_group.stdout_lines is defined
+        - cis_ubuntu2204_groups_for_passwd_exists_in_group.stdout_lines | length > 0
+
+- name: "SECTION7 | 7.2.4 | Ensure shadow group is empty"
+  when:
+    - cis_ubuntu2204_rule_7_2_4
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.2.4 | Ensure shadow group is empty | remove all users from the shadow group"
+      ansible.builtin.replace:
+        dest: /etc/group
+        regexp: "(^shadow:[^:]*:[^:]*:)([^:]+$)"
+        replace: '\1'
+    - name: "SECTION7 | 7.2.4 | Ensure shadow group is empty | get list of users with shadow as primary group"
+      ansible.builtin.shell: >
+        set -o pipefail &&
+        getent passwd |
+        awk -F: '$4 == 42 {print $1}'
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_users_with_shadow_primary_group
+      changed_when: false
+    - name: "SECTION7 | 7.2.4 | Ensure shadow group is empty | change primary group for users with shadow as group"
+      ansible.builtin.user:
+        name: "{{ item }}"
+        group: "{{ item }}"
+      with_items: "{{ cis_ubuntu2204_users_with_shadow_primary_group.stdout_lines }}"
+      when:
+        - cis_ubuntu2204_users_with_shadow_primary_group.stdout_lines is defined
+        - cis_ubuntu2204_users_with_shadow_primary_group.stdout_lines | length > 0
+
+- name: "SECTION7 | 7.2.5 | Ensure no duplicate UIDs exist"
+  when:
+    - cis_ubuntu2204_rule_7_2_5
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.2.5 | Ensure no duplicate UIDs exist | get list of duplicate UIDs"
+      ansible.builtin.shell: |
+        set -o pipefail
+        while read -r l_count l_uid; do
+          if [ "$l_count" -gt 1 ]; then
+            users=$(awk -F: '($3 == n) { print $1 }' n="$l_uid" /etc/passwd | xargs)
+            echo -e "Duplicate UID: \"$l_uid\" Users: \"$users\""
+          fi
+        done < <(cut -f3 -d":" /etc/passwd | sort -n | uniq -c)
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_duplicate_uids
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.2.5 | Ensure no duplicate UIDs exist | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Based on the results of the audit script, establish unique UIDs and
+          review all files owned by the shared UIDs to determine which UID they are supposed to belong to.
+          #############################################################################################
+          {{ cis_ubuntu2204_duplicate_uids.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_duplicate_uids.stdout_lines is defined
+        - cis_ubuntu2204_duplicate_uids.stdout_lines | length > 0
+
+- name: "SECTION7 | 7.2.6 | Ensure no duplicate GIDs exist"
+  when:
+    - cis_ubuntu2204_rule_7_2_6
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.2.6 | Ensure no duplicate GIDs exist | get list of duplicate GIDs"
+      ansible.builtin.shell: |
+        set -o pipefail
+        while read -r l_count l_gid; do
+          if [ "$l_count" -gt 1 ]; then
+            users=$(awk -F: '($3 == n) { print $1 }' n="$l_gid" /etc/group | xargs)
+            echo -e "Duplicate GID: \"$l_gid\" Groups: \"$users\""
+          fi
+        done < <(cut -f3 -d":" /etc/group | sort -n | uniq -c)
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_duplicate_gids
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.2.6 | Ensure no duplicate GIDs exist | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Based on the results of the audit script, establish unique GIDs and
+          review all files owned by the shared GID to determine which group they are supposed to belong to.
+          #############################################################################################
+          {{ cis_ubuntu2204_duplicate_gids.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_duplicate_gids.stdout_lines is defined
+        - cis_ubuntu2204_duplicate_gids.stdout_lines | length > 0
+
+- name: "SECTION7 | 7.2.7 | Ensure no duplicate user names exist"
+  when:
+    - cis_ubuntu2204_rule_7_2_7
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.2.7 | Ensure no duplicate user names exist | get list of duplicate usernames"
+      ansible.builtin.shell: |
+        set -o pipefail
+        while read -r l_count l_user; do
+          if [ "$l_count" -gt 1 ]; then
+            user=$(awk -F: '($1 == n) { print $1 }' n="$l_user" /etc/passwd | xargs)
+            echo -e "Duplicate User: \"$l_user\" Users: \"$user\""
+          fi
+        done < <(cut -f1 -d":" /etc/group | sort -n | uniq -c)
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_duplicate_user_names
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.2.7 | Ensure no duplicate user names exist | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Based on the results of the audit script, establish unique user names for the users.
+          File ownerships will automatically reflect the change as long as the users have unique UIDs.
+          #############################################################################################
+          {{ cis_ubuntu2204_duplicate_user_names.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_duplicate_user_names.stdout_lines is defined
+        - cis_ubuntu2204_duplicate_user_names.stdout_lines | length > 0
+
+- name: "SECTION7 | 7.2.8 | Ensure no duplicate group names exist"
+  when:
+    - cis_ubuntu2204_rule_7_2_8
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.2.8 | Ensure no duplicate group names exist | get list of duplicate group names"
+      ansible.builtin.shell: |
+        set -o pipefail
+        while read -r l_count l_group; do
+          if [ "$l_count" -gt 1 ]; then
+            user=$(awk -F: '($1 == n) { print $1 }' n="$l_group" /etc/group | xargs)
+            echo -e "Duplicate Group: \"$l_group\" Groups: \"$user\""
+          fi
+        done < <(cut -f1 -d":" /etc/group | sort -n | uniq -c)
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_duplicate_group_names
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.2.8 | Ensure no duplicate group names exist | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Based on the results of the audit script, establish unique names for the user groups.
+          File group ownerships will automatically reflect the change as long as the groups have unique GIDs.
+          #############################################################################################
+          {{ cis_ubuntu2204_duplicate_group_names.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_duplicate_group_names.stdout_lines is defined
+        - cis_ubuntu2204_duplicate_group_names.stdout_lines | length > 0
+
+- name: "SECTION7 | 7.2.9 | Ensure local interactive user home directories are configured"
+  when:
+    - cis_ubuntu2204_rule_7_2_9
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.2.9 | Ensure local interactive user home directories are configured | get list of user and home directory"
+      ansible.builtin.shell: |
+        set -o pipefail
+        valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
+        awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_list_of_user_home
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.2.9 | Ensure local interactive user home directories are configured | updated user"
+      ansible.builtin.file:
+        path: "{{ item.split()[1] }}"
+        state: directory
+        mode: "0750"
+        owner: "{{ item.split()[0] }}"
+        group: "{{ item.split()[0] }}"
+      with_items: "{{ cis_ubuntu2204_list_of_user_home.stdout_lines }}"
+
+- name: "SECTION7 | 7.2.10 | Ensure local interactive user dot files access is configured"
+  when:
+    - cis_ubuntu2204_rule_7_2_10
+  tags:
+    - rule_7_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION7 | 7.2.10 | Ensure local interactive user dot files access is configured | get list of local interactive user dot files"
+      ansible.builtin.shell: |
+        set -o pipefail
+        valid_shells="^($(sed -rn '/^\//{s,/,\\\\/,g;p}' /etc/shells | paste -s -d '|' -))$"
+        awk -v pat="$valid_shells" -F: '$(NF) ~ pat { print $1 " " $(NF-1) }' /etc/passwd
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_local_interactive_user_dot_files
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION7 | 7.2.10 | Ensure local interactive user dot files access is configured | find dot files"
+      ansible.builtin.find:
+        paths: "{{ item.split()[1] }}"
+        patterns: ".??*"
+        file_type: file
+        hidden: true
+        recurse: true
+      loop: "{{ cis_ubuntu2204_local_interactive_user_dot_files.stdout_lines }}"
+      register: cis_ubuntu2204_local_interactive_user_dot_files_found
+    - name: "SECTION7 | 7.2.10 | Ensure local interactive user dot files access is configured | set permission"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        mode: u-x,g-wx,o-rwx
+        owner: "{{ item.uid }}"
+        group: "{{ item.gid }}"
+      with_items: "{{ cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten }}"
+      when:
+        - cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten | selectattr('path', 'defined')
+        - cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten | selectattr('uid', 'defined')
+        - cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten | selectattr('gid', 'defined')

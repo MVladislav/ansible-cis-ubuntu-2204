@@ -3,183 +3,48 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION5 | 5.1.1 | Ensure cron daemon is enabled and running"
-  ansible.builtin.systemd:
-    name: cron
-    daemon_reload: true
-    enabled: true
-    masked: false
+- name: "SECTION5 | 5.1.0 | Ensure on /etc/ssh/sshd_config comments are removed"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#"
+    state: absent
   when:
-    - cis_ubuntu2204_rule_5_1_1
-    - service_status_cron.stdout == "loaded"
+    - cis_ubuntu2204_rule_5_1_0
   tags:
     - rule_5_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.1.2 | Ensure permissions on /etc/crontab are configured"
-  ansible.builtin.file:
-    dest: /etc/crontab
-    owner: root
-    group: root
-    mode: "0600"
-  when:
-    - cis_ubuntu2204_rule_5_1_2
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.3 | Ensure permissions on /etc/cron.hourly are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.hourly
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_3
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.4 | Ensure permissions on /etc/cron.daily are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.daily
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_4
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.5 | Ensure permissions on /etc/cron.weekly are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.weekly
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_5
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.6 | Ensure permissions on /etc/cron.monthly are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.monthly
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_6
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.7 | Ensure permissions on /etc/cron.d are configured"
-  ansible.builtin.file:
-    dest: /etc/cron.d
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  when:
-    - cis_ubuntu2204_rule_5_1_7
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.1.8 | Ensure cron is restricted to authorized users"
-  when:
-    - cis_ubuntu2204_rule_5_1_8
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION5 | 5.1.8 | Ensure cron is restricted to authorized users | rm cron.deny"
-      ansible.builtin.file:
-        dest: /etc/cron.deny
-        state: absent
-    - name: "SECTION5 | 5.1.8 | Ensure cron is restricted to authorized users | set cron.allow"
-      ansible.builtin.template:
-        src: cron.allow.j2
-        dest: /etc/cron.allow
-        owner: root
-        group: root
-        mode: "0600"
-
-- name: "SECTION5 | 5.1.9 | Ensure at is restricted to authorized users"
-  when:
-    - cis_ubuntu2204_rule_5_1_9
-    - service_status_cron.stdout == "loaded"
-  tags:
-    - rule_5_1
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION5 | 5.1.9 | Ensure at is restricted to authorized users | rm at.deny"
-      ansible.builtin.file:
-        dest: /etc/at.deny
-        state: absent
-    - name: "SECTION5 | 5.1.9 | Ensure at is restricted to authorized users | set at.allow"
-      ansible.builtin.template:
-        src: at.allow.j2
-        dest: /etc/at.allow
-        owner: root
-        group: root
-        mode: "0600"
-
-# ------------------------------------------------------------------------------
-
-- name: "SECTION5 | 5.2.1 | Ensure permissions on /etc/ssh/sshd_config are configured"
+- name: "SECTION5 | 5.1.1 | Ensure permissions on /etc/ssh/sshd_config are configured"
   ansible.builtin.file:
     dest: /etc/ssh/sshd_config
     owner: root
     group: root
     mode: "0600"
   when:
-    - cis_ubuntu2204_rule_5_2_1
+    - cis_ubuntu2204_rule_5_1_1
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
     - server_l1
     - workstation_l1
-    - molecule-idempotence-notest
 
-- name: "SECTION5 | 5.2.2 | Ensure permissions on SSH private host key files are configured"
+- name: "SECTION5 | 5.1.2 | Ensure permissions on SSH private host key files are configured"
   when:
-    - cis_ubuntu2204_rule_5_2_2
+    - cis_ubuntu2204_rule_5_1_2
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION5 | 5.2.2 | Ensure permissions on SSH private host key files are configured | find ssh_host_*_key"
+    - name: "SECTION5 | 5.1.2 | Ensure permissions on SSH private host key files are configured | find ssh_host_*_key"
       ansible.builtin.find:
         paths: /etc/ssh
+        file_type: file
         patterns: "ssh_host_*_key"
       register: cis_ubuntu2204_find_ssh_private_host_keys
-    - name: "SECTION5 | 5.2.2 | Ensure permissions on SSH private host key files are configured | set permissions"
+    - name: "SECTION5 | 5.1.2 | Ensure permissions on SSH private host key files are configured | set permissions"
       ansible.builtin.file:
         dest: "{{ item.path }}"
         owner: root
@@ -187,21 +52,21 @@
         mode: "0600"
       with_items: "{{ cis_ubuntu2204_find_ssh_private_host_keys.files }}"
 
-- name: "SECTION5 | 5.2.3 | Ensure permissions on SSH public host key files are configured"
+- name: "SECTION5 | 5.1.3 | Ensure permissions on SSH public host key files are configured"
   when:
-    - cis_ubuntu2204_rule_5_2_3
+    - cis_ubuntu2204_rule_5_1_3
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION5 | 5.2.3 | Ensure permissions on SSH public host key files are configured | find ssh_host_*_key.pub"
+    - name: "SECTION5 | 5.1.3 | Ensure permissions on SSH public host key files are configured | find ssh_host_*_key.pub"
       ansible.builtin.find:
         paths: /etc/ssh
         patterns: "ssh_host_*_key.pub"
       register: cis_ubuntu2204_find_ssh_public_host_keys
-    - name: "SECTION5 | 5.2.3 | Ensure permissions on SSH public host key files are configured | set permissions"
+    - name: "SECTION5 | 5.1.3 | Ensure permissions on SSH public host key files are configured | set permissions"
       ansible.builtin.file:
         dest: "{{ item.path }}"
         owner: root
@@ -209,396 +74,441 @@
         mode: "0644"
       with_items: "{{ cis_ubuntu2204_find_ssh_public_host_keys.files }}"
 
-- name: "SECTION5 | 5.2.4 | Ensure SSH access is limited"
+- name: "SECTION5 | 5.1.4 | Ensure sshd access is configured"
   when:
-    - cis_ubuntu2204_rule_5_2_4
+    - cis_ubuntu2204_rule_5_1_4
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
     - server_l1
     - workstation_l1
-    - molecule-idempotence-notest
   block:
-    - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | AllowUsers"
+    - name: "SECTION5 | 5.1.4 | Ensure sshd access is configured | AllowUsers"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: "{{ cis_ubuntu2204_regex_base_search }}AllowUsers"
         line: "AllowUsers {{ cis_ubuntu2204_ssh_allow_users }}"
         state: present
         create: true
-        mode: "0644"
+        owner: root
+        group: root
+        mode: "0600"
       when:
         - cis_ubuntu2204_ssh_allow_users is defined
-        - cis_ubuntu2204_ssh_allow_users is not none
-    - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | AllowGroups"
+    - name: "SECTION5 | 5.1.4 | Ensure sshd access is configured | AllowGroups"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: "{{ cis_ubuntu2204_regex_base_search }}AllowGroups"
         line: "AllowGroups {{ cis_ubuntu2204_ssh_allow_groups }}"
         state: present
         create: true
-        mode: "0644"
+        owner: root
+        group: root
+        mode: "0600"
       when:
         - cis_ubuntu2204_ssh_allow_groups is defined
-        - cis_ubuntu2204_ssh_allow_groups is not none
-    - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | DenyUsers"
+    - name: "SECTION5 | 5.1.4 | Ensure sshd access is configured | DenyUsers"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: "{{ cis_ubuntu2204_regex_base_search }}DenyUsers"
         line: "DenyUsers {{ cis_ubuntu2204_ssh_deny_users }}"
         state: present
         create: true
-        mode: "0644"
+        owner: root
+        group: root
+        mode: "0600"
       when:
         - cis_ubuntu2204_ssh_deny_users is defined
-        - cis_ubuntu2204_ssh_deny_users is not none
-    - name: "SECTION5 | 5.2.4 | Ensure SSH access is limited | DenyGroups"
+    - name: "SECTION5 | 5.1.4 | Ensure sshd access is configured | DenyGroups"
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: "{{ cis_ubuntu2204_regex_base_search }}DenyGroups"
         line: "DenyGroups {{ cis_ubuntu2204_ssh_deny_groups }}"
         state: present
         create: true
-        mode: "0644"
+        owner: root
+        group: root
+        mode: "0600"
       when:
         - cis_ubuntu2204_ssh_deny_groups is defined
-        - cis_ubuntu2204_ssh_deny_groups is not none
 
-- name: "SECTION5 | 5.2.5 | Ensure SSH LogLevel is appropriate"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}LogLevel"
-    line: "LogLevel {{ cis_ubuntu2204_ssh_log_level }}"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_5
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.6 | Ensure SSH PAM is enabled"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}UsePAM"
-    line: "UsePAM yes"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_6
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.7 | Ensure SSH root login is disabled"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitRootLogin"
-    line: "PermitRootLogin no"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_7
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.8 | Ensure SSH HostbasedAuthentication is disabled"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}HostbasedAuthentication"
-    line: "HostbasedAuthentication no"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_8
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.9 | Ensure SSH PermitEmptyPasswords is disabled"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitEmptyPasswords"
-    line: "PermitEmptyPasswords no"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_9
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.10 | Ensure SSH PermitUserEnvironment is disabled"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitUserEnvironment"
-    line: "PermitUserEnvironment no"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_10
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.11 | Ensure SSH IgnoreRhosts is enabled"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}IgnoreRhosts"
-    line: "IgnoreRhosts yes"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_11
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.12 | Ensure SSH X11 forwarding is disabled"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}X11Forwarding"
-    line: "X11Forwarding no"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_12
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.13 | Ensure only strong Ciphers are used"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}Ciphers"
-    line: "Ciphers {{ cis_ubuntu2204_ssh_ciphers | join(',') }}"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_13
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.14 | Ensure only strong MAC algorithms are used"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}MACs"
-    line: "MACs {{ cis_ubuntu2204_ssh_macs | join(',') }}"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_14
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.15 | Ensure only strong Key Exchange algorithms are used"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}KexAlgorithms"
-    line: "KexAlgorithms {{ cis_ubuntu2204_ssh_kex_algorithms | join(',') }}"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_15
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.16 | Ensure SSH AllowTcpForwarding is disabled"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}AllowTcpForwarding"
-    line: "AllowTcpForwarding no"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_2_16
-    - service_status_ssh.stdout == "loaded"
-  tags:
-    - rule_5_2
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.2.17 | Ensure SSH warning banner is configured"
+- name: "SECTION5 | 5.1.5 | Ensure sshd Banner is configured"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "{{ cis_ubuntu2204_regex_base_search }}Banner"
     line: "Banner /etc/issue.net"
     state: present
     create: true
-    mode: "0644"
+    owner: root
+    group: root
+    mode: "0600"
   when:
-    - cis_ubuntu2204_rule_5_2_17
+    - cis_ubuntu2204_rule_5_1_5
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.2.18 | Ensure SSH MaxAuthTries is set to 4 or less"
+- name: "SECTION5 | 5.1.6 | Ensure sshd Ciphers are configured"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxAuthTries"
-    line: "MaxAuthTries 4"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}Ciphers"
+    line: "Ciphers {{ cis_ubuntu2204_ssh_ciphers | join(',') }}"
     state: present
     create: true
-    mode: "0644"
+    owner: root
+    group: root
+    mode: "0600"
   when:
-    - cis_ubuntu2204_rule_5_2_18
+    - cis_ubuntu2204_rule_5_1_6
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.2.19 | Ensure SSH MaxStartups is configured"
+- name: "SECTION5 | 5.1.7 | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured"
+  when:
+    - cis_ubuntu2204_rule_5_1_7
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.1.7 | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | ClientAliveInterval"
+      ansible.builtin.lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}ClientAliveInterval"
+        line: "ClientAliveInterval {{ cis_ubuntu2204_ssh_client_alive_interval }}"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0600"
+    - name: "SECTION5 | 5.1.7 | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | ClientAliveCountMax"
+      ansible.builtin.lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}ClientAliveCountMax"
+        line: "ClientAliveCountMax {{ cis_ubuntu2204_ssh_client_alive_count_max }}"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0600"
+
+- name: "SECTION5 | 5.1.8 | Ensure sshd DisableForwarding is enabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxStartups"
-    line: "MaxStartups 10:30:60"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}DisableForwarding"
+    line: "DisableForwarding yes"
     state: present
     create: true
-    mode: "0644"
+    owner: root
+    group: root
+    mode: "0600"
   when:
-    - cis_ubuntu2204_rule_5_2_19
+    - cis_ubuntu2204_rule_5_1_8
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
-    - server_l1
+    - rule_5_1
+    - server_l2
     - workstation_l1
 
-- name: "SECTION5 | 5.2.20 | Ensure SSH MaxSessions is set to 10 or less"
+- name: "SECTION5 | 5.1.9 | Ensure sshd GSSAPIAuthentication is disabled"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxSessions"
-    line: "MaxSessions 10"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}GSSAPIAuthentication"
+    line: "GSSAPIAuthentication no"
     state: present
     create: true
-    mode: "0644"
+    owner: root
+    group: root
+    mode: "0600"
   when:
-    - cis_ubuntu2204_rule_5_2_20
+    - cis_ubuntu2204_rule_5_1_9
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
+    - server_l2
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.10 | Ensure sshd HostbasedAuthentication is disabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}HostbasedAuthentication"
+    line: "HostbasedAuthentication no"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_10
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.2.21 | Ensure SSH LoginGraceTime is set to one minute or less"
+- name: "SECTION5 | 5.1.11 | Ensure sshd IgnoreRhosts is enabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}IgnoreRhosts"
+    line: "IgnoreRhosts yes"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_11
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.12 | Ensure sshd KexAlgorithms is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}KexAlgorithms"
+    line: "KexAlgorithms {{ cis_ubuntu2204_ssh_kex_algorithms | join(',') }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_12
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.13 | Ensure sshd LoginGraceTime is configured"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "{{ cis_ubuntu2204_regex_base_search }}LoginGraceTime"
     line: "LoginGraceTime 60"
     state: present
     create: true
-    mode: "0644"
+    owner: root
+    group: root
+    mode: "0600"
   when:
-    - cis_ubuntu2204_rule_5_2_21
+    - cis_ubuntu2204_rule_5_1_13
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.2.22 | Ensure SSH Idle Timeout Interval is configured"
+- name: "SECTION5 | 5.1.14 | Ensure sshd LogLevel is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}LogLevel"
+    line: "LogLevel {{ cis_ubuntu2204_ssh_log_level }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
   when:
-    - cis_ubuntu2204_rule_5_2_22
+    - cis_ubuntu2204_rule_5_1_14
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
     - server_l1
     - workstation_l1
-  block:
-    - name: "SECTION5 | 5.2.22 | Ensure SSH Idle Timeout Interval is configured | ClientAliveInterval"
-      ansible.builtin.lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: "{{ cis_ubuntu2204_regex_base_search }}ClientAliveInterval"
-        line: "ClientAliveInterval 15"
-        state: present
-        create: true
-        mode: "0644"
-    - name: "SECTION5 | 5.2.22 | Ensure SSH Idle Timeout Interval is configured | ClientAliveCountMax"
-      ansible.builtin.lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: "{{ cis_ubuntu2204_regex_base_search }}ClientAliveCountMax"
-        line: "ClientAliveCountMax 3"
-        state: present
-        create: true
-        mode: "0644"
 
-- name: "SECTION5 | 5.2.23 | Ensure SSH additional variables are configured"
+- name: "SECTION5 | 5.1.15 | Ensure sshd MACs are configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}MACs"
+    line: "MACs {{ cis_ubuntu2204_ssh_macs | join(',') }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_15
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.16 | Ensure sshd MaxAuthTries is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxAuthTries"
+    line: "MaxAuthTries {{ cis_ubuntu2204_ssh_max_auth_tries }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_16
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.17 | Ensure sshd MaxSessions is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxSessions"
+    line: "MaxSessions {{ cis_ubuntu2204_ssh_max_sessions }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_17
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.18 | Ensure sshd MaxStartups is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}MaxStartups"
+    line: "MaxStartups 10:30:60"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_18
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.19 | Ensure sshd PermitEmptyPasswords is disabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitEmptyPasswords"
+    line: "PermitEmptyPasswords no"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_19
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.20 | Ensure sshd PermitRootLogin is disabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitRootLogin"
+    line: "PermitRootLogin {{ cis_ubuntu2204_ssh_permit_root_login }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_20
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.21 | Ensure sshd PermitUserEnvironment is disabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}PermitUserEnvironment"
+    line: "PermitUserEnvironment no"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_21
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.22 | Ensure sshd UsePAM is enabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}UsePAM"
+    line: "UsePAM yes"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - cis_ubuntu2204_rule_5_1_22
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION5 | 5.1.23 | Ensure SSH additional variables are configured"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "{{ item.reg }}"
     line: "{{ item.line }}"
     state: present
     create: true
-    mode: "0644"
+    owner: root
+    group: root
+    mode: "0600"
   with_items:
     - reg: "{{ cis_ubuntu2204_regex_base_search }}Port"
-      line: "Port 22"
+      line: "Port {{ cis_ubuntu2204_ssh_port }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AddressFamily"
       line: "AddressFamily {{ cis_ubuntu2204_ssh_address_family }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress"
       line: "ListenAddress 0.0.0.0"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKeyAlgorithms"
-      line: "HostKeyAlgorithms {{ cis_ubuntu2204_ssh_host_key_algorithms | join(',') }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthenticationMethods"
-      line: "AuthenticationMethods publickey"
+      line: "AuthenticationMethods {{ cis_ubuntu2204_ssh_authentication_methods }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}StrictModes"
       line: "StrictModes yes"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAuthentication"
       line: "PubkeyAuthentication yes"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAcceptedKeyTypes"
-      line: "PubkeyAcceptedKeyTypes {{ cis_ubuntu2204_ssh_pubkey_accepted_key_types | join(',') }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}PasswordAuthentication"
-      line: "PasswordAuthentication no"
+      line: "PasswordAuthentication {{ cis_ubuntu2204_ssh_password_authentication }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}ChallengeResponseAuthentication"
       line: "ChallengeResponseAuthentication no"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}GSSAPIAuthentication"
-      line: "GSSAPIAuthentication no"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}GSSAPICleanupCredentials"
       line: "GSSAPICleanupCredentials yes"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AllowAgentForwarding"
-      line: "AllowAgentForwarding yes"
+      line: "AllowAgentForwarding {{ cis_ubuntu2204_ssh_allow_agent_forwarding }}"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}X11Forwarding"
+      line: "X11Forwarding {{ cis_ubuntu2204_ssh_x11_forwarding }}"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}AllowTcpForwarding"
+      line: "AllowTcpForwarding {{ cis_ubuntu2204_ssh_allow_tcp_forwarding }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}PrintMotd"
       line: "PrintMotd no"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}TCPKeepAlive"
+      line: "TCPKeepAlive {{ cis_ubuntu2204_ssh_tcp_keep_alive }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}UseDNS"
       line: "UseDNS no"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AcceptEnv"
@@ -614,504 +524,1131 @@
     - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_rsa_key"
       line: "HostKey /etc/ssh/ssh_host_rsa_key"
   when:
-    - cis_ubuntu2204_rule_5_2_23
+    - cis_ubuntu2204_rule_5_1_23
     - service_status_ssh.stdout == "loaded"
   tags:
-    - rule_5_2
+    - rule_5_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.1.24 | Ensure sshd public key is added"
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ cis_ubuntu2204_rule_5_1_24_ssh_pub_key }}"
+    state: present
+    exclusive: true
+  when:
+    - cis_ubuntu2204_rule_5_1_24
+    - cis_ubuntu2204_rule_5_1_24_ssh_pub_key is defined
+    - service_status_ssh.stdout == "loaded"
+  tags:
+    - rule_5_1
     - server_l1
     - workstation_l1
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION5 | 5.3.1 | Ensure sudo is installed"
+- name: "SECTION5 | 5.2.1 | Ensure sudo is installed"
   ansible.builtin.apt:
     name: sudo
     state: present
-    install_recommends: false
+    force_apt_get: true
   when:
-    - cis_ubuntu2204_rule_5_3_1
+    - cis_ubuntu2204_rule_5_2_1
   tags:
-    - rule_5_3
+    - rule_5_2
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.3.2 | Ensure sudo commands use pty"
-  ansible.builtin.lineinfile:
-    dest: /etc/sudoers
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+use_pty'
-    line: "Defaults use_pty"
-    state: present
-    create: true
-    mode: "0400"
-    validate: "visudo -cf %s"
+- name: "SECTION5 | 5.2.2 | Ensure sudo commands use pty"
   when:
-    - cis_ubuntu2204_rule_5_3_2
+    - cis_ubuntu2204_rule_5_2_2
   tags:
-    - rule_5_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.3.3 | Ensure sudo log file exists"
-  ansible.builtin.lineinfile:
-    dest: /etc/sudoers
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+logfile.*'
-    line: 'Defaults logfile="/var/log/sudo.log"'
-    state: present
-    create: true
-    mode: "0400"
-    validate: "visudo -cf %s"
-  when:
-    - cis_ubuntu2204_rule_5_3_3
-  tags:
-    - rule_5_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.3.4 | Ensure users must provide password for privilege escalation"
-  ansible.builtin.replace:
-    dest: /etc/sudoers
-    regexp: "(.*NOPASSWD.*)"
-    replace: '#\1'
-    validate: "visudo -cf %s"
-  when:
-    - cis_ubuntu2204_rule_5_3_4
-  tags:
-    - rule_5_3
-    - server_l2
-    - workstation_l2
-    - molecule-idempotence-notest
-
-- name: "SECTION5 | 5.3.5 | Ensure re-authentication for privilege escalation is not disabled globally"
-  ansible.builtin.replace:
-    dest: /etc/sudoers
-    regexp: "(.*!authenticate.*)"
-    replace: '# \1'
-    validate: "visudo -cf %s"
-  when:
-    - cis_ubuntu2204_rule_5_3_5
-  tags:
-    - rule_5_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.3.6 | Ensure sudo authentication timeout is configured correctly"
-  when:
-    - cis_ubuntu2204_rule_5_3_6
-  tags:
-    - rule_5_3
+    - rule_5_2
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION5 | 5.3.6 | Ensure sudo authentication timeout is configured correctly | env_reset, timestamp_timeout"
+    - name: "SECTION5 | 5.2.2 | Ensure sudo commands use pty | update /etc/sudoers"
+      ansible.builtin.lineinfile:
+        dest: /etc/sudoers
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+use_pty'
+        line: "Defaults use_pty"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0400"
+        validate: "visudo -cf %s"
+    - name: "SECTION5 | 5.2.2 | Ensure sudo commands use pty | search files inside '/etc/sudoers.d/*'"
+      ansible.builtin.find:
+        paths: /etc/sudoers.d/
+        patterns: "*"
+        recurse: yes
+      register: cis_ubuntu2204_sudoers_d_files
+    - name: "SECTION5 | 5.2.2 | Ensure sudo commands use pty | update '/etc/sudoers.d/*'"
+      ansible.builtin.lineinfile:
+        dest: "{{ item.path }}"
+        regexp: "!use_pty"
+        state: absent
+        validate: "visudo -cf %s"
+      with_items: "{{ cis_ubuntu2204_sudoers_d_files.files }}"
+
+- name: "SECTION5 | 5.2.3 | Ensure sudo log file exists"
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+logfile.*'
+    line: 'Defaults logfile="{{ cis_ubuntu2204_audit_sudo_log_file }}"'
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0400"
+    validate: "visudo -cf %s"
+  when:
+    - cis_ubuntu2204_rule_5_2_3
+  tags:
+    - rule_5_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation"
+  when:
+    - cis_ubuntu2204_rule_5_2_4
+  tags:
+    - rule_5_2
+    - server_l2
+    - workstation_l2
+  block:
+    - name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation | update /etc/sudoers"
+      ansible.builtin.replace:
+        dest: /etc/sudoers
+        regexp: "^(?!#)(.*NOPASSWD.*)"
+        replace: '#\1'
+        validate: "visudo -cf %s"
+
+    - name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation | search files inside '/etc/sudoers.d/*'"
+      ansible.builtin.find:
+        paths: /etc/sudoers.d/
+        patterns: "*"
+        recurse: yes
+      register: cis_ubuntu2204_sudoers_d_files
+
+    - name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation | update '/etc/sudoers.d/*'"
+      ansible.builtin.replace:
+        dest: "{{ item.path }}"
+        regexp: "^(?!#)(.*NOPASSWD.*)"
+        replace: '#\1'
+        validate: "visudo -cf %s"
+      with_items: "{{ cis_ubuntu2204_sudoers_d_files.files }}"
+
+- name: "SECTION5 | 5.2.5 | Ensure re-authentication for privilege escalation is not disabled globally"
+  when:
+    - cis_ubuntu2204_rule_5_2_5
+  tags:
+    - rule_5_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.2.5 | Ensure re-authentication for privilege escalation is not disabled globally | update /etc/sudoers"
+      ansible.builtin.replace:
+        dest: /etc/sudoers
+        regexp: "^(?!#)(.*!authenticate.*)"
+        replace: '#\1'
+        validate: "visudo -cf %s"
+
+    - name: "SECTION5 | 5.2.5 | Ensure re-authentication for privilege escalation is not disabled globally | search files inside '/etc/sudoers.d/*'"
+      ansible.builtin.find:
+        paths: /etc/sudoers.d/
+        patterns: "*"
+        recurse: yes
+      register: cis_ubuntu2204_sudoers_d_files
+
+    - name: "SECTION5 | 5.2.5 | Ensure re-authentication for privilege escalation is not disabled globally | update '/etc/sudoers.d/*'"
+      ansible.builtin.replace:
+        dest: "{{ item.path }}"
+        regexp: "^(?!#)(.*!authenticate.*)"
+        replace: '#\1'
+        validate: "visudo -cf %s"
+      with_items: "{{ cis_ubuntu2204_sudoers_d_files.files }}"
+
+- name: "SECTION5 | 5.2.6 | Ensure sudo authentication timeout is configured correctly"
+  when:
+    - cis_ubuntu2204_rule_5_2_6
+  tags:
+    - rule_5_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.2.6 | Ensure sudo authentication timeout is configured correctly | env_reset, timestamp_timeout"
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
         regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+env_reset,\s+timestamp_timeout=.*'
         line: "Defaults env_reset, timestamp_timeout=15"
         state: present
         create: true
+        owner: root
+        group: root
         mode: "0400"
         validate: "visudo -cf %s"
-    - name: "SECTION5 | 5.3.6 | Ensure sudo authentication timeout is configured correctly | timestamp_timeout"
+    - name: "SECTION5 | 5.2.6 | Ensure sudo authentication timeout is configured correctly | timestamp_timeout"
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
         regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+timestamp_timeout=.*'
-        line: "Defaults timestamp_timeout=15"
-        state: present
+        line: "#Defaults timestamp_timeout=15"
+        state: absent
         create: true
+        owner: root
+        group: root
         mode: "0400"
         validate: "visudo -cf %s"
-    - name: "SECTION5 | 5.3.6 | Ensure sudo authentication timeout is configured correctly | env_reset"
+    - name: "SECTION5 | 5.2.6 | Ensure sudo authentication timeout is configured correctly | env_reset"
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
         regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+env_reset$'
-        line: "Defaults env_reset"
-        state: present
+        line: "#Defaults env_reset"
+        state: absent
         create: true
+        owner: root
+        group: root
         mode: "0400"
         validate: "visudo -cf %s"
 
-- name: "SECTION5 | 5.3.7 | Ensure access to the su command is restricted"
+- name: "SECTION5 | 5.2.7 | Ensure access to the su command is restricted"
   when:
-    - cis_ubuntu2204_rule_5_3_7
+    - cis_ubuntu2204_rule_5_2_7
   tags:
-    - rule_5_3
+    - rule_5_2
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION5 | 5.3.7 | Ensure access to the su command is restricted | create group"
+    - name: "SECTION5 | 5.2.7 | Ensure access to the su command is restricted | create group"
       ansible.builtin.group:
         name: sugroup
         state: present
-    - name: "SECTION5 | 5.3.7 | Ensure access to the su command is restricted | set pam su"
+        system: true
+    - name: "SECTION5 | 5.2.7 | Ensure access to the su command is restricted | set pam su"
       ansible.builtin.lineinfile:
         dest: /etc/pam.d/su
         regexp: '{{ cis_ubuntu2204_regex_base_search }}auth\s+required\s+pam_wheel\.so\s+use_uid\s+group='
         line: "auth required pam_wheel.so use_uid group=sugroup"
         state: present
         create: true
+        owner: root
+        group: root
         mode: "0644"
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION5 | 5.4.1 | Ensure password creation requirements are configured"
+- name: "SECTION5 | 5.3.1.1 | Ensure latest version of pam is installed"
+  ansible.builtin.apt:
+    name: libpam-runtime
+    state: latest
+    only_upgrade: true
+    force_apt_get: true
   when:
-    - cis_ubuntu2204_rule_5_4_1
+    - cis_ubuntu2204_rule_5_3_1_1
   tags:
-    - rule_5_4
+    - rule_5_3_1
     - server_l1
     - workstation_l1
-  block:
-    - name: "SECTION5 | 5.4.1 | Ensure password creation requirements are configured | install libpam-pwquality"
-      ansible.builtin.apt:
-        name:
-          - libpam-pwquality
-          - cracklib-runtime
-        state: present
-        install_recommends: false
-    - name: "SECTION5 | 5.4.1 | Ensure password creation requirements are configured | set policy"
-      ansible.builtin.lineinfile:
-        dest: /etc/security/pwquality.conf
-        regexp: "{{ cis_ubuntu2204_regex_base_search }}{{ item.key }}"
-        line: "{{ item.key }} = {{ item.value }}"
-        state: present
-        create: true
-        mode: "0644"
-      loop: "{{ cis_ubuntu2204_pwquality | flatten(levels=1) }}"
 
-- name: "SECTION5 | 5.4.2 | Ensure lockout for failed password attempts is configured"
+- name: "SECTION5 | 5.3.1.2 | Ensure libpam-modules is installed"
+  ansible.builtin.apt:
+    name: libpam-modules
+    state: latest
+    only_upgrade: true
+    force_apt_get: true
   when:
-    - cis_ubuntu2204_rule_5_4_2
+    - cis_ubuntu2204_rule_5_3_1_2
   tags:
-    - rule_5_4
+    - rule_5_3_1
     - server_l1
     - workstation_l1
-  block:
-    - name: "SECTION5 | 5.4.2 | Ensure lockout for failed password attempts is configured | common-auth"
-      ansible.builtin.lineinfile:
-        dest: /etc/pam.d/common-auth
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_faillock\.so preauth'
-        line: "auth required pam_faillock.so preauth"
-        state: present
-        create: true
-        mode: "0644"
-        insertbefore: "BOF"
-    - name: "SECTION5 | 5.4.2 | Ensure lockout for failed password attempts is configured | common-auth"
-      ansible.builtin.lineinfile:
-        dest: /etc/pam.d/common-auth
-        regexp: "{{ item.reg }}"
-        line: "{{ item.line }}"
-        state: present
-        create: true
-        mode: "0644"
-        insertafter: "{{ item.insertafter }}"
-      with_items:
-        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_unix\.so nullok'
-          line: "auth [success={{ cis_ubuntu2204_common_auth_success }} default=ignore] pam_unix.so nullok"
-          insertafter: 'auth(.*?)pam_faillock\.so preauth'
-        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_faillock\.so authfail '
-          line: "auth [default=die] pam_faillock.so authfail "
-          insertafter: 'auth(.*?)pam_unix\.so nullok'
-        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_faillock\.so authsucc '
-          line: "auth sufficient pam_faillock.so authsucc "
-          insertafter: 'auth(.*?)pam_faillock\.so authfail '
-        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_deny\.so'
-          line: "auth requisite pam_deny.so"
-          insertafter: 'auth(.*?)pam_faillock\.so authsucc '
-        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_permit\.so'
-          line: "auth required pam_permit.so"
-          insertafter: 'auth(.*?)pam_deny\.so'
-        - reg: '{{ cis_ubuntu2204_regex_base_search }}auth(.*?)pam_cap\.so'
-          line: "auth optional pam_cap.so"
-          insertafter: 'auth(.*?)pam_permit\.so'
-    - name: "SECTION5 | 5.4.2 | Ensure lockout for failed password attempts is configured | common-auth"
-      ansible.builtin.lineinfile:
-        dest: /etc/pam.d/common-account
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}account(.*?)pam_faillock\.so'
-        line: "account required pam_faillock.so"
-        state: present
-        create: true
-        mode: "0644"
-        insertafter: "EOF"
-    - name: "SECTION5 | 5.4.2 | Ensure lockout for failed password attempts is configured | faillock.conf"
-      ansible.builtin.lineinfile:
-        dest: /etc/security/faillock.conf
-        regexp: "{{ item.reg }}"
-        line: "{{ item.line }}"
-        state: present
-        create: true
-        mode: "0644"
-      with_items:
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}deny"
-          line: "deny = 4"
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}fail_interval"
-          line: "fail_interval = 900"
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}unlock time"
-          line: "unlock time = 600"
 
-- name: "SECTION5 | 5.4.3 | Ensure password reuse is limited"
-  ansible.builtin.lineinfile:
-    dest: /etc/pam.d/common-password
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}password(.*?)pam_unix\.so '
-    line: >
-      password [success={{ cis_ubuntu2204_common_password_success }} default=ignore] pam_unix.so obscure
-      use_authtok try_first_pass {{ cis_ubuntu2204_encrypt_method | lower }} remember={{ cis_ubuntu2204_remember_reuse }}
-    state: present
-    create: true
-    mode: "0644"
-    insertafter: 'pam_pwquality\.so'
+- name: "SECTION5 | 5.3.1.3 | Ensure libpam-pwquality is installed"
+  ansible.builtin.apt:
+    name: libpam-pwquality
+    state: latest
+    only_upgrade: true
+    force_apt_get: true
   when:
-    - cis_ubuntu2204_rule_5_4_3
+    - cis_ubuntu2204_rule_5_3_1_3
   tags:
-    - rule_5_4
+    - rule_5_3_1
     - server_l1
     - workstation_l1
-    - molecule-idempotence-notest
-
-- name: "SECTION5 | 5.4.4 | Ensure password hashing algorithm is up to date with the latest standards"
-  when:
-    - cis_ubuntu2204_rule_5_4_4
-  tags:
-    - rule_5_4
-    - server_l1
-    - workstation_l1
-    - molecule-idempotence-notest
-  block:
-    - name: "SECTION5 | 5.4.4 | Ensure password hashing algorithm is up to date with the latest standards | common-password"
-      ansible.builtin.lineinfile:
-        dest: /etc/pam.d/common-password
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}password(.*?)pam_unix\.so '
-        line: >
-          password [success={{ cis_ubuntu2204_common_password_success }} default=ignore] pam_unix.so obscure
-          use_authtok try_first_pass {{ cis_ubuntu2204_encrypt_method | lower }} remember={{ cis_ubuntu2204_remember_reuse }}
-        state: present
-        create: true
-        mode: "0644"
-        insertafter: 'pam_pwquality\.so'
-    - name: "SECTION5 | 5.4.4 | Ensure password hashing algorithm is up to date with the latest standards | login.defs"
-      ansible.builtin.lineinfile:
-        dest: /etc/login.defs
-        regexp: "{{ cis_ubuntu2204_regex_base_search }}ENCRYPT_METHOD"
-        line: "ENCRYPT_METHOD {{ cis_ubuntu2204_encrypt_method | upper }}"
-        state: present
-        create: true
-        mode: "0644"
-
-# NOTE: is need to implement something?
-# - name: "SECTION5 | 5.4.5 | Ensure all current passwords uses the configured hashing algorithm"
-#   when:
-#     - cis_ubuntu2204_rule_5_4_5
-#   tags:
-#     - rule_5_4
-#     - server_l1
-#     - workstation_l1
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION5 | 5.5.1.1 | Ensure minimum days between password changes is configured"
-  ansible.builtin.lineinfile:
-    dest: /etc/login.defs
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_MIN_DAYS"
-    line: "PASS_MIN_DAYS 1"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_5_1_1
-  tags:
-    - rule_5_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.5.1.2 | Ensure password expiration is 365 days or less"
-  ansible.builtin.lineinfile:
-    dest: /etc/login.defs
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_MAX_DAYS"
-    line: "PASS_MAX_DAYS 365"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_5_1_2
-  tags:
-    - rule_5_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.5.1.3 | Ensure password expiration warning days is 7 or more"
-  ansible.builtin.lineinfile:
-    dest: /etc/login.defs
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_WARN_AGE"
-    line: "PASS_WARN_AGE 7"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_5_1_3
-  tags:
-    - rule_5_5_1
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION5 | 5.5.1.4 | Ensure inactive password lock is 30 days or less"
-  ansible.builtin.lineinfile:
-    dest: /etc/default/useradd
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}INACTIVE"
-    line: "INACTIVE=30"
-    state: present
-    create: true
-    mode: "0644"
-  when:
-    - cis_ubuntu2204_rule_5_5_1_4
-  tags:
-    - rule_5_5_1
-    - server_l1
-    - workstation_l1
-
-# - name: "SECTION5 | 5.5.1.5 | Ensure all users last password change date is in the past"
-#   when:
-#     - cis_ubuntu2204_rule_5_5_1_5
-#   tags:
-#     - rule_5_5_1
-#     - server_l1
-#     - workstation_l1
-
-- name: "SECTION5 | 5.5.2 | Ensure system accounts are secured"
-  when:
-    - cis_ubuntu2204_rule_5_5_2
-  tags:
-    - rule_5_5_1
-    - server_l1
-    - workstation_l1
-  block:
-    - name: "SECTION5 | 5.5.2 | Ensure system accounts are secured | usermod -s"
-      ansible.builtin.shell: >
-        set -o pipefail &&
-        awk -F: '$1!~/(root|sync|shutdown|halt|^\+)/
-        && $3<'"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"'
-        && $7!~/((\/usr)?\/sbin\/nologin)/
-        && $7!~/(\/bin)?\/false/ {print $1}' /etc/passwd
-        | while read -r user; do
-          usermod -s "$(which nologin)" "$user"
-        done
-      args:
-        executable: /bin/bash
-      changed_when: false
-    - name: "SECTION5 | 5.5.2 | Ensure system accounts are secured | usermod -L"
-      ansible.builtin.shell: >
-        set -o pipefail &&
-        awk -F: '($1!~/(root|^\+)/
-        && $3<'"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"') {print $1}' /etc/passwd
-        | xargs -I '{}' passwd -S '{}'
-        | awk '($2!~/LK?/) {print $1}'
-        | while read -r user; do
-          usermod -L "$user"
-        done
-      args:
-        executable: /bin/bash
-      changed_when: false
-
-- name: "SECTION5 | 5.5.3 | Ensure default group for the root account is GID 0"
-  ansible.builtin.command: usermod -g 0 root
+- name: "SECTION5 | 5.3.2.1 | Ensure pam_unix module is enabled"
+  ansible.builtin.command: pam-auth-update --package --enable unix
   changed_when: false
   failed_when: false
+  check_mode: false
   when:
-    - cis_ubuntu2204_rule_5_5_3
+    - cis_ubuntu2204_rule_5_3_2_1
   tags:
-    - rule_5_5_1
+    - rule_5_3_2
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.5.4 | Ensure default user umask is 027 or more restrictive"
+- name: "SECTION5 | 5.3.2.2 | Ensure pam_faillock module is enabled"
   when:
-    - cis_ubuntu2204_rule_5_5_4
+    - cis_ubuntu2204_rule_5_3_2_2
   tags:
-    - rule_5_5_1
+    - rule_5_3_2
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION5 | 5.5.4 | Ensure default user umask is 027 or more restrictive | login.defs"
+    - name: "SECTION5 | 5.3.2.2 | Ensure pam_faillock module is enabled | file faillock"
+      ansible.builtin.template:
+        src: pam/faillock
+        dest: /usr/share/pam-configs/faillock
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.2.2 | Ensure pam_faillock module is enabled | file faillock-notify"
+      ansible.builtin.template:
+        src: pam/faillock-notify
+        dest: /usr/share/pam-configs/faillock-notify
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.2.2 | Ensure pam_faillock module is enabled | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable {{ item }}
+      with_items:
+        - faillock
+        - faillock-notify
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+- name: "SECTION5 | 5.3.2.3 | Ensure pam_pwquality module is enabled"
+  when:
+    - cis_ubuntu2204_rule_5_3_2_3
+  tags:
+    - rule_5_3_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.2.3 | Ensure pam_pwquality module is enabled | file pwquality"
+      ansible.builtin.template:
+        src: pam/pwquality
+        dest: /usr/share/pam-configs/pwquality
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.2.3 | Ensure pam_pwquality module is enabled | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable pwquality
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+- name: "SECTION5 | 5.3.2.4 | Ensure pam_pwhistory module is enabled"
+  when:
+    - cis_ubuntu2204_rule_5_3_2_4
+  tags:
+    - rule_5_3_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.2.4 | Ensure pam_pwhistory module is enabled | file pwhistory"
+      ansible.builtin.template:
+        src: pam/pwhistory.j2
+        dest: /usr/share/pam-configs/pwhistory
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.2.4 | Ensure pam_pwhistory module is enabled | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable pwhistory
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION5 | 5.3.3.1.1 | Ensure password failed attempts lockout is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/faillock.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}deny{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "deny = {{ cis_ubuntu2204_faillock_deny }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_1_1
+  tags:
+    - rule_5_3_3_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.3.3.1.2 | Ensure password unlock time is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/faillock.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}unlock_time{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "unlock_time = {{ cis_ubuntu2204_faillock_unlock_time }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_1_2
+  tags:
+    - rule_5_3_3_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.3.3.1.3 | Ensure password failed attempts lockout includes root account"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_1_3
+  tags:
+    - rule_5_3_3_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.3.1.3 | Ensure password failed attempts lockout includes root account | root_unlock_time"
+      ansible.builtin.lineinfile:
+        dest: /etc/security/faillock.conf
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}root_unlock_time{{ cis_ubuntu2204_regex_base_search_equals }}"
+        line: "root_unlock_time = {{ cis_ubuntu2204_faillock_unlock_time }}"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.3.1.3 | Ensure password failed attempts lockout includes root account | even_deny_root"
+      ansible.builtin.lineinfile:
+        dest: /etc/security/faillock.conf
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}even_deny_root"
+        line: "even_deny_root"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0644"
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION5 | 5.3.3.2.1 | Ensure password number of changed characters is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/pwquality.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}difok{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "difok = {{ cis_ubuntu2204_faillock_difok }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_2_1
+  tags:
+    - rule_5_3_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.3.3.2.2 | Ensure password number of changed characters is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/pwquality.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}minlen{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "minlen = {{ cis_ubuntu2204_faillock_minlen }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_2_2
+  tags:
+    - rule_5_3_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.3.3.2.3 | Ensure password complexity is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/pwquality.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}{{ item.key }}{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "{{ item.key }} = {{ item.value }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ cis_ubuntu2204_password_complexity | flatten(levels=1) }}"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_2_3
+  tags:
+    - rule_5_3_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.3.3.2.4 | Ensure password same consecutive characters is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/pwquality.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}maxrepeat{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "maxrepeat = {{ cis_ubuntu2204_faillock_maxrepeat }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_2_4
+  tags:
+    - rule_5_3_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.3.3.2.5 | Ensure password maximum sequential characters is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/pwquality.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}maxsequence{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "maxsequence = {{ cis_ubuntu2204_faillock_maxsequence }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_2_5
+  tags:
+    - rule_5_3_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.3.3.2.6 | Ensure password dictionary check is enabled"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/pwquality.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}dictcheck{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "# dictcheck = 1"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_2_6
+  tags:
+    - rule_5_3_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.3.3.2.7 | Ensure password quality checking is enforced"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/pwquality.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}enforcing{{ cis_ubuntu2204_regex_base_search_equals }}"
+    line: "# enforcing = 1"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_2_7
+  tags:
+    - rule_5_3_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.3.3.2.8 | Ensure password quality is enforced for the root user"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/pwquality.conf
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}enforce_for_root"
+    line: "enforce_for_root"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_2_8
+  tags:
+    - rule_5_3_3_2
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION5 | 5.3.3.3.1 | Ensure password history remember is configured"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_3_1
+  tags:
+    - rule_5_3_3_3
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.3.3.1 | Ensure password history remember is configured | file pwhistory"
+      ansible.builtin.template:
+        src: pam/pwhistory.j2
+        dest: /usr/share/pam-configs/pwhistory
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.3.3.1 | Ensure password history remember is configured | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable pwhistory
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+- name: "SECTION5 | 5.3.3.3.2 | Ensure password history is enforced for the root user"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_3_2
+  tags:
+    - rule_5_3_3_3
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.3.3.2 | Ensure password history is enforced for the root user | file pwhistory"
+      ansible.builtin.template:
+        src: pam/pwhistory.j2
+        dest: /usr/share/pam-configs/pwhistory
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.3.3.2 | Ensure password history is enforced for the root user | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable pwhistory
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+- name: "SECTION5 | 5.3.3.3.3 | Ensure pam_pwhistory includes use_authtok"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_3_3
+  tags:
+    - rule_5_3_3_3
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.3.3.3 | Ensure pam_pwhistory includes use_authtok | file pwhistory"
+      ansible.builtin.template:
+        src: pam/pwhistory.j2
+        dest: /usr/share/pam-configs/pwhistory
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.3.3.3 | Ensure pam_pwhistory includes use_authtok | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable pwhistory
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION5 | 5.3.3.4.1 | Ensure pam_unix does not include nullok"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_4_1
+  tags:
+    - rule_5_3_3_4
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.3.4.1 | Ensure pam_unix does not include nullok | file unix"
+      ansible.builtin.lineinfile:
+        path: /usr/share/pam-configs/unix
+        regexp: "^(.*)nullok(.*)$"
+        line: '\1\2'
+        backrefs: yes
+    - name: "SECTION5 | 5.3.3.4.1 | Ensure pam_unix does not include nullok | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable unix
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+- name: "SECTION5 | 5.3.3.4.2 | Ensure pam_unix does not include remember"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_4_2
+  tags:
+    - rule_5_3_3_4
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.3.4.2 | Ensure pam_unix does not include remember | file unix"
+      ansible.builtin.lineinfile:
+        path: /usr/share/pam-configs/unix
+        regexp: '^(.*)remember=\d+(.*)$'
+        line: '\1\2'
+        backrefs: yes
+    - name: "SECTION5 | 5.3.3.4.2 | Ensure pam_unix does not include remember | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable unix
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+- name: "SECTION5 | 5.3.3.4.3 | Ensure pam_unix includes a strong password hashing algorithm"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_4_3
+  tags:
+    - rule_5_3_3_4
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.3.4.3 | Ensure pam_unix includes a strong password hashing algorithm | file unix"
+      ansible.builtin.template:
+        src: pam/unix.j2
+        dest: /usr/share/pam-configs/unix
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.3.4.3 | Ensure pam_unix includes a strong password hashing algorithm | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable unix
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+- name: "SECTION5 | 5.3.3.4.4 | Ensure pam_unix includes use_authtok"
+  when:
+    - cis_ubuntu2204_rule_5_3_3_4_4
+  tags:
+    - rule_5_3_3_4
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.3.4.4 | Ensure pam_unix includes use_authtok | file unix"
+      ansible.builtin.template:
+        src: pam/unix.j2
+        dest: /usr/share/pam-configs/unix
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.3.3.4.4 | Ensure pam_unix includes use_authtok | update profiles"
+      ansible.builtin.command: pam-auth-update --package --enable unix
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION5 | 5.4.1.1 | Ensure password expiration is configured"
+  when:
+    - cis_ubuntu2204_rule_5_4_1_1
+  tags:
+    - rule_5_4_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.4.1.1 | Ensure password expiration is configured | set inside '/etc/login.defs'"
       ansible.builtin.lineinfile:
         dest: /etc/login.defs
-        regexp: "{{ cis_ubuntu2204_regex_base_search }}UMASK"
-        line: "UMASK 027"
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_MAX_DAYS"
+        line: "PASS_MAX_DAYS {{ cis_ubuntu2204_password_pass_max_days }}"
         state: present
         create: true
+        owner: root
+        group: root
         mode: "0644"
-    - name: "SECTION5 | 5.5.4 | Ensure default user umask is 027 or more restrictive | bash.bashrc"
-      ansible.builtin.lineinfile:
-        dest: /etc/bash.bashrc
-        regexp: "{{ cis_ubuntu2204_regex_base_search }}umask"
-        line: "umask 027"
-        state: present
-        create: true
-        mode: "0644"
-    - name: "SECTION5 | 5.5.4 | Ensure default user umask is 027 or more restrictive | profile"
-      ansible.builtin.lineinfile:
-        dest: /etc/profile
-        regexp: "{{ cis_ubuntu2204_regex_base_search }}umask"
-        line: "umask 027"
-        state: present
-        create: true
-        mode: "0644"
-    - name: "SECTION5 | 5.5.4 | Ensure default user umask is 027 or more restrictive | 99-umask.sh"
-      ansible.builtin.lineinfile:
-        dest: /etc/profile.d/99-umask.sh
-        regexp: "{{ cis_ubuntu2204_regex_base_search }}umask"
-        line: "umask 027"
-        state: present
-        create: true
-        mode: "0644"
+    - name: "SECTION5 | 5.4.1.1 | Ensure password expiration is configured | find user with wrong expiration value"
+      ansible.builtin.shell: |
+        set -o pipefail &&
+        awk -F: '($2~/^\$.+\$/) {if($5 > {{ cis_ubuntu2204_password_pass_max_days }} || $5 < 1) print $1}' /etc/shadow
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_expiration_users_raw
+      changed_when: false
+      check_mode: false
+    - name: "SECTION5 | 5.4.1.1 | Ensure password expiration is configured | update expiration users value"
+      ansible.builtin.command: >
+        chage --maxdays {{ cis_ubuntu2204_password_pass_max_days }} {{ item }}
+      loop: "{{ cis_ubuntu2204_expiration_users_raw.stdout_lines }}"
+      changed_when: false
+      failed_when: false
 
-- name: "SECTION5 | 5.5.5 | Ensure default user shell timeout is 900 seconds or less"
+- name: "SECTION5 | 5.4.1.2 | Ensure minimum password age is configured"
   when:
-    - cis_ubuntu2204_rule_5_5_5
+    - cis_ubuntu2204_rule_5_4_1_2
   tags:
-    - rule_5_5_1
+    - rule_5_4_1
+    - server_l2
+    - workstation_l2
+  block:
+    - name: "SECTION5 | 5.4.1.2 | Ensure minimum password age is configured | set inside '/etc/login.defs'"
+      ansible.builtin.lineinfile:
+        dest: /etc/login.defs
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_MIN_DAYS"
+        line: "PASS_MIN_DAYS {{ cis_ubuntu2204_password_pass_min_days }}"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.4.1.2 | Ensure minimum password age is configured | find user with wrong minimum value"
+      ansible.builtin.shell: |
+        set -o pipefail &&
+        awk -F: '($2~/^\$.+\$/) {if($4 < {{ cis_ubuntu2204_password_pass_min_days }}) print $1}' /etc/shadow
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_minimum_users_raw
+      changed_when: false
+      check_mode: false
+    - name: "SECTION5 | 5.4.1.2 | Ensure minimum password age is configured | update minimum users value"
+      ansible.builtin.command: >
+        chage --mindays {{ cis_ubuntu2204_password_pass_min_days }} {{ item }}
+      loop: "{{ cis_ubuntu2204_minimum_users_raw.stdout_lines }}"
+      changed_when: false
+      failed_when: false
+
+- name: "SECTION5 | 5.4.1.3 | Ensure password expiration warning days is configured"
+  when:
+    - cis_ubuntu2204_rule_5_4_1_3
+  tags:
+    - rule_5_4_1
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION5 | 5.5.5 | Ensure default user shell timeout is 900 seconds or less | bash.bashrc"
+    - name: "SECTION5 | 5.4.1.3 | Ensure password expiration warning days is configured | set inside '/etc/login.defs'"
       ansible.builtin.lineinfile:
-        dest: /etc/bash.bashrc
-        regexp: "{{ item.reg }}"
-        line: "{{ item.line }}"
+        dest: /etc/login.defs
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_WARN_AGE"
+        line: "PASS_WARN_AGE {{ cis_ubuntu2204_password_pass_warn_age }}"
         state: present
         create: true
+        owner: root
+        group: root
         mode: "0644"
-      with_items:
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}TMOUT="
-          line: "TMOUT=900"
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}readonly TMOUT"
-          line: "readonly TMOUT"
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}export TMOUT"
-          line: "export TMOUT"
-    - name: "SECTION5 | 5.5.5 | Ensure default user shell timeout is 900 seconds or less | profile"
+    - name: "SECTION5 | 5.4.1.3 | Ensure password expiration warning days is configured | find user with wrong expiration warning value"
+      ansible.builtin.shell: |
+        set -o pipefail &&
+        awk -F: '($2~/^\$.+\$/) {if($6 < {{ cis_ubuntu2204_password_pass_warn_age }}) print $1}' /etc/shadow
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_expiration_warning_users_raw
+      changed_when: false
+      check_mode: false
+    - name: "SECTION5 | 5.4.1.3 | Ensure password expiration warning days is configured | update expiration warning users value"
+      ansible.builtin.command: >
+        chage --warndays {{ cis_ubuntu2204_password_pass_warn_age }} {{ item }}
+      loop: "{{ cis_ubuntu2204_expiration_warning_users_raw.stdout_lines }}"
+      changed_when: false
+      failed_when: false
+
+- name: "SECTION5 | 5.4.1.4 | Ensure strong password hashing algorithm is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/login.defs
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}ENCRYPT_METHOD"
+    line: "ENCRYPT_METHOD {{ cis_ubuntu2204_unix_encrypt_method | upper }}"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - cis_ubuntu2204_rule_5_4_1_4
+  tags:
+    - rule_5_4_1
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.4.1.5 | Ensure inactive password lock is configured"
+  when:
+    - cis_ubuntu2204_rule_5_4_1_5
+  tags:
+    - rule_5_4_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.4.1.5 | Ensure inactive password lock is configured | set inside '/etc/default/useradd'"
       ansible.builtin.lineinfile:
-        dest: /etc/profile
-        regexp: "{{ item.reg }}"
-        line: "{{ item.line }}"
+        dest: /etc/default/useradd
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}INACTIVE{{ cis_ubuntu2204_regex_base_search_equals }}"
+        line: "INACTIVE={{ cis_ubuntu2204_password_inactive }}"
         state: present
         create: true
+        owner: root
+        group: root
         mode: "0644"
-      with_items:
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}TMOUT="
-          line: "TMOUT=900"
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}readonly TMOUT"
-          line: "readonly TMOUT"
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}export TMOUT"
-          line: "export TMOUT"
-    - name: "SECTION5 | 5.5.5 | Ensure default user shell timeout is 900 seconds or less | 99-tmout.sh"
-      ansible.builtin.lineinfile:
-        dest: /etc/profile.d/99-tmout.sh
-        regexp: "{{ item.reg }}"
-        line: "{{ item.line }}"
-        state: present
-        create: true
-        mode: "0644"
-      with_items:
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}TMOUT="
-          line: "TMOUT=900"
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}readonly TMOUT"
-          line: "readonly TMOUT"
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}export TMOUT"
-          line: "export TMOUT"
+    - name: "SECTION5 | 5.4.1.5 | Ensure inactive password lock is configured | find user with wrong inactive value"
+      ansible.builtin.shell: |
+        set -o pipefail &&
+        awk -F: '($2~/^\$.+\$/) {if($7 > {{ cis_ubuntu2204_password_inactive }} || $7 < 0) print $1}' /etc/shadow
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_inactive_users_raw
+      changed_when: false
+      check_mode: false
+    - name: "SECTION5 | 5.4.1.5 | Ensure inactive password lock is configured | update inactive users value"
+      ansible.builtin.command: >
+        chage --inactive {{ cis_ubuntu2204_password_inactive }} {{ item }}
+      loop: "{{ cis_ubuntu2204_inactive_users_raw.stdout_lines }}"
+      changed_when: false
+      failed_when: false
+
+- name: "SECTION5 | 5.4.1.6 | Ensure all users last password change date is in the past"
+  when:
+    - cis_ubuntu2204_rule_5_4_1_6
+  tags:
+    - rule_5_4_1
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.4.1.6 | Ensure all users last password change date is in the past | check last password changes"
+      ansible.builtin.shell: |
+        set -o pipefail
+        {
+          while IFS= read -r l_user; do
+              l_change=$(date -d "$(chage --list "$l_user" | grep '^Last password change' | cut -d: -f2 | grep -v 'never$')" +%s)
+              if [[ "$l_change" -gt "$(date +%s)" ]]; then
+                echo "User: \"$l_user\" last password change was \"$(chage --list "$l_user" | grep '^Last password change' | cut -d: -f2)\""
+              fi
+          done < <(awk -F: '$2~/^\$.+\$/{print $1}' /etc/shadow)
+        }
+      args:
+        executable: /bin/bash
+      register: cis_ubuntu2204_user_last_pw_change
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION5 | 5.4.1.6 | Ensure all users last password change date is in the past | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Investigate any users with a password change date in the future and correct them.
+          Locking the account, expiring the password, or resetting the password manually may be appropriate.
+          #############################################################################################
+          {{ cis_ubuntu2204_user_last_pw_change.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_user_last_pw_change.stdout_lines is defined
+        - cis_ubuntu2204_user_last_pw_change.stdout_lines | length > 0
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION5 | 5.4.2.1 | Ensure root is the only UID 0 account"
+  ansible.builtin.user:
+    name: root
+    uid: 0
+  when:
+    - cis_ubuntu2204_rule_5_4_2_1
+  tags:
+    - rule_5_4_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.4.2.2 | Ensure root is the only GID 0 account"
+  when:
+    - cis_ubuntu2204_rule_5_4_2_2
+  tags:
+    - rule_5_4_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.4.2.2 | Ensure root is the only GID 0 account | user group"
+      ansible.builtin.user:
+        name: root
+        group: root
+    - name: "SECTION5 | 5.4.2.2 | Ensure root is the only GID 0 account | group gid"
+      ansible.builtin.group:
+        name: root
+        gid: 0
+
+- name: "SECTION5 | 5.4.2.3 | Ensure group root is the only GID 0 group"
+  ansible.builtin.group:
+    name: root
+    gid: 0
+  when:
+    - cis_ubuntu2204_rule_5_4_2_3
+  tags:
+    - rule_5_4_2
+    - server_l1
+    - workstation_l1
+
+# - name: "SECTION5 | 5.4.2.4 | Ensure root password is set"
+
+- name: "SECTION5 | 5.4.2.5 | Ensure root path integrity"
+  when:
+    - cis_ubuntu2204_rule_5_4_2_5
+  tags:
+    - rule_5_4_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.4.2.5 | Ensure root path integrity | get list for root path Integrity"
+      ansible.builtin.shell: |
+        set -o pipefail
+        {
+          l_output2=""
+          l_pmask="0022"
+          l_maxperm="$(printf '%o' $((0777 & ~$l_pmask)))"
+          l_root_path="$(sudo -Hiu root env | grep '^PATH' | cut -d= -f2)"
+          unset a_path_loc && IFS=":" read -ra a_path_loc <<<"$l_root_path"
+          grep -q "::" <<<"$l_root_path" && l_output2="$l_output2\n - root's path contains a empty directory (::)"
+          grep -Pq ":\h*$" <<<"$l_root_path" && l_output2="$l_output2\n - root's path contains a trailing (:)"
+          grep -Pq '(\h+|:)\.(:|\h*$)' <<<"$l_root_path" && l_output2="$l_output2\n - root's path contains current working directory (.)"
+          while read -r l_path; do
+            if [ -d "$l_path" ]; then
+              while read -r l_fmode l_fown; do
+                [ "$l_fown" != "root" ] && l_output2="$l_output2\n - Directory: \"$l_path\" is owned by: \"$l_fown\" should be owned by \"root\""
+                [ $(($l_fmode & $l_pmask)) -gt 0 ] && l_output2="$l_output2\n - Directory: \"$l_path\" is mode: \"$l_fmode\" and should be mode: \"$l_maxperm\" or more restrictive"
+              done <<<"$(stat -Lc '%#a %U' "$l_path")"
+            else
+              l_output2="$l_output2\n - \"$l_path\" is not a directory"
+            fi
+          done <<<"$(printf "%s\n" "${a_path_loc[@]}")"
+          if [ -z "$l_output2" ]; then
+            echo -e "\n- Audit Result:\n  *** PASS ***\n - Root's path is correctly configured\n"
+          else
+            echo -e "\n- Audit Result:\n  ** FAIL **\n - * Reasons for audit failure * :\n$l_output2\n"
+          fi
+        }
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_root_path_integrity
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION5 | 5.4.2.5 | Ensure root path integrity | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Correct or justify any:
+
+          - Locations that are not directories
+          - Empty directories (::)
+          - Trailing (:)
+          - Current working directory (.)
+          - Non root owned directories
+          - Directories that less restrictive than mode 0755
+          #############################################################################################
+          {{ cis_ubuntu2204_root_path_integrity.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_root_path_integrity.stdout_lines is defined
+        - cis_ubuntu2204_root_path_integrity.stdout_lines | length > 0
+
+- name: "SECTION5 | 5.4.2.6 | Ensure root user umask is configured"
+  ansible.builtin.lineinfile:
+    dest: "{{ item }}"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}umask"
+    line: "umask 0027"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0640"
+  with_items:
+    - /root/.bash_profile
+    - /root/.bashrc
+  when:
+    - cis_ubuntu2204_rule_5_4_2_6
+  tags:
+    - rule_5_4_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.4.2.7 | Ensure system accounts do not have a valid login shell"
+  when:
+    - cis_ubuntu2204_rule_5_4_2_7
+  tags:
+    - rule_5_4_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.4.2.7 | Ensure system accounts do not have a valid login shell | gather information"
+      ansible.builtin.shell: |
+        set -o pipefail
+        {
+          l_valid_shells="^($(awk -F\/ '$NF != "nologin" {print}' /etc/shells | sed -rn '/^\//{s,/,\\\\/,g;p}' | paste -s -d '|' -))$"
+          awk -v pat="$l_valid_shells" -F: '($1!~/^(root|halt|sync|shutdown|nfsnobody)$/ && ($3<'"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"' || $3 == 65534) && $(NF) ~ pat) {system ("usermod -s '"$(command -v nologin)"' " $1)}' /etc/passwd
+        }
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: cis_ubuntu2204_system_accounts_do_not_have_valid_login_shell
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION5 | 5.4.2.7 | Ensure system accounts do not have a valid login shell | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Verify system accounts, except for root, halt, sync, shutdown or nfsnobody, do not have a valid login shell
+          #############################################################################################
+          {{ cis_ubuntu2204_system_accounts_do_not_have_valid_login_shell.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_system_accounts_do_not_have_valid_login_shell.stdout_lines is defined
+        - cis_ubuntu2204_system_accounts_do_not_have_valid_login_shell.stdout_lines | length > 0
+
+- name: "SECTION5 | 5.4.2.8 | Ensure accounts without a valid login shell are locked"
+  ansible.builtin.shell: |
+    set -o pipefail
+    {
+      l_valid_shells="^($(awk -F\/ '$NF != "nologin" {print}' /etc/shells | sed -rn '/^\//{s,/,\\\\/,g;p}' | paste -s -d '|' - ))$"
+      while IFS= read -r l_user; do
+          passwd -S "$l_user" | awk '$2 !~ /^L/ {system ("usermod -L " $1)}'
+      done < <(awk -v pat="$l_valid_shells" -F: '($1 != "root" && $(NF) !~ pat) {print $1}' /etc/passwd)
+    }
+  args:
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
+  changed_when: false
+  when:
+    - cis_ubuntu2204_rule_5_4_2_8
+  tags:
+    - rule_5_4_2
+    - server_l1
+    - workstation_l1
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION5 | 5.4.3.1 | Ensure nologin is not listed in /etc/shells"
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    state: absent
+    regexp: "^.*nologin.*$"
+  when:
+    - cis_ubuntu2204_rule_5_4_3_1
+  tags:
+    - rule_5_4_3
+    - server_l2
+    - workstation_l2
+
+- name: "SECTION5 | 5.4.3.2 | Ensure default user shell timeout is configured"
+  ansible.builtin.lineinfile:
+    dest: "{{ item }}"
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}readonly\s+TMOUT=\d+\s+;\s+export\sTMOUT'
+    line: "readonly TMOUT=900 ; export TMOUT"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - /etc/bash.bashrc
+    - /etc/profile
+    - /etc/bashrc
+    - /etc/profile.d/99-tmout.sh
+  when:
+    - cis_ubuntu2204_rule_5_4_3_2
+  tags:
+    - rule_5_4_3
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION5 | 5.4.3.3 | Ensure default user umask is configured"
+  ansible.builtin.lineinfile:
+    dest: "{{ item.dest }}"
+    regexp: "{{ cis_ubuntu2204_regex_base_search }}{{ item.field }}"
+    line: "{{ item.field }} 0027"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - dest: /etc/profile
+      field: umask
+    - dest: /etc/bash.bashrc
+      field: umask
+    - dest: /etc/bashrc
+      field: umask
+    # - dest: /etc/pam.d/postlogin
+    - dest: /etc/login.defs
+      field: UMASK
+    # - dest: /etc/default/login
+    - dest: /etc/profile.d/99-umask.sh
+      field: umask
+  when:
+    - cis_ubuntu2204_rule_5_4_3_3
+  tags:
+    - rule_5_4_3
+    - server_l1
+    - workstation_l1

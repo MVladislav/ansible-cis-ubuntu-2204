@@ -160,7 +160,7 @@
 
 - name: "SECTION1 | 1.1.1.6 | Ensure squashfs kernel module is not available"
   when:
-    - cis_ubuntu2204_rule_1_1_1_2
+    - cis_ubuntu2204_rule_1_1_1_6
   tags:
     - rule_1_1_1
     - server_l2

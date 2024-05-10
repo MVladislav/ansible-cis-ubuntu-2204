@@ -742,8 +742,7 @@
 - name: "SECTION5 | 5.3.1.1 | Ensure latest version of pam is installed"
   ansible.builtin.apt:
     name: libpam-runtime
-    state: latest
-    only_upgrade: true
+    state: present
     force_apt_get: true
   when:
     - cis_ubuntu2204_rule_5_3_1_1
@@ -755,8 +754,7 @@
 - name: "SECTION5 | 5.3.1.2 | Ensure libpam-modules is installed"
   ansible.builtin.apt:
     name: libpam-modules
-    state: latest
-    only_upgrade: true
+    state: present
     force_apt_get: true
   when:
     - cis_ubuntu2204_rule_5_3_1_2
@@ -768,8 +766,7 @@
 - name: "SECTION5 | 5.3.1.3 | Ensure libpam-pwquality is installed"
   ansible.builtin.apt:
     name: libpam-pwquality
-    state: latest
-    only_upgrade: true
+    state: present
     force_apt_get: true
   when:
     - cis_ubuntu2204_rule_5_3_1_3

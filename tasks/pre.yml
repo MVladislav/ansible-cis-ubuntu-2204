@@ -28,7 +28,8 @@
 
 # ------------------------------------------------------------------------------
 # systemctl show <SERVICE> | grep -E "LoadState|ActiveState" | cut -d = -f 2 | tr -d '\n'
-# check with for disable and mask with: <REGISTER>.stdout in ("loadedactive","loadedinactive")
+# check, for disable and mask, with: <REGISTER>.stdout in ('loadedactive','loadedinactive')
+# check, for only disable, with    : <REGISTER>.stdout in ('loadedactive')
 # - loadedactive
 # - loadedinactive
 # - maskedinactive

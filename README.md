@@ -425,10 +425,10 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.1.2.7.4 | Ensure noexec option set on /var/log/audit partition (Automated)                                |     |     | 🔴  |
 | 1.2       | **Package Management**                                                                          |     | 🟡  |     |
 | 1.2.1     | **Configure Package Repositories**                                                              |     | 🟡  |     |
-| 1.2.1.1   | Ensure GPG keys are configured                                                                  |     | 🟡  |     |
-| 1.2.1.2   | Ensure package manager repositories are configured                                              |     | 🟡  |     |
+| 1.2.1.1   | Ensure GPG keys are configured (Manual)                                                         |     | 🟡  |     |
+| 1.2.1.2   | Ensure package manager repositories are configured (Manual)                                     |     | 🟡  |     |
 | 1.2.2     | **Configure Package Updates**                                                                   | 🟢  |     |     |
-| 1.2.2.1   | Ensure updates, patches, and additional security software are installed                         | 🟢  |     |     |
+| 1.2.2.1   | Ensure updates, patches, and additional security software are installed (Manual)                | 🟢  |     |     |
 | 1.3       | **Mandatory Access Control**                                                                    | 🟢  |     |     |
 | 1.3.1     | **Configure AppArmor**                                                                          | 🟢  |     |     |
 | 1.3.1.1   | Ensure AppArmor is installed (Automated)                                                        | 🟢  |     |     |
@@ -444,14 +444,14 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.5.3     | Ensure core dumps are restricted (Automated)                                                    | 🟢  |     |     |
 | 1.5.4     | Ensure prelink is not installed (Automated)                                                     | 🟢  |     |     |
 | 1.5.5     | Ensure Automatic Error Reporting is not enabled (Automated)                                     | 🟢  |     |     |
-| 1.6       | **Command Line Warning Banners**                                                                | 🟢  |     |     |
+| 1.6       | **Configure Command Line Warning Banners**                                                      | 🟢  |     |     |
 | 1.6.1     | Ensure message of the day is configured properly (Automated)                                    | 🟢  |     |     |
 | 1.6.2     | Ensure local login warning banner is configured properly (Automated)                            | 🟢  |     |     |
 | 1.6.3     | Ensure remote login warning banner is configured properly (Automated)                           | 🟢  |     |     |
 | 1.6.4     | Ensure access to /etc/motd is configured (Automated)                                            | 🟢  |     |     |
 | 1.6.5     | Ensure access to /etc/issue is configured (Automated)                                           | 🟢  |     |     |
 | 1.6.6     | Ensure access to /etc/issue.net is configured (Automated)                                       | 🟢  |     |     |
-| 1.7       | **GNOME Display Manager**                                                                       | 🟢  |     |     |
+| 1.7       | **Configure GNOME Display Manager**                                                             | 🟢  |     |     |
 | 1.7.1     | Ensure GDM is removed (Automated)                                                               | 🟢  |     |     |
 | 1.7.2     | Ensure GDM login banner is configured (Automated)                                               | 🟢  |     |     |
 | 1.7.3     | Ensure GDM disable-user-list option is enabled (Automated)                                      | 🟢  |     |     |
@@ -461,7 +461,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.7.7     | Ensure GDM disabling automatic mounting of removable media is not overridden (Automated)        | 🟢  |     |     |
 | 1.7.8     | Ensure GDM autorun-never is enabled (Automated)                                                 | 🟢  |     |     |
 | 1.7.9     | Ensure GDM autorun-never is not overridden (Automated)                                          | 🟢  |     |     |
-| 1.7.10    | Ensure XDCMP is not enabled (Automated)                                                         | 🟢  |     |     |
+| 1.7.10    | Ensure XDMCP is not enabled (Automated)                                                         | 🟢  |     |     |
 | 2         | **Services**                                                                                    | 🟢  |     |     |
 | 2.1       | **Configure Server Services**                                                                   | 🟢  |     |     |
 | 2.1.1     | Ensure autofs services are not in use (Automated)                                               | 🟢  |     |     |
@@ -497,14 +497,14 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 2.3.1     | **Ensure time synchronization is in use**                                                       | 🟢  |     |     |
 | 2.3.1.1   | Ensure a single time synchronization daemon is in use (Automated)                               | 🟢  |     |     |
 | 2.3.2     | **Configure systemd-timesyncd**                                                                 | 🟢  |     |     |
-| 2.3.2.1   | Ensure systemd-timesyncd configured with authorized timeserver (Manual)                         | 🟢  |     |     |
+| 2.3.2.1   | Ensure systemd-timesyncd configured with authorized timeserver (Automated)                      | 🟢  |     |     |
 | 2.3.2.2   | Ensure systemd-timesyncd is enabled and running (Automated)                                     | 🟢  |     |     |
 | 2.3.3     | **Configure chrony**                                                                            | 🟢  |     |     |
 | 2.3.3.1   | Ensure chrony is configured with authorized timeserver (Manual)                                 | 🟢  |     |     |
 | 2.3.3.2   | Ensure chrony is running as user \_chrony (Automated)                                           | 🟢  |     |     |
 | 2.3.3.3   | Ensure chrony is enabled and running (Automated)                                                | 🟢  |     |     |
 | 2.4       | **Job Schedulers**                                                                              | 🟢  |     |     |
-| 2.4.1     | **Configure time-based job schedulers**                                                         | 🟢  |     |     |
+| 2.4.1     | **Configure cron**                                                                              | 🟢  |     |     |
 | 2.4.1.1   | Ensure cron daemon is enabled and active (Automated)                                            | 🟢  |     |     |
 | 2.4.1.2   | Ensure permissions on /etc/crontab are configured (Automated)                                   | 🟢  |     |     |
 | 2.4.1.3   | Ensure permissions on /etc/cron.hourly are configured (Automated)                               | 🟢  |     |     |
@@ -516,6 +516,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 2.4.2     | **Configure at**                                                                                | 🟢  |     |     |
 | 2.4.2.1   | Ensure at is restricted to authorized users (Automated)                                         | 🟢  |     |     |
 | 3         | **Network**                                                                                     |     | 🟡  |     |
+| 3.1       | **Configure Network Devices**                                                                   |     | 🟡  |     |
 | 3.1.1     | Ensure IPv6 status is identified (Manual)                                                       | 🟢  |     |     |
 | 3.1.2     | Ensure wireless interfaces are disabled (Automated)                                             |     |     | 🔴  |
 | 3.1.3     | Ensure bluetooth services are not in use (Automated)                                            | 🟢  |     |     |
@@ -621,7 +622,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 5.3.3.2   | **Configure pam_pwquality module**                                                              | 🟢  |     |     |
 | 5.3.3.2.1 | Ensure password number of changed characters is configured (Automated)                          | 🟢  |     |     |
 | 5.3.3.2.2 | Ensure minimum password length is configured (Automated)                                        | 🟢  |     |     |
-| 5.3.3.2.3 | Ensure password complexity is configured (Automated)                                            | 🟢  |     |     |
+| 5.3.3.2.3 | Ensure password complexity is configured (Manual)                                               | 🟢  |     |     |
 | 5.3.3.2.4 | Ensure password same consecutive characters is configured (Automated)                           | 🟢  |     |     |
 | 5.3.3.2.5 | Ensure password maximum sequential characters is configured (Automated)                         | 🟢  |     |     |
 | 5.3.3.2.6 | Ensure password dictionary check is enabled (Automated)                                         | 🟢  |     |     |
@@ -639,11 +640,11 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 5.4       | **User Accounts and Environment**                                                               |     | 🟡  |     |
 | 5.4.1     | **Configure shadow password suite parameters**                                                  | 🟢  |     |     |
 | 5.4.1.1   | Ensure password expiration is configured (Automated)                                            | 🟢  |     |     |
-| 5.4.1.2   | Ensure minimum password age is configured (Automated)                                           | 🟢  |     |     |
+| 5.4.1.2   | Ensure minimum password age is configured (Manual)                                              | 🟢  |     |     |
 | 5.4.1.3   | Ensure password expiration warning days is configured (Automated)                               | 🟢  |     |     |
 | 5.4.1.4   | Ensure strong password hashing algorithm is configured (Automated)                              | 🟢  |     |     |
 | 5.4.1.5   | Ensure inactive password lock is configured (Automated)                                         |     | 🟡  |     |
-| 5.4.1.6   | Ensure all users last password change date is in the past (Manual)                              |     | 🟡  |     |
+| 5.4.1.6   | Ensure all users last password change date is in the past (Automated)                           |     | 🟡  |     |
 | 5.4.2     | **Configure root and system accounts and environment**                                          |     | 🟡  |     |
 | 5.4.2.1   | Ensure root is the only UID 0 account (Automated)                                               | 🟢  |     |     |
 | 5.4.2.2   | Ensure root is the only GID 0 account (Automated)                                               | 🟢  |     |     |
@@ -714,7 +715,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 6.3.4     | **Configure auditd File Access**                                                                | 🟢  |     |     |
 | 6.3.4.1   | Ensure audit log files mode is configured (Automated)                                           | 🟢  |     |     |
 | 6.3.4.2   | Ensure audit log files owner is configured (Automated)                                          | 🟢  |     |     |
-| 6.3.4.3   | Ensure audit log files group owner is configured files (Automated)                              | 🟢  |     |     |
+| 6.3.4.3   | Ensure audit log files group owner is configured (Automated)                                    | 🟢  |     |     |
 | 6.3.4.4   | Ensure the audit log file directory mode is configured (Automated)                              | 🟢  |     |     |
 | 6.3.4.5   | Ensure audit configuration files mode is configured (Automated)                                 | 🟢  |     |     |
 | 6.3.4.6   | Ensure audit configuration files owner is configured (Automated)                                | 🟢  |     |     |
@@ -735,17 +736,17 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 7.1.9     | Ensure permissions on /etc/shells are configured (Automated)                                    | 🟢  |     |     |
 | 7.1.10    | Ensure permissions on /etc/security/opasswd are configured (Automated)                          | 🟢  |     |     |
 | 7.1.11    | Ensure world writable files and directories are secured (Automated)                             | 🟢  |     |     |
-| 7.1.12    | Ensure no files or directories without an owner and a group exist (Manual)                      |     | 🟡  |     |
+| 7.1.12    | Ensure no files or directories without an owner and a group exist (Automated)                   |     | 🟡  |     |
 | 7.1.13    | Ensure SUID and SGID files are reviewed (Manual)                                                |     | 🟡  |     |
 | 7.2       | **Local User and Group Settings**                                                               |     | 🟡  |     |
 | 7.2.1     | Ensure accounts in /etc/passwd use shadowed passwords (Automated)                               | 🟢  |     |     |
 | 7.2.2     | Ensure /etc/shadow password fields are not empty (Automated)                                    | 🟢  |     |     |
-| 7.2.3     | Ensure all groups in /etc/passwd exist in /etc/group (Manual)                                   |     | 🟡  |     |
+| 7.2.3     | Ensure all groups in /etc/passwd exist in /etc/group (Automated)                                |     | 🟡  |     |
 | 7.2.4     | Ensure shadow group is empty (Automated)                                                        | 🟢  |     |     |
-| 7.2.5     | Ensure no duplicate UIDs exist (Manual)                                                         |     | 🟡  |     |
-| 7.2.6     | Ensure no duplicate GIDs exist (Manual)                                                         |     | 🟡  |     |
-| 7.2.7     | Ensure no duplicate user names exist (Manual)                                                   |     | 🟡  |     |
-| 7.2.8     | Ensure no duplicate group names exist (Manual)                                                  |     | 🟡  |     |
+| 7.2.5     | Ensure no duplicate UIDs exist (Automated)                                                      |     | 🟡  |     |
+| 7.2.6     | Ensure no duplicate GIDs exist (Automated)                                                      |     | 🟡  |     |
+| 7.2.7     | Ensure no duplicate user names exist (Automated)                                                |     | 🟡  |     |
+| 7.2.8     | Ensure no duplicate group names exist (Automated)                                               |     | 🟡  |     |
 | 7.2.9     | Ensure local interactive user home directories are configured (Automated)                       | 🟢  |     |     |
 | 7.2.10    | Ensure local interactive user dot files access is configured (Automated)                        | 🟢  |     |     |
 

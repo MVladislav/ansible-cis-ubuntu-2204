@@ -689,7 +689,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 6.3.2.1   | Ensure audit log storage size is configured (Automated)                                         | 🟢  |     |     |
 | 6.3.2.2   | Ensure audit logs are not automatically deleted (Automated)                                     | 🟢  |     |     |
 | 6.3.2.3   | Ensure system is disabled when audit logs are full (Automated)                                  | 🟢  |     |     |
-| 6.3.2.3   | Ensure system warns when audit logs are low on space (Automated)                                | 🟢  |     |     |
+| 6.3.2.4   | Ensure system warns when audit logs are low on space (Automated)                                | 🟢  |     |     |
 | 6.3.3     | **Configure auditd Rules**                                                                      | 🟢  |     |     |
 | 6.3.3.1   | Ensure changes to system administration scope (sudoers) is collected (Automated)                | 🟢  |     |     |
 | 6.3.3.2   | Ensure actions as another user are always logged (Automated)                                    | 🟢  |     |     |

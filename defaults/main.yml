@@ -506,7 +506,7 @@ cis_ubuntu2204_journald_system_keep_free: 8G
 cis_ubuntu2204_journald_runtime_max_use: 256M
 cis_ubuntu2204_journald_runtime_keep_free: 512M
 cis_ubuntu2204_journald_max_file_sec: 1month
-# systemd-journal-upload remote upload (cis_ubuntu2204_rule_6_2_1_2_2)
+# systemd-journal-upload remote upload (cis_ubuntu2204_rule_6_2_1_2_3)
 cis_ubuntu2204_set_journal_upload_url: "{{ omit }}"
 cis_ubuntu2204_set_journal_upload_server_key_file: /etc/ssl/private/journal-upload.pem
 cis_ubuntu2204_set_journal_upload_server_certificate_file: /etc/ssl/certs/journal-upload.pem

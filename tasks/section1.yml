@@ -259,8 +259,7 @@
     owner: "{{ cis_ubuntu2204_section1_owner_default }}"
     group: "{{ cis_ubuntu2204_section1_group_default }}"
     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
-  notify:
-    - systemd restart and enable tmp.mount
+  notify: systemd restart and enable tmp.mount
   when:
     - cis_ubuntu2204_rule_1_1_2_1
   tags:
@@ -554,8 +553,8 @@
 
 - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set"
   when:
-    - cis_ubuntu2204_set_boot_pass
     - cis_ubuntu2204_rule_1_4_1
+    - cis_ubuntu2204_set_boot_pass
   tags:
     - rule_1_4
     - server_l1
@@ -571,22 +570,22 @@
             PASSWORD='{{ cis_ubuntu2204_bootloader_password }}'
           fi
         echo -e "$PASSWORD\n$PASSWORD" | grub-mkpasswd-pbkdf2 --iteration-count=600000 --salt=64 | awk '/grub.pbkdf/{print$NF}'
-      register: cis_grub_bootloader_password
+      register: cis_ubuntu2204_grub_bootloader_password
       args:
         executable: "{{ cis_ubuntu2204_shell_executable }}"
       changed_when: false
     - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate config"
       ansible.builtin.copy:
         dest: /etc/grub.d/00_password
-        content: "cat << EOF\nexec tail -n +2 $0\nset superusers=\"root\"\npassword_pbkdf2 root {{ cis_grub_bootloader_password.stdout }}\nEOF"
+        content: "cat << EOF\nexec tail -n +2 $0\nset superusers=\"root\"\npassword_pbkdf2 root {{ cis_ubuntu2204_grub_bootloader_password.stdout }}\nEOF"
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "{{ cis_ubuntu2204_section1_mode_etc_grub_d }}"
       notify: generate new grub config
       when:
-        - cis_grub_bootloader_password is defined
-        - cis_grub_bootloader_password.stdout is defined
-        - cis_grub_bootloader_password.stdout | length > 0
+        - cis_ubuntu2204_grub_bootloader_password is defined
+        - cis_ubuntu2204_grub_bootloader_password.stdout is defined
+        - cis_ubuntu2204_grub_bootloader_password.stdout | length > 0
     - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | disable password for system boot"
       ansible.builtin.replace:
         path: /etc/grub.d/10_linux
@@ -857,6 +856,7 @@
   when:
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
+  notify: Update dconf
   tags:
     - rule_1_7
     - server_l1
@@ -889,6 +889,7 @@
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_2
+  notify: Update dconf
   tags:
     - rule_1_7
     - server_l1
@@ -920,6 +921,7 @@
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_3
+  notify: Update dconf
   tags:
     - rule_1_7
     - server_l1
@@ -930,6 +932,7 @@
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_4
+  notify: Update dconf
   tags:
     - rule_1_7
     - server_l1
@@ -961,6 +964,7 @@
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_5
+  notify: Update dconf
   tags:
     - rule_1_7
     - server_l1
@@ -978,6 +982,7 @@
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_6
+  notify: Update dconf
   tags:
     - rule_1_7
     - server_l1
@@ -995,6 +1000,7 @@
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_7
+  notify: Update dconf
   tags:
     - rule_1_7
     - server_l1
@@ -1011,6 +1017,7 @@
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_8
+  notify: Update dconf
   tags:
     - rule_1_7
     - server_l1
@@ -1027,6 +1034,7 @@
     - service_status_gdm3.stdout == "loaded"
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_9
+  notify: Update dconf
   tags:
     - rule_1_7
     - server_l1

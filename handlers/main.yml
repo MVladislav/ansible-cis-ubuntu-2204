@@ -38,6 +38,15 @@
 
 # ------------------------------------------------------------------------------
 
+- name: "HANDLER | 1.7 | dconf update"
+  become: true
+  ansible.builtin.command: dconf update
+  changed_when: false
+  listen: Update dconf
+  when: ansible_virtualization_type != "docker"
+
+# ------------------------------------------------------------------------------
+
 - name: "HANDLER | 2.3.2.1 | systemd restart and enable systemd-timesyncd"
   become: true
   ansible.builtin.systemd_service:

@@ -760,3 +760,4 @@ MIT
 
 - <https://downloads.cisecurity.org/#/>
 - <https://github.com/florianutz/ubuntu2004_cis>
+- <https://github.com/MVladislav/ansible-cis-ubuntu-2404>

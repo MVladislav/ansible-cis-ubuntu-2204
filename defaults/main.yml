@@ -494,7 +494,7 @@ cis_ubuntu2204_password_inactive: 45
 cis_ubuntu2204_aide_cron:
   cron_user: root
   cron_file: aide
-  aide_job: "/usr/bin/aide.wrapper --config /etc/aide/aide.conf --check"
+  aide_job: "/usr/bin/aide --config /etc/aide/aide.conf --check"
   aide_minute: 0
   aide_hour: 5
   aide_day: "*"

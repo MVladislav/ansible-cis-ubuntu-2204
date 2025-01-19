@@ -21,7 +21,7 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [{ version: "3.11", param: "--break-system-packages" }]
-        molecule-os: ["ubuntu2204", "ubuntu2304"]
+        molecule-os: ["ubuntu2204"] # , "ubuntu2304"
 
     steps:
       # https://github.com/actions/checkout

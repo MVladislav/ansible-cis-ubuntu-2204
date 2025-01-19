@@ -1,14 +1,12 @@
 ---
-##### CI for use by github no need for action to be added
-##### https://pre-commit.com/hooks.html
-##### Inherited
+# Pre-commit configuration
+# For details, visit: https://pre-commit.com/hooks.html
+
 ci:
   autofix_prs: false
-  skip:
-    # This steps run in the ci workflow. Keep in sync
-    - ansible-lint
 
 repos:
+  # Codespell for spelling corrections
   - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
     hooks:
@@ -21,32 +19,25 @@ repos:
           - csv
           - json
 
+  # General pre-commit hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
-      # Safety
       - id: detect-private-key
-
-      # git checks
       - id: check-merge-conflict
       - id: check-added-large-files
       - id: check-case-conflict
-
-      # General checks
       - id: trailing-whitespace
-        name: Trim Trailing Whitespace
-        description: This hook trims trailing whitespace.
-        entry: trailing-whitespace-fixer
-        language: python
-        types: [text]
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
       - id: requirements-txt-fixer
+      - id: check-json
       - id: check-yaml
         args: [--allow-multiple-documents]
       - id: mixed-line-ending
+        args: ["--fix=lf"]
 
-  # Scan for passwords
+  # Secret detection
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
@@ -54,33 +45,26 @@ repos:
         args:
           - --exclude-files=templates/pam/pwquality
           - --exclude-files=templates/pam/pwhistory.j2
-
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.4
+    rev: v8.23.1
     hooks:
       - id: gitleaks
 
+  # YAML Linting
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.35.1 # or higher tag
+    rev: v1.35.1
     hooks:
       - id: yamllint
 
-  # ANSIBLE --------------------------------------------------------------------
+  # Ansible linting ############################################################
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v24.7.0
+    rev: v24.12.2
     hooks:
       - id: ansible-lint
         name: Ansible-lint
-        description: This hook runs ansible-lint.
         entry: python3 -m ansiblelint -v --force-color -c .ansible-lint
         language: python
-        # do not pass files to ansible-lint, see:
-        # https://github.com/ansible/ansible-lint/issues/611
         pass_filenames: false
         always_run: true
         additional_dependencies:
-          # https://github.com/pre-commit/pre-commit/issues/1526
-          # If you want to use specific version of ansible-core or ansible, feel
-          # free to override `additional_dependencies` in your own hook config
-          # file.
           - ansible-core>=2.16.5

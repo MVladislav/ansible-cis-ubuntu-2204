@@ -6,14 +6,11 @@
 - name: "CONDITION | check OS version and family"
   ansible.builtin.fail:
     msg: >
-      This role is tested and can only be run against Ubuntu for versions 22.04, 23.04, 23.10.
+      This role is tested and can only be run against Ubuntu for versions 22.04, 23.04 and 23.10.
       {{ ansible_distribution }} {{ ansible_distribution_version }} is not supported.
   when:
-    - not ansible_distribution == "Ubuntu"
-    - >
-      not ansible_distribution_version == "22.04" or
-      not ansible_distribution_version == "23.04" or
-      not ansible_distribution_version == "23.10"
+    - not ansible_distribution == "Ubuntu" or
+      not ansible_distribution_version in ("22.04", "23.04", "23.10")
 
 - name: "CONDITION | check ansible version"
   ansible.builtin.fail:

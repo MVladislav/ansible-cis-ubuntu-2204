@@ -3,20 +3,17 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: "PREPARE | install openssh-server for testing under docker"
+    - name: "PREPARE | install essential packages for testing"
       ansible.builtin.apt:
-        name: openssh-server
+        name:
+          - openssh-server
+          - grub-common
         state: present
         update_cache: yes
+
     - name: "PREPARE | install grub files for testing under docker"
       block:
-        - name: "PREPARE | install grub-common for grub-mkpasswd-pbkdf2 to testing under docker"
-          ansible.builtin.apt:
-            name: grub-common
-            state: present
-            update_cache: yes
-
-        - name: "PREPARE | create folder /boot/grub"
+        - name: "PREPARE | Ensure /boot/grub directory exists"
           ansible.builtin.file:
             name: /boot/grub
             state: directory
@@ -36,22 +33,32 @@
             mode: "0644"
           changed_when: false
 
-    - name: "PREPARE | SECTION7 | prepare files to trigger some task"
-      ansible.builtin.shell: |
-        set -o pipefail
-        # SECTION7 | 7.1.9 | Ensure no world writable files exist
-        touch /abc && chmod 777 /abc
-        # SECTION7 | 7.2.1 | Ensure accounts in /etc/passwd use shadowed passwords
-        sed -e 's|^ubuntu:[^:]*:|ubuntu:abc:|' -i /etc/passwd
-        # SECTION7 | 7.2.2 | Ensure /etc/shadow password fields are not empty
-        sed -e 's|^ubuntu:[^:]*:|ubuntu::|' -i /etc/shadow
-        # SECTION7 | 7.2.4 | Ensure shadow group is empty
-        echo "shadow:x::666" >> /etc/group
-        # SECTION7 | 7.2.11 | Ensure local interactive user home directories exist
-        useradd abc
-        # SECTION7 | 7.2.17 | Ensure local interactive user dot files are not group or world writable
-        chmod 777 /root/.profile
-      args:
-        executable: "/bin/bash"
-      changed_when: false
-      check_mode: false
+    - name: "PREPARE | Setup CIS violation scenarios"
+      block:
+        - name: "PREPARE | 7.1.9 | create world-writable test file"
+          ansible.builtin.file:
+            path: /abc
+            state: touch
+            mode: "0777"
+
+        - name: "PREPARE | 7.2.17 | set insecure permissions on root profile"
+          ansible.builtin.file:
+            path: /root/.profile
+            mode: "0777"
+
+        - name: "PREPARE | 7.2.1/2/4/11 | prepares to trigger some task"
+          ansible.builtin.shell: |
+            set -o pipefail
+            # SECTION7 | 7.2.1 | Ensure accounts in /etc/passwd use shadowed passwords
+            sed -e 's|^ubuntu:[^:]*:|ubuntu:abc:|' -i /etc/passwd
+            # SECTION7 | 7.2.2 | Ensure /etc/shadow password fields are not empty
+            sed -e 's|^ubuntu:[^:]*:|ubuntu::|' -i /etc/shadow
+            # SECTION7 | 7.2.4 | Ensure shadow group is empty
+            echo "shadow:x::666" >> /etc/group
+            # SECTION7 | 7.2.11 | Ensure local interactive user home directories exist
+            useradd abc
+          args:
+            executable: "/bin/bash"
+          changed_when: false
+          check_mode: false
+          failed_when: false

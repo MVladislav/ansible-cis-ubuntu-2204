@@ -3,9 +3,9 @@
   hosts: all
   gather_facts: true
   tasks:
-    - name: "Include ansible-cis-ubuntu-2204"
+    - name: "Run role"
       ansible.builtin.include_role:
-        name: "ansible-cis-ubuntu-2204"
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
   vars:
     cis_ubuntu2204_section1: true
     cis_ubuntu2204_section2: true

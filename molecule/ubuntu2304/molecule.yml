@@ -1,48 +1,51 @@
 ---
 dependency:
   name: galaxy
+
 driver:
   name: docker
+
 platforms:
   - name: ubuntu-23.04
     image: mvladislav/docker-ubuntu-systemd-sudo-ansible:23.04
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    privileged: true
+    command: ${MOLECULE_DOCKER_COMMAND:-""} # /lib/systemd/systemd --system
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     tmpfs:
       - /run
       - /run/lock
       - /tmp
-    privileged: true
     cgroupns_mode: host
     pre_build_image: true
+
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
-    enabled: true
-  config_options:
-    defaults:
-      host_key_checking: false
-      stdout_callback: yaml
-      timeout: 10
-      display_skipped_hosts: true
-      show_per_host_start: true
-      callbacks_enabled: community.general.yaml,profile_tasks,timer
-      bin_ansible_callbacks: true
-      fact_caching: jsonfile
-      fact_caching_connection: ./cache
-      poll_interval: 3
-      forks: 100
-      conditional_bare_variables: false
-    connection:
-      pipelining: true
-    ssh_connection:
-      scp_if_ssh: true
-      transfer_method: piped
   inventory:
     group_vars:
       all:
         ansible_python_interpreter: /usr/bin/python3
+        ansible_connection: community.docker.docker
+  config_options:
+    defaults:
+      roles_path: "$MOLECULE_PROJECT_DIRECTORY/.."
+      display_skipped_hosts: true
+      forks: 10
+      retry_files_enabled: false
+      host_key_checking: false
+      callback_result_format: yaml
+      timeout: 20
+      poll_interval: 3
+      callbacks_enabled: profile_tasks,timer
+      fact_caching: jsonfile
+      fact_caching_connection: ./.ansible_cache
+      show_per_host_start: true
+      bin_ansible_callbacks: true
+    ssh_connection:
+      pipelining: true
+      transfer_method: smart
+    connection:
+      pipelining: true
+
 verifier:
   name: ansible

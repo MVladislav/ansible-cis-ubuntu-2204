@@ -563,6 +563,6 @@
         group: "{{ item.gid }}"
       with_items: "{{ cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten }}"
       when:
-        - cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten | selectattr('path', 'defined')
-        - cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten | selectattr('uid', 'defined')
-        - cis_ubuntu2204_local_interactive_user_dot_files_found.results | map(attribute='files') | flatten | selectattr('gid', 'defined')
+        - item.path is defined
+        - item.uid is defined
+        - item.gid is defined

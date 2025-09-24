@@ -1,6 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "prTitlePrefix": "🚀 ",
   "dependencyDashboard": false,
   "labels": ["dependencies"],
   "lockFileMaintenance": {

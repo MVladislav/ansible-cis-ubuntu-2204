@@ -21,7 +21,7 @@ repos:
 
   # General pre-commit hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: detect-private-key
       - id: check-merge-conflict
@@ -58,11 +58,11 @@ repos:
 
   # Ansible linting ############################################################
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v25.7.0
+    rev: v25.9.0
     hooks:
       - id: ansible-lint
         name: Ansible-lint
-        entry: python3 -m ansiblelint -v --force-color -c .ansible-lint
+        entry: python3 -m ansiblelint -v --offline --force-color -c .ansible-lint
         language: python
         pass_filenames: false
         always_run: true

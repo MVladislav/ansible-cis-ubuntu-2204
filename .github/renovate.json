@@ -9,6 +9,13 @@
   "rebaseWhen": "behind-base-branch",
   "packageRules": [
     {
+      "addLabels": ["github_actions"],
+      "matchManagers": ["github-actions"],
+      "rangeStrategy": "pin",
+      "groupName": "GitHub Actions",
+      "automerge": false
+    },
+    {
       "addLabels": ["pre-commit"],
       "matchManagers": ["pre-commit"],
       "rangeStrategy": "pin",
@@ -18,7 +25,7 @@
     {
       "addLabels": ["ansible"],
       "matchManagers": ["ansible-galaxy"],
-      "rangeStrategy": "pin",
+      "rangeStrategy": "widen",
       "groupName": "Ansible collections",
       "automerge": false
     }

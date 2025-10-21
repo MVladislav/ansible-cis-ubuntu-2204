@@ -812,3 +812,8 @@ cis_ubuntu2204_section5_mode_sudo: "0400"
 cis_ubuntu2204_section5_owner_pam: root
 cis_ubuntu2204_section5_group_pam: root
 cis_ubuntu2204_section5_mode_pam: "0644"
+
+# SECTION6
+cis_ubuntu2204_section6_mode_dir_default: "0700"
+cis_ubuntu2204_section6_mode_dir: "0755"
+cis_ubuntu2204_section6_mode_file: "0640"

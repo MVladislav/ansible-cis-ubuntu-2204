@@ -116,18 +116,57 @@
     - workstation_l1
 
 - name: "SECTION6 | 6.2.1.1.2 | Ensure journald log file access is configured"
-  ansible.builtin.file:
-    path: /usr/lib/tmpfiles.d/systemd.conf
-    state: file
-    owner: root
-    group: root
-    mode: "0640"
   when:
     - cis_ubuntu2204_rule_6_2_1_1_2
   tags:
     - rule_6_2_1_1
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION6 | 6.2.1.1.2 | Ensure journald log file access is configured | set tmpfiles_config_file fact"
+      ansible.builtin.set_fact:
+        tmpfiles_config_file: /usr/lib/tmpfiles.d/systemd.conf
+
+    - name: "SECTION6 | 6.2.1.1.2 | Ensure journald log file access is configured | render adjusted tmpfiles to temp file (for f/d)"
+      ansible.builtin.shell: |
+        set -o pipefail &&
+        systemd-analyze cat-config {{ tmpfiles_config_file }} | awk -v fmode="{{ cis_ubuntu2204_section6_mode_file }}" -v rmode="{{ cis_ubuntu2204_section6_mode_dir }}" -v dmode="{{ cis_ubuntu2204_section6_mode_dir_default }}" '
+          $1 ~ /^(f|d)$/ && $2 ~ /^\/[^[:space:]]+/ {
+            g = $1; path = $2; mode = $3; user = ($4? $4 : "-"); group = ($5? $5 : "-");
+            if (g == "f") newmode = fmode;
+            else {
+              if (path ~ "^/(run|var/lib/systemd)") newmode = rmode;
+              else newmode = dmode;
+            }
+            $3 = newmode;
+            print $0;
+            next;
+          }
+          { print $0 }
+        '
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: tmpfiles_rendered
+      changed_when: false
+      check_mode: false
+
+    - name: "SECTION6 | 6.2.1.1.2 | Ensure journald log file access is configured | write new '/etc/tmpfiles.d/systemd.conf'"
+      ansible.builtin.copy:
+        dest: /etc/tmpfiles.d/systemd.conf
+        content: "{{ tmpfiles_rendered.stdout | default('') ~ '\n' }}"
+        owner: root
+        group: root
+        mode: "0640"
+      tags:
+        - molecule-idempotence-notest
+
+    - name: "SECTION6 | 6.2.1.1.2 | Ensure journald log file access is configured | apply tmpfiles with systemd-tmpfiles"
+      ansible.builtin.command: systemd-tmpfiles --create /etc/tmpfiles.d/systemd.conf
+      register: tmpfiles_applied
+      changed_when: "'Created' in tmpfiles_applied.stdout or tmpfiles_applied.rc == 0"
+      failed_when: false
+      tags:
+        - molecule-idempotence-notest
 
 - name: "SECTION6 | 6.2.1.1.3 | Ensure journald log file rotation is configured"
   ansible.builtin.lineinfile:

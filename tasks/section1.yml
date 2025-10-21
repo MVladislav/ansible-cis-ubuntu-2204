@@ -534,16 +534,25 @@
     - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode | get status"
       ansible.builtin.command: "/usr/sbin/apparmor_status --json"
       changed_when: false
-      register: cis_ubuntu2204_apparmor_json_status
+      register: cis_ubuntu2204_apparmor_json_status_1_3_1_3
+    - name: Debug AppArmor JSON output
+      ansible.builtin.debug:
+        var: cis_ubuntu2204_apparmor_json_status_1_3_1_3.stdout
     - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode | get unconfined profiles"
       ansible.builtin.set_fact:
-        cis_ubuntu2204_apparmor_update_to_complain_profiles: "{{ (cis_ubuntu2204_apparmor_json_status.stdout | default('{}') | from_json).profiles | dict2items | selectattr('value', 'in', ['unconfined']) | map(attribute='key') | list }}"
-      when: cis_ubuntu2204_apparmor_update_to_complain_profiles is not defined
+        cis_ubuntu2204_apparmor_update_to_complain_profiles: "{{ (cis_ubuntu2204_apparmor_json_status_1_3_1_3.stdout | from_json).profiles | dict2items | selectattr('value', 'in', ['unconfined']) | map(attribute='key') | list }}"
+      when:
+        - cis_ubuntu2204_apparmor_update_to_complain_profiles is not defined
+        - cis_ubuntu2204_apparmor_json_status_1_3_1_3.stdout is defined
+        - cis_ubuntu2204_apparmor_json_status_1_3_1_3.stdout | length > 0
     - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode | apply unconfined into complain"
       ansible.builtin.command: "/usr/sbin/aa-complain {{ item }}"
       changed_when: false
       loop: "{{ cis_ubuntu2204_apparmor_update_to_complain_profiles }}"
       notify: restart apparmor
+      when:
+        - cis_ubuntu2204_apparmor_update_to_complain_profiles is defined
+        - cis_ubuntu2204_apparmor_update_to_complain_profiles | length > 0
 
 - name: "SECTION1 | 1.3.1.4 | Ensure all AppArmor Profiles are enforcing"
   when:
@@ -556,16 +565,22 @@
     - name: "SECTION1 | 1.3.1.4 | Ensure all AppArmor Profiles are enforcing | get status"
       ansible.builtin.command: "/usr/sbin/apparmor_status --json"
       changed_when: false
-      register: cis_ubuntu2204_apparmor_json_status
+      register: cis_ubuntu2204_apparmor_json_status_1_3_1_4
     - name: "SECTION1 | 1.3.1.4 | Ensure all AppArmor Profiles are enforcing | get unconfined & complain profiles"
       ansible.builtin.set_fact:
-        cis_ubuntu2204_apparmor_update_to_enforce_profiles: "{{ (cis_ubuntu2204_apparmor_json_status.stdout | default('{}') | from_json).profiles | dict2items | selectattr('value', 'in', ['unconfined', 'complain']) | map(attribute='key') | list }}"
-      when: cis_ubuntu2204_apparmor_update_to_enforce_profiles is not defined
+        cis_ubuntu2204_apparmor_update_to_enforce_profiles: "{{ (cis_ubuntu2204_apparmor_json_status_1_3_1_4.stdout | from_json).profiles | dict2items | selectattr('value', 'in', ['unconfined', 'complain']) | map(attribute='key') | list }}"
+      when:
+        - cis_ubuntu2204_apparmor_update_to_enforce_profiles is not defined
+        - cis_ubuntu2204_apparmor_json_status_1_3_1_4.stdout is defined
+        - cis_ubuntu2204_apparmor_json_status_1_3_1_4.stdout | length > 0
     - name: "SECTION1 | 1.3.1.4 | Ensure all AppArmor Profiles are enforcing | apply unconfined into enforce"
       ansible.builtin.command: "/usr/sbin/aa-enforce {{ item }}"
       changed_when: false
       loop: "{{ cis_ubuntu2204_apparmor_update_to_enforce_profiles }}"
       notify: restart apparmor
+      when:
+        - cis_ubuntu2204_apparmor_update_to_enforce_profiles is defined
+        - cis_ubuntu2204_apparmor_update_to_enforce_profiles | length > 0
 
 # ------------------------------------------------------------------------------
 

@@ -7,7 +7,7 @@ driver:
 
 platforms:
   - name: ubuntu-22.04
-    image: mvladislav/docker-ubuntu-systemd-sudo-ansible:22.04
+    image: ghcr.io/mvladislav/docker-ubuntu-systemd:22.04
     privileged: true
     command: ${MOLECULE_DOCKER_COMMAND:-""} # /lib/systemd/systemd --system
     volumes:

@@ -583,7 +583,7 @@
       ansible.builtin.find:
         paths: /etc/sudoers.d/
         patterns: "*"
-        recurse: yes
+        recurse: true
       register: cis_ubuntu2204_sudoers_d_files
     - name: "SECTION5 | 5.2.2 | Ensure sudo commands use pty | update '/etc/sudoers.d/*'"
       ansible.builtin.lineinfile:
@@ -630,7 +630,7 @@
       ansible.builtin.find:
         paths: /etc/sudoers.d/
         patterns: "*"
-        recurse: yes
+        recurse: true
       register: cis_ubuntu2204_sudoers_d_files
 
     - name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation | update '/etc/sudoers.d/*'"
@@ -660,7 +660,7 @@
       ansible.builtin.find:
         paths: /etc/sudoers.d/
         patterns: "*"
-        recurse: yes
+        recurse: true
       register: cis_ubuntu2204_sudoers_d_files
 
     - name: "SECTION5 | 5.2.5 | Ensure re-authentication for privilege escalation is not disabled globally | update '/etc/sudoers.d/*'"
@@ -1146,7 +1146,7 @@
         path: /usr/share/pam-configs/unix
         regexp: "^(.*)nullok(.*)$"
         line: '\1\2'
-        backrefs: yes
+        backrefs: true
     - name: "SECTION5 | 5.3.3.4.1 | Ensure pam_unix does not include nullok | update profiles"
       ansible.builtin.command: pam-auth-update --package --enable unix
       changed_when: false
@@ -1166,7 +1166,7 @@
         path: /usr/share/pam-configs/unix
         regexp: '^(.*)remember=\d+(.*)$'
         line: '\1\2'
-        backrefs: yes
+        backrefs: true
     - name: "SECTION5 | 5.3.3.4.2 | Ensure pam_unix does not include remember | update profiles"
       ansible.builtin.command: pam-auth-update --package --enable unix
       changed_when: false

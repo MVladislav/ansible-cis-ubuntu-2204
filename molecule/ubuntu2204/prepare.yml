@@ -9,7 +9,7 @@
           - openssh-server
           - grub-common
         state: present
-        update_cache: yes
+        update_cache: true
 
     - name: "PREPARE | install grub files for testing under docker"
       block:

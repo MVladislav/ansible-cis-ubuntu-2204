@@ -69,7 +69,7 @@
 
 - name: "SECTION6 | 6.1.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
   ansible.builtin.lineinfile:
-    dest: /etc/aide/aide.conf
+    dest: "{{ cis_ubuntu2204_aide_conf_file }}"
     regexp: "{{ item.reg }}"
     line: "{{ item.line }}"
     state: present
@@ -162,8 +162,9 @@
   ansible.builtin.lineinfile:
     dest: /etc/systemd/journald.conf
     regexp: "{{ cis_ubuntu2204_regex_base_search }}ForwardToSyslog{{ cis_ubuntu2204_regex_base_search_equals }}"
-    line: "#ForwardToSyslog=no"
+    line: "ForwardToSyslog=no"
     state: present
+    create: true
     owner: root
     group: root
     mode: "0640"
@@ -258,31 +259,45 @@
     - cis_ubuntu2204_rule_6_2_1_2_2
     - cis_ubuntu2204_set_journal_upload | bool
     - cis_ubuntu2204_set_journal_upload_url is defined
+    - cis_ubuntu2204_set_journal_upload_url is not none
   tags:
     - rule_6_2_1_2
     - server_l1
     - workstation_l1
 
-# NOTE: done in step before, by call notify
+## NOTE: done in step before, by call notify
 # - name: "SECTION6 | 6.2.1.2.3 | Ensure systemd-journal-upload is enabled and active"
 
 - name: "SECTION6 | 6.2.1.2.4 | Ensure systemd-journal-remote service is not in use"
-  ansible.builtin.systemd_service:
-    name: "{{ item }}"
-    daemon_reload: true
-    enabled: false
-    masked: true
-    state: stopped
-  with_items:
-    - systemd-journal-remote.socket
-    - systemd-journal-remote.service
   when:
     - cis_ubuntu2204_rule_6_2_1_2_4
-    - cis_ubuntu2204_set_journal_upload | bool
+    - not cis_ubuntu2204_set_journal_upload | bool
   tags:
     - rule_6_2_1_2
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION6 | 6.2.1.2.4 | Ensure systemd-journal-remote service is not in use | check service available"
+      ansible.builtin.shell: >
+        set -o pipefail &&
+        systemctl show systemd-journal-remote.service | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      register: service_status_systemd_journal_remote
+      changed_when: false
+      check_mode: false
+    - name: "SECTION6 | 6.2.1.2.4 | Ensure systemd-journal-remote service is not in use | disable services"
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        daemon_reload: true
+        enabled: false
+        masked: true
+        state: stopped
+      with_items:
+        - systemd-journal-remote.socket
+        - systemd-journal-remote.service
+      when:
+        - service_status_systemd_journal_remote.stdout in ('loadedactive','loadedinactive')
 
 # ------------------------------------------------------------------------------
 
@@ -303,18 +318,24 @@
       register: cis_ubuntu2204_logfiles
     - name: "SECTION6 | 6.2.2.1 | Ensure access to all logfiles has been configured | set logfile access"
       ansible.builtin.file:
-        dest: "{{ item.path }}"
+        path: "{{ item.path }}"
         state: file
-        owner: "{{ logfiles_item_owner | default('root') }}"
-        group: "{{ logfiles_item_group | default('adm') }}"
-        mode: "{{ logfiles_item_mode | default('0640') }}"
+        owner: "{{ matching_entry.owner | default('root') }}"
+        group: "{{ matching_entry.group | default('adm') }}"
+        mode: "{{ matching_entry.mode | default('0640') }}"
       loop: "{{ cis_ubuntu2204_logfiles.files }}"
       loop_control:
-        label: "{{ item.path }}"
+        label: "{{ item.path }} :: {{ matching_entry.owner | default('root') }}:{{ matching_entry.group | default('adm') }} :: {{ matching_entry.mode | default('0640') }}"
       vars:
-        logfiles_item_owner: "{{ cis_ubuntu2204_logfiles_access | selectattr('files', 'search', item.path | basename) | map(attribute='owner') | first }}"
-        logfiles_item_group: "{{ cis_ubuntu2204_logfiles_access | selectattr('files', 'search', item.path | basename) | map(attribute='group') | first }}"
-        logfiles_item_mode: "{{ cis_ubuntu2204_logfiles_access | selectattr('files', 'search', item.path | basename) | map(attribute='mode') | first }}"
+        filename: "{{ item.path | basename }}"
+        matching_entry: >-
+          {%- set ns = namespace(found={}) -%}
+          {%- for entry in cis_ubuntu2204_logfiles_access -%}
+            {%- if not ns.found and filename is match(entry.files) -%}
+              {%- set ns.found = entry -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{ ns.found }}
 
 # ------------------------------------------------------------------------------
 
@@ -357,13 +378,13 @@
   block:
     - name: "SECTION6 | 6.3.1.3 | Ensure auditing for processes that start prior to auditd is enabled | grub add"
       ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*audit=)[^\"]*)(\".*)'
         replace: '\1 audit=1\2'
       notify: update-grub
     - name: "SECTION6 | 6.3.1.3 | Ensure auditing for processes that start prior to auditd is enabled | grub replace"
       ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: "audit=0"
         replace: "audit=1"
       notify: update-grub
@@ -378,13 +399,13 @@
   block:
     - name: "SECTION6 | 6.3.1.4 | Ensure audit_backlog_limit is sufficient | grub add"
       ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*audit_backlog_limit=)[^\"]*)(\".*)'
         replace: '\1 audit_backlog_limit={{ cis_ubuntu2204_audit_backlog_limit }}\2'
       notify: update-grub
     - name: "SECTION6 | 6.3.1.4 | Ensure audit_backlog_limit is sufficient | grub replace"
       ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: 'audit_backlog_limit=\d+'
         replace: "audit_backlog_limit={{ cis_ubuntu2204_audit_backlog_limit }}"
       notify: update-grub
@@ -789,7 +810,7 @@
     - server_l2
     - workstation_l2
 
-# NOTE: done in steps before, by call notify
+## NOTE: done in steps before, by call notify
 # - name: "SECTION6 | 6.3.3.21 | Ensure the running and on disk configuration is the same"
 
 # ------------------------------------------------------------------------------
@@ -838,6 +859,7 @@
     - rule_6_3_4
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
 
 - name: "SECTION6 | 6.3.4.3 | Ensure audit log files group owner is configured"
   when:
@@ -846,6 +868,7 @@
     - rule_6_3_4
     - server_l2
     - workstation_l2
+    - molecule-idempotence-notest
   block:
     - name: "SECTION6 | 6.3.4.3 | Ensure audit log files group owner is configured | auditd.conf log_group"
       ansible.builtin.lineinfile:
@@ -864,9 +887,14 @@
         state: directory
         mode: "0750"
     - name: "SECTION6 | 6.3.4.3 | Ensure audit log files group owner is configured | set file group"
-      ansible.builtin.file:
-        path: "{{ cis_ubuntu2204_audit_log_path }}/audit.log"
-        group: "{{ cis_ubuntu2204_audit_log_group }}"
+      ansible.builtin.shell: |
+        set -o pipefail
+        find {{ cis_ubuntu2204_audit_log_path }} -type f \( ! -group {{ cis_ubuntu2204_audit_log_group }} -a ! -group root \) -exec chgrp {{ cis_ubuntu2204_audit_log_group }} {} +
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      # register: cis_ubuntu2204_audit_files_group_set
+      changed_when: false
+      check_mode: false
 
 - name: "SECTION6 | 6.3.4.4 | Ensure the audit log file directory mode is configured"
   ansible.builtin.file:

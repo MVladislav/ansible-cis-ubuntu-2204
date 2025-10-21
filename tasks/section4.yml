@@ -94,7 +94,7 @@
         from: "::1"
         log: false
       when:
-        - not cis_ubuntu2204_rule_3_1_1 and cis_ubuntu2204_required_ipv6
+        - not cis_ubuntu2204_rule_3_1_1 or (cis_ubuntu2204_rule_3_1_1 and cis_ubuntu2204_required_ipv6)
 
 - name: "SECTION4 | 4.1.5 | Ensure ufw outbound connections are configured"
   community.general.ufw:
@@ -376,26 +376,11 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION4 | 4.3.2.1 | Ensure iptables default deny firewall policy"
-  ansible.builtin.iptables:
-    chain: "{{ item }}"
-    policy: DROP
-  loop:
-    - INPUT
-    - OUTPUT
-    - FORWARD
-  when:
-    - cis_ubuntu2204_rule_4_3_2_1
-    - cis_ubuntu2204_firewall == "iptables"
-  tags:
-    - rule_4_3_2
-    - server_l1
-    - workstation_l1
-
 - name: "SECTION4 | 4.3.2.2 | Ensure iptables loopback traffic is configured"
   when:
     - cis_ubuntu2204_rule_4_3_2_2
     - cis_ubuntu2204_firewall == "iptables"
+  notify: Save iptables ipv4
   tags:
     - rule_4_3_2
     - server_l1
@@ -421,6 +406,7 @@
   when:
     - cis_ubuntu2204_rule_4_3_2_3
     - cis_ubuntu2204_firewall == "iptables"
+  notify: Save iptables ipv4
   tags:
     - rule_4_3_2
     - server_l1
@@ -451,6 +437,7 @@
   when:
     - cis_ubuntu2204_rule_4_3_2_4
     - cis_ubuntu2204_firewall == "iptables"
+  notify: Save iptables ipv4
   tags:
     - rule_4_3_2
     - server_l1
@@ -465,23 +452,6 @@
         jump: ACCEPT
 
 # ------------------------------------------------------------------------------
-
-- name: "SECTION4 | 4.3.3.1 | Ensure ip6tables default deny firewall policy"
-  ansible.builtin.iptables:
-    chain: "{{ item }}"
-    policy: DROP
-    ip_version: ipv6
-  loop:
-    - INPUT
-    - OUTPUT
-    - FORWARD
-  when:
-    - cis_ubuntu2204_rule_4_3_3_1
-    - cis_ubuntu2204_firewall == "iptables"
-  tags:
-    - rule_4_3_3
-    - server_l1
-    - workstation_l1
 
 - name: "SECTION4 | 4.3.3.2 | Ensure ip6tables loopback traffic is configured"
   when:
@@ -515,6 +485,7 @@
   when:
     - cis_ubuntu2204_rule_4_3_3_3
     - cis_ubuntu2204_firewall == "iptables"
+  notify: Save iptables ipv6
   tags:
     - rule_4_3_3
     - server_l1
@@ -547,6 +518,7 @@
   when:
     - cis_ubuntu2204_rule_4_3_3_4
     - cis_ubuntu2204_firewall == "iptables"
+  notify: Save iptables ipv6
   tags:
     - rule_4_3_3
     - server_l1
@@ -560,3 +532,40 @@
         ctstate: NEW
         jump: ACCEPT
         ip_version: ipv6
+
+# ------------------------------------------------------------------------------
+
+- name: "SECTION4 | 4.3.2.1 | Ensure iptables default deny firewall policy"
+  ansible.builtin.iptables:
+    chain: "{{ item }}"
+    policy: DROP
+  loop:
+    - INPUT
+    - OUTPUT
+    - FORWARD
+  when:
+    - cis_ubuntu2204_rule_4_3_2_1
+    - cis_ubuntu2204_firewall == "iptables"
+  notify: Save iptables ipv4
+  tags:
+    - rule_4_3_2
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION4 | 4.3.3.1 | Ensure ip6tables default deny firewall policy"
+  ansible.builtin.iptables:
+    chain: "{{ item }}"
+    policy: DROP
+    ip_version: ipv6
+  loop:
+    - INPUT
+    - OUTPUT
+    - FORWARD
+  when:
+    - cis_ubuntu2204_rule_4_3_3_1
+    - cis_ubuntu2204_firewall == "iptables"
+  notify: Save iptables ipv6
+  tags:
+    - rule_4_3_3
+    - server_l1
+    - workstation_l1

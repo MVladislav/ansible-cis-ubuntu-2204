@@ -8,6 +8,29 @@
     update_cache: true
     force_apt_get: true
   changed_when: false
+  tags:
+    - pre
+
+# ------------------------------------------------------------------------------
+
+- name: "PRE | GRUB | check if default-grub exists"
+  ansible.builtin.stat:
+    path: "{{ cis_ubuntu2204_default_grub_file }}"
+  register: cis_ubuntu2204_default_grub_file_check
+  tags:
+    - pre
+
+- name: "PRE | GRUB | create default-grub from template"
+  ansible.builtin.template:
+    src: grub.j2
+    dest: "{{ cis_ubuntu2204_default_grub_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - not cis_ubuntu2204_default_grub_file_check.stat.exists
+  tags:
+    - pre
 
 # ------------------------------------------------------------------------------
 
@@ -15,19 +38,25 @@
   ansible.builtin.stat:
     path: /boot/grub/grub.cfg
   register: cis_grub_cfg
+  tags:
+    - pre
 
 - name: "PRE | 1.4.2 | check the grub.conf configuration"
   ansible.builtin.stat:
     path: /boot/grub/grub.conf
   register: cis_grub_conf
+  tags:
+    - pre
 
 - name: "PRE | 1.4.2 | check the menu.lst configuration"
   ansible.builtin.stat:
-    path: "/boot/grub/menu.lst"
+    path: /boot/grub/menu.lst
   register: cis_menu_lst
+  tags:
+    - pre
 
 # ------------------------------------------------------------------------------
-# systemctl show <SERVICE> | grep -E "LoadState|ActiveState" | cut -d = -f 2 | tr -d '\n'
+# systemctl show <SERVICE> | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'
 # check, for disable and mask, with: <REGISTER>.stdout in ('loadedactive','loadedinactive')
 # check, for only disable, with    : <REGISTER>.stdout in ('loadedactive')
 # - loadedactive
@@ -35,55 +64,77 @@
 # - maskedinactive
 # - not-foundinactive
 
+- name: "PRE | 1.5.3 | check for 'systemd-coredump' socket"
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    systemctl show systemd-coredump.socket | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'
+  args:
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
+  register: service_status_coredump
+  changed_when: false
+  check_mode: false
+  tags:
+    - pre
+
 - name: "PRE | 1.5.5 | check for 'apport' service"
   ansible.builtin.shell: >
     set -o pipefail &&
-    systemctl show apport | grep LoadState | cut -d = -f 2
+    systemctl show apport | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'
   args:
     executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_apport
   changed_when: false
   check_mode: false
+  tags:
+    - pre
 
 - name: "PRE | 1.7 | check for 'gdm3' service"
   ansible.builtin.shell: >
     set -o pipefail &&
-    systemctl show gdm3 | grep LoadState | cut -d = -f 2
+    systemctl show gdm3 | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'
   args:
     executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_gdm3
   changed_when: false
   check_mode: false
+  tags:
+    - pre
 
 - name: "PRE | 2.3.1.1 | check for 'systemd-timesyncd' service"
   ansible.builtin.shell: >
     set -o pipefail &&
-    systemctl show systemd-timesyncd | grep LoadState | cut -d = -f 2
+    systemctl show systemd-timesyncd | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'
   args:
     executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_systemd_timesyncd
   changed_when: false
   check_mode: false
+  tags:
+    - pre
 
 - name: "PRE | 2.4.1 | check for 'cron' service"
   ansible.builtin.shell: >
     set -o pipefail &&
-    systemctl show cron | grep LoadState | cut -d = -f 2
+    systemctl show cron | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'
   args:
     executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_cron
   changed_when: false
   check_mode: false
+  tags:
+    - pre
 
 - name: "PRE | 5.1 | check for 'ssh' service"
   ansible.builtin.shell: >
     set -o pipefail &&
-    systemctl show ssh | grep LoadState | cut -d = -f 2
+    systemctl show ssh | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'
   args:
     executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: service_status_ssh
   changed_when: false
   check_mode: false
+  tags:
+    - pre
 
 # ------------------------------------------------------------------------------
 
@@ -93,6 +144,8 @@
   changed_when: false
   failed_when: false
   check_mode: false
+  tags:
+    - pre
 
 - name: "PRE | 1.5.4 | check if 'prelink' package is installed"
   ansible.builtin.command: dpkg -V prelink
@@ -100,3 +153,5 @@
   changed_when: false
   failed_when: false
   check_mode: false
+  tags:
+    - pre

@@ -498,56 +498,74 @@
     - server_l1
     - workstation_l1
   block:
-    - name: >
-        SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub add
+    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub add - apparmor"
       ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*apparmor=)[^\"]*)(\".*)'
         replace: '\1 apparmor=1\2'
       notify: update-grub
-    - name: >
-        SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub replace
+    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub replace - apparmor"
       ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: 'apparmor=\d+'
         replace: "apparmor=1"
       notify: update-grub
-    - name: >
-        SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub add
+    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub add - security"
       ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*security=)[^\"]*)(\".*)'
         replace: '\1 security=apparmor\2'
       notify: update-grub
-    - name: >
-        SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub replace
+    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub replace - security"
       ansible.builtin.replace:
-        dest: "{{ cis_ubuntu2204_default_grub_file }}"
+        path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: 'security=\w+'
         replace: "security=apparmor"
       notify: update-grub
 
 - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode"
-  ansible.builtin.command: /usr/sbin/aa-complain /etc/apparmor.d/*
-  changed_when: false
-  notify: restart apparmor
   when:
     - cis_ubuntu2204_rule_1_3_1_3
   tags:
     - rule_1_3_1
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode | get status"
+      ansible.builtin.command: "/usr/sbin/apparmor_status --json"
+      changed_when: false
+      register: cis_ubuntu2204_apparmor_json_status
+    - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode | get unconfined profiles"
+      ansible.builtin.set_fact:
+        cis_ubuntu2204_apparmor_update_to_complain_profiles: "{{ (cis_ubuntu2204_apparmor_json_status.stdout | from_json).profiles | dict2items | selectattr('value', 'in', ['unconfined']) | map(attribute='key') | list }}"
+      when: cis_ubuntu2204_apparmor_update_to_complain_profiles is not defined
+    - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode | apply unconfined into complain"
+      ansible.builtin.command: "/usr/sbin/aa-complain {{ item }}"
+      changed_when: false
+      loop: "{{ cis_ubuntu2204_apparmor_update_to_complain_profiles }}"
+      notify: restart apparmor
 
 - name: "SECTION1 | 1.3.1.4 | Ensure all AppArmor Profiles are enforcing"
-  ansible.builtin.command: /usr/sbin/aa-enforce /etc/apparmor.d/*
-  changed_when: false
-  notify: restart apparmor
   when:
     - cis_ubuntu2204_rule_1_3_1_4
   tags:
     - rule_1_3_1
     - server_l2
     - workstation_l2
+  block:
+    - name: "SECTION1 | 1.3.1.4 | Ensure all AppArmor Profiles are enforcing | get status"
+      ansible.builtin.command: "/usr/sbin/apparmor_status --json"
+      changed_when: false
+      register: cis_ubuntu2204_apparmor_json_status
+    - name: "SECTION1 | 1.3.1.4 | Ensure all AppArmor Profiles are enforcing | get unconfined & complain profiles"
+      ansible.builtin.set_fact:
+        cis_ubuntu2204_apparmor_update_to_enforce_profiles: "{{ (cis_ubuntu2204_apparmor_json_status.stdout | from_json).profiles | dict2items | selectattr('value', 'in', ['unconfined', 'complain']) | map(attribute='key') | list }}"
+      when: cis_ubuntu2204_apparmor_update_to_enforce_profiles is not defined
+    - name: "SECTION1 | 1.3.1.4 | Ensure all AppArmor Profiles are enforcing | apply unconfined into enforce"
+      ansible.builtin.command: "/usr/sbin/aa-enforce {{ item }}"
+      changed_when: false
+      loop: "{{ cis_ubuntu2204_apparmor_update_to_enforce_profiles }}"
+      notify: restart apparmor
 
 # ------------------------------------------------------------------------------
 
@@ -658,8 +676,7 @@
     - server_l1
     - workstation_l1
   block:
-    - name: >
-        SECTION1 | 1.5.3 | Ensure core dumps are restricted | set fs.suid_dumpable
+    - name: SECTION1 | 1.5.3 | Ensure core dumps are restricted | set fs.suid_dumpable
       ansible.posix.sysctl:
         name: fs.suid_dumpable
         value: "0"
@@ -668,15 +685,7 @@
         state: present
         reload: true
         ignoreerrors: true
-    - name: >
-        SECTION1 | 1.5.3 | Ensure core dumps are restricted | install systemd-coredump
-      ansible.builtin.apt:
-        name: systemd-coredump
-        state: present
-        force_apt_get: true
-      notify: restart systemd-coredump
-    - name: >
-        SECTION1 | 1.5.3 | Ensure core dumps are restricted | ensure hard core 0 is set
+    - name: SECTION1 | 1.5.3 | Ensure core dumps are restricted | ensure hard core 0 is set
       ansible.builtin.lineinfile:
         dest: /etc/security/limits.conf
         regexp: '{{ cis_ubuntu2204_regex_base_search }}\*\s+hard\s+core\s+[0-9]+'
@@ -687,9 +696,14 @@
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "{{ cis_ubuntu2204_section1_mode_default }}"
-      notify: restart systemd-coredump
-    - name: >
-        SECTION1 | 1.5.3 | Ensure core dumps are restricted | set coredump.conf
+      # notify: restart systemd-coredump
+    # - name: SECTION1 | 1.5.3 | Ensure core dumps are restricted | install systemd-coredump
+    #   ansible.builtin.apt:
+    #     name: systemd-coredump
+    #     state: present
+    #     force_apt_get: true
+    #   notify: restart systemd-coredump
+    - name: SECTION1 | 1.5.3 | Ensure core dumps are restricted | set coredump.conf
       ansible.builtin.lineinfile:
         dest: /etc/systemd/coredump.conf
         regexp: "{{ item.reg }}"
@@ -726,7 +740,7 @@
 
 - name: "SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled"
   when:
-    - service_status_apport.stdout == "loaded"
+    - service_status_apport.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_rule_1_5_5
   tags:
     - rule_1_5
@@ -854,7 +868,7 @@
 
 - name: "SECTION1 | 1.7.2-9 | create folder under '/etc/dconf/db/*', for upcoming tasks"
   when:
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
   notify: Update dconf
   tags:
@@ -886,7 +900,7 @@
 
 - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured"
   when:
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_2
   notify: Update dconf
@@ -909,16 +923,31 @@
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+    - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured | gather users"
+      ansible.builtin.command: >
+        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") {print $1}' /etc/passwd
+      register: cis_ubuntu2204_users_with_home
+      changed_when: false
+    - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured | set gsettings banner message per use per user"
+      become: true
+      become_user: "{{ item }}"
+      ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.login-screen banner-message-text '{{ cis_ubuntu2204_warning_banner }}'"
+      register: cis_ubuntu2204_update_user_banner_message
+      changed_when: cis_ubuntu2204_update_user_banner_message.rc == 0
+      failed_when: false
+      loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
+    - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured | set gsettings activate banner message per user"
+      become: true
+      become_user: "{{ item }}"
+      ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.login-screen banner-message-enable true"
+      register: cis_ubuntu2204_activate_user_banner_message
+      changed_when: cis_ubuntu2204_activate_user_banner_message.rc == 0
+      failed_when: false
+      loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
 
 - name: "SECTION1 | 1.7.3 | Ensure GDM disable-user-list option is enabled"
-  ansible.builtin.template:
-    src: gdm/00-login-screen.j2
-    dest: /etc/dconf/db/gdm.d/00-login-screen
-    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
-    group: "{{ cis_ubuntu2204_section1_group_default }}"
-    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_3
   notify: Update dconf
@@ -926,10 +955,38 @@
     - rule_1_7
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION1 | 1.7.3 | Ensure GDM disable-user-list option is enabled | file gdm"
+      ansible.builtin.template:
+        src: gdm/profile-gdm.j2
+        dest: /etc/dconf/profile/gdm
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+    - name: "SECTION1 | 1.7.3 | Ensure GDM disable-user-list option is enabled | file 00-login-screen"
+      ansible.builtin.template:
+        src: gdm/00-login-screen.j2
+        dest: /etc/dconf/db/gdm.d/00-login-screen
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+    - name: "SECTION1 | 1.7.3 | Ensure GDM disable-user-list option is enabled | gather users"
+      ansible.builtin.command: >
+        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") {print $1}' /etc/passwd
+      register: cis_ubuntu2204_users_with_home
+      changed_when: false
+    - name: "SECTION1 | 1.7.3 | Ensure GDM disable-user-list option is enabled | set gsettings disable user list per user"
+      become: true
+      become_user: "{{ item }}"
+      ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.login-screen disable-user-list true"
+      register: cis_ubuntu2204_disable_user_list
+      changed_when: cis_ubuntu2204_disable_user_list.rc == 0
+      failed_when: false
+      loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
 
 - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle"
   when:
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_4
   notify: Update dconf
@@ -940,7 +997,7 @@
   block:
     - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | file user"
       ansible.builtin.template:
-        src: gdm/profile-user-j2
+        src: gdm/profile-user.j2
         dest: /etc/dconf/profile/user
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
@@ -952,6 +1009,27 @@
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+    - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | gather users"
+      ansible.builtin.command: >
+        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") {print $1}' /etc/passwd
+      register: cis_ubuntu2204_users_with_home
+      changed_when: false
+    - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | set gsettings set screensaver lock-delay per user"
+      become: true
+      become_user: "{{ item }}"
+      ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.desktop.screensaver lock-delay {{ cis_ubuntu2204_rule_gdm_lock_delay }}"
+      register: cis_ubuntu2204_screensaver_lock_delay
+      changed_when: cis_ubuntu2204_screensaver_lock_delay.rc == 0
+      failed_when: false
+      loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
+    - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | set gsettings set session idle-delay per user"
+      become: true
+      become_user: "{{ item }}"
+      ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.desktop.session idle-delay {{ cis_ubuntu2204_rule_gdm_idle_delay }}"
+      register: cis_ubuntu2204_session_idle_delay
+      changed_when: cis_ubuntu2204_session_idle_delay.rc == 0
+      failed_when: false
+      loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
 
 - name: "SECTION1 | 1.7.5 | Ensure GDM screen locks cannot be overridden"
   ansible.builtin.template:
@@ -961,7 +1039,7 @@
     group: "{{ cis_ubuntu2204_section1_group_default }}"
     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_5
   notify: Update dconf
@@ -971,15 +1049,9 @@
     - workstation_l1
 
 - name: "SECTION1 | 1.7.6 | Ensure GDM automatic mounting of removable media is disabled"
-  ansible.builtin.template:
-    src: gdm/00-media-automount.j2
-    dest: /etc/dconf/db/local.d/00-media-automount
-    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
-    group: "{{ cis_ubuntu2204_section1_group_default }}"
-    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
     - not cis_ubuntu2204_allow_autofs
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_6
   notify: Update dconf
@@ -987,6 +1059,30 @@
     - rule_1_7
     - server_l1
     - workstation_l2
+  block:
+    - name: "SECTION1 | 1.7.6 | Ensure GDM automatic mounting of removable media is disabled"
+      ansible.builtin.template:
+        src: gdm/00-media-automount.j2
+        dest: /etc/dconf/db/local.d/00-media-automount
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+    - name: "SECTION1 | 1.7.6 | Ensure GDM automatic mounting of removable media is disabled | set gsettings disable automount per user"
+      become: true
+      become_user: "{{ item }}"
+      ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.desktop.media-handling automount false"
+      register: cis_ubuntu2204_disable_automount
+      changed_when: cis_ubuntu2204_disable_automount.rc == 0
+      failed_when: false
+      loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
+    - name: "SECTION1 | 1.7.6 | Ensure GDM automatic mounting of removable media is disabled | set gsettings disable automount-open per user"
+      become: true
+      become_user: "{{ item }}"
+      ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.desktop.media-handling automount-open false"
+      register: cis_ubuntu2204_disable_automount_open
+      changed_when: cis_ubuntu2204_disable_automount_open.rc == 0
+      failed_when: false
+      loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
 
 - name: "SECTION1 | 1.7.7 | Ensure GDM disabling automatic mounting of removable media is not overridden"
   ansible.builtin.template:
@@ -997,7 +1093,7 @@
     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
     - not cis_ubuntu2204_allow_autofs
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_7
   notify: Update dconf
@@ -1007,14 +1103,8 @@
     - workstation_l2
 
 - name: "SECTION1 | 1.7.8 | Ensure GDM autorun-never is enabled"
-  ansible.builtin.template:
-    src: gdm/00-media-autorun.j2
-    dest: /etc/dconf/db/local.d/00-media-autorun
-    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
-    group: "{{ cis_ubuntu2204_section1_group_default }}"
-    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_8
   notify: Update dconf
@@ -1022,6 +1112,22 @@
     - rule_1_7
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION1 | 1.7.8 | Ensure GDM autorun-never is enabled"
+      ansible.builtin.template:
+        src: gdm/00-media-autorun.j2
+        dest: /etc/dconf/db/local.d/00-media-autorun
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+    - name: "SECTION1 | 1.7.8 | Ensure GDM autorun-never is enabled | set gsettings enable autorun-never per user"
+      become: true
+      become_user: "{{ item }}"
+      ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.desktop.media-handling autorun-never true"
+      register: cis_ubuntu2204_enable_autorun_never
+      changed_when: cis_ubuntu2204_enable_autorun_never.rc == 0
+      failed_when: false
+      loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
 
 - name: "SECTION1 | 1.7.9 | Ensure GDM autorun-never is not overridden"
   ansible.builtin.template:
@@ -1031,7 +1137,7 @@
     group: "{{ cis_ubuntu2204_section1_group_default }}"
     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_9
   notify: Update dconf
@@ -1048,7 +1154,7 @@
     group: "{{ cis_ubuntu2204_section1_group_default }}"
     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
-    - service_status_gdm3.stdout == "loaded"
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_10
   tags:

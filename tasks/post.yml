@@ -11,6 +11,8 @@
     executable: "{{ cis_ubuntu2204_shell_executable }}"
   register: apt_removed_packages
   changed_when: false
+  tags:
+    - post
 
 - name: "POST | perform apt package cleanup"
   ansible.builtin.apt:
@@ -24,3 +26,5 @@
     - apt_removed_packages.stdout_lines is defined
     - apt_removed_packages.stdout_lines | length > 0
     - not ansible_check_mode
+  tags:
+    - post

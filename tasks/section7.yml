@@ -254,7 +254,7 @@
 
 - name: "SECTION7 | 7.2.1 | Ensure accounts in /etc/passwd use shadowed passwords"
   ansible.builtin.replace:
-    dest: /etc/passwd
+    path: /etc/passwd
     regexp: "^([a-zA-Z0-9_-]*):[^:]*:"
     replace: '\1:x:'
   when:
@@ -334,7 +334,7 @@
   block:
     - name: "SECTION7 | 7.2.4 | Ensure shadow group is empty | remove all users from the shadow group"
       ansible.builtin.replace:
-        dest: /etc/group
+        path: /etc/group
         regexp: "(^shadow:[^:]*:[^:]*:)([^:]+$)"
         replace: '\1'
     - name: "SECTION7 | 7.2.4 | Ensure shadow group is empty | get list of users with shadow as primary group"

@@ -4,15 +4,16 @@
 [![Ansible Molecule Test](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml/badge.svg)](https://github.com/MVladislav/ansible-cis-ubuntu-2204/actions/workflows/ci.yml)
 
 - [CIS - Ubuntu 22.04](#cis---ubuntu-2204)
+  - [Disclaimer](#disclaimer)
   - [Notes](#notes)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
-    - [run only setup per section](#run-only-setup-per-section)
-    - [variables not included in CIS as additional extend](#variables-not-included-in-cis-as-additional-extend)
-    - [variables which are recommended by CIS, but disable in this role by default](#variables-which-are-recommended-by-cis-but-disable-in-this-role-by-default)
-    - [variable special usable between server and client](#variable-special-usable-between-server-and-client)
-    - [variables to check and set for own purpose](#variables-to-check-and-set-for-own-purpose)
-    - [variable rules implemented, but only print information for manual check](#variable-rules-implemented-but-only-print-information-for-manual-check)
+    - [Run only setup per section](#run-only-setup-per-section)
+    - [Variables not included in CIS as additional extend](#variables-not-included-in-cis-as-additional-extend)
+    - [Variables which are recommended by CIS, but disable in this role by default](#variables-which-are-recommended-by-cis-but-disable-in-this-role-by-default)
+    - [Variable for special usage between server and client](#variable-for-special-usage-between-server-and-client)
+    - [Variables to check and set for own purpose](#variables-to-check-and-set-for-own-purpose)
+    - [Variable rules implemented, but only print information for manual check](#variable-rules-implemented-but-only-print-information-for-manual-check)
   - [Dependencies](#dependencies)
   - [Example Playbook](#example-playbook)
   - [Definitions](#definitions)
@@ -23,20 +24,29 @@
 
 ---
 
-Configure Ubuntu 22.04 to be CIS compliant.
+This Ansible role is designed to configure **Ubuntu 22.04** to **comply** with the **CIS Ubuntu Linux Benchmark v2.0.0**. \
+It automates the application of hardening recommendations to enhance system security. \
+While this role can help mitigate common security risks, it is essential to tailor the configurations to your specific environment.
+
+Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0](https://downloads.cisecurity.org/#/)**.
 
 Tested with:
 
 - Ubuntu 22.04
 - Ubuntu 23.04
 
-This role **will make changes to the system** that could break things. \
-This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
+## Disclaimer
+
+> [!DANGER]
+>
+> This role makes **significant changes to your system** that **could break functionality**. \
+> This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted. \
+> While based on industry-standard security guidelines (CIS), it is recommended to review these changes, especially when applied to existing systems.
 
 This role was **developed against a clean install** of the Operating System. \
-If you are **implementing to an existing system** please **review** this role for any **site specific changes** that are needed.
+If you are **implementing to an existing system** please **review thoroughly** this role for any **site specific changes** before applying them to production systems.
 
-Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0](https://downloads.cisecurity.org/#/)**.
+Strongly advise testing in a staging environment before applying in production.
 
 ## Notes
 
@@ -51,30 +61,30 @@ Based on **[CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0](https://downloads.cisec
 
 ## Requirements
 
-You should **carefully read** through the tasks
-to **make sure these changes will not break your systems**
-before running this playbook.
+Before using this role, ensure that your system meets the following requirements:
 
-To start working in this Role you just need to **install** **Python** and **Ansible**:
+- Python >= 3.12
+- Ansible >= 2.16
+- SSH access to the target machine.
+
+Install required tools and libraries:
 
 ```sh
 $sudo apt install python3 python3-pip sshpass
-# if python >= 3.11 used, add also '--break-system-packages'
-$python3 -m pip install ansible ansible-lint yamllint
+$python3 -m pip install ansible ansible-lint yamllint --break-system-packages
 ```
 
 For run **tests** with **molecule**, you need also to **install**:
 
 ```sh
-# if python >= 3.11 used, add also '--break-system-packages'
-$python3 -m pip install molecule molecule-plugins[docker]
+$python3 -m pip install molecule molecule-plugins[docker] --break-system-packages
 ```
 
 ## Role Variables
 
-### run only setup per section
+### Run only setup per section
 
-> _default all section are active and will performed_
+> _Default all section are active and will performed_
 
 ```yaml
 cis_ubuntu2204_section1: true
@@ -86,49 +96,58 @@ cis_ubuntu2204_section6: true
 cis_ubuntu2204_section7: true
 ```
 
-### variables not included in CIS as additional extend
+### Variables not included in CIS as additional extend
 
 ```yaml
-# additional configs for remove all comments in /etc/ssh/sshd_config
+# Extend the default sshd_config hardening to remove unnecessary comments and empty lines.
+# 'true' by default.
 cis_ubuntu2204_rule_5_1_0: true
 
-# additional configs for ssh which not defined set by CIS
+# Extend the default sshd_config hardening, which not defined within CIS,
+# by include more configuration based on https://infosec.mozilla.org/guidelines/openssh.html.
+# 'true' by default, but only runs if
+#  - 'cis_ubuntu2204_rule_5_1_24_ssh_pub_key' is defined or
+#  - 'cis_ubuntu2204_ssh_password_authentication' is equals 'yes'
 cis_ubuntu2204_rule_5_1_23: true
 
-# the rules 'cis_ubuntu2204_rule_5_1_19', 'cis_ubuntu2204_rule_5_1_20', 'cis_ubuntu2204_rule_5_1_23'
-# disable ssh login by password, to avoid block login when no public key was added this rule is extended
-# it is 'false' by default
+# Avoid SSH login lockout by specifying the user and public key for SSH access.
+# Lockout will happen when 'cis_ubuntu2204_rule_5_1_19', 'cis_ubuntu2204_rule_5_1_20' and 'cis_ubuntu2204_rule_5_1_23' are used.
+# Ensure that a valid SSH public key is provided, or set this rule to false.
+# 'true' by default, but not executed when 'cis_ubuntu2204_rule_5_1_24_ssh_pub_key' is not defined.
 cis_ubuntu2204_rule_5_1_24: true
 cis_ubuntu2204_rule_5_1_24_ssh_user: "{{ ansible_user }}"
 cis_ubuntu2204_rule_5_1_24_ssh_pub_key: "<ADD_PUB_KEY>"
 
-# set auditd log_file as needed to be save in other configs
+# Set for auditd inside auditd.conf the key for 'log_file' to be save in upcoming configurations
+# 'true' by default.
 cis_ubuntu2204_rule_6_3_4_0: true
 ```
 
-### variables which are recommended by CIS, but disable in this role by default
+### Variables which are recommended by CIS, but disable in this role by default
 
 > _change default configured values, to be CIS recommended if needed_
 
 ```yaml
+# Ensure all AppArmor Profiles are complain
+# NOTE: will perform Profiles into complain mode
+cis_ubuntu2204_rule_1_3_1_3: true
 # Ensure all AppArmor Profiles are enforcing
-# NOTE: will perform Profiles as enforcing mode
+# NOTE: will perform Profiles into enforcing mode
 cis_ubuntu2204_rule_1_3_1_4: false
 
 # Ensure bootloader password is set
-cis_ubuntu2204_rule_1_4_1: false
 cis_ubuntu2204_set_boot_pass: false
 cis_ubuntu2204_disable_boot_pass: true
 
-# active journal upload to remote log collection
+# Active journal send logs to a remote log host
 # do not forget set related variables 'cis_ubuntu2204_set_journal_upload_*'
 cis_ubuntu2204_set_journal_upload: false
 cis_ubuntu2204_set_journal_upload_url: <SET_REMOTE_URL>
 ```
 
-### variable special usable between server and client
+### Variable for special usage between server and client
 
-> _check services which will removed or disabled,
+> _Check services which will removed or disabled,
 > which maybe needed, for example especial for client usage_
 
 ```yaml
@@ -157,9 +176,16 @@ cis_ubuntu2204_install_aide: true
 cis_ubuntu2204_config_aide: true
 ```
 
-### variables to check and set for own purpose
+### Variables to check and set for own purpose
 
 ```yaml
+# list will be auto gathered if unset (cis_ubuntu2204_rule_1_3_1_3)
+# you can define profiles by your own, which should be set as complain profile
+cis_ubuntu2204_apparmor_update_to_complain_profiles: []
+# list will be auto gathered if unset (cis_ubuntu2204_rule_1_3_1_4)
+# you can define profiles by your own, which should be set as enforce profile
+cis_ubuntu2204_apparmor_update_to_enforce_profiles: []
+
 # choose time synchronization (cis_ubuntu2204_rule_2_3_1_1)
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
 cis_ubuntu2204_time_synchronization_time_server:
@@ -226,7 +252,7 @@ cis_ubuntu2204_journald_runtime_keep_free: 512M
 cis_ubuntu2204_journald_max_file_sec: 1month
 ```
 
-### variable rules implemented, but only print information for manual check
+### Variable rules implemented, but only print information for manual check
 
 ```yaml
 # SECTION1 | 1.2.1.1 | Ensure GPG keys are configured
@@ -236,6 +262,17 @@ cis_ubuntu2204_rule_1_2_1_2: true
 
 # SECTION2 | 2.1.22 | Ensure only approved services are listening on a network interface
 cis_ubuntu2204_rule_2_1_22: true
+
+# SECTION5 | 5.4.2.1 | Ensure root is the only UID 0 account
+cis_ubuntu2204_rule_5_4_2_1: true
+# SECTION5 | 5.4.2.2 | Ensure root is the only GID 0 account
+cis_ubuntu2204_rule_5_4_2_2: true
+# SECTION5 | 5.4.2.3 | Ensure group root is the only GID 0 group
+cis_ubuntu2204_rule_5_4_2_3: true
+# SECTION5 | 5.4.2.5 | Ensure root path integrity
+cis_ubuntu2204_rule_5_4_2_5: true
+# SECTION5 | 5.4.2.7 | Ensure system accounts do not have a valid login shell
+cis_ubuntu2204_rule_5_4_2_7: true
 
 # SECTION7 | 7.1.12 | Ensure no files or directories without an owner and a group exist
 cis_ubuntu2204_rule_7_1_12: true
@@ -256,11 +293,11 @@ cis_ubuntu2204_rule_7_2_8: true
 
 ## Dependencies
 
-Developed and testes with Ansible 2.14.4
+Developed and testes with Ansible 2.16
 
 ## Example Playbook
 
-example usage you can find also [here](https://github.com/MVladislav/ansible-env-setup).
+Example usage can be found also [here](https://github.com/MVladislav/ansible-env-setup).
 
 ```yaml
 - name: CIS | install on clients
@@ -278,6 +315,8 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_section6: true
       cis_ubuntu2204_section7: true
       # -------------------------
+      cis_ubuntu2204_rule_1_1_1_6: false # squashfs - IMPACT: Snap packages utilizes squashfs as a compressed filesystem, disabling squashfs will cause Snap packages to fail.
+      # -------------------------
       cis_ubuntu2204_rule_5_1_24: true
       cis_ubuntu2204_rule_5_1_24_ssh_user: "{{ ansible_user }}"
       cis_ubuntu2204_rule_5_1_24_ssh_pub_key: "<ADD_PUB_KEY>"
@@ -285,9 +324,8 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_rule_1_3_1_3: true # AppArmor complain mode
       cis_ubuntu2204_rule_1_3_1_4: false # AppArmor enforce mode
       # -------------------------
-      cis_ubuntu2204_rule_1_4_1: false # bootloader password (disabled)
       cis_ubuntu2204_set_boot_pass: false # bootloader password (disabled)
-      cis_ubuntu2204_disable_boot_pass: true # bootloader password (disabled)
+      cis_ubuntu2204_disable_boot_pass: true # bootloader password (disabled with cis_ubuntu2204_set_boot_pass)
       # -------------------------
       cis_ubuntu2204_rule_3_1_3: false # bluetooth service
       cis_ubuntu2204_rule_3_1_3_remove: false # bluetooth service
@@ -303,8 +341,8 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
           config: iburst
       cis_ubuntu2204_allow_cups: true
       # -------------------------
-      cis_ubuntu2204_install_aide: "{{ cis_setup_aide | default(false) | bool }}"
-      cis_ubuntu2204_config_aide: "{{ cis_setup_aide | default(false) | bool }}"
+      cis_ubuntu2204_install_aide: false
+      cis_ubuntu2204_config_aide: false
       cis_ubuntu2204_aide_cron:
         cron_user: root
         cron_file: aide
@@ -321,7 +359,7 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_journald_runtime_keep_free: 512M
       cis_ubuntu2204_journald_max_file_sec: 1month
       # -------------------------
-      cis_ubuntu2204_required_ipv6: "{{ cis_ipv6_required | default(false) | bool }}"
+      cis_ubuntu2204_required_ipv6: true
       cis_ubuntu2204_firewall: ufw
       # -------------------------
       cis_ubuntu2204_cron_allow_users:
@@ -343,7 +381,6 @@ example usage you can find also [here](https://github.com/MVladislav/ansible-env
           value: "-1"
         - key: "lcredit"
           value: "-1"
-      # -------------------------
 ```
 
 ## Definitions
@@ -370,11 +407,11 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 | Key                                                  | Count |
 | :--------------------------------------------------- | :---- |
-| 🟢 Implemented                                       | 268   |
+| 🟢 Implemented                                       | 267   |
 | 🟡 Partly Implemented or print info for manual check | 13    |
 | 🔴 Not Implemented                                   | 20    |
-| Total                                                | 301   |
-| Coverage (Implemented/Partly vs Total)               | 93.35 |
+| Total                                                | 300   |
+| Coverage (Implemented/Partly vs Total)               | 93.33 |
 
 | ID        | CIS Benchmark Recommendation Set                                                                | Yes | Y/N | No  |
 | :-------- | :---------------------------------------------------------------------------------------------- | :-: | :-: | :-: |

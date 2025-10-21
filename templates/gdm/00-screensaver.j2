@@ -3,10 +3,10 @@
 # Number of seconds of inactivity before the screen goes blank
 # Set to 0 seconds if you want to deactivate the screensaver.
 # Set max value for idle-delay in seconds (between 1 and 900)
-idle-delay=uint32 180
+idle-delay=uint32 {{ cis_ubuntu2204_rule_gdm_idle_delay }}
 
 [org/gnome/desktop/screensaver]
 
 # Number of seconds after the screen is blank before locking the screen
 # Set max value for lock-delay in seconds (between 0 and 5)
-lock-delay=uint32 0
+lock-delay=uint32 {{ cis_ubuntu2204_rule_gdm_lock_delay }}

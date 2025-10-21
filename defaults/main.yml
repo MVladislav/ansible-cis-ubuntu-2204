@@ -36,19 +36,19 @@ cis_ubuntu2204_rule_1_1_2_2: true # /dev/shm
 # cis_ubuntu2204_rule_1_1_2_2_2: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
 # cis_ubuntu2204_rule_1_1_2_2_3: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
 # cis_ubuntu2204_rule_1_1_2_2_4: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_2'
-# cis_ubuntu2204_rule_1_1_2_3: false # NOTE: not implemented, separate partition not created
-# cis_ubuntu2204_rule_1_1_2_4: false # NOTE: not implemented, separate partition not created
-# cis_ubuntu2204_rule_1_1_2_5: false # NOTE: not implemented, separate partition not created
-# cis_ubuntu2204_rule_1_1_2_6: false # NOTE: not implemented, separate partition not created
-# cis_ubuntu2204_rule_1_1_2_7: false # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_3: true # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_4: true # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_5: true # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_6: true # NOTE: not implemented, separate partition not created
+# cis_ubuntu2204_rule_1_1_2_7: true # NOTE: not implemented, separate partition not created
 cis_ubuntu2204_rule_1_2_1_1: true
 cis_ubuntu2204_rule_1_2_1_2: true
 cis_ubuntu2204_rule_1_2_2_1: true
 cis_ubuntu2204_rule_1_3_1_1: true
 cis_ubuntu2204_rule_1_3_1_2: true
-cis_ubuntu2204_rule_1_3_1_3: true # NOTE: will run to have all in complain-mode, for enforce use 'cis_ubuntu2204_rule_1_3_1_4'
-cis_ubuntu2204_rule_1_3_1_4: false # NOTE: disabled
-cis_ubuntu2204_rule_1_4_1: false # NOTE: depends also on 'cis_ubuntu2204_set_boot_pass' and 'cis_ubuntu2204_disable_boot_pass'
+cis_ubuntu2204_rule_1_3_1_3: true # NOTE: will run to have all in complain-mode
+cis_ubuntu2204_rule_1_3_1_4: false # NOTE: disabled - will run to have all in enforce-mode
+cis_ubuntu2204_rule_1_4_1: true # NOTE: depends also on 'cis_ubuntu2204_set_boot_pass' and 'cis_ubuntu2204_disable_boot_pass'
 cis_ubuntu2204_rule_1_4_2: true
 cis_ubuntu2204_rule_1_5_1: true
 cis_ubuntu2204_rule_1_5_2: true
@@ -183,7 +183,7 @@ cis_ubuntu2204_rule_4_3_3_2: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 cis_ubuntu2204_rule_4_3_3_3: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 cis_ubuntu2204_rule_4_3_3_4: true # NOTE: 'cis_ubuntu2204_firewall == iptables'
 ## SECTION 5 rules
-cis_ubuntu2204_rule_5_1_0: true
+cis_ubuntu2204_rule_5_1_0: true # NOTE: EXTENDED
 cis_ubuntu2204_rule_5_1_1: true
 cis_ubuntu2204_rule_5_1_2: true
 cis_ubuntu2204_rule_5_1_3: true
@@ -206,8 +206,8 @@ cis_ubuntu2204_rule_5_1_19: true
 cis_ubuntu2204_rule_5_1_20: true
 cis_ubuntu2204_rule_5_1_21: true
 cis_ubuntu2204_rule_5_1_22: true
-cis_ubuntu2204_rule_5_1_23: true # EXTENDED: own added, not included in CIS
-cis_ubuntu2204_rule_5_1_24: true # NOTE: depends also on 'cis_ubuntu2204_rule_5_1_24_ssh_pub_key'
+cis_ubuntu2204_rule_5_1_23: true # NOTE: EXTENDED - own added, not included in CIS
+cis_ubuntu2204_rule_5_1_24: true # NOTE: EXTENDED - depends also on 'cis_ubuntu2204_rule_5_1_24_ssh_pub_key'
 cis_ubuntu2204_rule_5_2_1: true
 cis_ubuntu2204_rule_5_2_2: true
 cis_ubuntu2204_rule_5_2_3: true
@@ -249,6 +249,7 @@ cis_ubuntu2204_rule_5_4_1_6: true
 cis_ubuntu2204_rule_5_4_2_1: true
 cis_ubuntu2204_rule_5_4_2_2: true
 cis_ubuntu2204_rule_5_4_2_3: true
+# cis_ubuntu2204_rule_5_4_2_4: true
 cis_ubuntu2204_rule_5_4_2_5: true
 cis_ubuntu2204_rule_5_4_2_6: true
 cis_ubuntu2204_rule_5_4_2_7: true
@@ -300,7 +301,7 @@ cis_ubuntu2204_rule_6_3_3_18: true
 cis_ubuntu2204_rule_6_3_3_19: true
 cis_ubuntu2204_rule_6_3_3_20: true
 # cis_ubuntu2204_rule_6_3_3_21: true # NOTE: implicit in 'cis_ubuntu2204_rule_6_3_3_1-20'
-cis_ubuntu2204_rule_6_3_4_0: true
+cis_ubuntu2204_rule_6_3_4_0: true # NOTE: EXTENDED
 cis_ubuntu2204_rule_6_3_4_1: true
 cis_ubuntu2204_rule_6_3_4_2: true
 cis_ubuntu2204_rule_6_3_4_3: true
@@ -337,6 +338,8 @@ cis_ubuntu2204_rule_7_2_9: true
 cis_ubuntu2204_rule_7_2_10: true
 
 # ------------------------------------------------------------------------------
+# HELPER
+# ---------------------------------------
 cis_ubuntu2204_regex_base_search: '^(#(\s)*)?'
 cis_ubuntu2204_regex_base_search_equals: '\s*=.*$'
 cis_ubuntu2204_shell_executable: /bin/bash
@@ -365,12 +368,18 @@ cis_ubuntu2204_config_aide: true
 
 # SPECIAL variables
 # ---------------------------------------
+cis_ubuntu2204_rule_1_1_2_1_tmp_size: 2G
+# cis_ubuntu2204_rule_1_1_2_2_shm_size: 2G
+
 # bootloader password. 'random' makes random password (cis_ubuntu2204_rule_1_4_1)
 cis_ubuntu2204_bootloader_password: random # pragma: allowlist secret
 # grub default file path (cis_ubuntu2204_rule_1_3_1_2)
 cis_ubuntu2204_default_grub_file: /etc/default/grub
 # gdm banner message (cis_ubuntu2204_rule_1_7_2)
 cis_ubuntu2204_warning_banner: Authorized users only. All activity may be monitored and reported.
+# (cis_ubuntu2204_rule_1_7_4)
+cis_ubuntu2204_rule_gdm_lock_delay: 5
+cis_ubuntu2204_rule_gdm_idle_delay: 900
 
 # choose time synchronization (cis_ubuntu2204_rule_2_3_1_1)
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
@@ -380,7 +389,7 @@ cis_ubuntu2204_time_synchronization_time_server:
   - uri: ntp.ubuntu.com
     config: iburst
 # general path for sysctl conf file
-cis_ubuntu2204_sysctl_file_path: /etc/sysctl.conf
+cis_ubuntu2204_sysctl_file_path: /etc/sysctl.d/99-sysctl.conf
 # cron allow users (cis_ubuntu2204_rule_2_4_1_8)
 cis_ubuntu2204_cron_allow_users:
   - root
@@ -428,15 +437,20 @@ cis_ubuntu2204_ssh_kex_algorithms:
   - ecdh-sha2-nistp384
   - ecdh-sha2-nistp256
   - diffie-hellman-group-exchange-sha256
+# log level (cis_ubuntu2204_rule_5_1_13)
+cis_ubuntu2204_ssh_login_grace_time: 60
 # log level (cis_ubuntu2204_rule_5_1_14)
 cis_ubuntu2204_ssh_log_level: VERBOSE # VERBOSE | INFO
 # MACs (cis_ubuntu2204_rule_5_1_15)
 cis_ubuntu2204_ssh_macs:
+  - hmac-sha2-512 # NOTE: FIPS 140 approved
+  # - hmac-sha2-384 # NOTE: FIPS 140 approved - note available under ubuntu
+  - hmac-sha2-256 # NOTE: FIPS 140 approved
+  - hmac-sha1 # NOTE: FIPS 140 approved
+  - umac-128@openssh.com
   # - hmac-sha2-512-etm@openssh.com # NOTE: (CVE-2023-48795)
   # - hmac-sha2-256-etm@openssh.com # NOTE: (CVE-2023-48795)
-  - hmac-sha2-512
-  - hmac-sha2-256
-  - umac-128@openssh.com
+  # - umac-128-etm@openssh.com # NOTE: (CVE-2023-48795)
 # (cis_ubuntu2204_rule_5_1_16)
 cis_ubuntu2204_ssh_max_auth_tries: 4
 # (cis_ubuntu2204_rule_5_1_17)
@@ -456,6 +470,9 @@ cis_ubuntu2204_ssh_allow_tcp_forwarding: "no"
 cis_ubuntu2204_rule_5_1_24_ssh_user: "{{ ansible_user }}"
 # cis_ubuntu2204_rule_5_1_24_ssh_pub_key: "<ADD_PUB_KEY>"
 
+# (cis_ubuntu2204_rule_5_2_6)
+cis_ubuntu2204_sudo_timestamp_timeout: 15 # 15 minutes or less as per your site policy
+
 # (cis_ubuntu2204_rule_5_3_*)
 cis_ubuntu2204_faillock_deny: 5
 cis_ubuntu2204_faillock_unlock_time: 900
@@ -468,9 +485,9 @@ cis_ubuntu2204_password_complexity:
     value: "-1"
   - key: "ucredit"
     value: "-1"
-  - key: "ocredit"
-    value: "-1"
   - key: "lcredit"
+    value: "-1"
+  - key: "ocredit"
     value: "-1"
 cis_ubuntu2204_faillock_maxrepeat: 3
 cis_ubuntu2204_faillock_maxsequence: 3
@@ -506,8 +523,9 @@ cis_ubuntu2204_journald_system_keep_free: 8G
 cis_ubuntu2204_journald_runtime_max_use: 256M
 cis_ubuntu2204_journald_runtime_keep_free: 512M
 cis_ubuntu2204_journald_max_file_sec: 1month
+
 # systemd-journal-upload remote upload (cis_ubuntu2204_rule_6_2_1_2_3)
-cis_ubuntu2204_set_journal_upload_url: "{{ omit }}"
+cis_ubuntu2204_set_journal_upload_url: null
 cis_ubuntu2204_set_journal_upload_server_key_file: /etc/ssl/private/journal-upload.pem
 cis_ubuntu2204_set_journal_upload_server_certificate_file: /etc/ssl/certs/journal-upload.pem
 cis_ubuntu2204_set_journal_upload_trusted_certificate_file: /etc/ssl/ca/trusted.pem
@@ -530,6 +548,9 @@ cis_ubuntu2204_audit_sudo_log_file: /var/log/sudo.log
 # in file (cis_6_3_3_6.rules.j2|cis_6_3_3_7.rules.j2|cis_6_3_3_9.rules.j2|cis_6_3_3_10.rules.j2|cis_6_3_3_13.rules.j2)
 # in file (cis_6_3_3_15.rules.j2|cis_6_3_3_16.rules.j2|cis_6_3_3_17.rules.j2|cis_6_3_3_18.rules.j2|cis_6_3_3_19.rules.j2)
 cis_ubuntu2204_audit_uid_min: 1000
+
+# AIDE cron settings (cis_ubuntu2204_rule_6_1_3)
+cis_ubuntu2204_aide_conf_file: /etc/aide/aide.conf
 
 # ------------------------------------------------------------------------------
 
@@ -560,6 +581,7 @@ cis_ubuntu2204_2_1_rule_set:
     remove: "{{ cis_ubuntu2204_rule_2_1_3_remove }}"
   - title: SECTION2 | 2.1.4 | Ensure dns server services are not in use
     service:
+      - named.service
       - bind9.service
     apt:
       - bind9
@@ -664,6 +686,7 @@ cis_ubuntu2204_2_1_rule_set:
   - title: SECTION2 | 2.1.18 | Ensure web server services are not in use
     service:
       - apache2.socket
+      - apache2.service
       - httpd.service
       - nginx.service
     apt:
@@ -678,7 +701,7 @@ cis_ubuntu2204_2_1_rule_set:
       - xinetd
     disable: "{{ cis_ubuntu2204_rule_2_1_19 }}"
     remove: "{{ cis_ubuntu2204_rule_2_1_19_remove }}"
-  - title: 2.1.20 | Ensure X window server services are not in use
+  - title: SECTION2 | 2.1.20 | Ensure X window server services are not in use
     apt:
       - xserver-common
       - xserver-xorg
@@ -714,34 +737,48 @@ cis_ubuntu2204_2_2_rule_set:
   - title: 2.2.6 | Ensure ftp client is not installed
     apt:
       - ftp
+      - tnftp
     remove: "{{ cis_ubuntu2204_rule_2_2_6 }}"
 
 # SPECIAL multi similar CIS rules set for 6.2.2.1
 cis_ubuntu2204_logfiles_access:
-  - files: 'lastlog|lastlog\.*|wtmp|wtmp\.*|wtmp-*|btmp|btmp\.*|btmp-*|README'
+  - files: '^(?:lastlog(?:\..*|-.*)?|wtmp(?:\..*|-.*)?|btmp(?:\..*|-.*)?|README)$'
     mode: "0664"
     owner: root
     group: utmp # root|utmp
-  - files: 'secure|auth\.log|syslog|messages'
+  - files: '^(?:cloud-init\.log.*|localmessages.*|waagent\.log.*)$'
+    mode: "0644"
+    owner: syslog # root|syslog
+    group: "{{ cis_ubuntu2204_audit_log_group }}" # root|adm
+  - files: '^(?:secure(?:\..*|-.*)?|auth\.log|syslog|messages)$'
     mode: "0640"
     owner: syslog # root|syslog
     group: "{{ cis_ubuntu2204_audit_log_group }}" # root|adm
-  - files: "SSSD|sssd"
+  - files: "^(?:SSSD|sssd)$"
     mode: "0660"
     owner: sssd # root|sssd
     group: sssd # root|sssd
-  - files: "gdm|gdm3"
+  - files: "^gdm(?:3)?$"
     mode: "0660"
     owner: root
     group: gdm # root|gdm|gdm3
-  - files: '*\.journal|*\.journal~'
+  - files: '^.*\.journal(?:~)?$'
     mode: "0640"
     owner: root
     group: systemd-journal # root|systemd-journal
+  - files: '^aide(?:init)?(?:\..*)?$'
+    mode: "0640"
+    owner: _aide
+    group: "{{ cis_ubuntu2204_audit_log_group }}" # _aide|adm
+  - files: '^(ufw\.log|kernel\.log)$'
+    mode: "0640"
+    owner: syslog # root|syslog
+    group: "{{ cis_ubuntu2204_audit_log_group }}" # root|adm
 
-# SECTION based handled file access variable
 # ------------------------------------------------------------------------------
 
+# SECTION based handled file access variable
+# ---------------------------------------
 # SECTION1
 cis_ubuntu2204_section1_owner_default: root
 cis_ubuntu2204_section1_group_default: root
@@ -763,3 +800,15 @@ cis_ubuntu2204_section2_mode_cron_folder: "0700"
 cis_ubuntu2204_section3_owner_default: root
 cis_ubuntu2204_section3_group_default: root
 cis_ubuntu2204_section3_mode_default: "0644"
+
+# SECTION5
+cis_ubuntu2204_section5_owner_ssh: root
+cis_ubuntu2204_section5_group_ssh: root
+cis_ubuntu2204_section5_mode_ssh: "0600"
+cis_ubuntu2204_section5_mode_ssh_pub: "0644"
+cis_ubuntu2204_section5_owner_sudo: root
+cis_ubuntu2204_section5_group_sudo: root
+cis_ubuntu2204_section5_mode_sudo: "0400"
+cis_ubuntu2204_section5_owner_pam: root
+cis_ubuntu2204_section5_group_pam: root
+cis_ubuntu2204_section5_mode_pam: "0644"

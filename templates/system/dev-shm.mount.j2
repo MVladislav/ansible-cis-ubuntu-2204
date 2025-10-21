@@ -1,0 +1,26 @@
+{% set cis_ubuntu2204_rule_1_1_2_2_options = [] %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_2_options.append('defaults') %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_2_options.append('rw') %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_2_options.append('relatime') %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_2_options.append('size={{ cis_ubuntu2204_rule_1_1_2_2_shm_size }}') %}
+{% if cis_ubuntu2204_rule_1_1_2_2_2 %}{% set _ = cis_ubuntu2204_rule_1_1_2_2_options.append('nodev') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_2_2_3 %}{% set _ = cis_ubuntu2204_rule_1_1_2_2_options.append('nosuid') %}{% endif %}
+{% if cis_ubuntu2204_rule_1_1_2_2_4 %}{% set _ = cis_ubuntu2204_rule_1_1_2_2_options.append('noexec') %}{% endif %}
+{% set cis_ubuntu2204_rule_1_1_2_2_options = cis_ubuntu2204_rule_1_1_2_2_options|join(',') %}
+[Unit]
+Description=Shared Memory Directory /dev/shm
+ConditionPathIsSymbolicLink=!/dev/shm
+DefaultDependencies=no
+Conflicts=umount.target
+Before=local-fs.target umount.target
+After=swap.target
+
+[Mount]
+Where=/dev/shm
+What=tmpfs
+Type=tmpfs
+Options={{ cis_ubuntu2204_rule_1_1_2_2_options }}
+
+# Make 'systemctl enable dev-shm.mount' work:
+[Install]
+WantedBy=local-fs.target

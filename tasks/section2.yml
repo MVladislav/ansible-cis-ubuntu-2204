@@ -119,7 +119,7 @@
       failed_when: false # NOTE: sometimes throws error
       when:
         - cis_ubuntu2204_time_synchronization_service != "systemd-timesyncd"
-        - service_status_systemd_timesyncd.stdout == "loaded"
+        - service_status_systemd_timesyncd.stdout in ('loadedactive','loadedinactive')
 
 - name: "SECTION2 | 2.3.2.1 | Ensure systemd-timesyncd configured with authorized timeserver"
   ansible.builtin.template:
@@ -186,7 +186,8 @@
     state: started
   when:
     - cis_ubuntu2204_rule_2_4_1_1
-    - service_status_cron.stdout == "loaded"
+    - service_status_cron.stdout is match('.*(inactive|masked).*')
+    - service_status_cron.stdout is not match('.*(not-found).*')
   tags:
     - rule_2_4_1
     - server_l1
@@ -200,7 +201,7 @@
     mode: "{{ cis_ubuntu2204_section2_mode_cron }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_2
-    - service_status_cron.stdout == "loaded"
+    - service_status_cron.stdout in ('loadedactive','loadedinactive')
   tags:
     - rule_2_4_1
     - server_l1
@@ -215,7 +216,7 @@
     mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_3
-    - service_status_cron.stdout == "loaded"
+    - service_status_cron.stdout in ('loadedactive','loadedinactive')
   tags:
     - rule_2_4_1
     - server_l1
@@ -230,7 +231,7 @@
     mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_4
-    - service_status_cron.stdout == "loaded"
+    - service_status_cron.stdout in ('loadedactive','loadedinactive')
   tags:
     - rule_2_4_1
     - server_l1
@@ -245,7 +246,7 @@
     mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_5
-    - service_status_cron.stdout == "loaded"
+    - service_status_cron.stdout in ('loadedactive','loadedinactive')
   tags:
     - rule_2_4_1
     - server_l1
@@ -260,7 +261,7 @@
     mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_6
-    - service_status_cron.stdout == "loaded"
+    - service_status_cron.stdout in ('loadedactive','loadedinactive')
   tags:
     - rule_2_4_1
     - server_l1
@@ -275,7 +276,7 @@
     mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_7
-    - service_status_cron.stdout == "loaded"
+    - service_status_cron.stdout in ('loadedactive','loadedinactive')
   tags:
     - rule_2_4_1
     - server_l1
@@ -284,7 +285,7 @@
 - name: "SECTION2 | 2.4.1.8 | Ensure crontab is restricted to authorized users"
   when:
     - cis_ubuntu2204_rule_2_4_1_8
-    - service_status_cron.stdout == "loaded"
+    - service_status_cron.stdout in ('loadedactive','loadedinactive')
   tags:
     - rule_2_4_1
     - server_l1
@@ -307,7 +308,7 @@
 - name: "SECTION2 | 2.4.2.1 | Ensure at is restricted to authorized users"
   when:
     - cis_ubuntu2204_rule_2_4_2_1
-    - service_status_cron.stdout == "loaded"
+    - service_status_cron.stdout in ('loadedactive','loadedinactive')
   tags:
     - rule_2_4_2
     - server_l1

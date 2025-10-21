@@ -17,6 +17,10 @@
     # -------------------------
     cis_ubuntu2204_rule_1_3_1_3: true # AppArmor complain mode
     cis_ubuntu2204_rule_1_3_1_4: true # AppArmor enforce mode
+    # cis_ubuntu2204_apparmor_update_to_complain_profiles:
+    #   - firefox
+    # cis_ubuntu2204_apparmor_update_to_enforce_profiles:
+    #   - firefox
     # -------------------------
     cis_ubuntu2204_rule_1_4_1: false # bootloader password (disabled)
     cis_ubuntu2204_set_boot_pass: false # bootloader password (disabled)

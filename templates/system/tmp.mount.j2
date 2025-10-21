@@ -2,7 +2,7 @@
 {% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('defaults') %}
 {% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('rw') %}
 {% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('relatime') %}
-{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('size=2G') %}
+{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('size={}'.format(cis_ubuntu2204_rule_1_1_2_1_tmp_size)) %}
 {% if cis_ubuntu2204_rule_1_1_2_1_2 %}{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('nodev') %}{% endif %}
 {% if cis_ubuntu2204_rule_1_1_2_1_3 %}{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('nosuid') %}{% endif %}
 {% if cis_ubuntu2204_rule_1_1_2_1_4 %}{% set _ = cis_ubuntu2204_rule_1_1_2_1_options.append('noexec') %}{% endif %}

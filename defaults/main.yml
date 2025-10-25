@@ -23,7 +23,7 @@ cis_ubuntu2204_rule_1_1_1_2: true # freevxfs
 cis_ubuntu2204_rule_1_1_1_3: true # hfs
 cis_ubuntu2204_rule_1_1_1_4: true # hfsplus
 cis_ubuntu2204_rule_1_1_1_5: true # jffs2
-cis_ubuntu2204_rule_1_1_1_6: true # overlay
+cis_ubuntu2204_rule_1_1_1_6: true # overlayfs - IMPACT: consider the impact on containerized workloads, as disabling may severely disrupt containerization.
 cis_ubuntu2204_rule_1_1_1_7: true # squashfs - IMPACT: Snap packages utilizes squashfs as a compressed filesystem, disabling squashfs will cause Snap packages to fail.
 cis_ubuntu2204_rule_1_1_1_8: true # udf - IMPACT: Microsoft Azure requires the usage of udf.
 cis_ubuntu2204_rule_1_1_1_9: true # usb-storage - IMPACT: Disabling the usb-storage module will disable any usage of USB storage devices.
@@ -137,6 +137,7 @@ cis_ubuntu2204_rule_2_4_1_5: true
 cis_ubuntu2204_rule_2_4_1_6: true
 cis_ubuntu2204_rule_2_4_1_7: true
 cis_ubuntu2204_rule_2_4_1_8: true
+cis_ubuntu2204_rule_2_4_1_9: true
 cis_ubuntu2204_rule_2_4_2_1: true
 ## SECTION 3 rules
 cis_ubuntu2204_rule_3_1_1: true # NOTE: depends also on 'cis_ubuntu2204_required_ipv6'
@@ -416,7 +417,7 @@ cis_ubuntu2204_time_synchronization_time_server:
     config: iburst
 # general path for sysctl conf file
 cis_ubuntu2204_sysctl_file_path: /etc/sysctl.d/99-sysctl.conf
-# cron allow users (cis_ubuntu2204_rule_2_4_1_8)
+# cron allow users (cis_ubuntu2204_rule_2_4_1_9)
 cis_ubuntu2204_cron_allow_users:
   - root
 # at allow users (cis_ubuntu2204_rule_2_4_2_1)
@@ -817,10 +818,13 @@ cis_ubuntu2204_section1_mode_etc_dconf_folder: "0755"
 # SECTION2
 cis_ubuntu2204_section2_owner_default: root
 cis_ubuntu2204_section2_group_default: root
-cis_ubuntu2204_section2_group_etc_at_allow: daemon
 cis_ubuntu2204_section2_mode_default: "0644"
 cis_ubuntu2204_section2_mode_cron: "0600"
 cis_ubuntu2204_section2_mode_cron_folder: "0700"
+cis_ubuntu2204_section2_group_crontab: crontab
+cis_ubuntu2204_section2_mode_crontab: "0640"
+cis_ubuntu2204_section2_group_at_allow: daemon
+cis_ubuntu2204_section2_mode_at_allow: "0640"
 
 # SECTION3
 cis_ubuntu2204_section3_owner_default: root

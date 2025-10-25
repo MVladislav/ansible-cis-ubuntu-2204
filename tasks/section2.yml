@@ -15,7 +15,7 @@
     - workstation_l1
     - workstation_l2
 
-- name: "SECTION2 | 2.1.21 | Ensure mail transfer agent is configured for local-only mode"
+- name: "SECTION2 | 2.1.21 | Ensure mail transfer agents are configured for local-only mode"
   ansible.builtin.lineinfile:
     dest: /etc/postfix/main.cf
     regexp: "{{ cis_ubuntu2204_regex_base_search }}inet_interfaces{{ cis_ubuntu2204_regex_base_search_equals }}"
@@ -25,6 +25,7 @@
     owner: "{{ cis_ubuntu2204_section2_owner_default }}"
     group: "{{ cis_ubuntu2204_section2_group_default }}"
     mode: "{{ cis_ubuntu2204_section2_mode_default }}"
+  notify: "restart postfix"
   when:
     - cis_ubuntu2204_rule_2_1_21
     - package_installed_postfix.rc == 0
@@ -193,7 +194,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION2 | 2.4.1.2 | Ensure permissions on /etc/crontab are configured"
+- name: "SECTION2 | 2.4.1.2 | Ensure access to /etc/crontab is configured"
   ansible.builtin.file:
     dest: /etc/crontab
     owner: "{{ cis_ubuntu2204_section2_owner_default }}"
@@ -207,7 +208,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION2 | 2.4.1.3 | Ensure permissions on /etc/cron.hourly are configured"
+- name: "SECTION2 | 2.4.1.3 | Ensure access to /etc/cron.hourly is configured"
   ansible.builtin.file:
     dest: /etc/cron.hourly
     state: directory
@@ -222,7 +223,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION2 | 2.4.1.4 | Ensure permissions on /etc/cron.daily are configured"
+- name: "SECTION2 | 2.4.1.4 | Ensure access to /etc/cron.daily is configured"
   ansible.builtin.file:
     dest: /etc/cron.daily
     state: directory
@@ -237,7 +238,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION2 | 2.4.1.5 | Ensure permissions on /etc/cron.weekly are configured"
+- name: "SECTION2 | 2.4.1.5 | Ensure access to /etc/cron.weekly is configured"
   ansible.builtin.file:
     dest: /etc/cron.weekly
     state: directory
@@ -252,7 +253,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION2 | 2.4.1.6 | Ensure permissions on /etc/cron.monthly are configured"
+- name: "SECTION2 | 2.4.1.6 | Ensure access to /etc/cron.monthly is configured"
   ansible.builtin.file:
     dest: /etc/cron.monthly
     state: directory
@@ -267,9 +268,9 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION2 | 2.4.1.7 | Ensure permissions on /etc/cron.d are configured"
+- name: "SECTION2 | 2.4.1.7 | Ensure access to /etc/cron.yearly is configured"
   ansible.builtin.file:
-    dest: /etc/cron.d
+    dest: /etc/cron.yearly
     state: directory
     owner: "{{ cis_ubuntu2204_section2_owner_default }}"
     group: "{{ cis_ubuntu2204_section2_group_default }}"
@@ -282,7 +283,13 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION2 | 2.4.1.8 | Ensure crontab is restricted to authorized users"
+- name: "SECTION2 | 2.4.1.8 | Ensure access to /etc/cron.d is configured"
+  ansible.builtin.file:
+    dest: /etc/cron.d
+    state: directory
+    owner: "{{ cis_ubuntu2204_section2_owner_default }}"
+    group: "{{ cis_ubuntu2204_section2_group_default }}"
+    mode: "{{ cis_ubuntu2204_section2_mode_cron_folder }}"
   when:
     - cis_ubuntu2204_rule_2_4_1_8
     - service_status_cron.stdout in ('loadedactive','loadedinactive')
@@ -290,22 +297,31 @@
     - rule_2_4_1
     - server_l1
     - workstation_l1
+
+- name: "SECTION2 | 2.4.1.9 | Ensure access to crontab is configured"
+  when:
+    - cis_ubuntu2204_rule_2_4_1_9
+    - service_status_cron.stdout in ('loadedactive','loadedinactive')
+  tags:
+    - rule_2_4_1
+    - server_l1
+    - workstation_l1
   block:
-    - name: "SECTION2 | 2.4.1.8 | Ensure crontab is restricted to authorized users | rm cron.deny"
+    - name: "SECTION2 | 2.4.1.9 | Ensure access to crontab is configured | rm cron.deny"
       ansible.builtin.file:
         dest: /etc/cron.deny
         state: absent
-    - name: "SECTION2 | 2.4.1.8 | Ensure crontab is restricted to authorized users | set cron.allow"
+    - name: "SECTION2 | 2.4.1.9 | Ensure access to crontab is configured | set cron.allow"
       ansible.builtin.template:
         src: cron.allow.j2
         dest: /etc/cron.allow
         owner: "{{ cis_ubuntu2204_section2_owner_default }}"
-        group: "{{ cis_ubuntu2204_section2_group_default }}"
-        mode: "{{ cis_ubuntu2204_section2_mode_cron }}"
+        group: "{{ cis_ubuntu2204_section2_group_crontab }}"
+        mode: "{{ cis_ubuntu2204_section2_mode_crontab }}"
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION2 | 2.4.2.1 | Ensure at is restricted to authorized users"
+- name: "SECTION2 | 2.4.2.1 | Ensure access to at is configured"
   when:
     - cis_ubuntu2204_rule_2_4_2_1
     - service_status_cron.stdout in ('loadedactive','loadedinactive')
@@ -314,14 +330,14 @@
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION2 | 2.4.2.1 | Ensure at is restricted to authorized users | rm at.deny"
+    - name: "SECTION2 | 2.4.2.1 | Ensure access to at is configured | rm at.deny"
       ansible.builtin.file:
         dest: /etc/at.deny
         state: absent
-    - name: "SECTION2 | 2.4.2.1 | Ensure at is restricted to authorized users | set at.allow"
+    - name: "SECTION2 | 2.4.2.1 | Ensure access to at is configured | set at.allow"
       ansible.builtin.template:
         src: at.allow.j2
         dest: /etc/at.allow
         owner: "{{ cis_ubuntu2204_section2_owner_default }}"
-        group: "{{ cis_ubuntu2204_section2_group_etc_at_allow }}"
-        mode: "{{ cis_ubuntu2204_section2_mode_cron }}"
+        group: "{{ cis_ubuntu2204_section2_group_at_allow }}"
+        mode: "{{ cis_ubuntu2204_section2_mode_at_allow }}"

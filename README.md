@@ -205,7 +205,7 @@ cis_ubuntu2204_time_synchronization_time_server:
   - uri: ntp.ubuntu.com
     config: iburst
 
-# cron allow users  (cis_ubuntu2204_rule_2_4_1_8)
+# cron allow users  (cis_ubuntu2204_rule_2_4_1_9)
 cis_ubuntu2204_cron_allow_users:
   - root
 # at allow users  (cis_ubuntu2204_rule_2_4_2_1)
@@ -537,7 +537,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 2.1.18    | Ensure web server services are not in use (Automated)                                           | 🟢  |     |     |
 | 2.1.19    | Ensure xinetd services are not in use (Automated)                                               | 🟢  |     |     |
 | 2.1.20    | Ensure X window server services are not in use (Automated)                                      | 🟢  |     |     |
-| 2.1.21    | Ensure mail transfer agent is configured for local-only mode (Automated)                        | 🟢  |     |     |
+| 2.1.21    | Ensure mail transfer agents are configured for local-only mode (Automated)                      | 🟢  |     |     |
 | 2.1.22    | Ensure only approved services are listening on a network interface (Manual)                     | 🟢  |     |     |
 | 2.2       | **Configure Client Services**                                                                   | 🟢  |     |     |
 | 2.2.1     | Ensure nis Client is not installed (Automated)                                                  | 🟢  |     |     |
@@ -559,15 +559,16 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 2.4       | **Job Schedulers**                                                                              | 🟢  |     |     |
 | 2.4.1     | **Configure cron**                                                                              | 🟢  |     |     |
 | 2.4.1.1   | Ensure cron daemon is enabled and active (Automated)                                            | 🟢  |     |     |
-| 2.4.1.2   | Ensure permissions on /etc/crontab are configured (Automated)                                   | 🟢  |     |     |
-| 2.4.1.3   | Ensure permissions on /etc/cron.hourly are configured (Automated)                               | 🟢  |     |     |
-| 2.4.1.4   | Ensure permissions on /etc/cron.daily are configured (Automated)                                | 🟢  |     |     |
-| 2.4.1.5   | Ensure permissions on /etc/cron.weekly are configured (Automated)                               | 🟢  |     |     |
-| 2.4.1.6   | Ensure permissions on /etc/cron.monthly are configured (Automated)                              | 🟢  |     |     |
-| 2.4.1.7   | Ensure permissions on /etc/cron.d are configured (Automated)                                    | 🟢  |     |     |
-| 2.4.1.8   | Ensure crontab is restricted to authorized users (Automated)                                    | 🟢  |     |     |
+| 2.4.1.2   | Ensure access to /etc/crontab is configured (Automated)                                         | 🟢  |     |     |
+| 2.4.1.3   | Ensure access to /etc/cron.hourly is configured (Automated)                                     | 🟢  |     |     |
+| 2.4.1.4   | Ensure access to /etc/cron.daily is configured (Automated)                                      | 🟢  |     |     |
+| 2.4.1.5   | Ensure access to /etc/cron.weekly is configured (Automated)                                     | 🟢  |     |     |
+| 2.4.1.6   | Ensure access to /etc/cron.monthly is configured (Automated)                                    | 🟢  |     |     |
+| 2.4.1.7   | Ensure access to /etc/cron.yearly is configured (Automated)                                     | 🟢  |     |     |
+| 2.4.1.8   | Ensure access to /etc/cron.d is configured (Automated)                                          | 🟢  |     |     |
+| 2.4.1.9   | Ensure access to crontab is configured (Automated)                                              | 🟢  |     |     |
 | 2.4.2     | **Configure at**                                                                                | 🟢  |     |     |
-| 2.4.2.1   | Ensure at is restricted to authorized users (Automated)                                         | 🟢  |     |     |
+| 2.4.2.1   | Ensure access to at is configured (Automated)                                                   | 🟢  |     |     |
 | 3         | **Network**                                                                                     |     | 🟡  |     |
 | 3.1       | **Configure Network Devices**                                                                   |     | 🟡  |     |
 | 3.1.1     | Ensure IPv6 status is identified (Manual)                                                       | 🟢  |     |     |

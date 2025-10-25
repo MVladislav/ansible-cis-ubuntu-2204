@@ -37,6 +37,17 @@
 
 # ------------------------------------------------------------------------------
 
+- name: "HANDLER | 2.1.21 | systemd restart and enable postfix"
+  become: true
+  ansible.builtin.systemd_service:
+    name: postfix
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: restarted
+  listen: "restart postfix"
+  when: package_installed_postfix.rc == 0
+
 - name: "HANDLER | 2.3.2.1 | systemd restart and enable systemd-timesyncd"
   become: true
   ansible.builtin.systemd_service:

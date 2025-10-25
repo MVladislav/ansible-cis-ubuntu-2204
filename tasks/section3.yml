@@ -211,6 +211,7 @@
     - rule_3_3_1
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
 
 - name: "SECTION3 | 3.3.2 | Configure IPv6 parameters"
   ansible.posix.sysctl:
@@ -229,3 +230,4 @@
     - rule_3_3_2
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest

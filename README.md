@@ -139,6 +139,9 @@ cis_ubuntu2204_rule_1_3_1_4: false
 cis_ubuntu2204_set_boot_pass: false
 cis_ubuntu2204_disable_boot_pass: true
 
+# Ensure wireless interfaces are not available
+cis_ubuntu2204_rule_3_1_2: false
+
 # Active journal send logs to a remote log host
 # do not forget set related variables 'cis_ubuntu2204_set_journal_upload_*'
 cis_ubuntu2204_set_journal_upload: false
@@ -569,10 +572,10 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 2.4.1.9   | Ensure access to crontab is configured (Automated)                                              | 🟢  |     |     |
 | 2.4.2     | **Configure at**                                                                                | 🟢  |     |     |
 | 2.4.2.1   | Ensure access to at is configured (Automated)                                                   | 🟢  |     |     |
-| 3         | **Network**                                                                                     |     | 🟡  |     |
-| 3.1       | **Configure Network Devices**                                                                   |     | 🟡  |     |
+| 3         | **Network**                                                                                     | 🟢  |     |     |
+| 3.1       | **Configure Network Devices**                                                                   | 🟢  |     |     |
 | 3.1.1     | Ensure IPv6 status is identified (Manual)                                                       | 🟢  |     |     |
-| 3.1.2     | Ensure wireless interfaces are disabled (Automated)                                             |     |     | 🔴  |
+| 3.1.2     | Ensure wireless interfaces are not available (Automated)                                        | 🟢  |     |     |
 | 3.1.3     | Ensure bluetooth services are not in use (Automated)                                            | 🟢  |     |     |
 | 3.2       | **Configure Network Kernel Modules**                                                            | 🟢  |     |     |
 | 3.2.1     | Ensure dccp kernel module is not available (Automated)                                          | 🟢  |     |     |
@@ -580,17 +583,34 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 3.2.3     | Ensure rds kernel module is not available (Automated)                                           | 🟢  |     |     |
 | 3.2.4     | Ensure sctp kernel module is not available (Automated)                                          | 🟢  |     |     |
 | 3.3       | **Configure Network Kernel Parameters**                                                         | 🟢  |     |     |
-| 3.3.1     | Ensure ip forwarding is disabled (Automated)                                                    | 🟢  |     |     |
-| 3.3.2     | Ensure packet redirect sending is disabled (Automated)                                          | 🟢  |     |     |
-| 3.3.3     | Ensure bogus icmp responses are ignored (Automated)                                             | 🟢  |     |     |
-| 3.3.4     | Ensure broadcast ICMP requests are ignored (Automated)                                          | 🟢  |     |     |
-| 3.3.5     | Ensure ICMP redirects are not accepted (Automated)                                              | 🟢  |     |     |
-| 3.3.6     | Ensure secure ICMP redirects are not accepted (Automated)                                       | 🟢  |     |     |
-| 3.3.7     | Ensure Reverse Path Filtering is enabled (Automated)                                            | 🟢  |     |     |
-| 3.3.8     | Ensure source routed packets are not accepted (Automated)                                       | 🟢  |     |     |
-| 3.3.9     | Ensure suspicious packets are logged (Automated)                                                | 🟢  |     |     |
-| 3.3.10    | Ensure TCP SYN Cookies is enabled (Automated)                                                   | 🟢  |     |     |
-| 3.3.11    | Ensure IPv6 router advertisements are not accepted (Automated)                                  | 🟢  |     |     |
+| 3.3.1     | **Configure IPv4 parameters**                                                                   | 🟢  |     |     |
+| 3.3.1.1   | Ensure net.ipv4.ip_forward is configured (Automated)                                            | 🟢  |     |     |
+| 3.3.1.2   | Ensure net.ipv4.conf.all.forwarding is configured (Automated)                                   | 🟢  |     |     |
+| 3.3.1.3   | Ensure net.ipv4.conf.default.forwarding is configured (Automated)                               | 🟢  |     |     |
+| 3.3.1.4   | Ensure net.ipv4.conf.all.send_redirects is configured (Automated)                               | 🟢  |     |     |
+| 3.3.1.5   | Ensure net.ipv4.conf.default.send_redirects is configured (Automated)                           | 🟢  |     |     |
+| 3.3.1.6   | Ensure net.ipv4.icmp_ignore_bogus_error_responses is configured (Automated)                     | 🟢  |     |     |
+| 3.3.1.7   | Ensure net.ipv4.icmp_echo_ignore_broadcasts is configured (Automated)                           | 🟢  |     |     |
+| 3.3.1.8   | Ensure net.ipv4.conf.all.accept_redirects is configured (Automated)                             | 🟢  |     |     |
+| 3.3.1.9   | Ensure net.ipv4.conf.default.accept_redirects is configured (Automated)                         | 🟢  |     |     |
+| 3.3.1.10  | Ensure net.ipv4.conf.all.secure_redirects is configured (Automated)                             | 🟢  |     |     |
+| 3.3.1.11  | Ensure net.ipv4.conf.default.secure_redirects is configured (Automated)                         | 🟢  |     |     |
+| 3.3.1.12  | Ensure net.ipv4.conf.all.rp_filter is configured (Automated)                                    | 🟢  |     |     |
+| 3.3.1.13  | Ensure net.ipv4.conf.default.rp_filter is configured (Automated)                                | 🟢  |     |     |
+| 3.3.1.14  | Ensure net.ipv4.conf.all.accept_source_route is configured (Automated)                          | 🟢  |     |     |
+| 3.3.1.15  | Ensure net.ipv4.conf.default.accept_source_route is configured (Automated)                      | 🟢  |     |     |
+| 3.3.1.16  | Ensure net.ipv4.conf.all.log_martians is configured (Automated)                                 | 🟢  |     |     |
+| 3.3.1.17  | Ensure net.ipv4.conf.default.log_martians is configured (Automated)                             | 🟢  |     |     |
+| 3.3.1.18  | Ensure net.ipv4.tcp_syncookies is configured (Automated)                                        | 🟢  |     |     |
+| 3.3.2     | **Configure IPv6 parameters**                                                                   | 🟢  |     |     |
+| 3.3.2.1   | Ensure net.ipv6.conf.all.forwarding is configured (Automated)                                   | 🟢  |     |     |
+| 3.3.2.2   | Ensure net.ipv6.conf.default.forwarding is configured (Automated)                               | 🟢  |     |     |
+| 3.3.2.3   | Ensure net.ipv6.conf.all.accept_redirects is configured (Automated)                             | 🟢  |     |     |
+| 3.3.2.4   | Ensure net.ipv6.conf.default.accept_redirects is configured (Automated)                         | 🟢  |     |     |
+| 3.3.2.5   | Ensure net.ipv6.conf.all.accept_source_route is configured (Automated)                          | 🟢  |     |     |
+| 3.3.2.6   | Ensure net.ipv6.conf.default.accept_source_route is configured (Automated)                      | 🟢  |     |     |
+| 3.3.2.7   | Ensure net.ipv6.conf.all.accept_ra is configured (Automated)                                    | 🟢  |     |     |
+| 3.3.2.8   | Ensure net.ipv6.conf.default.accept_ra is configured (Automated)                                | 🟢  |     |     |
 | 4         | **Host Based Firewall**                                                                         | 🟢  |     |     |
 | 4.1       | **Configure UncomplicatedFirewall**                                                             | 🟢  |     |     |
 | 4.1.1     | Ensure ufw is installed (Automated)                                                             | 🟢  |     |     |

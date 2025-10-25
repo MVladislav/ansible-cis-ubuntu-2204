@@ -152,7 +152,7 @@ cis_ubuntu2204_set_journal_upload_url: <SET_REMOTE_URL>
 
 ```yaml
 # will disable USB storage, if USB storage is needed set to 'false'
-cis_ubuntu2204_rule_1_1_1_8: true
+cis_ubuntu2204_rule_1_1_1_9: true
 
 # will remove bluetooth service, if bluetooth is needed set to 'false'
 cis_ubuntu2204_rule_3_1_3: true
@@ -179,6 +179,17 @@ cis_ubuntu2204_config_aide: true
 ### Variables to check and set for own purpose
 
 ```yaml
+# With rule 'cis_ubuntu2204_rule_1_1_1_10' multiple filesystem will be disabled if they are vulnerable
+# if you know you would need filesystem, from vulnerable list 'cis_ubuntu2204_fs_known_vulnerable', which not listed below,
+# update the list as needed.
+# By default the tasks will check which filesystem are current in use and will not disable them, also if not listed in 'cis_ubuntu2204_fs_ignored'
+cis_ubuntu2204_fs_ignored: # these filesystem won't be disabled
+  - xfs
+  - vfat
+  - ext2
+  - ext3
+  - ext4
+
 # list will be auto gathered if unset (cis_ubuntu2204_rule_1_3_1_3)
 # you can define profiles by your own, which should be set as complain profile
 cis_ubuntu2204_apparmor_update_to_complain_profiles: []
@@ -315,7 +326,7 @@ Example usage can be found also [here](https://github.com/MVladislav/ansible-env
       cis_ubuntu2204_section6: true
       cis_ubuntu2204_section7: true
       # -------------------------
-      cis_ubuntu2204_rule_1_1_1_6: false # squashfs - IMPACT: Snap packages utilizes squashfs as a compressed filesystem, disabling squashfs will cause Snap packages to fail.
+      cis_ubuntu2204_rule_1_1_1_7: false # squashfs - IMPACT: Snap packages utilizes squashfs as a compressed filesystem, disabling squashfs will cause Snap packages to fail.
       # -------------------------
       cis_ubuntu2204_rule_5_1_24: true
       cis_ubuntu2204_rule_5_1_24_ssh_user: "{{ ansible_user }}"
@@ -332,7 +343,7 @@ Example usage can be found also [here](https://github.com/MVladislav/ansible-env
       # -------------------------
       cis_ubuntu2204_allow_gdm_gui: true
       cis_ubuntu2204_allow_autofs: true # Disable auto mount, set to true to allow it and not disable
-      cis_ubuntu2204_rule_1_1_1_8: false # Disable USB Storage, set to false to not disable
+      cis_ubuntu2204_rule_1_1_1_9: false # Disable USB Storage, set to false to not disable
       cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
       cis_ubuntu2204_time_synchronization_time_server:
         - uri: time.cloudflare.com
@@ -407,8 +418,8 @@ For more specific description see the **CIS pdf** file on **page 18**.
 
 | Key                                                  | Count |
 | :--------------------------------------------------- | :---- |
-| 🟢 Implemented                                       | 267   |
-| 🟡 Partly Implemented or print info for manual check | 13    |
+| 🟢 Implemented                                       | 266   |
+| 🟡 Partly Implemented or print info for manual check | 14    |
 | 🔴 Not Implemented                                   | 20    |
 | Total                                                | 300   |
 | Coverage (Implemented/Partly vs Total)               | 93.33 |
@@ -423,17 +434,20 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.1.1.3   | Ensure hfs kernel module is not available (Automated)                                           | 🟢  |     |     |
 | 1.1.1.4   | Ensure hfsplus kernel module is not available (Automated)                                       | 🟢  |     |     |
 | 1.1.1.5   | Ensure jffs2 kernel module is not available (Automated)                                         | 🟢  |     |     |
-| 1.1.1.6   | Ensure squashfs kernel module is not available (Automated)                                      | 🟢  |     |     |
-| 1.1.1.7   | Ensure udf kernel module is not available (Automated)                                           | 🟢  |     |     |
-| 1.1.1.8   | Ensure usb-storage kernel module is not available (Automated)                                   | 🟢  |     |     |
+| 1.1.1.6   | Ensure overlay kernel module is not available (Automated)                                       | 🟢  |     |     |
+| 1.1.1.7   | Ensure squashfs kernel module is not available (Automated)                                      | 🟢  |     |     |
+| 1.1.1.8   | Ensure udf kernel module is not available (Automated)                                           | 🟢  |     |     |
+| 1.1.1.9   | Ensure usb-storage kernel module is not available (Automated)                                   | 🟢  |     |     |
+| 1.1.1.10  | Ensure unused filesystems kernel modules are not available (Automated)                          | 🟢  |     |     |
+| 1.1.1.11  | Ensure firewire-core kernel module is not available (Automated)                                 | 🟢  |     |     |
 | 1.1.2     | **Configure Filesystem Partitions**                                                             | 🟢  |     |     |
 | 1.1.2.1   | **Configure /tmp**                                                                              | 🟢  |     |     |
-| 1.1.2.1.1 | Ensure /tmp is a separate partition (Automated)                                                 | 🟢  |     |     |
+| 1.1.2.1.1 | Ensure /tmp is tmpfs or a separate partition (Automated)                                        | 🟢  |     |     |
 | 1.1.2.1.2 | Ensure nodev option set on /tmp partition (Automated)                                           | 🟢  |     |     |
 | 1.1.2.1.3 | Ensure nosuid option set on /tmp partition (Automated)                                          | 🟢  |     |     |
 | 1.1.2.1.4 | Ensure noexec option set on /tmp partition (Automated)                                          | 🟢  |     |     |
 | 1.1.2.2   | **Configure /dev/shm**                                                                          | 🟢  |     |     |
-| 1.1.2.2.1 | Ensure /dev/shm is a separate partition (Automated)                                             | 🟢  |     |     |
+| 1.1.2.2.1 | Ensure /dev/shm is tmpfs or a separate partition (Automated)                                    | 🟢  |     |     |
 | 1.1.2.2.2 | Ensure nodev option set on /dev/shm partition (Automated)                                       | 🟢  |     |     |
 | 1.1.2.2.3 | Ensure nosuid option set on /dev/shm partition (Automated)                                      | 🟢  |     |     |
 | 1.1.2.2.4 | Ensure noexec option set on /dev/shm partition (Automated)                                      | 🟢  |     |     |
@@ -468,23 +482,24 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.2.2.1   | Ensure updates, patches, and additional security software are installed (Manual)                | 🟢  |     |     |
 | 1.3       | **Mandatory Access Control**                                                                    | 🟢  |     |     |
 | 1.3.1     | **Configure AppArmor**                                                                          | 🟢  |     |     |
-| 1.3.1.1   | Ensure AppArmor is installed (Automated)                                                        | 🟢  |     |     |
-| 1.3.1.2   | Ensure AppArmor is enabled in the bootloader configuration (Automated)                          | 🟢  |     |     |
-| 1.3.1.3   | Ensure all AppArmor Profiles are in enforce or complain mode (Automated)                        | 🟢  |     |     |
+| 1.3.1.1   | Ensure the apparmor packages are installed (Automated)                                          | 🟢  |     |     |
+| 1.3.1.2   | Ensure AppArmor is enabled (Automated)                                                          | 🟢  |     |     |
+| 1.3.1.3   | Ensure all AppArmor Profiles are not disabled (Automated)                                       | 🟢  |     |     |
 | 1.3.1.4   | Ensure all AppArmor Profiles are enforcing (Automated)                                          | 🟢  |     |     |
 | 1.4       | **Configure Bootloader**                                                                        | 🟢  |     |     |
 | 1.4.1     | Ensure bootloader password is set (Automated)                                                   | 🟢  |     |     |
 | 1.4.2     | Ensure access to bootloader config is configured (Automated)                                    | 🟢  |     |     |
 | 1.5       | **Configure Additional Process Hardening**                                                      | 🟢  |     |     |
-| 1.5.1     | Ensure address space layout randomization is enabled (Automated)                                | 🟢  |     |     |
-| 1.5.2     | Ensure ptrace_scope is restricted (Automated)                                                   | 🟢  |     |     |
-| 1.5.3     | Ensure core dumps are restricted (Automated)                                                    | 🟢  |     |     |
-| 1.5.4     | Ensure prelink is not installed (Automated)                                                     | 🟢  |     |     |
-| 1.5.5     | Ensure Automatic Error Reporting is not enabled (Automated)                                     | 🟢  |     |     |
+| 1.5.1     | Ensure randomize_va_space is configured (Automated)                                             | 🟢  |     |     |
+| 1.5.2     | Ensure ptrace_scope is configured (Automated)                                                   | 🟢  |     |     |
+| 1.5.3     | Ensure suid_dumpable is configured (Automated)                                                  | 🟢  |     |     |
+| 1.5.4     | Ensure core file size is configured (Automated)                                                 | 🟢  |     |     |
+| 1.5.5     | Ensure prelink is not installed (Automated)                                                     | 🟢  |     |     |
+| 1.5.6     | Ensure Automatic Error Reporting is configured (Automated)                                      | 🟢  |     |     |
 | 1.6       | **Configure Command Line Warning Banners**                                                      | 🟢  |     |     |
-| 1.6.1     | Ensure message of the day is configured properly (Automated)                                    | 🟢  |     |     |
-| 1.6.2     | Ensure local login warning banner is configured properly (Automated)                            | 🟢  |     |     |
-| 1.6.3     | Ensure remote login warning banner is configured properly (Automated)                           | 🟢  |     |     |
+| 1.6.1     | Ensure /etc/motd is configured (Automated)                                                      | 🟢  |     |     |
+| 1.6.2     | Ensure /etc/issue is configured (Automated)                                                     | 🟢  |     |     |
+| 1.6.3     | Ensure /etc/issue.net is configured (Automated)                                                 | 🟢  |     |     |
 | 1.6.4     | Ensure access to /etc/motd is configured (Automated)                                            | 🟢  |     |     |
 | 1.6.5     | Ensure access to /etc/issue is configured (Automated)                                           | 🟢  |     |     |
 | 1.6.6     | Ensure access to /etc/issue.net is configured (Automated)                                       | 🟢  |     |     |
@@ -499,6 +514,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 1.7.8     | Ensure GDM autorun-never is enabled (Automated)                                                 | 🟢  |     |     |
 | 1.7.9     | Ensure GDM autorun-never is not overridden (Automated)                                          | 🟢  |     |     |
 | 1.7.10    | Ensure XDMCP is not enabled (Automated)                                                         | 🟢  |     |     |
+| 1.7.11    | Ensure Xwayland is configured (Automated)                                                       | 🟢  |     |     |
 | 2         | **Services**                                                                                    | 🟢  |     |     |
 | 2.1       | **Configure Server Services**                                                                   | 🟢  |     |     |
 | 2.1.1     | Ensure autofs services are not in use (Automated)                                               | 🟢  |     |     |
@@ -675,7 +691,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 5.3.3.4.3 | Ensure pam_unix includes a strong password hashing algorithm (Automated)                        | 🟢  |     |     |
 | 5.3.3.4.4 | Ensure pam_unix includes use_authtok (Automated)                                                | 🟢  |     |     |
 | 5.4       | **User Accounts and Environment**                                                               |     | 🟡  |     |
-| 5.4.1     | **Configure shadow password suite parameters**                                                  | 🟢  |     |     |
+| 5.4.1     | **Configure shadow password suite parameters**                                                  |     | 🟡  |     |
 | 5.4.1.1   | Ensure password expiration is configured (Automated)                                            | 🟢  |     |     |
 | 5.4.1.2   | Ensure minimum password age is configured (Manual)                                              | 🟢  |     |     |
 | 5.4.1.3   | Ensure password expiration warning days is configured (Automated)                               | 🟢  |     |     |

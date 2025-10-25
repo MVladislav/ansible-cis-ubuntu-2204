@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION7 | 7.1.1 | Ensure permissions on /etc/passwd are configured"
+- name: "SECTION7 | 7.1.1 | Ensure access to /etc/passwd is configured"
   ansible.builtin.file:
     dest: /etc/passwd
     owner: root
@@ -16,7 +16,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION7 | 7.1.2 | Ensure permissions on /etc/passwd- are configured"
+- name: "SECTION7 | 7.1.2 | Ensure access to /etc/passwd- is configured"
   ansible.builtin.file:
     dest: /etc/passwd-
     owner: root
@@ -29,7 +29,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION7 | 7.1.3 | Ensure permissions on /etc/group are configured"
+- name: "SECTION7 | 7.1.3 | Ensure access to /etc/group is configured"
   ansible.builtin.file:
     dest: /etc/group
     owner: root
@@ -42,7 +42,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION7 | 7.1.4 | Ensure permissions on /etc/group- are configured"
+- name: "SECTION7 | 7.1.4 | Ensure access to /etc/group- is configured"
   ansible.builtin.file:
     dest: /etc/group-
     owner: root
@@ -55,7 +55,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION7 | 7.1.5 | Ensure permissions on /etc/shadow are configured"
+- name: "SECTION7 | 7.1.5 | Ensure access to /etc/shadow is configured"
   ansible.builtin.file:
     dest: /etc/shadow
     owner: root
@@ -68,7 +68,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION7 | 7.1.6 | Ensure permissions on /etc/shadow- are configured"
+- name: "SECTION7 | 7.1.6 | Ensure access to /etc/shadow- is configured"
   ansible.builtin.file:
     dest: /etc/shadow-
     owner: root
@@ -81,7 +81,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION7 | 7.1.7 | Ensure permissions on /etc/gshadow are configured"
+- name: "SECTION7 | 7.1.7 | Ensure access to /etc/gshadow is configured"
   ansible.builtin.file:
     dest: /etc/gshadow
     owner: root
@@ -94,7 +94,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION7 | 7.1.8 | Ensure permissions on /etc/gshadow- are configured"
+- name: "SECTION7 | 7.1.8 | Ensure access to /etc/gshadow- is configured"
   ansible.builtin.file:
     dest: /etc/gshadow-
     owner: root
@@ -107,7 +107,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION7 | 7.1.9 | Ensure permissions on /etc/shells are configured"
+- name: "SECTION7 | 7.1.9 | Ensure access to /etc/shells is configured"
   ansible.builtin.file:
     dest: /etc/shells
     owner: root
@@ -120,7 +120,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION7 | 7.1.10 | Ensure permissions on /etc/security/opasswd are configured"
+- name: "SECTION7 | 7.1.10 | Ensure access to /etc/security/opasswd is configured"
   ansible.builtin.file:
     dest: /etc/security/opasswd
     owner: root

@@ -37,13 +37,23 @@
         replace: "ipv6.disable={{ 0 if cis_ubuntu2204_required_ipv6 else 1 }}"
       notify: update-grub
 
-# - name: "SECTION3 | 3.1.2 | Ensure wireless interfaces are disabled"
-#   when:
-#     - cis_ubuntu2204_rule_3_1_2
-#   tags:
-#     - rule_3_1
-#     - server_l1
-#     - workstation_l2
+- name: "SECTION3 | 3.1.2 | Ensure wireless interfaces are not available"
+  ansible.builtin.shell: |
+    set -o pipefail &&
+    find /lib/modules/$(uname -r)/kernel/drivers/net/wireless -name '*.ko' -printf 'install %f /bin/false\nblacklist %f\n\n' 2>/dev/null |
+    sed 's/\.ko$//1' >> /etc/modprobe.d/cis-wireless.conf &&
+    command -v depmod >/dev/null 2>&1 && depmod -a || true
+  args:
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
+  register: cis_ubuntu2204_wireless_blacklist_apply
+  changed_when: false
+  check_mode: false
+  when:
+    - cis_ubuntu2204_rule_3_1_2
+  tags:
+    - rule_3_1
+    - server_l1
+    - workstation_l2
 
 - name: "SECTION3 | 3.1.3 | Ensure bluetooth services are not in use"
   ansible.builtin.include_tasks: sub-task-services-clean.yml
@@ -184,213 +194,38 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION3 | 3.3.1 | Ensure ip forwarding is disabled"
+- name: "SECTION3 | 3.3.1 | Configure IPv4 parameters"
   ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "0"
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
     sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
     sysctl_set: true
     state: present
     reload: true
     ignoreerrors: true
-  with_items:
-    - net.ipv4.ip_forward
-    - net.ipv6.conf.all.forwarding
-  when:
-    - cis_ubuntu2204_rule_3_3_1
+  loop: "{{ cis_ubuntu2204_3_3_1_rule_set | flatten(levels=1) }}"
+  loop_control:
+    label: "{{ item.title + ' | ' + item.key + '=' + item.value }}"
+  when: item.enabled | bool
   tags:
-    - rule_3_3
+    - rule_3_3_1
     - server_l1
     - workstation_l1
 
-- name: "SECTION3 | 3.3.2 | Ensure packet redirect sending is disabled"
+- name: "SECTION3 | 3.3.2 | Configure IPv6 parameters"
   ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "0"
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
     sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
     sysctl_set: true
     state: present
     reload: true
     ignoreerrors: true
-  with_items:
-    - net.ipv4.conf.all.send_redirects
-    - net.ipv4.conf.default.send_redirects
-  when:
-    - cis_ubuntu2204_rule_3_3_2
+  loop: "{{ cis_ubuntu2204_3_3_2_rule_set | flatten(levels=1) }}"
+  loop_control:
+    label: "{{ item.title + ' | ' + item.key + '=' + item.value }}"
+  when: item.enabled | bool
   tags:
-    - rule_3_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION3 | 3.3.3 | Ensure bogus icmp responses are ignored"
-  ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "1"
-    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-    sysctl_set: true
-    state: present
-    reload: true
-    ignoreerrors: true
-  with_items:
-    - net.ipv4.icmp_ignore_bogus_error_responses
-  when:
-    - cis_ubuntu2204_rule_3_3_3
-  tags:
-    - rule_3_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION3 | 3.3.4 | Ensure broadcast icmp requests are ignored"
-  ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "1"
-    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-    sysctl_set: true
-    state: present
-    reload: true
-    ignoreerrors: true
-  with_items:
-    - net.ipv4.icmp_echo_ignore_broadcasts
-  when:
-    - cis_ubuntu2204_rule_3_3_4
-  tags:
-    - rule_3_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION3 | 3.3.5 | Ensure ICMP redirects are not accepted"
-  ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "0"
-    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-    sysctl_set: true
-    state: present
-    reload: true
-    ignoreerrors: true
-  with_items:
-    - net.ipv4.conf.all.accept_redirects
-    - net.ipv4.conf.default.accept_redirects
-    - net.ipv6.conf.all.accept_redirects
-    - net.ipv6.conf.default.accept_redirects
-  when:
-    - cis_ubuntu2204_rule_3_3_5
-  tags:
-    - rule_3_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION3 | 3.3.6 | Ensure secure ICMP redirects are not accepted"
-  ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "0"
-    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-    sysctl_set: true
-    state: present
-    reload: true
-    ignoreerrors: true
-  with_items:
-    - net.ipv4.conf.default.secure_redirects
-    - net.ipv4.conf.all.secure_redirects
-  when:
-    - cis_ubuntu2204_rule_3_3_6
-  tags:
-    - rule_3_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION3 | 3.3.7 | Ensure Reverse Path Filtering is enabled"
-  ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "1"
-    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-    sysctl_set: true
-    state: present
-    reload: true
-    ignoreerrors: true
-  with_items:
-    - net.ipv4.conf.all.rp_filter
-    - net.ipv4.conf.default.rp_filter
-  when:
-    - cis_ubuntu2204_rule_3_3_7
-  tags:
-    - rule_3_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION3 | 3.3.8 | Ensure source routed packets are not accepted"
-  ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "0"
-    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-    sysctl_set: true
-    state: present
-    reload: true
-    ignoreerrors: true
-  with_items:
-    - net.ipv4.conf.all.accept_source_route
-    - net.ipv4.conf.default.accept_source_route
-    - net.ipv6.conf.all.accept_source_route
-    - net.ipv6.conf.default.accept_source_route
-  when:
-    - cis_ubuntu2204_rule_3_3_8
-  tags:
-    - rule_3_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION3 | 3.3.9 | Ensure suspicious packets are logged"
-  ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "1"
-    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-    sysctl_set: true
-    state: present
-    reload: true
-    ignoreerrors: true
-  with_items:
-    - net.ipv4.conf.all.log_martians
-    - net.ipv4.conf.default.log_martians
-  when:
-    - cis_ubuntu2204_rule_3_3_9
-  tags:
-    - rule_3_3
-    - server_l1
-    - workstation_l1
-    - molecule-idempotence-notest
-
-- name: "SECTION3 | 3.3.10 | Ensure TCP SYN Cookies is enabled"
-  ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "1"
-    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-    sysctl_set: true
-    state: present
-    reload: true
-    ignoreerrors: true
-  with_items:
-    - net.ipv4.tcp_syncookies
-  when:
-    - cis_ubuntu2204_rule_3_3_10
-  tags:
-    - rule_3_3
-    - server_l1
-    - workstation_l1
-
-- name: "SECTION3 | 3.3.11 | Ensure IPv6 router advertisements are not accepted"
-  ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "0"
-    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-    sysctl_set: true
-    state: present
-    reload: true
-    ignoreerrors: true
-  with_items:
-    - net.ipv6.conf.all.accept_ra
-    - net.ipv6.conf.default.accept_ra
-  when:
-    - cis_ubuntu2204_rule_3_3_11
-  tags:
-    - rule_3_3
+    - rule_3_3_2
     - server_l1
     - workstation_l1

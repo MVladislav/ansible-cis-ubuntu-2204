@@ -141,24 +141,39 @@ cis_ubuntu2204_rule_2_4_1_9: true
 cis_ubuntu2204_rule_2_4_2_1: true
 ## SECTION 3 rules
 cis_ubuntu2204_rule_3_1_1: true # NOTE: depends also on 'cis_ubuntu2204_required_ipv6'
-cis_ubuntu2204_rule_3_1_2: true
+cis_ubuntu2204_rule_3_1_2: false # NOTE: disabled
 cis_ubuntu2204_rule_3_1_3: true
-cis_ubuntu2204_rule_3_1_3_remove: true
+cis_ubuntu2204_rule_3_1_3_remove: true # NOTE: remove 'bluez' package
 cis_ubuntu2204_rule_3_2_1: true
 cis_ubuntu2204_rule_3_2_2: true
 cis_ubuntu2204_rule_3_2_3: true
 cis_ubuntu2204_rule_3_2_4: true
-cis_ubuntu2204_rule_3_3_1: true
-cis_ubuntu2204_rule_3_3_2: true
-cis_ubuntu2204_rule_3_3_3: true
-cis_ubuntu2204_rule_3_3_4: true
-cis_ubuntu2204_rule_3_3_5: true
-cis_ubuntu2204_rule_3_3_6: true
-cis_ubuntu2204_rule_3_3_7: true
-cis_ubuntu2204_rule_3_3_8: true
-cis_ubuntu2204_rule_3_3_9: true
-cis_ubuntu2204_rule_3_3_10: true
-cis_ubuntu2204_rule_3_3_11: true
+cis_ubuntu2204_rule_3_3_1_1: true
+cis_ubuntu2204_rule_3_3_1_2: true
+cis_ubuntu2204_rule_3_3_1_3: true
+cis_ubuntu2204_rule_3_3_1_4: true
+cis_ubuntu2204_rule_3_3_1_5: true
+cis_ubuntu2204_rule_3_3_1_6: true
+cis_ubuntu2204_rule_3_3_1_7: true
+cis_ubuntu2204_rule_3_3_1_8: true
+cis_ubuntu2204_rule_3_3_1_9: true
+cis_ubuntu2204_rule_3_3_1_10: true
+cis_ubuntu2204_rule_3_3_1_11: true
+cis_ubuntu2204_rule_3_3_1_12: true
+cis_ubuntu2204_rule_3_3_1_13: true
+cis_ubuntu2204_rule_3_3_1_14: true
+cis_ubuntu2204_rule_3_3_1_15: true
+cis_ubuntu2204_rule_3_3_1_16: true
+cis_ubuntu2204_rule_3_3_1_17: true
+cis_ubuntu2204_rule_3_3_1_18: true
+cis_ubuntu2204_rule_3_3_2_1: true
+cis_ubuntu2204_rule_3_3_2_2: true
+cis_ubuntu2204_rule_3_3_2_3: true
+cis_ubuntu2204_rule_3_3_2_4: true
+cis_ubuntu2204_rule_3_3_2_5: true
+cis_ubuntu2204_rule_3_3_2_6: true
+cis_ubuntu2204_rule_3_3_2_7: true
+cis_ubuntu2204_rule_3_3_2_8: true
 ## SECTION 4 rules
 cis_ubuntu2204_rule_4_1_1: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
 cis_ubuntu2204_rule_4_1_2: true # NOTE: 'cis_ubuntu2204_firewall == ufw'
@@ -766,6 +781,116 @@ cis_ubuntu2204_2_2_rule_set:
       - ftp
       - tnftp
     remove: "{{ cis_ubuntu2204_rule_2_2_6 }}"
+
+# SPECIAL multi similar CIS rules set for 3.3.1
+cis_ubuntu2204_3_3_1_rule_set:
+  - title: 3.3.1.1 | Ensure net.ipv4.ip_forward is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_1 }}"
+    key: net.ipv4.ip_forward
+    value: "0"
+  - title: 3.3.1.2 | Ensure net.ipv4.conf.all.forwarding is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_2 }}"
+    key: net.ipv4.conf.all.forwarding
+    value: "0"
+  - title: 3.3.1.3 | Ensure net.ipv4.conf.default.forwarding is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_3 }}"
+    key: net.ipv4.conf.default.forwarding
+    value: "0"
+  - title: 3.3.1.4 | Ensure net.ipv4.conf.all.send_redirects is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_4 }}"
+    key: net.ipv4.conf.all.send_redirects
+    value: "0"
+  - title: 3.3.1.5 | Ensure net.ipv4.conf.default.send_redirects is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_5 }}"
+    key: net.ipv4.conf.default.send_redirects
+    value: "0"
+  - title: 3.3.1.6 | Ensure net.ipv4.icmp_ignore_bogus_error_responses is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_6 }}"
+    key: net.ipv4.icmp_ignore_bogus_error_responses
+    value: "1"
+  - title: 3.3.1.7 | Ensure net.ipv4.icmp_echo_ignore_broadcasts is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_7 }}"
+    key: net.ipv4.icmp_echo_ignore_broadcasts
+    value: "1"
+  - title: 3.3.1.8 | Ensure net.ipv4.conf.all.accept_redirects is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_8 }}"
+    key: net.ipv4.conf.all.accept_redirects
+    value: "0"
+  - title: 3.3.1.9 | Ensure net.ipv4.conf.default.accept_redirects is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_9 }}"
+    key: net.ipv4.conf.default.accept_redirects
+    value: "0"
+  - title: 3.3.1.10 | Ensure net.ipv4.conf.all.secure_redirects is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_10 }}"
+    key: net.ipv4.conf.all.secure_redirects
+    value: "0"
+  - title: 3.3.1.11 | Ensure net.ipv4.conf.default.secure_redirects is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_11 }}"
+    key: net.ipv4.conf.default.secure_redirects
+    value: "0"
+  - title: 3.3.1.12 | Ensure net.ipv4.conf.all.rp_filter is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_12 }}"
+    key: net.ipv4.conf.all.rp_filter
+    value: "1"
+  - title: 3.3.1.13 | Ensure net.ipv4.conf.default.rp_filter is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_13 }}"
+    key: net.ipv4.conf.default.rp_filter
+    value: "1"
+  - title: 3.3.1.14 | Ensure net.ipv4.conf.all.accept_source_route is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_14 }}"
+    key: net.ipv4.conf.all.accept_source_route
+    value: "0"
+  - title: 3.3.1.15 | Ensure net.ipv4.conf.default.accept_source_route is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_15 }}"
+    key: net.ipv4.conf.default.accept_source_route
+    value: "0"
+  - title: 3.3.1.16 | Ensure net.ipv4.conf.all.log_martians is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_16 }}"
+    key: net.ipv4.conf.all.log_martians
+    value: "1"
+  - title: 3.3.1.17 | Ensure net.ipv4.conf.default.log_martians is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_17 }}"
+    key: net.ipv4.conf.default.log_martians
+    value: "1"
+  - title: 3.3.1.18 | Ensure net.ipv4.tcp_syncookies is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_1_18 }}"
+    key: net.ipv4.tcp_syncookies
+    value: "1"
+
+# SPECIAL multi similar CIS rules set for 3.3.2
+cis_ubuntu2204_3_3_2_rule_set:
+  - title: 3.3.2.1 | Ensure net.ipv6.conf.all.forwarding is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_2_1 }}"
+    key: net.ipv6.conf.all.forwarding
+    value: "0"
+  - title: 3.3.2.2 | Ensure net.ipv6.conf.default.forwarding is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_2_2 }}"
+    key: net.ipv6.conf.default.forwarding
+    value: "0"
+  - title: 3.3.2.3 | Ensure net.ipv6.conf.all.accept_redirects is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_2_3 }}"
+    key: net.ipv6.conf.all.accept_redirects
+    value: "0"
+  - title: 3.3.2.4 | Ensure net.ipv6.conf.default.accept_redirects is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_2_4 }}"
+    key: net.ipv6.conf.default.accept_redirects
+    value: "0"
+  - title: 3.3.2.5 | Ensure net.ipv6.conf.all.accept_source_route is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_2_5 }}"
+    key: net.ipv6.conf.all.accept_source_route
+    value: "0"
+  - title: 3.3.2.6 | Ensure net.ipv6.conf.default.accept_source_route is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_2_6 }}"
+    key: net.ipv6.conf.default.accept_source_route
+    value: "0"
+  - title: 3.3.2.7 | Ensure net.ipv6.conf.all.accept_ra is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_2_7 }}"
+    key: net.ipv6.conf.all.accept_ra
+    value: "0"
+  - title: 3.3.2.8 | Ensure net.ipv6.conf.default.accept_ra is configured
+    enabled: "{{ cis_ubuntu2204_rule_3_3_2_8 }}"
+    key: net.ipv6.conf.default.accept_ra
+    value: "0"
 
 # SPECIAL multi similar CIS rules set for 6.2.2.1
 cis_ubuntu2204_logfiles_access:

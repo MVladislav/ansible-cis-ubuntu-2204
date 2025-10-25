@@ -16,7 +16,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.1.1 | Ensure permissions on /etc/ssh/sshd_config are configured"
+- name: "SECTION5 | 5.1.1 | Ensure access to /etc/ssh/sshd_config is configured"
   ansible.builtin.file:
     dest: /etc/ssh/sshd_config
     owner: "{{ cis_ubuntu2204_section5_owner_ssh }}"
@@ -30,7 +30,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.1.2 | Ensure permissions on SSH private host key files are configured"
+- name: "SECTION5 | 5.1.2 | Ensure access to SSH private host key files is configured"
   when:
     - cis_ubuntu2204_rule_5_1_2
     - service_status_ssh.stdout in ('loadedactive','loadedinactive')
@@ -39,13 +39,13 @@
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION5 | 5.1.2 | Ensure permissions on SSH private host key files are configured | find ssh_host_*_key"
+    - name: "SECTION5 | 5.1.2 | Ensure access to SSH private host key files is configured | find ssh_host_*_key"
       ansible.builtin.find:
         paths: /etc/ssh
         file_type: file
         patterns: "ssh_host_*_key"
       register: cis_ubuntu2204_find_ssh_private_host_keys
-    - name: "SECTION5 | 5.1.2 | Ensure permissions on SSH private host key files are configured | set permissions"
+    - name: "SECTION5 | 5.1.2 | Ensure access to SSH private host key files is configured | set permissions"
       ansible.builtin.file:
         dest: "{{ item.path }}"
         owner: "{{ cis_ubuntu2204_section5_owner_ssh }}"
@@ -53,7 +53,7 @@
         mode: "{{ cis_ubuntu2204_section5_mode_ssh }}"
       with_items: "{{ cis_ubuntu2204_find_ssh_private_host_keys.files }}"
 
-- name: "SECTION5 | 5.1.3 | Ensure permissions on SSH public host key files are configured"
+- name: "SECTION5 | 5.1.3 | Ensure access to SSH public host key files is configured"
   when:
     - cis_ubuntu2204_rule_5_1_3
     - service_status_ssh.stdout in ('loadedactive','loadedinactive')
@@ -62,12 +62,12 @@
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION5 | 5.1.3 | Ensure permissions on SSH public host key files are configured | find ssh_host_*_key.pub"
+    - name: "SECTION5 | 5.1.3 | Ensure access to SSH public host key files is configured | find ssh_host_*_key.pub"
       ansible.builtin.find:
         paths: /etc/ssh
         patterns: "ssh_host_*_key.pub"
       register: cis_ubuntu2204_find_ssh_public_host_keys
-    - name: "SECTION5 | 5.1.3 | Ensure permissions on SSH public host key files are configured | set permissions"
+    - name: "SECTION5 | 5.1.3 | Ensure access to SSH public host key files is configured | set permissions"
       ansible.builtin.file:
         dest: "{{ item.path }}"
         owner: "{{ cis_ubuntu2204_section5_owner_ssh }}"
@@ -617,7 +617,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation"
+- name: "SECTION5 | 5.2.4 | Ensure users must provide password for escalation"
   when:
     - cis_ubuntu2204_rule_5_2_4
   tags:
@@ -625,19 +625,19 @@
     - server_l2
     - workstation_l2
   block:
-    - name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation | update /etc/sudoers"
+    - name: "SECTION5 | 5.2.4 | Ensure users must provide password for escalation | update /etc/sudoers"
       ansible.builtin.replace:
         path: /etc/sudoers
         regexp: "^(?!#)(.*NOPASSWD.*)"
         replace: '#\1'
         validate: "visudo -cf %s"
-    - name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation | search files inside '/etc/sudoers.d/*'"
+    - name: "SECTION5 | 5.2.4 | Ensure users must provide password for escalation | search files inside '/etc/sudoers.d/*'"
       ansible.builtin.find:
         paths: /etc/sudoers.d/
         patterns: "*"
         recurse: true
       register: cis_ubuntu2204_sudoers_d_files
-    - name: "SECTION5 | 5.2.4 | Ensure users must provide password for privilege escalation | update '/etc/sudoers.d/*'"
+    - name: "SECTION5 | 5.2.4 | Ensure users must provide password for escalation | update '/etc/sudoers.d/*'"
       ansible.builtin.replace:
         path: "{{ item.path }}"
         regexp: "^(?!#)(.*NOPASSWD.*)"
@@ -673,7 +673,7 @@
         validate: "visudo -cf %s"
       with_items: "{{ cis_ubuntu2204_sudoers_d_files.files }}"
 
-- name: "SECTION5 | 5.2.6 | Ensure sudo authentication timeout is configured correctly"
+- name: "SECTION5 | 5.2.6 | Ensure sudo timestamp_timeout is configured"
   when:
     - cis_ubuntu2204_rule_5_2_6
   tags:
@@ -681,7 +681,7 @@
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION5 | 5.2.6 | Ensure sudo authentication timeout is configured correctly | env_reset, timestamp_timeout"
+    - name: "SECTION5 | 5.2.6 | Ensure sudo timestamp_timeout is configured | env_reset, timestamp_timeout"
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
         regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+env_reset,\s+timestamp_timeout=.*'
@@ -692,7 +692,7 @@
         group: "{{ cis_ubuntu2204_section5_group_sudo }}"
         mode: "{{ cis_ubuntu2204_section5_mode_sudo }}"
         validate: "visudo -cf %s"
-    - name: "SECTION5 | 5.2.6 | Ensure sudo authentication timeout is configured correctly | comment only 'timestamp_timeout' usage"
+    - name: "SECTION5 | 5.2.6 | Ensure sudo timestamp_timeout is configured | comment only 'timestamp_timeout' usage"
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
         regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+timestamp_timeout=.*'
@@ -703,7 +703,7 @@
         group: "{{ cis_ubuntu2204_section5_group_sudo }}"
         mode: "{{ cis_ubuntu2204_section5_mode_sudo }}"
         validate: "visudo -cf %s"
-    - name: "SECTION5 | 5.2.6 | Ensure sudo authentication timeout is configured correctly | comment only 'env_reset' usage"
+    - name: "SECTION5 | 5.2.6 | Ensure sudo timestamp_timeout is configured | comment only 'env_reset' usage"
       ansible.builtin.lineinfile:
         dest: /etc/sudoers
         regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+env_reset$'
@@ -742,40 +742,64 @@
 # ------------------------------------------------------------------------------
 
 - name: "SECTION5 | 5.3.1.1 | Ensure latest version of pam is installed"
-  ansible.builtin.apt:
-    name: libpam-runtime
-    state: present
-    force_apt_get: true
   when:
     - cis_ubuntu2204_rule_5_3_1_1
   tags:
     - rule_5_3_1
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.1.1 | Ensure latest version of pam is installed | install"
+      ansible.builtin.apt:
+        name: libpam-runtime
+        state: present
+        force_apt_get: true
+    - name: "SECTION5 | 5.3.1.1 | Ensure latest version of pam is installed | upgrade"
+      ansible.builtin.apt:
+        name: libpam-runtime
+        state: latest
+        only_upgrade: true
+        force_apt_get: true
 
-- name: "SECTION5 | 5.3.1.2 | Ensure libpam-modules is installed"
-  ansible.builtin.apt:
-    name: libpam-modules
-    state: present
-    force_apt_get: true
+- name: "SECTION5 | 5.3.1.2 | Ensure latest version of libpam-modules is installed"
   when:
     - cis_ubuntu2204_rule_5_3_1_2
   tags:
     - rule_5_3_1
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.1.2 | Ensure latest version of libpam-modules is installed | install"
+      ansible.builtin.apt:
+        name: libpam-modules
+        state: present
+        force_apt_get: true
+    - name: "SECTION5 | 5.3.1.2 | Ensure latest version of libpam-modules is installed | upgrade"
+      ansible.builtin.apt:
+        name: libpam-modules
+        state: latest
+        only_upgrade: true
+        force_apt_get: true
 
-- name: "SECTION5 | 5.3.1.3 | Ensure libpam-pwquality is installed"
-  ansible.builtin.apt:
-    name: libpam-pwquality
-    state: present
-    force_apt_get: true
+- name: "SECTION5 | 5.3.1.3 | Ensure latest version of libpam-pwquality is installed"
   when:
     - cis_ubuntu2204_rule_5_3_1_3
   tags:
     - rule_5_3_1
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION5 | 5.3.1.3 | Ensure latest version of libpam-pwquality is installed | install"
+      ansible.builtin.apt:
+        name: libpam-pwquality
+        state: present
+        force_apt_get: true
+    - name: "SECTION5 | 5.3.1.3 | Ensure latest version of libpam-pwquality is installed | upgrade"
+      ansible.builtin.apt:
+        name: libpam-pwquality
+        state: latest
+        only_upgrade: true
+        force_apt_get: true
 
 # ------------------------------------------------------------------------------
 
@@ -1253,7 +1277,7 @@
       changed_when: false
       failed_when: false
 
-- name: "SECTION5 | 5.4.1.2 | Ensure minimum password age is configured"
+- name: "SECTION5 | 5.4.1.2 | Ensure minimum password days is configured"
   when:
     - cis_ubuntu2204_rule_5_4_1_2
   tags:
@@ -1261,7 +1285,7 @@
     - server_l2
     - workstation_l2
   block:
-    - name: "SECTION5 | 5.4.1.2 | Ensure minimum password age is configured | set inside '/etc/login.defs'"
+    - name: "SECTION5 | 5.4.1.2 | Ensure minimum password days is configured | set inside '/etc/login.defs'"
       ansible.builtin.lineinfile:
         dest: /etc/login.defs
         regexp: "{{ cis_ubuntu2204_regex_base_search }}PASS_MIN_DAYS"
@@ -1271,7 +1295,7 @@
         owner: root
         group: root
         mode: "0644"
-    - name: "SECTION5 | 5.4.1.2 | Ensure minimum password age is configured | find user with wrong minimum value"
+    - name: "SECTION5 | 5.4.1.2 | Ensure minimum password days is configured | find user with wrong minimum value"
       ansible.builtin.shell: |
         set -o pipefail &&
         awk -F: '($2~/^\$.+\$/) {if($4 < {{ cis_ubuntu2204_password_pass_min_days }}) print $1}' /etc/shadow
@@ -1280,7 +1304,7 @@
       register: cis_ubuntu2204_minimum_users_raw
       changed_when: false
       check_mode: false
-    - name: "SECTION5 | 5.4.1.2 | Ensure minimum password age is configured | update minimum users value"
+    - name: "SECTION5 | 5.4.1.2 | Ensure minimum password days is configured | update minimum users value"
       ansible.builtin.command: >
         chage --mindays {{ cis_ubuntu2204_password_pass_min_days }} {{ item }}
       loop: "{{ cis_ubuntu2204_minimum_users_raw.stdout_lines }}"
@@ -1518,16 +1542,38 @@
         - cis_ubuntu2204_verify_root_only_gid_root.stdout_lines is defined
         - cis_ubuntu2204_verify_root_only_gid_root.stdout_lines | length > 0
 
-# - name: "SECTION5 | 5.4.2.4 | Ensure root password is set"
-#   ansible.builtin.user:
-#     name: root
-#     password_lock: true
-#   when:
-#     - cis_ubuntu2204_rule_5_4_2_4
-#   tags:
-#     - rule_5_4_2
-#     - server_l1
-#     - workstation_l1
+- name: "SECTION5 | 5.4.2.4 | Ensure root account access is controlled"
+  when:
+    - cis_ubuntu2204_rule_5_4_2_4
+  tags:
+    - rule_5_4_2
+    - server_l1
+    - workstation_l1
+  block:
+    - name: "SECTION5 | 5.4.2.4 | Ensure root account access is controlled | get info"
+      ansible.builtin.shell: |
+        set -o pipefail &&
+        passwd -S root | awk '$2 ~ /^(P|L)/ {print "User: \"" $1 "\" Password is status: " $2}'
+      args:
+        executable: /bin/bash
+      register: cis_ubuntu2204_verify_root_account_access
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: "SECTION5 | 5.4.2.4 | Ensure root account access is controlled | print info"
+      ansible.builtin.debug:
+        msg: |
+          #############################################################################################
+          Verify the output is either:
+            User: "root" Password is status: P (Password is set)
+            - OR -
+            User: "root" Password is status: L (Password is locked)
+          #############################################################################################
+          {{ cis_ubuntu2204_verify_root_account_access.stdout_lines | join(cis_ubuntu2204_print_info_join_by) }}
+          #############################################################################################
+      when:
+        - cis_ubuntu2204_verify_root_account_access.stdout_lines is defined
+        - cis_ubuntu2204_verify_root_account_access.stdout_lines | length > 0
 
 - name: "SECTION5 | 5.4.2.5 | Ensure root path integrity"
   when:

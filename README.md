@@ -798,17 +798,17 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 6.3.4.9   | Ensure audit tools owner is configured (Automated)                                              | 🟢  |     |     |
 | 6.3.4.10  | Ensure audit tools group owner is configured (Automated)                                        | 🟢  |     |     |
 | 7         | **System Maintenance**                                                                          |     | 🟡  |     |
-| 7.1       | **System File Permissions**                                                                     |     | 🟡  |     |
-| 7.1.1     | Ensure permissions on /etc/passwd are configured (Automated)                                    | 🟢  |     |     |
-| 7.1.2     | Ensure permissions on /etc/passwd- are configured (Automated)                                   | 🟢  |     |     |
-| 7.1.3     | Ensure permissions on /etc/group are configured (Automated)                                     | 🟢  |     |     |
-| 7.1.4     | Ensure permissions on /etc/group- are configured (Automated)                                    | 🟢  |     |     |
-| 7.1.5     | Ensure permissions on /etc/shadow are configured (Automated)                                    | 🟢  |     |     |
-| 7.1.6     | Ensure permissions on /etc/shadow- are configured (Automated)                                   | 🟢  |     |     |
-| 7.1.7     | Ensure permissions on /etc/gshadow are configured (Automated)                                   | 🟢  |     |     |
-| 7.1.8     | Ensure permissions on /etc/gshadow- are configured (Automated)                                  | 🟢  |     |     |
-| 7.1.9     | Ensure permissions on /etc/shells are configured (Automated)                                    | 🟢  |     |     |
-| 7.1.10    | Ensure permissions on /etc/security/opasswd are configured (Automated)                          | 🟢  |     |     |
+| 7.1       | **Configure system file and directory access**                                                  |     | 🟡  |     |
+| 7.1.1     | Ensure access to /etc/passwd is configured (Automated)                                          | 🟢  |     |     |
+| 7.1.2     | Ensure access to /etc/passwd- is configured (Automated)                                         | 🟢  |     |     |
+| 7.1.3     | Ensure access to /etc/group is configured (Automated)                                           | 🟢  |     |     |
+| 7.1.4     | Ensure access to /etc/group- is configured (Automated)                                          | 🟢  |     |     |
+| 7.1.5     | Ensure access to /etc/shadow is configured (Automated)                                          | 🟢  |     |     |
+| 7.1.6     | Ensure access to /etc/shadow- is configured (Automated)                                         | 🟢  |     |     |
+| 7.1.7     | Ensure access to /etc/gshadow is configured (Automated)                                         | 🟢  |     |     |
+| 7.1.8     | Ensure access to /etc/gshadow- is configured (Automated)                                        | 🟢  |     |     |
+| 7.1.9     | Ensure access to /etc/shells is configured (Automated)                                          | 🟢  |     |     |
+| 7.1.10    | Ensure access to /etc/security/opasswd is configured (Automated)                                | 🟢  |     |     |
 | 7.1.11    | Ensure world writable files and directories are secured (Automated)                             | 🟢  |     |     |
 | 7.1.12    | Ensure no files or directories without an owner and a group exist (Automated)                   |     | 🟡  |     |
 | 7.1.13    | Ensure SUID and SGID files are reviewed (Manual)                                                |     | 🟡  |     |

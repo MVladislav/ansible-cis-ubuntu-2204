@@ -64,19 +64,7 @@
 # - maskedinactive
 # - not-foundinactive
 
-- name: "PRE | 1.5.3 | check for 'systemd-coredump' socket"
-  ansible.builtin.shell: >
-    set -o pipefail &&
-    systemctl show systemd-coredump.socket | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'
-  args:
-    executable: "{{ cis_ubuntu2204_shell_executable }}"
-  register: service_status_coredump
-  changed_when: false
-  check_mode: false
-  tags:
-    - pre
-
-- name: "PRE | 1.5.5 | check for 'apport' service"
+- name: "PRE | 1.5.6 | check for 'apport' service"
   ansible.builtin.shell: >
     set -o pipefail &&
     systemctl show apport | grep -E 'LoadState|ActiveState' | cut -d = -f 2 | tr -d '\n'

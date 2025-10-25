@@ -31,7 +31,7 @@
     # -------------------------
     cis_ubuntu2204_allow_gdm_gui: false
     cis_ubuntu2204_allow_autofs: false # Disable auto mount, set to true to allow it and not disable
-    cis_ubuntu2204_rule_1_1_1_8: true # Disable USB Storage, set to false to not disable
+    cis_ubuntu2204_rule_1_1_1_9: true # Disable USB Storage, set to false to not disable
     cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
     cis_ubuntu2204_time_synchronization_time_server:
       - uri: time.cloudflare.com

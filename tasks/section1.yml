@@ -158,7 +158,7 @@
         state: absent
       when: ansible_virtualization_type != "docker"
 
-- name: "SECTION1 | 1.1.1.6 | Ensure squashfs kernel module is not available"
+- name: "SECTION1 | 1.1.1.6 | Ensure overlay kernel module is not available"
   when:
     - cis_ubuntu2204_rule_1_1_1_6
   tags:
@@ -167,7 +167,38 @@
     - workstation_l2
   block:
     - name: >
-        SECTION1 | 1.1.1.6 | Ensure squashfs kernel module is not available | setting module and deny listing
+        SECTION1 | 1.1.1.6 | Ensure overlay kernel module is not available | setting module and deny listing
+      ansible.builtin.lineinfile:
+        dest: /etc/modprobe.d/cis.conf
+        regexp: "{{ item.reg }}"
+        line: "{{ item.line }}"
+        state: present
+        create: true
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+      with_items:
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}install overlay(\s|$)'
+          line: "install overlay /bin/false"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist overlay$"
+          line: "blacklist overlay"
+    - name: >
+        SECTION1 | 1.1.1.6 | Ensure overlay kernel module is not available | unloading module
+      community.general.modprobe:
+        name: overlay
+        state: absent
+      when: ansible_virtualization_type != "docker"
+
+- name: "SECTION1 | 1.1.1.7 | Ensure squashfs kernel module is not available"
+  when:
+    - cis_ubuntu2204_rule_1_1_1_7
+  tags:
+    - rule_1_1_1
+    - server_l2
+    - workstation_l2
+  block:
+    - name: >
+        SECTION1 | 1.1.1.7 | Ensure squashfs kernel module is not available | setting module and deny listing
       ansible.builtin.lineinfile:
         dest: /etc/modprobe.d/cis.conf
         regexp: "{{ item.reg }}"
@@ -183,16 +214,16 @@
         - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist squashfs$"
           line: "blacklist squashfs"
 
-- name: "SECTION1 | 1.1.1.7 | Ensure udf kernel module is not available"
+- name: "SECTION1 | 1.1.1.8 | Ensure udf kernel module is not available"
   when:
-    - cis_ubuntu2204_rule_1_1_1_7
+    - cis_ubuntu2204_rule_1_1_1_8
   tags:
     - rule_1_1_1
     - server_l2
     - workstation_l2
   block:
     - name: >
-        SECTION1 | 1.1.1.7 | Ensure udf kernel module is not available | setting module and deny listing
+        SECTION1 | 1.1.1.8 | Ensure udf kernel module is not available | setting module and deny listing
       ansible.builtin.lineinfile:
         dest: /etc/modprobe.d/cis.conf
         regexp: "{{ item.reg }}"
@@ -208,22 +239,22 @@
         - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist udf$"
           line: "blacklist udf"
     - name: >
-        SECTION1 | 1.1.1.7 | Ensure udf kernel module is not available | unloading module
+        SECTION1 | 1.1.1.8 | Ensure udf kernel module is not available | unloading module
       community.general.modprobe:
         name: udf
         state: absent
       when: ansible_virtualization_type != "docker"
 
-- name: "SECTION1 | 1.1.1.8 | Ensure usb-storage kernel module is not available"
+- name: "SECTION1 | 1.1.1.9 | Ensure usb-storage kernel module is not available"
   when:
-    - cis_ubuntu2204_rule_1_1_1_8
+    - cis_ubuntu2204_rule_1_1_1_9
   tags:
     - rule_1_1_1
     - server_l2
     - workstation_l2
   block:
     - name: >
-        SECTION1 | 1.1.1.8 | Ensure usb-storage kernel module is not available | setting module and deny listing
+        SECTION1 | 1.1.1.9 | Ensure usb-storage kernel module is not available | setting module and deny listing
       ansible.builtin.lineinfile:
         dest: /etc/modprobe.d/cis.conf
         regexp: "{{ item.reg }}"
@@ -239,9 +270,75 @@
         - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist usb-storage$"
           line: "blacklist usb-storage"
     - name: >
-        SECTION1 | 1.1.1.8 | Ensure usb-storage kernel module is not available | unloading module
+        SECTION1 | 1.1.1.9 | Ensure usb-storage kernel module is not available | unloading module
       community.general.modprobe:
         name: usb-storage
+        state: absent
+      when: ansible_virtualization_type != "docker"
+
+- name: "SECTION1 | 1.1.1.10 | Ensure unused filesystems kernel modules are not available"
+  when:
+    - cis_ubuntu2204_rule_1_1_1_10
+  tags:
+    - rule_1_1_1
+    - server_l2
+    - workstation_l2
+  block:
+    - name: >
+        SECTION1 | 1.1.1.10 | Ensure unused filesystems kernel modules are not available | find mounted filesystems
+      ansible.builtin.shell: >
+        set -o pipefail && findmnt -knD | awk '{print $2}' | sort -u
+      register: cis_ubuntu2204_mounted_filesystems
+      args:
+        executable: "{{ cis_ubuntu2204_shell_executable }}"
+      changed_when: false
+
+    - name: >
+        SECTION1 | 1.1.1.10 | Ensure unused filesystems kernel modules are not available | list available filesystem kernel modules
+      ansible.builtin.find:
+        paths: /lib/modules/{{ ansible_kernel }}/kernel/fs
+        recurse: false
+        file_type: directory
+      register: cis_ubuntu2204_available_fs_modules
+
+    - name: >
+        SECTION1 | 1.1.1.10 | Ensure unused filesystems kernel modules are not available | check and unload loaded vulnerable filesystems
+      ansible.builtin.include_tasks: section1-1_1_1_10.yml
+      loop: "{{ cis_ubuntu2204_available_fs_modules.files | map(attribute='path') | map('basename') }}"
+      loop_control:
+        loop_var: cis_ubuntu2204_fs_module_file
+      when:
+        - cis_ubuntu2204_fs_module_file in cis_ubuntu2204_fs_known_vulnerable
+        - cis_ubuntu2204_fs_module_file not in cis_ubuntu2204_fs_ignored
+
+- name: "SECTION1 | 1.1.1.11 | Ensure firewire-core kernel module is not available"
+  when:
+    - cis_ubuntu2204_rule_1_1_1_11
+  tags:
+    - rule_1_1_1
+    - server_l2
+    - workstation_l2
+  block:
+    - name: >
+        SECTION1 | 1.1.1.11 | Ensure firewire-core kernel module is not available | setting module and deny listing
+      ansible.builtin.lineinfile:
+        dest: /etc/modprobe.d/cis.conf
+        regexp: "{{ item.reg }}"
+        line: "{{ item.line }}"
+        state: present
+        create: true
+        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+        group: "{{ cis_ubuntu2204_section1_group_default }}"
+        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+      with_items:
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}install firewire_core(\s|$)'
+          line: "install firewire_core /bin/false"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist firewire_core$"
+          line: "blacklist firewire_core"
+    - name: >
+        SECTION1 | 1.1.1.11 | Ensure firewire-core kernel module is not available | unloading module
+      community.general.modprobe:
+        name: firewire_core
         state: absent
       when: ansible_virtualization_type != "docker"
 
@@ -249,7 +346,7 @@
 
 - name: |
     SECTION1 | 1.1.2.1   | Configure /tmp
-    SECTION1 | 1.1.2.1.1 | Ensure /tmp is a separate partition
+    SECTION1 | 1.1.2.1.1 | Ensure /tmp is tmpfs or a separate partition
     SECTION1 | 1.1.2.1.2 | Ensure nodev option set on /tmp partition
     SECTION1 | 1.1.2.1.3 | Ensure nosuid option set on /tmp partition
     SECTION1 | 1.1.2.1.4 | Ensure noexec option set on /tmp partition
@@ -271,7 +368,7 @@
 
 - name: |
     SECTION1 | 1.1.2.2   | Configure /dev/shm
-    SECTION1 | 1.1.2.2.1 | Ensure /dev/shm is a separate partition
+    SECTION1 | 1.1.2.2.1 | Ensure /dev/shm is tmpfs or a separate partition
     SECTION1 | 1.1.2.2.2 | Ensure nodev option set on /dev/shm partition
     SECTION1 | 1.1.2.2.3 | Ensure nosuid option set on /dev/shm partition
     SECTION1 | 1.1.2.2.4 | Ensure noexec option set on /dev/shm partition
@@ -474,12 +571,11 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.3.1.1 | Ensure AppArmor is installed"
+- name: "SECTION1 | 1.3.1.1 | Ensure the apparmor packages are installed"
   ansible.builtin.apt:
     name:
       - apparmor
-      # 'apparmor-utils' installs 'aa-enforce'
-      - apparmor-utils
+      - apparmor-utils # installs 'aa-enforce'
     state: present
     force_apt_get: true
   notify: restart apparmor
@@ -490,7 +586,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration"
+- name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled"
   when:
     - cis_ubuntu2204_rule_1_3_1_2
   tags:
@@ -498,32 +594,32 @@
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub add - apparmor"
+    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled | grub add - apparmor"
       ansible.builtin.replace:
         path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*apparmor=)[^\"]*)(\".*)'
         replace: '\1 apparmor=1\2'
       notify: update-grub
-    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub replace - apparmor"
+    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled | grub replace - apparmor"
       ansible.builtin.replace:
         path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: 'apparmor=\d+'
         replace: "apparmor=1"
       notify: update-grub
-    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub add - security"
-      ansible.builtin.replace:
-        path: "{{ cis_ubuntu2204_default_grub_file }}"
-        regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*security=)[^\"]*)(\".*)'
-        replace: '\1 security=apparmor\2'
-      notify: update-grub
-    - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled in the bootloader configuration | grub replace - security"
-      ansible.builtin.replace:
-        path: "{{ cis_ubuntu2204_default_grub_file }}"
-        regexp: 'security=\w+'
-        replace: "security=apparmor"
-      notify: update-grub
+    # - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled | grub add - security"
+    #   ansible.builtin.replace:
+    #     path: "{{ cis_ubuntu2204_default_grub_file }}"
+    #     regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*security=)[^\"]*)(\".*)'
+    #     replace: '\1 security=apparmor\2'
+    #   notify: update-grub
+    # - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled | grub replace - security"
+    #   ansible.builtin.replace:
+    #     path: "{{ cis_ubuntu2204_default_grub_file }}"
+    #     regexp: 'security=\w+'
+    #     replace: "security=apparmor"
+    #   notify: update-grub
 
-- name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode"
+- name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are not disabled"
   when:
     - cis_ubuntu2204_rule_1_3_1_3
   tags:
@@ -531,18 +627,18 @@
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode | get status"
+    - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are not disabled | get status"
       ansible.builtin.command: "/usr/sbin/apparmor_status --json"
       changed_when: false
       register: cis_ubuntu2204_apparmor_json_status_1_3_1_3
-    - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode | get unconfined profiles"
+    - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are not disabled | get unconfined profiles"
       ansible.builtin.set_fact:
         cis_ubuntu2204_apparmor_update_to_complain_profiles: "{{ (cis_ubuntu2204_apparmor_json_status_1_3_1_3.stdout | from_json).profiles | dict2items | selectattr('value', 'in', ['unconfined']) | map(attribute='key') | list }}"
       when:
         - cis_ubuntu2204_apparmor_update_to_complain_profiles is not defined
         - cis_ubuntu2204_apparmor_json_status_1_3_1_3.stdout is defined
         - cis_ubuntu2204_apparmor_json_status_1_3_1_3.stdout | length > 0
-    - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are in enforce or complain mode | apply unconfined into complain"
+    - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are not disabled | apply unconfined into complain"
       ansible.builtin.command: "/usr/sbin/aa-complain {{ item }}"
       changed_when: false
       loop: "{{ cis_ubuntu2204_apparmor_update_to_complain_profiles }}"
@@ -648,7 +744,7 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.5.1 | Ensure address space layout randomization is enabled"
+- name: "SECTION1 | 1.5.1 | Ensure randomize_va_space is configured"
   ansible.posix.sysctl:
     name: kernel.randomize_va_space
     value: "2"
@@ -664,7 +760,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.5.2 | Ensure ptrace_scope is restricted"
+- name: "SECTION1 | 1.5.2 | Ensure ptrace_scope is configured"
   ansible.posix.sysctl:
     name: kernel.yama.ptrace_scope
     value: "1"
@@ -680,87 +776,69 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.5.3 | Ensure core dumps are restricted"
+- name: "SECTION1 | 1.5.3 | Ensure suid_dumpable is configured"
+  ansible.posix.sysctl:
+    name: fs.suid_dumpable
+    value: "0"
+    sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    ignoreerrors: true
   when:
     - cis_ubuntu2204_rule_1_5_3
   tags:
     - rule_1_5
     - server_l1
     - workstation_l1
-  block:
-    - name: SECTION1 | 1.5.3 | Ensure core dumps are restricted | set fs.suid_dumpable
-      ansible.posix.sysctl:
-        name: fs.suid_dumpable
-        value: "0"
-        sysctl_file: "{{ cis_ubuntu2204_sysctl_file_path }}"
-        sysctl_set: true
-        state: present
-        reload: true
-        ignoreerrors: true
-    - name: SECTION1 | 1.5.3 | Ensure core dumps are restricted | ensure hard core 0 is set
-      ansible.builtin.lineinfile:
-        dest: /etc/security/limits.conf
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}\*\s+hard\s+core\s+[0-9]+'
-        line: "*                hard    core            0"
-        state: present
-        create: true
-        insertbefore: "# End of file"
-        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
-        group: "{{ cis_ubuntu2204_section1_group_default }}"
-        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
-      # notify: restart systemd-coredump
-    # - name: SECTION1 | 1.5.3 | Ensure core dumps are restricted | install systemd-coredump
-    #   ansible.builtin.apt:
-    #     name: systemd-coredump
-    #     state: present
-    #     force_apt_get: true
-    #   notify: restart systemd-coredump
-    - name: SECTION1 | 1.5.3 | Ensure core dumps are restricted | set coredump.conf
-      ansible.builtin.lineinfile:
-        dest: /etc/systemd/coredump.conf
-        regexp: "{{ item.reg }}"
-        line: "{{ item.line }}"
-        state: present
-        create: true
-        owner: "{{ cis_ubuntu2204_section1_owner_default }}"
-        group: "{{ cis_ubuntu2204_section1_group_default }}"
-        mode: "{{ cis_ubuntu2204_section1_mode_default }}"
-      notify: restart systemd-coredump
-      with_items:
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}Storage{{ cis_ubuntu2204_regex_base_search_equals }}"
-          line: "Storage=none"
-        - reg: "{{ cis_ubuntu2204_regex_base_search }}ProcessSizeMax{{ cis_ubuntu2204_regex_base_search_equals }}"
-          line: "ProcessSizeMax=0"
 
-- name: "SECTION1 | 1.5.4 | Ensure prelink is not installed"
+- name: "SECTION1 | 1.5.4 | Ensure core file size is configured"
+  ansible.builtin.lineinfile:
+    dest: /etc/security/limits.d/60-limits.conf
+    regexp: '{{ cis_ubuntu2204_regex_base_search }}\*\s+hard\s+core\s+[0-9]+'
+    line: "*                hard    core            0"
+    state: present
+    create: true
+    insertbefore: "# End of file"
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
   when:
-    - package_installed_prelink.rc == 0
     - cis_ubuntu2204_rule_1_5_4
   tags:
     - rule_1_5
     - server_l1
     - workstation_l1
+
+- name: "SECTION1 | 1.5.5 | Ensure prelink is not installed"
+  when:
+    - package_installed_prelink.rc == 0
+    - cis_ubuntu2204_rule_1_5_5
+  tags:
+    - rule_1_5
+    - server_l1
+    - workstation_l1
   block:
-    - name: "SECTION1 | 1.5.4 | Ensure prelink is not installed | restore binaries to normal"
+    - name: "SECTION1 | 1.5.5 | Ensure prelink is not installed | restore binaries to normal"
       ansible.builtin.command: prelink -ua
       changed_when: false
-    - name: "SECTION1 | 1.5.4 | Ensure prelink is not installed | uninstall"
+    - name: "SECTION1 | 1.5.5 | Ensure prelink is not installed | uninstall"
       ansible.builtin.apt:
         name: prelink
         state: absent
         purge: true
 
-- name: "SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled"
+- name: "SECTION1 | 1.5.6 | Ensure Automatic Error Reporting is configured"
   when:
     - service_status_apport.stdout in ('loadedactive','loadedinactive')
-    - cis_ubuntu2204_rule_1_5_5
+    - cis_ubuntu2204_rule_1_5_6
   tags:
     - rule_1_5
     - server_l1
     - workstation_l2
   block:
     - name: >
-        SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled | add or edit the enabled parameter to equal 0
+        SECTION1 | 1.5.6 | Ensure Automatic Error Reporting is configured | add or edit the enabled parameter to equal 0
       ansible.builtin.lineinfile:
         dest: /etc/default/apport
         regexp: "{{ cis_ubuntu2204_regex_base_search }}enabled{{ cis_ubuntu2204_regex_base_search_equals }}"
@@ -771,7 +849,7 @@
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "{{ cis_ubuntu2204_section1_mode_default }}"
     - name: >
-        SECTION1 | 1.5.5 | Ensure Automatic Error Reporting is not enabled | stop and disable service
+        SECTION1 | 1.5.6 | Ensure Automatic Error Reporting is configured | stop and disable service
       ansible.builtin.systemd_service:
         name: apport
         daemon_reload: true
@@ -780,7 +858,7 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.6.1 | Ensure message of the day is configured properly"
+- name: "SECTION1 | 1.6.1 | Ensure /etc/motd is configured"
   ansible.builtin.copy:
     content: |
       {{ cis_ubuntu2204_warning_banner }}
@@ -794,7 +872,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.6.2 | Ensure local login warning banner is configured properly"
+- name: "SECTION1 | 1.6.2 | Ensure /etc/issue is configured"
   ansible.builtin.copy:
     content: |
       {{ cis_ubuntu2204_warning_banner }}
@@ -808,7 +886,7 @@
     - server_l1
     - workstation_l1
 
-- name: "SECTION1 | 1.6.3 | Ensure remote login warning banner is configured properly"
+- name: "SECTION1 | 1.6.3 | Ensure /etc/issue.net is configured"
   ansible.builtin.copy:
     content: |
       {{ cis_ubuntu2204_warning_banner }}
@@ -1169,6 +1247,22 @@
     - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
     - cis_ubuntu2204_rule_1_7_10
+  tags:
+    - rule_1_7
+    - server_l1
+    - workstation_l1
+
+- name: "SECTION1 | 1.7.11 | Ensure Xwayland is configured"
+  ansible.builtin.template:
+    src: gdm/custom.conf.j2
+    dest: /etc/gdm3/custom.conf
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+  when:
+    - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
+    - cis_ubuntu2204_allow_gdm_gui
+    - cis_ubuntu2204_rule_1_7_11
   tags:
     - rule_1_7
     - server_l1

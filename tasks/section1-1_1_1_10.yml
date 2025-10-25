@@ -1,0 +1,77 @@
+---
+# tasks file for ansible-cis-ubuntu-2204
+
+# ------------------------------------------------------------------------------
+
+- name: >
+    SECTION1 | 1.1.1.10 | Ensure unused filesystems kernel modules are not available | check if filesystem is mounted for {{ cis_ubuntu2204_fs_module_file }}
+  ansible.builtin.set_fact:
+    cis_ubuntu2204_is_fs_mounted: "{{ cis_ubuntu2204_fs_module_file in cis_ubuntu2204_mounted_filesystems.stdout_lines }}"
+  tags:
+    - rule_1_1_1
+    - server_l2
+    - workstation_l2
+
+- name: >
+    SECTION1 | 1.1.1.10 | Ensure unused filesystems kernel modules are not available | check if kernel module is loaded for {{ cis_ubuntu2204_fs_module_file }}
+  ansible.builtin.shell: "set -o pipefail && lsmod | grep {{ cis_ubuntu2204_fs_module_file }}"
+  args:
+    executable: "{{ cis_ubuntu2204_shell_executable }}"
+  register: cis_ubuntu2204_lsmod_output
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+    - rule_1_1_1
+    - server_l2
+    - workstation_l2
+
+- name: >
+    SECTION1 | 1.1.1.10 | Ensure unused filesystems kernel modules are not available | log vulnerable filesystem
+  ansible.builtin.debug:
+    msg: "** WARNING: Filesystem {{ cis_ubuntu2204_fs_module_file }} is loaded and vulnerable to CVE!"
+  when:
+    - cis_ubuntu2204_lsmod_output.rc == 0
+    - not cis_ubuntu2204_is_fs_mounted | bool
+  tags:
+    - rule_1_1_1
+    - server_l2
+    - workstation_l2
+
+- name: >
+    SECTION1 | 1.1.1.10 | Ensure unused filesystems kernel modules are not available | unload kernel module if loaded for {{ cis_ubuntu2204_fs_module_file }}
+  community.general.modprobe:
+    name: "{{ cis_ubuntu2204_fs_module_file }}"
+    state: absent
+  failed_when: false
+  when:
+    - cis_ubuntu2204_lsmod_output.rc == 0
+    - not cis_ubuntu2204_is_fs_mounted | bool
+  tags:
+    - rule_1_1_1
+    - server_l2
+    - workstation_l2
+
+- name: >
+    SECTION1 | 1.1.1.10 | Ensure unused filesystems kernel modules are not available | setting module and deny listing for {{ cis_ubuntu2204_fs_module_file }}
+  ansible.builtin.lineinfile:
+    dest: /etc/modprobe.d/cis.conf
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    state: present
+    create: true
+    owner: "{{ cis_ubuntu2204_section1_owner_default }}"
+    group: "{{ cis_ubuntu2204_section1_group_default }}"
+    mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+  with_items:
+    - reg: '{{ cis_ubuntu2204_regex_base_search }}install {{ cis_ubuntu2204_fs_module_file }}(\s|$)'
+      line: "install {{ cis_ubuntu2204_fs_module_file }} /bin/false"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}blacklist {{ cis_ubuntu2204_fs_module_file }}$"
+      line: "blacklist {{ cis_ubuntu2204_fs_module_file }}"
+  when:
+    - cis_ubuntu2204_lsmod_output.rc == 0
+    - not cis_ubuntu2204_is_fs_mounted | bool
+  tags:
+    - rule_1_1_1
+    - server_l2
+    - workstation_l2

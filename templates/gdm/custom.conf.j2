@@ -4,7 +4,11 @@
 
 [daemon]
 # Uncomment the line below to force the login screen to use Xorg
+{% if cis_ubuntu2204_rule_1_7_11 is defined and cis_ubuntu2204_rule_1_7_11  and cis_ubuntu2204_allow_gdm_gui is defined and cis_ubuntu2204_allow_gdm_gui %}
+WaylandEnable=false
+{% else %}
 #WaylandEnable=false
+{% endif %}
 
 # Enabling automatic login
 #  AutomaticLoginEnable = true
@@ -18,7 +22,11 @@
 [security]
 
 [xdmcp]
+{% if cis_ubuntu2204_rule_1_7_10 is defined and cis_ubuntu2204_rule_1_7_10 and cis_ubuntu2204_allow_gdm_gui is defined and cis_ubuntu2204_allow_gdm_gui %}
+Enable=false
+{% else %}
 #Enable=false
+{% endif %}
 
 [chooser]
 

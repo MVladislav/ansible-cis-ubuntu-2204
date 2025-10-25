@@ -23,9 +23,12 @@ cis_ubuntu2204_rule_1_1_1_2: true # freevxfs
 cis_ubuntu2204_rule_1_1_1_3: true # hfs
 cis_ubuntu2204_rule_1_1_1_4: true # hfsplus
 cis_ubuntu2204_rule_1_1_1_5: true # jffs2
-cis_ubuntu2204_rule_1_1_1_6: true # squashfs - IMPACT: Snap packages utilizes squashfs as a compressed filesystem, disabling squashfs will cause Snap packages to fail.
-cis_ubuntu2204_rule_1_1_1_7: true # udf - IMPACT: Microsoft Azure requires the usage of udf.
-cis_ubuntu2204_rule_1_1_1_8: true # usb-storage - IMPACT: Disabling the usb-storage module will disable any usage of USB storage devices.
+cis_ubuntu2204_rule_1_1_1_6: true # overlay
+cis_ubuntu2204_rule_1_1_1_7: true # squashfs - IMPACT: Snap packages utilizes squashfs as a compressed filesystem, disabling squashfs will cause Snap packages to fail.
+cis_ubuntu2204_rule_1_1_1_8: true # udf - IMPACT: Microsoft Azure requires the usage of udf.
+cis_ubuntu2204_rule_1_1_1_9: true # usb-storage - IMPACT: Disabling the usb-storage module will disable any usage of USB storage devices.
+cis_ubuntu2204_rule_1_1_1_10: true # unused filesystems
+cis_ubuntu2204_rule_1_1_1_11: true # firewire-core
 cis_ubuntu2204_rule_1_1_2_1: true # /tmp
 # cis_ubuntu2204_rule_1_1_2_1_1: true # NOTE: implicit in 'cis_ubuntu2204_rule_1_1_2_1'
 cis_ubuntu2204_rule_1_1_2_1_2: true
@@ -55,6 +58,7 @@ cis_ubuntu2204_rule_1_5_2: true
 cis_ubuntu2204_rule_1_5_3: true
 cis_ubuntu2204_rule_1_5_4: true
 cis_ubuntu2204_rule_1_5_5: true
+cis_ubuntu2204_rule_1_5_6: true
 cis_ubuntu2204_rule_1_6_1: true
 cis_ubuntu2204_rule_1_6_2: true
 cis_ubuntu2204_rule_1_6_3: true
@@ -71,6 +75,7 @@ cis_ubuntu2204_rule_1_7_7: true # NOTE: depends also on 'cis_ubuntu2204_allow_gd
 cis_ubuntu2204_rule_1_7_8: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 cis_ubuntu2204_rule_1_7_9: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 cis_ubuntu2204_rule_1_7_10: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
+cis_ubuntu2204_rule_1_7_11: true # NOTE: depends also on 'cis_ubuntu2204_allow_gdm_gui'
 ## SECTION 2 rules
 cis_ubuntu2204_rule_2_1_1: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
 cis_ubuntu2204_rule_2_1_1_remove: true # NOTE: depends also on 'cis_ubuntu2204_allow_autofs'
@@ -368,6 +373,27 @@ cis_ubuntu2204_config_aide: true
 
 # SPECIAL variables
 # ---------------------------------------
+# Ensure unused filesystems kernel modules are not available (cis_ubuntu2204_rule_1_1_1_10)
+cis_ubuntu2204_fs_known_vulnerable:
+  - afs
+  - ceph
+  - cifs
+  - exfat
+  - ext
+  - fat
+  - fscache
+  - fuse
+  - gfs2
+  - nfs_common
+  - nfsd
+  - smbfs_common
+cis_ubuntu2204_fs_ignored: # these filesystem won't be disabled
+  - xfs
+  - vfat
+  - ext2
+  - ext3
+  - ext4
+
 cis_ubuntu2204_rule_1_1_2_1_tmp_size: 2G
 # cis_ubuntu2204_rule_1_1_2_2_shm_size: 2G
 

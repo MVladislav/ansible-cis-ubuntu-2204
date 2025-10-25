@@ -648,9 +648,9 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 4.3.3.4   | Ensure ip6tables firewall rules exist for all open ports (Automated)                            | 🟢  |     |     |
 | 5         | **Access Control**                                                                              |     | 🟡  |     |
 | 5.1       | **Configure SSH Server**                                                                        | 🟢  |     |     |
-| 5.1.1     | Ensure permissions on /etc/ssh/sshd_config are configured (Automated)                           | 🟢  |     |     |
-| 5.1.2     | Ensure permissions on SSH private host key files are configured (Automated)                     | 🟢  |     |     |
-| 5.1.3     | Ensure permissions on SSH public host key files are configured (Automated)                      | 🟢  |     |     |
+| 5.1.1     | Ensure access to /etc/ssh/sshd_config is configured (Automated)                                 | 🟢  |     |     |
+| 5.1.2     | Ensure access to SSH private host key files is configured (Automated)                           | 🟢  |     |     |
+| 5.1.3     | Ensure access to SSH public host key files is configured (Automated)                            | 🟢  |     |     |
 | 5.1.4     | Ensure sshd access is configured (Automated)                                                    | 🟢  |     |     |
 | 5.1.5     | Ensure sshd Banner is configured (Automated)                                                    | 🟢  |     |     |
 | 5.1.6     | Ensure sshd Ciphers are configured (Automated)                                                  | 🟢  |     |     |
@@ -674,15 +674,15 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 5.2.1     | Ensure sudo is installed (Automated)                                                            | 🟢  |     |     |
 | 5.2.2     | Ensure sudo commands use pty (Automated)                                                        | 🟢  |     |     |
 | 5.2.3     | Ensure sudo log file exists (Automated)                                                         | 🟢  |     |     |
-| 5.2.4     | Ensure users must provide password for privilege escalation (Automated)                         | 🟢  |     |     |
+| 5.2.4     | Ensure users must provide password for escalation (Automated)                                   | 🟢  |     |     |
 | 5.2.5     | Ensure re-authentication for privilege escalation is not disabled globally (Automated)          | 🟢  |     |     |
-| 5.2.6     | Ensure sudo authentication timeout is configured correctly (Automated)                          | 🟢  |     |     |
+| 5.2.6     | Ensure sudo timestamp_timeout is configured (Automated)                                         | 🟢  |     |     |
 | 5.2.7     | Ensure access to the su command is restricted (Automated)                                       | 🟢  |     |     |
 | 5.3       | **Pluggable Authentication Modules**                                                            | 🟢  |     |     |
 | 5.3.1     | **Configure PAM software packages**                                                             | 🟢  |     |     |
 | 5.3.1.1   | Ensure latest version of pam is installed (Automated)                                           | 🟢  |     |     |
-| 5.3.1.2   | Ensure libpam-modules is installed (Automated)                                                  | 🟢  |     |     |
-| 5.3.1.3   | Ensure libpam-pwquality is installed (Automated)                                                | 🟢  |     |     |
+| 5.3.1.2   | Ensure latest version of libpam-modules is installed (Automated)                                | 🟢  |     |     |
+| 5.3.1.3   | Ensure latest version of libpam-pwquality is installed (Automated)                              | 🟢  |     |     |
 | 5.3.2     | **Configure pam-auth-update profiles**                                                          | 🟢  |     |     |
 | 5.3.2.1   | Ensure pam_unix module is enabled (Automated)                                                   | 🟢  |     |     |
 | 5.3.2.2   | Ensure pam_faillock module is enabled (Automated)                                               | 🟢  |     |     |
@@ -714,7 +714,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 5.4       | **User Accounts and Environment**                                                               |     | 🟡  |     |
 | 5.4.1     | **Configure shadow password suite parameters**                                                  |     | 🟡  |     |
 | 5.4.1.1   | Ensure password expiration is configured (Automated)                                            | 🟢  |     |     |
-| 5.4.1.2   | Ensure minimum password age is configured (Manual)                                              | 🟢  |     |     |
+| 5.4.1.2   | Ensure minimum password days is configured (Manual)                                             | 🟢  |     |     |
 | 5.4.1.3   | Ensure password expiration warning days is configured (Automated)                               | 🟢  |     |     |
 | 5.4.1.4   | Ensure strong password hashing algorithm is configured (Automated)                              | 🟢  |     |     |
 | 5.4.1.5   | Ensure inactive password lock is configured (Automated)                                         |     | 🟡  |     |
@@ -723,7 +723,7 @@ For more specific description see the **CIS pdf** file on **page 18**.
 | 5.4.2.1   | Ensure root is the only UID 0 account (Automated)                                               | 🟢  |     |     |
 | 5.4.2.2   | Ensure root is the only GID 0 account (Automated)                                               | 🟢  |     |     |
 | 5.4.2.3   | Ensure group root is the only GID 0 group (Automated)                                           | 🟢  |     |     |
-| 5.4.2.4   | Ensure root password is set (Automated)                                                         |     |     | 🔴  |
+| 5.4.2.4   | Ensure root account access is controlled (Automated)                                            |     | 🟡  |     |
 | 5.4.2.5   | Ensure root path integrity (Automated)                                                          |     | 🟡  |     |
 | 5.4.2.6   | Ensure root user umask is configured (Automated)                                                | 🟢  |     |     |
 | 5.4.2.7   | Ensure system accounts do not have a valid login shell (Automated)                              |     | 🟡  |     |

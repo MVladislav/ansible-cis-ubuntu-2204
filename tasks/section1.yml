@@ -356,7 +356,7 @@
     owner: "{{ cis_ubuntu2204_section1_owner_default }}"
     group: "{{ cis_ubuntu2204_section1_group_default }}"
     mode: "{{ cis_ubuntu2204_section1_mode_default }}"
-  notify: systemd restart and enable tmp.mount
+  notify: Systemd restart and enable tmp.mount
   when:
     - cis_ubuntu2204_rule_1_1_2_1
   tags:
@@ -578,7 +578,7 @@
       - apparmor-utils # installs 'aa-enforce'
     state: present
     force_apt_get: true
-  notify: restart apparmor
+  notify: Restart apparmor
   when:
     - cis_ubuntu2204_rule_1_3_1_1
   tags:
@@ -599,25 +599,25 @@
         path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*apparmor=)[^\"]*)(\".*)'
         replace: '\1 apparmor=1\2'
-      notify: update-grub
+      notify: Update-grub
     - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled | grub replace - apparmor"
       ansible.builtin.replace:
         path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: 'apparmor=\d+'
         replace: "apparmor=1"
-      notify: update-grub
+      notify: Update-grub
     # - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled | grub add - security"
     #   ansible.builtin.replace:
     #     path: "{{ cis_ubuntu2204_default_grub_file }}"
     #     regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*security=)[^\"]*)(\".*)'
     #     replace: '\1 security=apparmor\2'
-    #   notify: update-grub
+    #   notify: Update-grub
     # - name: "SECTION1 | 1.3.1.2 | Ensure AppArmor is enabled | grub replace - security"
     #   ansible.builtin.replace:
     #     path: "{{ cis_ubuntu2204_default_grub_file }}"
     #     regexp: 'security=\w+'
     #     replace: "security=apparmor"
-    #   notify: update-grub
+    #   notify: Update-grub
 
 - name: "SECTION1 | 1.3.1.3 | Ensure all AppArmor Profiles are not disabled"
   when:
@@ -642,7 +642,7 @@
       ansible.builtin.command: "/usr/sbin/aa-complain {{ item }}"
       changed_when: false
       loop: "{{ cis_ubuntu2204_apparmor_update_to_complain_profiles }}"
-      notify: restart apparmor
+      notify: Restart apparmor
       when:
         - cis_ubuntu2204_apparmor_update_to_complain_profiles is defined
         - cis_ubuntu2204_apparmor_update_to_complain_profiles | length > 0
@@ -670,7 +670,7 @@
       ansible.builtin.command: "/usr/sbin/aa-enforce {{ item }}"
       changed_when: false
       loop: "{{ cis_ubuntu2204_apparmor_update_to_enforce_profiles }}"
-      notify: restart apparmor
+      notify: Restart apparmor
       when:
         - cis_ubuntu2204_apparmor_update_to_enforce_profiles is defined
         - cis_ubuntu2204_apparmor_update_to_enforce_profiles | length > 0
@@ -707,7 +707,7 @@
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "{{ cis_ubuntu2204_section1_mode_etc_grub_d }}"
-      notify: generate new grub config
+      notify: Generate new grub config
       when:
         - cis_ubuntu2204_grub_bootloader_password is defined
         - cis_ubuntu2204_grub_bootloader_password.stdout is defined
@@ -717,7 +717,7 @@
         path: /etc/grub.d/10_linux
         regexp: '--class os"'
         replace: '--class os --unrestricted"'
-      notify: generate new grub config
+      notify: Generate new grub config
       when:
         - cis_ubuntu2204_disable_boot_pass
 

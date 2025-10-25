@@ -1,0 +1,16 @@
+{{ ansible_managed | comment }}
+
+# rotate log files weekly
+weekly
+
+# use the adm group by default, since this is the owning group of /var/log/.
+su root {{ cis_ubuntu2204_audit_log_group }}
+
+# keep 4 weeks worth of backlogs
+rotate 4
+
+# create new (empty) log files after rotating old ones
+create
+
+# packages drop log rotation information into this directory
+include /etc/logrotate.d

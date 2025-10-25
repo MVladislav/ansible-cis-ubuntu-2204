@@ -11,7 +11,7 @@
     enabled: true
     masked: false
     state: reloaded
-  listen: systemd restart and enable tmp.mount
+  listen: Systemd restart and enable tmp.mount
 
 # ------------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@
     enabled: true
     masked: false
     state: restarted
-  listen: restart apparmor
+  listen: Restart apparmor
   when: ansible_virtualization_type != "docker"
 
 # ------------------------------------------------------------------------------
@@ -45,7 +45,7 @@
     enabled: true
     masked: false
     state: restarted
-  listen: "restart postfix"
+  listen: Restart postfix
   when: package_installed_postfix.rc == 0
 
 - name: "HANDLER | 2.3.2.1 | systemd restart and enable systemd-timesyncd"
@@ -56,7 +56,7 @@
     enabled: true
     masked: false
     state: restarted
-  listen: "restart systemd-timesyncd"
+  listen: Restart systemd-timesyncd
 
 - name: "HANDLER | 2.3.1.1, 2.3.3.1-2 | systemd restart and enable chrony"
   become: true
@@ -66,7 +66,7 @@
     enabled: true
     masked: false
     state: restarted
-  listen: "restart chrony"
+  listen: Restart chrony
 
 # ------------------------------------------------------------------------------
 
@@ -78,8 +78,21 @@
     enabled: true
     masked: false
     state: restarted
-  listen: "restart systemd-journald"
+  listen: Restart systemd-journald
   when: ansible_virtualization_type != "docker"
+
+- name: "HANDLER | 6.1.2.3-8 | systemd restart and enable rsyslog"
+  become: true
+  ansible.builtin.systemd_service:
+    name: rsyslog
+    daemon_reload: true
+    enabled: true
+    masked: false
+    state: restarted
+  listen: Restart rsyslog
+  when:
+    - ansible_virtualization_type != "docker"
+    - cis_ubuntu2204_preferred_capturing_log_method == "rsyslog"
 
 - name: "HANDLER | 6.2.1.2 | systemd restart and enable systemd-journal-upload"
   become: true
@@ -89,7 +102,7 @@
     enabled: true
     masked: false
     state: restarted
-  listen: "restart systemd-journal-upload"
+  listen: Restart systemd-journal-upload
   when: ansible_virtualization_type != "docker"
 
 - name: "HANDLER | 6.3.2 | systemd restart and enable auditd"
@@ -100,7 +113,7 @@
     enabled: true
     masked: false
     state: restarted
-  listen: "restart auditd"
+  listen: Restart auditd
   when: ansible_virtualization_type != "docker"
 
 # ------------------------------------------------------------------------------
@@ -109,9 +122,9 @@
   become: true
   ansible.builtin.command: >
     grub-mkconfig -o {{ cis_grub_cfg.stat.path }}
-  listen: generate new grub config
+  listen: Generate new grub config
   changed_when: false
-  notify: fix permissions after generate new grub config handler
+  notify: Fix permissions after generate new grub config handler
   when: ansible_virtualization_type != "docker"
 
 - name: "HANDLER | 1.4.2 | fix permissions after generate new grub config handler"
@@ -121,7 +134,7 @@
     owner: root
     group: root
     mode: "0400"
-  listen: fix permissions after generate new grub config handler
+  listen: Fix permissions after generate new grub config handler
 
 # ------------------------------------------------------------------------------
 
@@ -129,7 +142,7 @@
   become: true
   ansible.builtin.command: /usr/sbin/update-grub
   changed_when: false
-  listen: update-grub
+  listen: Update-grub
   when: ansible_virtualization_type != "docker"
 
 - name: "HANDLER | 6.3.3 | merge and load the rules into active configuration"
@@ -137,8 +150,8 @@
   ansible.builtin.command: /sbin/augenrules --load
   changed_when: false
   failed_when: false
-  listen: load audit rules
-  notify: restart auditd
+  listen: Load audit rules
+  notify: Restart auditd
 
 # ------------------------------------------------------------------------------
 

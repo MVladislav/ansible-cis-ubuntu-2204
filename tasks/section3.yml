@@ -29,13 +29,13 @@
         path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*ipv6.disable=)[^\"]*)(\".*)'
         replace: '\1 ipv6.disable={{ 0 if cis_ubuntu2204_required_ipv6 else 1 }}\2'
-      notify: update-grub
+      notify: Update-grub
     - name: "SECTION3 | 3.1.1 | Ensure IPv6 status is identified | grub replace"
       ansible.builtin.replace:
         path: "{{ cis_ubuntu2204_default_grub_file }}"
         regexp: "ipv6.disable={{ 0 if not cis_ubuntu2204_required_ipv6 else 1 }}"
         replace: "ipv6.disable={{ 0 if cis_ubuntu2204_required_ipv6 else 1 }}"
-      notify: update-grub
+      notify: Update-grub
 
 - name: "SECTION3 | 3.1.2 | Ensure wireless interfaces are not available"
   ansible.builtin.shell: |

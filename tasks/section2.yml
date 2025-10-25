@@ -25,7 +25,7 @@
     owner: "{{ cis_ubuntu2204_section2_owner_default }}"
     group: "{{ cis_ubuntu2204_section2_group_default }}"
     mode: "{{ cis_ubuntu2204_section2_mode_default }}"
-  notify: "restart postfix"
+  notify: Restart postfix
   when:
     - cis_ubuntu2204_rule_2_1_21
     - package_installed_postfix.rc == 0
@@ -101,7 +101,7 @@
         name: "{{ cis_ubuntu2204_time_synchronization_service }}"
         state: present
         force_apt_get: true
-      notify: "restart {{ cis_ubuntu2204_time_synchronization_service }}"
+      notify: "Restart {{ cis_ubuntu2204_time_synchronization_service }}"
 
     - name: "SECTION2 | 2.3.1.1 | Ensure a single time synchronization daemon is in use | remove chrony"
       ansible.builtin.apt:
@@ -129,7 +129,7 @@
     mode: "{{ cis_ubuntu2204_section2_mode_default }}"
     owner: "{{ cis_ubuntu2204_section2_owner_default }}"
     group: "{{ cis_ubuntu2204_section2_group_default }}"
-  notify: "restart {{ cis_ubuntu2204_time_synchronization_service }}"
+  notify: "Restart {{ cis_ubuntu2204_time_synchronization_service }}"
   when:
     - cis_ubuntu2204_rule_2_3_2_1
     - cis_ubuntu2204_time_synchronization_service == "systemd-timesyncd"
@@ -148,7 +148,7 @@
     mode: "{{ cis_ubuntu2204_section2_mode_default }}"
     owner: "{{ cis_ubuntu2204_section2_owner_default }}"
     group: "{{ cis_ubuntu2204_section2_group_default }}"
-  notify: "restart {{ cis_ubuntu2204_time_synchronization_service }}"
+  notify: "Restart {{ cis_ubuntu2204_time_synchronization_service }}"
   when:
     - cis_ubuntu2204_rule_2_3_3_1
     - cis_ubuntu2204_time_synchronization_service == "chrony"
@@ -164,7 +164,7 @@
     mode: "{{ cis_ubuntu2204_section2_mode_default }}"
     owner: "{{ cis_ubuntu2204_section2_owner_default }}"
     group: "{{ cis_ubuntu2204_section2_group_default }}"
-  notify: "restart {{ cis_ubuntu2204_time_synchronization_service }}"
+  notify: "Restart {{ cis_ubuntu2204_time_synchronization_service }}"
   when:
     - cis_ubuntu2204_rule_2_3_3_2
     - cis_ubuntu2204_time_synchronization_service == "chrony"

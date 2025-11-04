@@ -137,7 +137,7 @@ cis_ubuntu2204_set_journal_upload: false
 cis_ubuntu2204_set_journal_upload_url: <SET_REMOTE_URL>
 
 # Active rsyslog upload to remote log collection
-# do not forget set related variables 'cis_ubuntu2404_set_rsyslog_remote_*'
+# do not forget set related variables 'cis_ubuntu2204_set_rsyslog_remote_*'
 cis_ubuntu2204_set_rsyslog_remote: false
 cis_ubuntu2204_set_rsyslog_remote_target: <SET_REMOTE_URL>
 ```

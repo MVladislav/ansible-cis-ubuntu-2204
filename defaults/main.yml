@@ -254,9 +254,9 @@ cis_ubuntu2204_rule_5_3_3_2_5: true
 cis_ubuntu2204_rule_5_3_3_2_6: true
 cis_ubuntu2204_rule_5_3_3_2_7: true
 cis_ubuntu2204_rule_5_3_3_2_8: true
-cis_ubuntu2204_rule_5_3_3_3_1: true
-cis_ubuntu2204_rule_5_3_3_3_2: true
-cis_ubuntu2204_rule_5_3_3_3_3: true
+cis_ubuntu2204_rule_5_3_3_3_1: true # NOTE: depends also on 'cis_ubuntu2204_pwhistory_remember'
+cis_ubuntu2204_rule_5_3_3_3_2: true # NOTE: depends also on 'cis_ubuntu2204_pwhistory_enforce_for_root'
+cis_ubuntu2204_rule_5_3_3_3_3: true # NOTE: depends also on 'cis_ubuntu2204_pwhistory_use_authtok'
 cis_ubuntu2204_rule_5_3_3_4_1: true
 cis_ubuntu2204_rule_5_3_3_4_2: true
 cis_ubuntu2204_rule_5_3_3_4_3: true
@@ -436,12 +436,15 @@ cis_ubuntu2204_rule_gdm_idle_delay: 900
 # choose time synchronization (cis_ubuntu2204_rule_2_3_1_1)
 cis_ubuntu2204_time_synchronization_service: chrony # chrony | systemd-timesyncd
 cis_ubuntu2204_time_synchronization_time_server:
-  - uri: time.cloudflare.com
+  - uri: time.cloudflare.com # time.nist.gov
     config: iburst
-  - uri: ntp.ubuntu.com
+  - uri: ntp.ubuntu.com # time-a-g.nist.gov time-b-g.nist.gov time-c-g.nist.gov
     config: iburst
 # general path for sysctl conf file
 cis_ubuntu2204_sysctl_file_path: /etc/sysctl.d/99-sysctl.conf
+# in file (chrony.conf.j2) and (cis_ubuntu2204_rule_2_3_3_2)
+cis_ubuntu2204_chrony_owner: _chrony
+cis_ubuntu2204_chrony_group: _chrony
 # cron allow users (cis_ubuntu2204_rule_2_4_1_9)
 cis_ubuntu2204_cron_allow_users:
   - root
@@ -457,8 +460,7 @@ cis_ubuntu2204_firewall_ufw_outgoing_policy: deny
 cis_ubuntu2204_firewall_nftables_table_name: filter
 
 # (cis_ubuntu2204_rule_4_1_6)
-cis_ubuntu2204_firewall_rules_exist_open_ports:
-  []
+cis_ubuntu2204_firewall_rules_exist_open_ports: []
   # - rule: allow
   #   port: 80
   #   direction: in
@@ -553,6 +555,10 @@ cis_ubuntu2204_password_pass_max_days: 365
 cis_ubuntu2204_password_pass_min_days: 1
 cis_ubuntu2204_password_pass_warn_age: 7
 cis_ubuntu2204_password_inactive: 45
+
+# in (cis_ubuntu2204_rule_5_4_2_6|cis_ubuntu2204_rule_5_4_3_3)
+cis_ubuntu2204_umask: "0027"
+cis_ubuntu2204_tmout: "900"
 
 # journald log file rotation (cis_ubuntu2204_rule_6_1_1_1_3)
 cis_ubuntu2204_journald_system_max_use: 4G
@@ -652,7 +658,7 @@ cis_ubuntu2204_2_1_rule_set:
   - title: SECTION2 | 2.1.4 | Ensure dns server services are not in use
     service:
       - named.service
-      - bind9.service
+      # - bind9.service
     apt:
       - bind9
     disable: "{{ cis_ubuntu2204_rule_2_1_4 }}"
@@ -757,6 +763,7 @@ cis_ubuntu2204_2_1_rule_set:
     service:
       - apache2.socket
       - apache2.service
+      - httpd.socket
       - httpd.service
       - nginx.service
     apt:
@@ -920,7 +927,7 @@ cis_ubuntu2204_3_3_2_rule_set:
     key: net.ipv6.conf.default.accept_ra
     value: "0"
 
-# SPECIAL multi similar CIS rules set for 6.2.2.1
+# SPECIAL multi similar CIS rules set for 6.1.3.1
 cis_ubuntu2204_logfiles_access:
   - files: '^(?:lastlog(?:\..*|-.*)?|wtmp(?:\..*|-.*)?|btmp(?:\..*|-.*)?|README)$'
     mode: "0664"
@@ -943,6 +950,7 @@ cis_ubuntu2204_logfiles_access:
     owner: root
     group: gdm # root|gdm|gdm3
   - files: '^.*\.journal(?:~)?$'
+    foldername: journal
     mode: "0640"
     owner: root
     group: systemd-journal # root|systemd-journal
@@ -954,6 +962,11 @@ cis_ubuntu2204_logfiles_access:
     mode: "0640"
     owner: syslog # root|syslog
     group: "{{ cis_ubuntu2204_audit_log_group }}" # root|adm
+  - files: '^(tracking\.log|statistics\.log|measurements\.log)(?:\..*)?$'
+    foldername: chrony
+    mode: "0640"
+    owner: "{{ cis_ubuntu2204_chrony_owner }}"
+    group: "{{ cis_ubuntu2204_chrony_group }}"
 
 # ------------------------------------------------------------------------------
 

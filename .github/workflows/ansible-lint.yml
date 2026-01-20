@@ -17,8 +17,8 @@ jobs:
 
     steps:
       # https://github.com/actions/checkout
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # https://github.com/ansible/ansible-lint
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@v25.9.2
+        uses: ansible/ansible-lint@v26.1.1

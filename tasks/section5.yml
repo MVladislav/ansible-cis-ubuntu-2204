@@ -600,22 +600,37 @@
       with_items: "{{ cis_ubuntu2204_sudoers_d_files.files }}"
 
 - name: "SECTION5 | 5.2.3 | Ensure sudo log file exists"
-  ansible.builtin.lineinfile:
-    dest: /etc/sudoers
-    regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+logfile.*'
-    line: 'Defaults logfile="{{ cis_ubuntu2204_audit_sudo_log_file }}"'
-    state: present
-    create: true
-    owner: "{{ cis_ubuntu2204_section5_owner_sudo }}"
-    group: "{{ cis_ubuntu2204_section5_group_sudo }}"
-    mode: "{{ cis_ubuntu2204_section5_mode_sudo }}"
-    validate: "visudo -cf %s"
   when:
     - cis_ubuntu2204_rule_5_2_3
   tags:
     - rule_5_2
     - server_l1
     - workstation_l1
+  block:
+    - name: "SECTION5 | 5.2.3 | Ensure sudo log file exists | update /etc/sudoers"
+      ansible.builtin.lineinfile:
+        dest: /etc/sudoers
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}Defaults\s+logfile.*'
+        line: 'Defaults logfile="{{ cis_ubuntu2204_audit_sudo_log_file }}"'
+        state: present
+        create: true
+        owner: "{{ cis_ubuntu2204_section5_owner_sudo }}"
+        group: "{{ cis_ubuntu2204_section5_group_sudo }}"
+        mode: "{{ cis_ubuntu2204_section5_mode_sudo }}"
+        validate: "visudo -cf %s"
+    - name: "SECTION5 | 5.2.3 | Ensure sudo log file exists | search files inside '/etc/sudoers.d/*'"
+      ansible.builtin.find:
+        paths: /etc/sudoers.d/
+        patterns: "*"
+        recurse: true
+      register: cis_ubuntu2204_sudoers_d_files
+    - name: "SECTION5 | 5.2.3 | Ensure sudo log file exists | remove conflicting logfile in '/etc/sudoers.d/*'"
+      ansible.builtin.lineinfile:
+        dest: "{{ item.path }}"
+        regexp: 'Defaults\s+logfile.*'
+        state: absent
+        validate: "visudo -cf %s"
+      with_items: "{{ cis_ubuntu2204_sudoers_d_files.files }}"
 
 - name: "SECTION5 | 5.2.4 | Ensure users must provide password for escalation"
   when:
@@ -1640,14 +1655,14 @@
   ansible.builtin.lineinfile:
     dest: "{{ item }}"
     regexp: "{{ cis_ubuntu2204_regex_base_search }}umask"
-    line: "umask 0027"
+    line: "umask {{ cis_ubuntu2204_umask }}"
     state: present
     create: true
     owner: root
     group: root
     mode: "0640"
   with_items:
-    - /root/.bash_profile
+    - /root/.profile
     - /root/.bashrc
   when:
     - cis_ubuntu2204_rule_5_4_2_6
@@ -1733,7 +1748,7 @@
     - name: "SECTION5 | 5.4.3.2 | Ensure default user shell timeout is configured | remove existing TMOUT"
       ansible.builtin.lineinfile:
         dest: "{{ item }}"
-        regexp: '{{ cis_ubuntu2204_regex_base_search }}(readonly|export)\s+TMOUT'
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}((readonly|export|typeset).*TMOUT|TMOUT\s*=)'
         state: absent
       with_items:
         - /etc/bash.bashrc
@@ -1743,7 +1758,7 @@
       ansible.builtin.lineinfile:
         dest: /etc/profile.d/99-tmout.sh
         regexp: '{{ cis_ubuntu2204_regex_base_search }}readonly\s+TMOUT=\d+\s+;\s+export\s+TMOUT'
-        line: "readonly TMOUT=900 ; export TMOUT"
+        line: "typeset -xr TMOUT={{ cis_ubuntu2204_tmout }}"
         state: present
         create: true
         owner: root
@@ -1768,13 +1783,23 @@
         - /etc/bash.bashrc
         - /etc/bashrc
         # - /etc/pam.d/postlogin
-        - /etc/login.defs
+        # - /etc/login.defs
         # - /etc/default/login
-    - name: "SECTION5 | 5.4.3.3 | Ensure default user umask is configured | add umask line"
+    - name: "SECTION5 | 5.4.3.3 | Ensure default user umask is configured | set umask line inside /etc/profile.d/"
       ansible.builtin.lineinfile:
         dest: /etc/profile.d/99-umask.sh
         regexp: '{{ cis_ubuntu2204_regex_base_search }}umask\s+\d+'
-        line: "umask 0027"
+        line: "umask {{ cis_ubuntu2204_umask }}"
+        state: present
+        create: true
+        owner: root
+        group: root
+        mode: "0644"
+    - name: "SECTION5 | 5.4.3.3 | Ensure default user umask is configured | set umask line inside /etc/profile.d/"
+      ansible.builtin.lineinfile:
+        dest: /etc/login.defs
+        regexp: '{{ cis_ubuntu2204_regex_base_search }}UMASK\s+\d+'
+        line: "UMASK {{ cis_ubuntu2204_umask }}"
         state: present
         create: true
         owner: root

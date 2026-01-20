@@ -72,22 +72,31 @@
     dest: /etc/systemd/journald.conf
     regexp: "{{ item.reg }}"
     line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter }}"
     state: present
     create: true
     owner: root
     group: root
     mode: "0640"
   with_items:
+    - reg: '\[Journal\]'
+      line: "[Journal]"
+      insertafter: "EOF"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}SystemMaxUse{{ cis_ubuntu2204_regex_base_search_equals }}"
       line: "SystemMaxUse={{ cis_ubuntu2204_journald_system_max_use }}"
+      insertafter: '\[Journal\]'
     - reg: "{{ cis_ubuntu2204_regex_base_search }}SystemKeepFree{{ cis_ubuntu2204_regex_base_search_equals }}"
       line: "SystemKeepFree={{ cis_ubuntu2204_journald_system_keep_free }}"
+      insertafter: '\[Journal\]'
     - reg: "{{ cis_ubuntu2204_regex_base_search }}RuntimeMaxUse{{ cis_ubuntu2204_regex_base_search_equals }}"
       line: "RuntimeMaxUse={{ cis_ubuntu2204_journald_runtime_max_use }}"
+      insertafter: '\[Journal\]'
     - reg: "{{ cis_ubuntu2204_regex_base_search }}RuntimeKeepFree{{ cis_ubuntu2204_regex_base_search_equals }}"
       line: "RuntimeKeepFree={{ cis_ubuntu2204_journald_runtime_keep_free }}"
+      insertafter: '\[Journal\]'
     - reg: "{{ cis_ubuntu2204_regex_base_search }}MaxFileSec{{ cis_ubuntu2204_regex_base_search_equals }}"
       line: "MaxFileSec={{ cis_ubuntu2204_journald_max_file_sec }}"
+      insertafter: '\[Journal\]'
   notify: Restart systemd-journald
   when:
     - cis_ubuntu2204_rule_6_1_1_1_3
@@ -99,13 +108,21 @@
 - name: "SECTION6 | 6.1.1.1.4 | Ensure journald ForwardToSyslog is disabled"
   ansible.builtin.lineinfile:
     dest: /etc/systemd/journald.conf
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}ForwardToSyslog{{ cis_ubuntu2204_regex_base_search_equals }}"
-    line: "ForwardToSyslog=no"
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter }}"
     state: present
     create: true
     owner: root
     group: root
     mode: "0640"
+  with_items:
+    - reg: '\[Journal\]'
+      line: "[Journal]"
+      insertafter: "EOF"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}ForwardToSyslog{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "ForwardToSyslog=no"
+      insertafter: '\[Journal\]'
   notify: Restart systemd-journald
   when:
     - cis_ubuntu2204_rule_6_1_1_1_4
@@ -118,13 +135,21 @@
 - name: "SECTION6 | 6.1.1.1.5 | Ensure journald Storage is configured"
   ansible.builtin.lineinfile:
     dest: /etc/systemd/journald.conf
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}Storage{{ cis_ubuntu2204_regex_base_search_equals }}"
-    line: "Storage=persistent"
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter }}"
     state: present
     create: true
     owner: root
     group: root
     mode: "0640"
+  with_items:
+    - reg: '\[Journal\]'
+      line: "[Journal]"
+      insertafter: "EOF"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}Storage{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "Storage=persistent"
+      insertafter: '\[Journal\]'
   notify: Restart systemd-journald
   when:
     - cis_ubuntu2204_rule_6_1_1_1_5
@@ -137,13 +162,21 @@
 - name: "SECTION6 | 6.1.1.1.6 | Ensure journald Compress is configured"
   ansible.builtin.lineinfile:
     dest: /etc/systemd/journald.conf
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}Compress{{ cis_ubuntu2204_regex_base_search_equals }}"
-    line: "Compress=yes"
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter }}"
     state: present
     create: true
     owner: root
     group: root
     mode: "0640"
+  with_items:
+    - reg: '\[Journal\]'
+      line: "[Journal]"
+      insertafter: "EOF"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}Compress{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "Compress=yes"
+      insertafter: '\[Journal\]'
   notify: Restart systemd-journald
   when:
     - cis_ubuntu2204_rule_6_1_1_1_6
@@ -276,13 +309,21 @@
 - name: "SECTION6 | 6.1.2.3 | Ensure journald is configured to send logs to rsyslog"
   ansible.builtin.lineinfile:
     dest: /etc/systemd/journald.conf
-    regexp: "{{ cis_ubuntu2204_regex_base_search }}ForwardToSyslog{{ cis_ubuntu2204_regex_base_search_equals }}"
-    line: "ForwardToSyslog=yes"
+    regexp: "{{ item.reg }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter }}"
     state: present
     create: true
     owner: root
     group: root
     mode: "0640"
+  with_items:
+    - reg: '\[Journal\]'
+      line: "[Journal]"
+      insertafter: "EOF"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}ForwardToSyslog{{ cis_ubuntu2204_regex_base_search_equals }}"
+      line: "ForwardToSyslog=yes"
+      insertafter: '\[Journal\]'
   notify: Restart systemd-journald
   when:
     - cis_ubuntu2204_rule_6_1_2_3
@@ -413,11 +454,20 @@
         label: "{{ item.path }} :: {{ matching_entry.owner | default('root') }}:{{ matching_entry.group | default('adm') }} :: {{ matching_entry.mode | default('0640') }}"
       vars:
         filename: "{{ item.path | basename }}"
+        parentdir: "{{ item.path | dirname | basename }}"
         matching_entry: >-
           {%- set ns = namespace(found={}) -%}
           {%- for entry in cis_ubuntu2204_logfiles_access -%}
-            {%- if not ns.found and filename is match(entry.files) -%}
-              {%- set ns.found = entry -%}
+            {%- if not ns.found -%}
+              {%- if entry.foldername is defined -%}
+                {%- if parentdir == entry.foldername and filename is match(entry.files) -%}
+                  {%- set ns.found = entry -%}
+                {%- endif -%}
+              {%- else -%}
+                {%- if filename is match(entry.files) -%}
+                  {%- set ns.found = entry -%}
+                {%- endif -%}
+              {%- endif -%}
             {%- endif -%}
           {%- endfor -%}
           {{ ns.found }}

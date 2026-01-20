@@ -10,3 +10,6 @@ idle-delay=uint32 {{ cis_ubuntu2204_rule_gdm_idle_delay }}
 # Number of seconds after the screen is blank before locking the screen
 # Set max value for lock-delay in seconds (between 0 and 5)
 lock-delay=uint32 {{ cis_ubuntu2204_rule_gdm_lock_delay }}
+
+# Ensure screen locks after inactivity
+lock-enabled=true

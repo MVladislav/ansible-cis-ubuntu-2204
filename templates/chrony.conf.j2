@@ -30,7 +30,7 @@ server {{ server.uri }} {{ server.config | default("iburst") }}
 
 {% if cis_ubuntu2204_rule_2_3_3_2 is defined and cis_ubuntu2204_rule_2_3_3_2 %}
 # Ensure chrony is running as user _chrony
-user _chrony
+user {{ cis_ubuntu2204_chrony_owner }}
 
 {% endif -%}
 

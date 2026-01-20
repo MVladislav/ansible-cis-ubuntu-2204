@@ -692,6 +692,7 @@
         set -o pipefail &&
           if [ '{{ cis_ubuntu2204_bootloader_password }}' == 'random' ]; then
             PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c12)
+            echo "$PASSWORD" > /root/.back-bootloader-password
           else
             PASSWORD='{{ cis_ubuntu2204_bootloader_password }}'
           fi
@@ -703,7 +704,12 @@
     - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | generate config"
       ansible.builtin.copy:
         dest: /etc/grub.d/00_password
-        content: "cat << EOF\nexec tail -n +2 $0\nset superusers=\"root\"\npassword_pbkdf2 root {{ cis_ubuntu2204_grub_bootloader_password.stdout }}\nEOF"
+        content: |
+          #!/bin/sh
+          cat << 'EOF'
+          set superusers="root"
+          password_pbkdf2 root {{ cis_ubuntu2204_grub_bootloader_password.stdout }}
+          EOF
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "{{ cis_ubuntu2204_section1_mode_etc_grub_d }}"
@@ -715,8 +721,8 @@
     - name: "SECTION1 | 1.4.1 | Ensure bootloader password is set | disable password for system boot"
       ansible.builtin.replace:
         path: /etc/grub.d/10_linux
-        regexp: '--class os"'
-        replace: '--class os --unrestricted"'
+        regexp: '^(CLASS=\".*--class os(?!.*--unrestricted)[^\"]*)(\".*)'
+        replace: '\1 --unrestricted\2'
       notify: Generate new grub config
       when:
         - cis_ubuntu2204_disable_boot_pass
@@ -944,7 +950,7 @@
 
 # ------------------------------------------------------------------------------
 
-- name: "SECTION1 | 1.7.1 | Ensure GNOME Display Manager is removed"
+- name: "SECTION1 | 1.7.1 | Ensure GDM is removed"
   ansible.builtin.apt:
     name: gdm3
     state: absent
@@ -956,7 +962,7 @@
     - rule_1_7
     - server_l2
 
-- name: "SECTION1 | 1.7.2-9 | create folder under '/etc/dconf/db/*', for upcoming tasks"
+- name: "SECTION1 | 1.7.2-9 | EXTENDED | create folder under '/etc/dconf/db/*', for upcoming tasks"
   when:
     - service_status_gdm3.stdout in ('loadedactive','loadedinactive')
     - cis_ubuntu2204_allow_gdm_gui
@@ -966,21 +972,21 @@
     - server_l1
     - workstation_l1
   block:
-    - name: "SECTION1 | 1.7.2-3 | create folder /etc/dconf/db/gdm.d"
+    - name: "SECTION1 | 1.7.2-3 | EXTENDED | create folder /etc/dconf/db/gdm.d"
       ansible.builtin.file:
         path: /etc/dconf/db/gdm.d
         state: directory
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "0755"
-    - name: "SECTION1 | 1.7.4/6/8 | create folder /etc/dconf/db/local.d"
+    - name: "SECTION1 | 1.7.4/6/8 | EXTENDED | create folder /etc/dconf/db/local.d"
       ansible.builtin.file:
         path: /etc/dconf/db/local.d
         state: directory
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "0755"
-    - name: "SECTION1 | 1.7.5/7/9 | create folder /etc/dconf/db/local.d/locks"
+    - name: "SECTION1 | 1.7.5/7/9 | EXTENDED | create folder /etc/dconf/db/local.d/locks"
       ansible.builtin.file:
         path: /etc/dconf/db/local.d/locks
         state: directory
@@ -1015,7 +1021,7 @@
         mode: "{{ cis_ubuntu2204_section1_mode_default }}"
     - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured | gather users"
       ansible.builtin.command: >
-        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") {print $1}' /etc/passwd
+        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") && ($7 != "/usr/bin/false") {print $1}' /etc/passwd
       register: cis_ubuntu2204_users_with_home
       changed_when: false
     - name: "SECTION1 | 1.7.2 | Ensure GDM login banner is configured | set gsettings banner message per use per user"
@@ -1062,7 +1068,7 @@
         mode: "{{ cis_ubuntu2204_section1_mode_default }}"
     - name: "SECTION1 | 1.7.3 | Ensure GDM disable-user-list option is enabled | gather users"
       ansible.builtin.command: >
-        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") {print $1}' /etc/passwd
+        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") && ($7 != "/usr/bin/false") {print $1}' /etc/passwd
       register: cis_ubuntu2204_users_with_home
       changed_when: false
     - name: "SECTION1 | 1.7.3 | Ensure GDM disable-user-list option is enabled | set gsettings disable user list per user"
@@ -1101,7 +1107,7 @@
         mode: "{{ cis_ubuntu2204_section1_mode_default }}"
     - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | gather users"
       ansible.builtin.command: >
-        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") {print $1}' /etc/passwd
+        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") && ($7 != "/usr/bin/false") {print $1}' /etc/passwd
       register: cis_ubuntu2204_users_with_home
       changed_when: false
     - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | set gsettings set screensaver lock-delay per user"
@@ -1118,6 +1124,14 @@
       ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.desktop.session idle-delay {{ cis_ubuntu2204_rule_gdm_idle_delay }}"
       register: cis_ubuntu2204_session_idle_delay
       changed_when: cis_ubuntu2204_session_idle_delay.rc == 0
+      failed_when: false
+      loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
+    - name: "SECTION1 | 1.7.4 | Ensure GDM screen locks when the user is idle | set gsettings set screensaver lock-enabled per user"
+      become: true
+      become_user: "{{ item }}"
+      ansible.builtin.command: "dbus-run-session -- gsettings set org.gnome.desktop.screensaver lock-enabled true"
+      register: cis_ubuntu2204_screensaver_lock_enabled
+      changed_when: cis_ubuntu2204_screensaver_lock_enabled.rc == 0
       failed_when: false
       loop: "{{ cis_ubuntu2204_users_with_home.stdout_lines }}"
 
@@ -1157,6 +1171,11 @@
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+    - name: "SECTION1 | 1.7.6 | Ensure GDM automatic mounting of removable media is disabled | gather users"
+      ansible.builtin.command: >
+        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") && ($7 != "/usr/bin/false") {print $1}' /etc/passwd
+      register: cis_ubuntu2204_users_with_home
+      changed_when: false
     - name: "SECTION1 | 1.7.6 | Ensure GDM automatic mounting of removable media is disabled | set gsettings disable automount per user"
       become: true
       become_user: "{{ item }}"
@@ -1210,6 +1229,11 @@
         owner: "{{ cis_ubuntu2204_section1_owner_default }}"
         group: "{{ cis_ubuntu2204_section1_group_default }}"
         mode: "{{ cis_ubuntu2204_section1_mode_default }}"
+    - name: "SECTION1 | 1.7.8 | Ensure GDM autorun-never is enabled | gather users"
+      ansible.builtin.command: >
+        awk -F: '($3 >= 1000) && ($7 != "/usr/sbin/nologin") && ($7 != "/bin/false") && ($7 != "/usr/bin/false") {print $1}' /etc/passwd
+      register: cis_ubuntu2204_users_with_home
+      changed_when: false
     - name: "SECTION1 | 1.7.8 | Ensure GDM autorun-never is enabled | set gsettings enable autorun-never per user"
       become: true
       become_user: "{{ item }}"

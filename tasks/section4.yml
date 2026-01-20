@@ -46,9 +46,9 @@
         to_ip: any
         to_port: 22
         protocol: tcp
-        interface: "{{ ansible_default_ipv4['interface'] }}"
+        interface: "{{ ansible_facts['default_ipv4']['interface'] }}"
         log: true
-        comment: "allow incoming connection on standard ssh port for interface {{ ansible_default_ipv4['interface'] }}"
+        comment: "allow incoming connection on standard ssh port for interface {{ ansible_facts['default_ipv4']['interface'] }}"
     - name: "SECTION4 | 4.1.3 | Ensure ufw service is enabled | enable service"
       ansible.builtin.systemd_service:
         name: ufw.service

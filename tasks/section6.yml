@@ -497,7 +497,7 @@
     state: started
   when:
     - cis_ubuntu2204_rule_6_2_1_2
-    - ansible_virtualization_type != "docker"
+    - ansible_facts['virtualization_type'] != "docker"
   tags:
     - rule_6_2_1
     - server_l2

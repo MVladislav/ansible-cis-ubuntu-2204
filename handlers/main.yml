@@ -24,7 +24,7 @@
     masked: false
     state: restarted
   listen: Restart apparmor
-  when: ansible_virtualization_type != "docker"
+  when: ansible_facts['virtualization_type'] != "docker"
 
 # ------------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@
   ansible.builtin.command: dconf update
   changed_when: false
   listen: Update dconf
-  when: ansible_virtualization_type != "docker"
+  when: ansible_facts['virtualization_type'] != "docker"
 
 # ------------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@
     masked: false
     state: restarted
   listen: Restart systemd-journald
-  when: ansible_virtualization_type != "docker"
+  when: ansible_facts['virtualization_type'] != "docker"
 
 - name: "HANDLER | 6.1.2.3-8 | systemd restart and enable rsyslog"
   become: true
@@ -91,7 +91,7 @@
     state: restarted
   listen: Restart rsyslog
   when:
-    - ansible_virtualization_type != "docker"
+    - ansible_facts['virtualization_type'] != "docker"
     - cis_ubuntu2204_preferred_capturing_log_method == "rsyslog"
 
 - name: "HANDLER | 6.2.1.2 | systemd restart and enable systemd-journal-upload"
@@ -103,7 +103,7 @@
     masked: false
     state: restarted
   listen: Restart systemd-journal-upload
-  when: ansible_virtualization_type != "docker"
+  when: ansible_facts['virtualization_type'] != "docker"
 
 - name: "HANDLER | 6.3.2 | systemd restart and enable auditd"
   become: true
@@ -114,7 +114,7 @@
     masked: false
     state: restarted
   listen: Restart auditd
-  when: ansible_virtualization_type != "docker"
+  when: ansible_facts['virtualization_type'] != "docker"
 
 # ------------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@
   listen: Generate new grub config
   changed_when: false
   notify: Fix permissions after generate new grub config handler
-  when: ansible_virtualization_type != "docker"
+  when: ansible_facts['virtualization_type'] != "docker"
 
 - name: "HANDLER | 1.4.2 | fix permissions after generate new grub config handler"
   become: true
@@ -143,7 +143,7 @@
   ansible.builtin.command: /usr/sbin/update-grub
   changed_when: false
   listen: Update-grub
-  when: ansible_virtualization_type != "docker"
+  when: ansible_facts['virtualization_type'] != "docker"
 
 - name: "HANDLER | 6.3.3 | merge and load the rules into active configuration"
   become: true

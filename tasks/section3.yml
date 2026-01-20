@@ -103,7 +103,7 @@
       community.general.modprobe:
         name: dccp
         state: absent
-      when: ansible_virtualization_type != "docker"
+      when: ansible_facts['virtualization_type'] != "docker"
 
 - name: "SECTION3 | 3.2.2 | Ensure tipc kernel module is not available"
   when:
@@ -132,7 +132,7 @@
       community.general.modprobe:
         name: tipc
         state: absent
-      when: ansible_virtualization_type != "docker"
+      when: ansible_facts['virtualization_type'] != "docker"
 
 - name: "SECTION3 | 3.2.3 | Ensure rds kernel module is not available"
   when:
@@ -161,7 +161,7 @@
       community.general.modprobe:
         name: rds
         state: absent
-      when: ansible_virtualization_type != "docker"
+      when: ansible_facts['virtualization_type'] != "docker"
 
 - name: "SECTION3 | 3.2.4 | Ensure sctp kernel module is not available"
   when:
@@ -190,7 +190,7 @@
       community.general.modprobe:
         name: sctp
         state: absent
-      when: ansible_virtualization_type != "docker"
+      when: ansible_facts['virtualization_type'] != "docker"
 
 # ------------------------------------------------------------------------------
 

@@ -7,10 +7,10 @@
   ansible.builtin.fail:
     msg: >
       This role is tested and can only be run against Ubuntu for versions 22.04, 23.04 and 23.10.
-      {{ ansible_distribution }} {{ ansible_distribution_version }} is not supported.
+      {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }} is not supported.
   when:
-    - not ansible_distribution == "Ubuntu" or
-      not ansible_distribution_version in ("22.04", "23.04", "23.10")
+    - not ansible_facts['distribution'] == "Ubuntu" or
+      not ansible_facts['distribution_version'] in ("22.04", "23.04", "23.10")
 
 - name: "CONDITION | check ansible version"
   ansible.builtin.fail:

@@ -1,5 +1,5 @@
 ansible-core
-ansible-lint==26.1.1
+ansible-lint==26.2.0
 molecule
 molecule-plugins[docker]
 yamllint

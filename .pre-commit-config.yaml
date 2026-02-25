@@ -58,7 +58,7 @@ repos:
 
   # Ansible linting ############################################################
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v26.1.1
+    rev: v26.2.0
     hooks:
       - id: ansible-lint
         name: Ansible-lint
@@ -67,4 +67,4 @@ repos:
         pass_filenames: false
         always_run: true
         additional_dependencies:
-          - ansible-core==2.20.2
+          - ansible-core==2.20.3

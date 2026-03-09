@@ -8,7 +8,7 @@ ci:
 repos:
   # Codespell for spelling corrections
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.1
+    rev: v2.4.2
     hooks:
       - id: codespell
         args:
@@ -58,7 +58,7 @@ repos:
 
   # Ansible linting ############################################################
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v26.1.1
+    rev: v26.3.0
     hooks:
       - id: ansible-lint
         name: Ansible-lint

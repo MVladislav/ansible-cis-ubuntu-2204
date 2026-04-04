@@ -8,7 +8,7 @@ ci:
 repos:
   # Codespell for spelling corrections
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.1
+    rev: v2.4.2
     hooks:
       - id: codespell
         args:
@@ -46,7 +46,7 @@ repos:
           - --exclude-files=templates/pam/pwquality
           - --exclude-files=templates/pam/pwhistory.j2
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.30.0
+    rev: v8.30.1
     hooks:
       - id: gitleaks
 
@@ -58,7 +58,7 @@ repos:
 
   # Ansible linting ############################################################
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v26.1.1
+    rev: v26.4.0
     hooks:
       - id: ansible-lint
         name: Ansible-lint
@@ -67,4 +67,4 @@ repos:
         pass_filenames: false
         always_run: true
         additional_dependencies:
-          - ansible-core==2.20.2
+          - ansible-core==2.20.4

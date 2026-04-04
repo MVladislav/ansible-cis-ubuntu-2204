@@ -18,6 +18,6 @@ Session-Initial:
         required        pam_unix.so
 Password-Type: Primary
 Password:
-        [success=end default=ignore]    pam_unix.so obscure {{ cis_ubuntu2204_unix_use_authtok }} try_first_pass {{ cis_ubuntu2204_unix_encrypt_method | lower }}
+        [success=end default=ignore]    pam_unix.so obscure{% if cis_ubuntu2204_rule_5_3_3_4_4%} {{ cis_ubuntu2204_unix_use_authtok }}{% endif %} try_first_pass {{ cis_ubuntu2204_unix_encrypt_method | lower }}
 Password-Initial:
         [success=end default=ignore]    pam_unix.so obscure {{ cis_ubuntu2204_unix_encrypt_method | lower }}

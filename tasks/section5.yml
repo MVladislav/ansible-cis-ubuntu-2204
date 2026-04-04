@@ -1795,7 +1795,7 @@
         owner: root
         group: root
         mode: "0644"
-    - name: "SECTION5 | 5.4.3.3 | Ensure default user umask is configured | set umask line inside /etc/profile.d/"
+    - name: "SECTION5 | 5.4.3.3 | Ensure default user umask is configured | set umask line inside /etc/login.defs"
       ansible.builtin.lineinfile:
         dest: /etc/login.defs
         regexp: '{{ cis_ubuntu2204_regex_base_search }}UMASK\s+\d+'

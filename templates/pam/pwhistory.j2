@@ -3,4 +3,4 @@ Default: yes
 Priority: 1024
 Password-Type: Primary
 Password:
-        requisite                       pam_pwhistory.so {{ cis_ubuntu2204_pwhistory_remember }} {{ cis_ubuntu2204_pwhistory_enforce_for_root }} {{ cis_ubuntu2204_pwhistory_use_authtok }}
+        requisite                      pam_pwhistory.so{% if cis_ubuntu2204_rule_5_3_3_3_1 %} {{ cis_ubuntu2204_pwhistory_remember }}{% endif %}{% if cis_ubuntu2204_rule_5_3_3_3_2 %} {{ cis_ubuntu2204_pwhistory_enforce_for_root }}{% endif %} {{ cis_ubuntu2204_pwhistory_use_authtok if cis_ubuntu2204_rule_5_3_3_3_3 else 'try_first_pass' }}

@@ -277,6 +277,8 @@ cis_ubuntu2204_rule_5_4_2_1: true
 cis_ubuntu2204_rule_5_4_2_2: true
 # SECTION5 | 5.4.2.3 | Ensure group root is the only GID 0 group
 cis_ubuntu2204_rule_5_4_2_3: true
+# SECTION5 | 5.4.2.4 | Ensure root account access is controlled
+cis_ubuntu2204_rule_5_4_2_4: true
 # SECTION5 | 5.4.2.5 | Ensure root path integrity
 cis_ubuntu2204_rule_5_4_2_5: true
 # SECTION5 | 5.4.2.7 | Ensure system accounts do not have a valid login shell

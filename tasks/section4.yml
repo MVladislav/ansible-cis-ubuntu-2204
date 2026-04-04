@@ -457,6 +457,7 @@
   when:
     - cis_ubuntu2204_rule_4_3_3_2
     - cis_ubuntu2204_firewall == "iptables"
+  notify: Save iptables ipv6
   tags:
     - rule_4_3_3
     - server_l1

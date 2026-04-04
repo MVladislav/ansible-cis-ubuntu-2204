@@ -259,8 +259,8 @@ cis_ubuntu2204_rule_5_3_3_3_2: true # NOTE: depends also on 'cis_ubuntu2204_pwhi
 cis_ubuntu2204_rule_5_3_3_3_3: true # NOTE: depends also on 'cis_ubuntu2204_pwhistory_use_authtok'
 cis_ubuntu2204_rule_5_3_3_4_1: true
 cis_ubuntu2204_rule_5_3_3_4_2: true
-cis_ubuntu2204_rule_5_3_3_4_3: true
-cis_ubuntu2204_rule_5_3_3_4_4: true
+cis_ubuntu2204_rule_5_3_3_4_3: true # NOTE: depends also on 'cis_ubuntu2204_unix_encrypt_method'
+cis_ubuntu2204_rule_5_3_3_4_4: true # NOTE: depends also on 'cis_ubuntu2204_unix_use_authtok'
 cis_ubuntu2204_rule_5_4_1_1: true
 cis_ubuntu2204_rule_5_4_1_2: true
 cis_ubuntu2204_rule_5_4_1_3: true

@@ -472,60 +472,6 @@
 # ------------------------------------------------------------------------------
 
 - name: "SECTION5 | 5.1.23 | EXTENDED | Ensure SSH additional variables are configured"
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "{{ item.reg }}"
-    line: "{{ item.line }}"
-    state: present
-    create: true
-    owner: "{{ cis_ubuntu2204_section5_owner_ssh }}"
-    group: "{{ cis_ubuntu2204_section5_group_ssh }}"
-    mode: "{{ cis_ubuntu2204_section5_mode_ssh }}"
-  with_items:
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}Port"
-      line: "Port {{ cis_ubuntu2204_ssh_port }}"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}AddressFamily"
-      line: "AddressFamily {{ cis_ubuntu2204_ssh_address_family }}"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress"
-      line: "ListenAddress 0.0.0.0"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress"
-      line: "ListenAddress ::"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthenticationMethods"
-      line: "AuthenticationMethods {{ cis_ubuntu2204_ssh_authentication_methods }}"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}StrictModes"
-      line: "StrictModes yes"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAuthentication"
-      line: "PubkeyAuthentication yes"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}PasswordAuthentication"
-      line: "PasswordAuthentication {{ cis_ubuntu2204_ssh_password_authentication }}"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}ChallengeResponseAuthentication"
-      line: "ChallengeResponseAuthentication no"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}GSSAPICleanupCredentials"
-      line: "GSSAPICleanupCredentials yes"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}AllowAgentForwarding"
-      line: "AllowAgentForwarding {{ cis_ubuntu2204_ssh_allow_agent_forwarding }}"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}X11Forwarding"
-      line: "X11Forwarding {{ cis_ubuntu2204_ssh_x11_forwarding }}"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}AllowTcpForwarding"
-      line: "AllowTcpForwarding {{ cis_ubuntu2204_ssh_allow_tcp_forwarding }}"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}PrintMotd"
-      line: "PrintMotd no"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}TCPKeepAlive"
-      line: "TCPKeepAlive {{ cis_ubuntu2204_ssh_tcp_keep_alive }}"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}UseDNS"
-      line: "UseDNS no"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}AcceptEnv"
-      line: "AcceptEnv LANG LC_*"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthorizedKeysFile"
-      line: "AuthorizedKeysFile .ssh/authorized_keys"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}Subsystem"
-      line: "Subsystem sftp  /usr/lib/openssh/sftp-server -f AUTHPRIV -l INFO"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_ed25519_key"
-      line: "HostKey /etc/ssh/ssh_host_ed25519_key"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_ecdsa_key"
-      line: "HostKey /etc/ssh/ssh_host_ecdsa_key"
-    - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_rsa_key"
-      line: "HostKey /etc/ssh/ssh_host_rsa_key"
   when:
     - cis_ubuntu2204_rule_5_1_23
     - (
@@ -537,6 +483,72 @@
     - rule_5_1
     - server_l1
     - workstation_l1
+    - molecule-idempotence-notest
+  block:
+    - name: "SECTION5 | 5.1.23 | EXTENDED | Ensure SSH additional variables are configured | Remove all ListenAddress lines"
+      ansible.builtin.lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress"
+        state: absent
+        create: true
+        owner: "{{ cis_ubuntu2204_section5_owner_ssh }}"
+        group: "{{ cis_ubuntu2204_section5_group_ssh }}"
+        mode: "{{ cis_ubuntu2204_section5_mode_ssh }}"
+    - name: "SECTION5 | 5.1.23 | EXTENDED | Ensure SSH additional variables are configured | Add/Update SSH config lines"
+      ansible.builtin.lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "{{ item.reg }}"
+        line: "{{ item.line }}"
+        state: present
+        create: true
+        owner: "{{ cis_ubuntu2204_section5_owner_ssh }}"
+        group: "{{ cis_ubuntu2204_section5_group_ssh }}"
+        mode: "{{ cis_ubuntu2204_section5_mode_ssh }}"
+      with_items:
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}Port"
+          line: "Port {{ cis_ubuntu2204_ssh_port }}"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}AddressFamily"
+          line: "AddressFamily {{ cis_ubuntu2204_ssh_address_family }}"
+        - reg: '{{ cis_ubuntu2204_regex_base_search }}ListenAddress 0\.0\.0\.0'
+          line: "ListenAddress 0.0.0.0"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress ::"
+          line: "ListenAddress ::"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthenticationMethods"
+          line: "AuthenticationMethods {{ cis_ubuntu2204_ssh_authentication_methods }}"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}StrictModes"
+          line: "StrictModes yes"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}PubkeyAuthentication"
+          line: "PubkeyAuthentication yes"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}PasswordAuthentication"
+          line: "PasswordAuthentication {{ cis_ubuntu2204_ssh_password_authentication }}"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}ChallengeResponseAuthentication"
+          line: "ChallengeResponseAuthentication no"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}GSSAPICleanupCredentials"
+          line: "GSSAPICleanupCredentials yes"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}AllowAgentForwarding"
+          line: "AllowAgentForwarding {{ cis_ubuntu2204_ssh_allow_agent_forwarding }}"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}X11Forwarding"
+          line: "X11Forwarding {{ cis_ubuntu2204_ssh_x11_forwarding }}"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}AllowTcpForwarding"
+          line: "AllowTcpForwarding {{ cis_ubuntu2204_ssh_allow_tcp_forwarding }}"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}PrintMotd"
+          line: "PrintMotd no"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}TCPKeepAlive"
+          line: "TCPKeepAlive {{ cis_ubuntu2204_ssh_tcp_keep_alive }}"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}UseDNS"
+          line: "UseDNS no"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}AcceptEnv"
+          line: "AcceptEnv LANG LC_*"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthorizedKeysFile"
+          line: "AuthorizedKeysFile .ssh/authorized_keys"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}Subsystem"
+          line: "Subsystem sftp  /usr/lib/openssh/sftp-server -f AUTHPRIV -l INFO"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_ed25519_key"
+          line: "HostKey /etc/ssh/ssh_host_ed25519_key"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_ecdsa_key"
+          line: "HostKey /etc/ssh/ssh_host_ecdsa_key"
+        - reg: "{{ cis_ubuntu2204_regex_base_search }}HostKey /etc/ssh/ssh_host_rsa_key"
+          line: "HostKey /etc/ssh/ssh_host_rsa_key"
 
 - name: "SECTION5 | 5.1.24 | EXTENDED | Ensure sshd public key is added"
   ansible.posix.authorized_key:

@@ -508,7 +508,7 @@ cis_ubuntu2204_ssh_max_sessions: 10
 cis_ubuntu2204_ssh_permit_root_login: "no"
 # (cis_ubuntu2204_rule_5_1_23)
 cis_ubuntu2204_ssh_port: 22
-cis_ubuntu2404_ssh_address_family: "any" # any (the default) | inet (use IPv4 only) | inet6 (use IPv6 only)
+cis_ubuntu2204_ssh_address_family: "any" # any (the default) | inet (use IPv4 only) | inet6 (use IPv6 only)
 cis_ubuntu2204_ssh_authentication_methods: "publickey"
 cis_ubuntu2204_ssh_password_authentication: "no"
 cis_ubuntu2204_ssh_allow_agent_forwarding: "no"

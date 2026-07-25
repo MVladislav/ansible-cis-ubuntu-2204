@@ -8,7 +8,7 @@ ci:
 repos:
   # Codespell for spelling corrections
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.2
+    rev: v2.4.3
     hooks:
       - id: codespell
         args:
@@ -67,4 +67,4 @@ repos:
         pass_filenames: false
         always_run: true
         additional_dependencies:
-          - ansible-core==2.21.1
+          - ansible-core==2.21.2

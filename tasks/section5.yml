@@ -488,6 +488,8 @@
       line: "AddressFamily {{ cis_ubuntu2204_ssh_address_family }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress"
       line: "ListenAddress 0.0.0.0"
+    - reg: "{{ cis_ubuntu2204_regex_base_search }}ListenAddress"
+      line: "ListenAddress ::"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}AuthenticationMethods"
       line: "AuthenticationMethods {{ cis_ubuntu2204_ssh_authentication_methods }}"
     - reg: "{{ cis_ubuntu2204_regex_base_search }}StrictModes"
